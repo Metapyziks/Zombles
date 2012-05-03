@@ -1,4 +1,10 @@
 
 Zombles.suo
-Zombles/bin
+bin
+ResourceArchiveBuilder/obj
+ResourceLib/obj
 Zombles/obj
+Content/*.exe
+Content/*.dll
+Content/*.xml
+Content/*.pdb
