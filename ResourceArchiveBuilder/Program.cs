@@ -45,6 +45,8 @@ namespace ResourceArchiveBuilder
                 while ( directoryPath == "" );
             }
 
+            String archiveName = directoryPath.Substring( directoryPath.LastIndexOfAny( new char[] { '/', '\\' } ) + 1 );
+
             Console.WriteLine( "Creating archive..." );
 
             int archive = Res.CreateFromDirectory( directoryPath );
@@ -88,7 +90,7 @@ namespace ResourceArchiveBuilder
             }
 
             Console.WriteLine( "Compressing..." );
-            Res.SaveArchiveToFile( archive, directoryPath + ( dest == ArchiveDest.Server ? "sv_" : dest == ArchiveDest.Client ? "cl_" : "sh_" ) + Res.GetArchiveProperty( archive, ArchiveProperty.Name ).ToLower().Replace( " ", "" ) + Res.DefaultResourceExtension );
+            Res.SaveArchiveToFile( archive, directoryPath + ( dest == ArchiveDest.Server ? "sv_" : dest == ArchiveDest.Client ? "cl_" : "sh_" ) + archiveName + Res.DefaultResourceExtension );
 
             if ( args.Length == 0 )
             {

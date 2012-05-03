@@ -8,3 +8,4 @@ Content/*.exe
 Content/*.dll
 Content/*.xml
 Content/*.pdb
+Content/RSABuilder.vshost.exe.manifest
