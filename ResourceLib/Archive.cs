@@ -388,6 +388,18 @@ namespace ResourceLib
             }
         }
 
+        internal KeyValuePair<String, T>[] GetAll<T>()
+        {
+            Type type = typeof( T );
+
+            KeyValuePair<String, T>[] arr = new KeyValuePair<string, T>[ myDictionaries[ type ].Count ];
+            int i = 0;
+            foreach( KeyValuePair<String, Object> keyVal in myDictionaries[ type ] )
+                arr[ i++ ] = new KeyValuePair<string, T>( keyVal.Key, (T) keyVal.Value );
+
+            return arr;
+        }
+
         internal T Get<T>( String key )
         {
             Type type = typeof( T );

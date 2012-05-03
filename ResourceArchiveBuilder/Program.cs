@@ -13,7 +13,7 @@ namespace ResourceArchiveBuilder
         {
             if ( first )
             {
-                Res.RegisterManager( new Zombles.Graphics.RTexture2DManager() );
+                Res.RegisterManager<Zombles.Graphics.RTexture2DManager>();
                 first = false;
             }
 

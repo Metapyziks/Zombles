@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 namespace ResourceLib
 {
@@ -47,8 +48,8 @@ namespace ResourceLib
         
         static Res()
         {
-            RegisterManager( new RTextManager() );
-            RegisterManager( new RInfoManager() );
+            RegisterManager<RTextManager>();
+            RegisterManager<RInfoManager>();
         }
 
         internal static RManager[] Managers
@@ -67,6 +68,14 @@ namespace ResourceLib
         internal static RManager GetManager( String extension )
         {
             return stResourceExtensions[ extension ];
+        }
+
+        public static void RegisterManager<T>()
+            where T : RManager
+        {
+            ConstructorInfo ctor = typeof( T ).GetConstructor( new Type[ 0 ] );
+            if ( ctor != null )
+                RegisterManager( (T) ctor.Invoke( new object[ 0 ] ) );
         }
 
         public static void RegisterManager( RManager manager )
@@ -224,6 +233,25 @@ namespace ResourceLib
                 throw new ArchiveNotLoadedException( archive );
 
             return stLoadedArchives[ archive ].Destination;
+        }
+
+        public static KeyValuePair<String, T>[] GetAll<T>( int archive = -1 )
+        {
+            if ( archive == -1 )
+            {
+                List<KeyValuePair<String, T>> list = new List<KeyValuePair<string, T>>();
+
+                foreach ( Archive arch in stLoadedArchives )
+                    if( arch != null )
+                        list.AddRange( arch.GetAll<T>() );
+
+                return list.ToArray();
+            }
+
+            if ( archive < 0 || archive >= 256 || stLoadedArchives[ archive ] == null )
+                throw new ArchiveNotLoadedException( archive );
+
+            return stLoadedArchives[ archive ].GetAll<T>();
         }
 
         public static T Get<T>( String key, int archive = -1 )

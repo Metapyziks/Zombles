@@ -55,6 +55,7 @@
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2DArray.cs" />
+    <Compile Include="Graphics\TileManager.cs" />
     <Compile Include="Graphics\VertexBuffer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="UI\UITextBox.cs" />
     <Compile Include="UI\UIWindow.cs" />
     <Compile Include="UI\UIWindowCloseButton.cs" />
+    <Compile Include="ZomblesGame.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -78,6 +80,10 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)Content\*.rsa" "Data\"  /c /q /i /y
+xcopy "$(SolutionDir)Content\loadorder.txt" "Data\"  /c /q /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
