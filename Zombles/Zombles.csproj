@@ -59,6 +59,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools.cs" />
+    <Compile Include="UI\UIButton.cs" />
+    <Compile Include="UI\UILabel.cs" />
+    <Compile Include="UI\UIMenu.cs" />
+    <Compile Include="UI\UIMessageBox.cs" />
+    <Compile Include="UI\UIObject.cs" />
+    <Compile Include="UI\UIPanel.cs" />
+    <Compile Include="UI\UISprite.cs" />
+    <Compile Include="UI\UITextBox.cs" />
+    <Compile Include="UI\UIWindow.cs" />
+    <Compile Include="UI\UIWindowCloseButton.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
