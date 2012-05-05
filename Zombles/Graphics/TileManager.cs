@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using ResourceLib;
 
@@ -9,7 +7,7 @@ namespace Zombles.Graphics
 {
     public static class TileManager
     {
-        public static Texture2DArray TexArray { get; private set; }
+        internal static Texture2DArray TexArray { get; private set; }
 
         public static void Initialize()
         {
@@ -22,6 +20,14 @@ namespace Zombles.Graphics
                     tileNames.Add( keyVal.Key );
 
             TexArray = new Texture2DArray( 8, 8, tileNames.ToArray() );
+        }
+
+        public static ushort GetTileIndex( String name )
+        {
+            if ( !name.StartsWith( "images_tiles_" ) )
+                name = "images_tiles_" + name;
+
+            return TexArray.GetTextureIndex( name );
         }
     }
 }

@@ -87,8 +87,6 @@ namespace Zombles.Graphics
 
                 GL.BindBuffer( BufferTarget.ArrayBuffer, 0 );
                 GL.BindVertexArray( 0 );
-
-                CheckForError();
             }
         }
 

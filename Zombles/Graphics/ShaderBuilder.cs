@@ -144,9 +144,10 @@ namespace Zombles.Graphics
             if ( Type == ShaderType.FragmentShader )
             {
                 if ( gl3 )
-                    logic = logic.Replace( FragOutIdentifier, "gl_FragColor" )
-                        .Replace( "texture2DArray(", "texture(" )
+                    logic = logic.Replace( "texture2DArray(", "texture(" )
                         .Replace( "texture2D(", "texture(" );
+                else
+                    logic = logic.Replace( FragOutIdentifier, "gl_FragColor" );                        
             }
             else if( myTwoDimensional )
             {

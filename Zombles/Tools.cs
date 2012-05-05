@@ -208,5 +208,22 @@ namespace Zombles
 
             return i;
         }
+
+        public static int GetIndex( this Geometry.Face face )
+        {
+            switch ( face )
+            {
+                case Geometry.Face.West:
+                    return 0;
+                case Geometry.Face.North:
+                    return 1;
+                case Geometry.Face.East:
+                    return 2;
+                case Geometry.Face.South:
+                    return 3;
+                default:
+                    return -1;
+            }
+        }
     }
 }

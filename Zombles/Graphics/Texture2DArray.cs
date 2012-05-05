@@ -61,9 +61,9 @@ namespace Zombles.Graphics
             }
         }
 
-        public int GetTextureIndex( String texture )
+        public ushort GetTextureIndex( String texture )
         {
-            return Array.IndexOf( myNames, texture );
+            return (ushort) Array.IndexOf( myNames, texture );
         }
 
         protected override void Load()
