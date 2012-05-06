@@ -10,6 +10,7 @@ namespace Zombles.Geometry
         public readonly int Y;
 
         public readonly byte WallHeight;
+        public readonly byte FloorHeight;
         public readonly byte RoofHeight;
         public readonly ushort FloorTileIndex;
         public readonly ushort RoofTileIndex;
@@ -22,6 +23,7 @@ namespace Zombles.Geometry
             Y = y;
 
             WallHeight = builder.WallHeight;
+            FloorHeight = builder.FloorHeight;
             RoofHeight = builder.RoofHeight;
             FloorTileIndex = builder.FloorTileIndex;
             RoofTileIndex = builder.RoofTileIndex;
@@ -30,6 +32,9 @@ namespace Zombles.Geometry
 
         public bool IsWallSolid( Face face )
         {
+            if ( FloorHeight > 0 )
+                return true;
+
             if ( WallHeight == 0 )
                 return false;
 
@@ -40,12 +45,12 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if ( FloorTileIndex != 0xffff )
+            if ( FloorHeight < 2 && FloorTileIndex != 0xffff )
                 ++count;
-            if ( RoofHeight == 1 && RoofTileIndex != 0xffff )
+            if ( RoofHeight > FloorHeight && RoofHeight == 1 && RoofTileIndex != 0xffff )
                 ++count;
             int i;
-            for ( i = 0; i < Math.Min( WallHeight, (byte) 1 ); ++i )
+            for ( i = FloorHeight; i < Math.Min( WallHeight, (byte) 2 ); ++i )
                 for ( int j = 0; j < 4; ++j )
                     if ( WallTileIndices[ j, i ] != 0xffff )
                         ++count;
@@ -57,10 +62,12 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if ( RoofHeight > 1 && RoofTileIndex != 0xffff )
+            if ( FloorHeight > 1 && FloorTileIndex != 0xffff )
+                ++count;
+            if ( RoofHeight > FloorHeight && RoofHeight > 1 && RoofTileIndex != 0xffff )
                 ++count;
             int i;
-            for ( i = 1; i < WallHeight; ++i )
+            for ( i = Math.Max( FloorHeight, (byte) 2 ); i < WallHeight; ++i )
                 for ( int j = 0; j < 4; ++j )
                     if ( WallTileIndices[ j, i ] != 0xffff )
                         ++count;
@@ -70,22 +77,26 @@ namespace Zombles.Geometry
 
         public void GetBaseVertices( float[] verts, ref int offset )
         {
-            GetFloorVertices( 0, FloorTileIndex, verts, ref offset );
+            if( FloorHeight < 2 )
+                GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
 
-            if ( RoofHeight == 1 )
+            if ( RoofHeight > FloorHeight && RoofHeight == 1 )
                 GetFloorVertices( RoofHeight, RoofTileIndex, verts, ref offset );
 
-            for ( int i = 0; i < Math.Min( WallHeight, (byte) 1 ); ++i )
+            for ( int i = FloorHeight; i < Math.Min( WallHeight, (byte) 2 ); ++i )
                 for ( int j = 0; j < 4; ++j )
                     GetWallVertices( (Face) ( 1 << j ), i, WallTileIndices[ j, i ], verts, ref offset );
         }
 
         public void GetTopVertices( float[] verts, ref int offset )
         {
-            if ( RoofHeight > 1 )
+            if ( FloorHeight > 1 )
+                GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
+
+            if ( RoofHeight > FloorHeight && RoofHeight > 1 )
                 GetFloorVertices( RoofHeight, RoofTileIndex, verts, ref offset );
 
-            for ( int i = 1; i < WallHeight; ++i )
+            for ( int i = Math.Max( FloorHeight, (byte) 2 ); i < WallHeight; ++i )
                 for ( int j = 0; j < 4; ++j )
                     GetWallVertices( (Face) ( 1 << j ), i, WallTileIndices[ j, i ], verts, ref offset );
         }
@@ -95,7 +106,8 @@ namespace Zombles.Geometry
             if ( tile == 0xffff )
                 return;
 
-            int tt = ( tile << ( 4 + 4 ) ) | ( ( level & 0xf ) << 4 ) | ( RoofTileIndex != 0xffff ? 8 : 0 );
+            int tt = ( tile << ( 4 + 4 ) ) | ( ( level & 0xf ) << 4 )
+                | ( level == FloorHeight && RoofHeight > FloorHeight && RoofTileIndex != 0xffff ? 8 : 0 );
 
             verts[ i++ ] = X + 0.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = tt | 0x0;
             verts[ i++ ] = X + 1.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = tt | 0x1;

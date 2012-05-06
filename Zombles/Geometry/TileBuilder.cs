@@ -10,6 +10,7 @@ namespace Zombles.Geometry
         private List<ushort>[] myWallTileIndices;
 
         public byte WallHeight { get; private set; }
+        public byte FloorHeight { get; private set; }
         public byte RoofHeight { get; private set; }
 
         public ushort FloorTileIndex { get; private set; }
@@ -18,6 +19,7 @@ namespace Zombles.Geometry
         public TileBuilder()
         {
             WallHeight = 0;
+            FloorHeight = 0;
             RoofHeight = 0;
 
             FloorTileIndex = 0xffff;
@@ -30,11 +32,18 @@ namespace Zombles.Geometry
 
         public void SetFloor()
         {
+            FloorHeight = 0;
             FloorTileIndex = 0xffff;
         }
 
         public void SetFloor( String textureName )
         {
+            FloorTileIndex = TileManager.GetTileIndex( textureName );
+        }
+
+        public void SetFloor( int height, String textureName )
+        {
+            FloorHeight = (byte) height;
             FloorTileIndex = TileManager.GetTileIndex( textureName );
         }
 

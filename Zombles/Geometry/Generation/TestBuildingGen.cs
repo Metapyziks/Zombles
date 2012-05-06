@@ -21,6 +21,20 @@ namespace Zombles.Geometry.Generation
                 for ( int ty = y; ty < y + height; ++ty )
                     tiles[ tx, ty ].SetRoof( rheight, "floor_roof_0" );
 
+            int crateCount = rand.Next( ( width - 2 ) * ( height - 2 ) / 8 );
+            
+            for ( int i = 0; i < crateCount; ++i )
+            {
+                int tx = rand.Next( x, x + width );
+                int ty = rand.Next( y, y + height );
+
+                tiles[ tx, ty ].SetFloor( 1, "floor_crate_0" );
+                tiles[ tx + 1, ty ].SetWall( Face.West, 0, "wall_crate_0" );
+                tiles[ tx, ty + 1 ].SetWall( Face.North, 0, "wall_crate_0" );
+                tiles[ tx - 1, ty ].SetWall( Face.East, 0, "wall_crate_0" );
+                tiles[ tx, ty - 1 ].SetWall( Face.South, 0, "wall_crate_0" );
+            }
+
             Func<int,bool,String> texFunc = delegate( int level, bool isInterior )
             {
                 if( level < rheight )
