@@ -55,6 +55,8 @@ namespace Zombles
             myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
 
             Mouse.Move += OnMouseMove;
+
+            System.Windows.Forms.Cursor.Hide();
         }
 
         protected override void OnUpdateFrame( FrameEventArgs e )
@@ -86,7 +88,7 @@ namespace Zombles
             if ( movement.Length != 0 )
             {
                 movement.Normalize();
-                myGeoShader.CameraPosition = myGeoShader.CameraPosition + movement / 4.0f;
+                myGeoShader.CameraPosition = myGeoShader.CameraPosition + movement * (float) ( e.Time * 16.0 );
             }
         }
 
@@ -114,8 +116,6 @@ namespace Zombles
                 Vector2 rot = myGeoShader.CameraRotation;
 
                 rot.Y += e.XDelta / 180.0f;
-                //rot.X += e.YDelta / 180.0f;
-                //rot.X = Tools.Clamp( rot.X, (float) -Math.PI / 2.0f, (float) Math.PI / 2.0f );
 
                 myGeoShader.CameraRotation = rot;
 
@@ -131,7 +131,13 @@ namespace Zombles
         protected override void OnKeyPress( KeyPressEventArgs e )
         {
             if ( e.KeyChar == 0x1b )
+            {
                 myCaptureMouse = !myCaptureMouse;
+                if ( myCaptureMouse )
+                    System.Windows.Forms.Cursor.Hide();
+                else
+                    System.Windows.Forms.Cursor.Show();
+            }
         }
 
         protected override void OnMouseLeave( EventArgs e )
