@@ -49,7 +49,7 @@ namespace Zombles
 
             myGeoShader = new GeometryShader( Width, Height );
 
-            myGeoShader.CameraPosition = new Vector3( -4.0f, 12.0f, -4.0f );
+            myGeoShader.CameraPosition = new Vector3( -4.0f, 16.0f, -4.0f );
             myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
 
             Mouse.Move += OnMouseMove;

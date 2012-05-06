@@ -1,6 +1,7 @@
-﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using System;
 
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace Zombles.Graphics
 {
@@ -105,7 +106,11 @@ namespace Zombles.Graphics
 
         public void SetScreenSize( int width, int height )
         {
-            PerspectiveMatrix = Matrix4.CreateOrthographic( width / 32.0f, height / 32.0f, 0.25f, 64.0f );
+            PerspectiveMatrix = Matrix4.CreateOrthographic(
+                width / 32.0f,
+                height / 32.0f,
+                0.25f, 64.0f
+            );
             UpdateViewMatrix();
         }
 
@@ -123,11 +128,14 @@ namespace Zombles.Graphics
 
         private void UpdateViewMatrix()
         {
+            float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - CameraRotation.X ) * CameraPosition.Y );
+
             Matrix4 yRot = Matrix4.CreateRotationY( CameraRotation.Y );
             Matrix4 xRot = Matrix4.CreateRotationX( CameraRotation.X );
             Matrix4 trns = Matrix4.CreateTranslation( -CameraPosition );
+            Matrix4 offs = Matrix4.CreateTranslation( 0.0f, 0.0f, -rotOffset );
 
-            myViewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), xRot ), PerspectiveMatrix );
+            myViewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), offs ), xRot ), PerspectiveMatrix );
 
             GL.UniformMatrix4( myViewMatrixLoc, false, ref myViewMatrix );
 
