@@ -23,7 +23,7 @@ namespace Zombles
         private bool myCaptureMouse;
 
         public ZomblesGame()
-            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0, 1 ), "Zombles" )
+            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0 ), "Zombles" )
         {
             myIgnoreMouse = false;
             myCaptureMouse = true;
@@ -45,7 +45,7 @@ namespace Zombles
 
             TileManager.Initialize();
 
-            BlockGenerator gen = new BlockGenerator();
+            BlockGenerator gen = new TestBlockGen();
 
             myTestBlock = gen.Generate( -8, -12, 16, 24 );
 

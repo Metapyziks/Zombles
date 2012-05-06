@@ -138,21 +138,6 @@ namespace Zombles.Geometry
                 wall[ level + i ] = tileIndex;
         }
 
-        public void CullHiddenWalls( TileBuilder neighbour, Face face )
-        {
-            int height = Math.Min( WallHeight, neighbour.WallHeight );
-            int mfi = face.GetIndex();
-            int nfi = ( mfi + 2 ) & 0x3;
-            for ( int i = 0; i < height; ++i )
-            {
-                if ( GetWall( mfi, i ) != 0xffff && neighbour.GetWall( nfi, i ) != 0xffff )
-                {
-                    SetWall( mfi, i );
-                    neighbour.SetWall( nfi, i );
-                }
-            }
-        }
-
         public ushort[ , ] GetWallTileIndices()
         {
             ushort[ , ] indices = new ushort[ 4, WallHeight ];

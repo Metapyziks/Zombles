@@ -110,10 +110,12 @@ namespace Zombles.Geometry
             int tt = texData | ( ( ( level + 1 ) & 0xf ) << 4 ) | shade;
             int bt = texData | ( ( level & 0xf ) << 4 ) | shade;
 
-            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = tt | 0x0;
-            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = tt | 0x1;
-            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = bt | 0x3;
-            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = bt | 0x2;
+            int ol = ( level & 0x1 ) << 1;
+
+            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = tt | ( 0x0 + ol );
+            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = tt | ( 0x1 + ol );
+            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = bt | ( 0x3 + ol );
+            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = bt | ( 0x2 + ol );
         }
     }
 }

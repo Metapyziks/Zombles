@@ -49,6 +49,9 @@
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\Face.cs" />
     <Compile Include="Geometry\Generation\BlockGenerator.cs" />
+    <Compile Include="Geometry\Generation\BuildingGenerator.cs" />
+    <Compile Include="Geometry\Generation\TestBlockGen.cs" />
+    <Compile Include="Geometry\Generation\TestBuildingGen.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
