@@ -226,6 +226,57 @@ namespace Zombles
             }
         }
 
+        public static Geometry.Face GetOpposite( this Geometry.Face face )
+        {
+            switch ( face )
+            {
+                case Geometry.Face.West:
+                    return Geometry.Face.East;
+                case Geometry.Face.North:
+                    return Geometry.Face.South;
+                case Geometry.Face.East:
+                    return Geometry.Face.West;
+                case Geometry.Face.South:
+                    return Geometry.Face.North;
+                default:
+                    return Geometry.Face.None;
+            }
+        }
+
+        public static int GetNormalX( this Geometry.Face face )
+        {
+            switch ( face )
+            {
+                case Geometry.Face.West:
+                    return -1;
+                case Geometry.Face.East:
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
+
+        public static int GetNormalY( this Geometry.Face face )
+        {
+            switch ( face )
+            {
+                case Geometry.Face.North:
+                    return -1;
+                case Geometry.Face.South:
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
+
+        public static String NextTexture( this Random rand, String prefix, int max )
+        {
+            if ( !prefix.EndsWith( "_" ) )
+                prefix += "_";
+
+            return prefix + rand.Next( max ).ToString( "X" ).ToLower();
+        }
+
         public static String NextTexture( this Random rand, String prefix, int min, int max )
         {
             if ( !prefix.EndsWith( "_" ) )

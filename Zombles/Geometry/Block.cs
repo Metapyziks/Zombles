@@ -43,6 +43,8 @@ namespace Zombles.Geometry
 
                 myVertsChanged = true;
             }
+
+            UpdateVertexBuffer();
         }
 
         private void UpdateVertexBuffer()
@@ -68,10 +70,10 @@ namespace Zombles.Geometry
 
         public void Render( GeometryShader shader )
         {
-            if ( myVertsChanged )
-                UpdateVertexBuffer();
+            lock( myVB )
+                myVB.Render( shader );
 
-            shader.Render( myVerts );
+            //shader.Render( myVerts );
         }
     }
 }

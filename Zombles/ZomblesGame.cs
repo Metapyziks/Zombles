@@ -96,9 +96,9 @@ namespace Zombles
         {
             GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
-            myGeoShader.Begin();
+            myGeoShader.StartBatch();
             myTestBlock.Render( myGeoShader );
-            myGeoShader.End();
+            myGeoShader.EndBatch();
 
             SwapBuffers();
         }

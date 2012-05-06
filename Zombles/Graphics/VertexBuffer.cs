@@ -11,20 +11,8 @@ namespace Zombles.Graphics
 
         private bool myDataSet = false;
 
-        private int myVaoID;
         private int myVboID;
         private int myLength;
-
-        private int VaoID
-        {
-            get
-            {
-                if ( myVaoID == 0 )
-                    GL.GenVertexArrays( 1, out myVaoID );
-                
-                return myVaoID;
-            }
-        }
 
         private int VboID
         {
@@ -46,12 +34,9 @@ namespace Zombles.Graphics
         {
             myLength = vertices.Length / myStride;
 
-            GL.BindVertexArray( VaoID );
-
             GL.BindBuffer( BufferTarget.ArrayBuffer, VboID );
             GL.BufferData( BufferTarget.ArrayBuffer, new IntPtr( vertices.Length * Marshal.SizeOf( typeof( T ) ) ), vertices, BufferUsageHint.StaticDraw );
             GL.BindBuffer( BufferTarget.ArrayBuffer, 0 );
-            GL.BindVertexArray( 0 );
 
             CheckForError();
 
@@ -70,7 +55,6 @@ namespace Zombles.Graphics
         {
             if ( myDataSet )
             {
-                GL.BindVertexArray( VaoID );
                 GL.BindBuffer( BufferTarget.ArrayBuffer, VboID );
 
                 foreach ( AttributeInfo info in shader.Attributes )
@@ -86,17 +70,13 @@ namespace Zombles.Graphics
                     GL.DisableVertexAttribArray( info.Location );
 
                 GL.BindBuffer( BufferTarget.ArrayBuffer, 0 );
-                GL.BindVertexArray( 0 );
             }
         }
 
         public void Dispose()
         {
             if ( myDataSet )
-            {
-                GL.DeleteVertexArrays( 1, ref myVaoID );
                 GL.DeleteBuffers( 1, ref myVboID );
-            }
 
             myDataSet = false;
         }
