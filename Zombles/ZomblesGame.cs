@@ -19,12 +19,16 @@ namespace Zombles
         private GeometryShader myGeoShader;
         private Block myTestBlock;
 
+        private bool myHideTop;
+
         private bool myIgnoreMouse;
         private bool myCaptureMouse;
 
         public ZomblesGame()
             : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0 ), "Zombles" )
         {
+            myHideTop = false;
+
             myIgnoreMouse = false;
             myCaptureMouse = true;
         }
@@ -97,7 +101,7 @@ namespace Zombles
             GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
             myGeoShader.StartBatch();
-            myTestBlock.Render( myGeoShader );
+            myTestBlock.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
 
             SwapBuffers();
@@ -137,6 +141,10 @@ namespace Zombles
                     System.Windows.Forms.Cursor.Hide();
                 else
                     System.Windows.Forms.Cursor.Show();
+            }
+            else if ( e.KeyChar == 'x' )
+            {
+                myHideTop = !myHideTop;
             }
         }
 

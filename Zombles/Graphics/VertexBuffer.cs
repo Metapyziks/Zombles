@@ -51,10 +51,13 @@ namespace Zombles.Graphics
                 throw new Exception( "OpenGL hates your guts: " + error.ToString() );
         }
 
-        public void Render( ShaderProgram shader )
+        public void Render( ShaderProgram shader, int first = 0, int count = -1 )
         {
             if ( myDataSet )
             {
+                if ( count == -1 )
+                    count = myLength - first;
+
                 GL.BindBuffer( BufferTarget.ArrayBuffer, VboID );
 
                 foreach ( AttributeInfo info in shader.Attributes )
@@ -64,7 +67,7 @@ namespace Zombles.Graphics
                     GL.EnableVertexAttribArray( info.Location );
                 }
 
-                GL.DrawArrays( shader.BeginMode, 0, myLength );
+                GL.DrawArrays( shader.BeginMode, first, count );
 
                 foreach ( AttributeInfo info in shader.Attributes )
                     GL.DisableVertexAttribArray( info.Location );

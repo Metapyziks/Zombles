@@ -8,10 +8,7 @@ namespace Zombles.Geometry
     {
         private Tile[,] myTiles;
         private VertexBuffer myVB;
-
-        private float[] myVerts;
-
-        private bool myVertsChanged;
+        private int myBaseVertCount;
 
         public readonly int X;
         public readonly int Y;
@@ -29,51 +26,50 @@ namespace Zombles.Geometry
 
             myTiles = new Tile[ width, height ];
             myVB = new VertexBuffer( 3 );
-            myVerts = new float[ 0 ];
-
-            myVertsChanged = false;
         }
 
         public void BuildTiles( TileBuilder[,] tiles )
         {
             lock ( myTiles )
-            {
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
                         myTiles[ x, y ] = tiles[ x, y ].Create( X + x, Y + y );
-
-                myVertsChanged = true;
-            }
 
             UpdateVertexBuffer();
         }
 
         private void UpdateVertexBuffer()
         {
-            myVertsChanged = false;
+            float[] verts;
 
             lock ( myTiles )
             {
-                int count = 0;
+                int baseCount = 0;
+                int topCount = 0;
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                        count += myTiles[ x, y ].GetVertexCount();
+                {
+                    baseCount += myTiles[ x, y ].GetBaseVertexCount();
+                    topCount += myTiles[ x, y ].GetTopVertexCount();
+                }
 
-                myVerts = new float[ count * 3 ];
+                verts = new float[ ( baseCount + topCount ) * 3 ];
+                myBaseVertCount = baseCount;
 
                 int i = 0;
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                        myTiles[ x, y ].GetVertices( myVerts, ref i );
+                    myTiles[ x, y ].GetBaseVertices( verts, ref i );
+
+                for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
+                     myTiles[ x, y ].GetTopVertices( verts, ref i );
 
             }
             lock( myVB )
-                myVB.SetData( myVerts );
+                myVB.SetData( verts );
         }
 
-        public void Render( GeometryShader shader )
+        public void Render( GeometryShader shader, bool baseOnly = false )
         {
             lock( myVB )
-                myVB.Render( shader );
-
-            //shader.Render( myVerts );
+                myVB.Render( shader, 0, ( baseOnly ? myBaseVertCount : -1 ) );
         }
     }
 }
