@@ -7,7 +7,8 @@ namespace Zombles.Geometry
         public readonly int X;
         public readonly int Y;
 
-        public readonly byte Height;
+        public readonly byte WallHeight;
+        public readonly byte RoofHeight;
         public readonly ushort FloorTileIndex;
         public readonly ushort RoofTileIndex;
 
@@ -18,15 +19,16 @@ namespace Zombles.Geometry
             X = x;
             Y = y;
 
-            Height = builder.Height;
+            WallHeight = builder.WallHeight;
+            RoofHeight = builder.RoofHeight;
             FloorTileIndex = builder.FloorTileIndex;
             RoofTileIndex = builder.RoofTileIndex;
-            WallTileIndices = (ushort[ , ]) builder.WallTileIndices.Clone();
+            WallTileIndices = builder.GetWallTileIndices();
         }
 
         public bool IsWallSolid( Face face )
         {
-            if ( Height == 0 )
+            if ( WallHeight == 0 )
                 return false;
 
             return WallTileIndices[ face.GetIndex(), 0 ] != 0xffff;
@@ -38,10 +40,10 @@ namespace Zombles.Geometry
 
             if ( FloorTileIndex != 0xffff )
                 ++count;
-            if ( Height > 0 && RoofTileIndex != 0xffff )
+            if ( RoofHeight > 0 && RoofTileIndex != 0xffff )
                 ++count;
             int i;
-            for ( i = 0; i < Height; ++i )
+            for ( i = 0; i < WallHeight; ++i )
                 for ( int j = 0; j < 4; ++j )
                     if ( WallTileIndices[ j, i ] != 0xffff )
                         ++count;
@@ -53,10 +55,10 @@ namespace Zombles.Geometry
         {
             GetFloorVertices( 0, FloorTileIndex, verts, ref offset );
 
-            if( Height > 0 )
-                GetFloorVertices( Height, RoofTileIndex, verts, ref offset );
+            if ( RoofHeight > 0 )
+                GetFloorVertices( RoofHeight, RoofTileIndex, verts, ref offset );
 
-            for ( int i = 0; i < Height; ++i )
+            for ( int i = 0; i < WallHeight; ++i )
                 for ( int j = 0; j < 4; ++j )
                     GetWallVertices( (Face) ( 1 << j ), i, WallTileIndices[ j, i ], verts, ref offset );
         }

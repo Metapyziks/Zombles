@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Zombles.Graphics;
 
@@ -6,25 +7,25 @@ namespace Zombles.Geometry
 {
     public class TileBuilder
     {
-        public byte Height { get; private set; }
+        private List<ushort>[] myWallTileIndices;
+
+        public byte WallHeight { get; private set; }
+        public byte RoofHeight { get; private set; }
 
         public ushort FloorTileIndex { get; private set; }
         public ushort RoofTileIndex { get; private set; }
 
-        public ushort[ , ] WallTileIndices { get; private set; }
-
-        public TileBuilder( int height )
+        public TileBuilder()
         {
-            Height = (byte) Math.Min( height, 8 );
+            WallHeight = 0;
+            RoofHeight = 0;
 
             FloorTileIndex = 0xffff;
             RoofTileIndex = 0xffff;
 
-            WallTileIndices = new ushort[ 4, Height ];
-
-            for ( int i = 0; i < height; ++i )
-                for ( int j = 0; j < 4; ++j )
-                    WallTileIndices[ j, i ] = 0xffff;
+            myWallTileIndices = new List<ushort>[ 4 ];
+            for ( int i = 0; i < 4; ++i )
+                myWallTileIndices[ i ] = new List<ushort>();
         }
 
         public void SetFloor()
@@ -39,6 +40,7 @@ namespace Zombles.Geometry
 
         public void SetRoof()
         {
+            RoofHeight = 0;
             RoofTileIndex = 0xffff;
         }
 
@@ -47,42 +49,124 @@ namespace Zombles.Geometry
             RoofTileIndex = TileManager.GetTileIndex( textureName );
         }
 
-        public void SetWall( Face face )
+        public void SetRoof( int height, String textureName )
         {
-            int faceIndex = face.GetIndex();
-            for ( int i = 0; i < Height; ++i )
-                WallTileIndices[ faceIndex, i ] = 0xffff;
+            RoofHeight = (byte) height;
+            RoofTileIndex = TileManager.GetTileIndex( textureName );
         }
 
-        public void SetWall( Face face, String textureName )
+        public ushort GetWall( Face face, int level )
         {
-            ushort tileIndex = TileManager.GetTileIndex( textureName );
-            int faceIndex = face.GetIndex();
-            for ( int i = 0; i < Height; ++i )
-                WallTileIndices[ faceIndex, i ] = tileIndex;
+            return GetWall( face.GetIndex(), level );
+        }
+
+        public ushort GetWall( int faceIndex, int level )
+        {
+            List<ushort> wall = myWallTileIndices[ faceIndex ];
+
+            if ( wall.Count <= level )
+                return 0xffff;
+
+            return wall[ level ];
         }
 
         public void SetWall( Face face, int level )
         {
-            int faceIndex = face.GetIndex();
-            WallTileIndices[ faceIndex, level ] = 0xffff;
+            SetWallRange( face.GetIndex(), level, 1, 0xffff );
+        }
+
+        public void SetWall( int faceIndex, int level )
+        {
+            SetWallRange( faceIndex, level, 1, 0xffff );
         }
 
         public void SetWall( Face face, int level, String textureName )
         {
-            ushort tileIndex = TileManager.GetTileIndex( textureName );
-            int faceIndex = face.GetIndex();
-            WallTileIndices[ faceIndex, level ] = tileIndex;
+            SetWallRange( face.GetIndex(), level, 1, TileManager.GetTileIndex( textureName ) );
+        }
+
+        public void SetWall( Face face, int level, ushort tileIndex )
+        {
+            SetWallRange( face.GetIndex(), level, 1, tileIndex );
+        }
+
+        public void SetWall( int faceIndex, int level, String textureName )
+        {
+            SetWallRange( faceIndex, level, 1, TileManager.GetTileIndex( textureName ) );
+        }
+
+        public void SetWall( int faceIndex, int level, ushort tileIndex )
+        {
+            SetWallRange( faceIndex, level, 1, tileIndex );
+        }
+
+        public void SetWallRange( Face face, int level, int height )
+        {
+            SetWallRange( face.GetIndex(), level, height, 0xffff );
+        }
+
+        public void SetWallRange( int faceIndex, int level, int height )
+        {
+            SetWallRange( faceIndex, level, height, 0xffff );
+        }
+
+        public void SetWallRange( Face face, int level, int height, String textureName )
+        {
+            SetWallRange( face.GetIndex(), level, height, TileManager.GetTileIndex( textureName ) );
+        }
+
+        public void SetWallRange( Face face, int level, int height, ushort tileIndex )
+        {
+            SetWallRange( face.GetIndex(), level, height, tileIndex );
+        }
+
+        public void SetWallRange( int faceIndex, int level, int height, String textureName )
+        {
+            SetWallRange( faceIndex, level, height, TileManager.GetTileIndex( textureName ) );
+        }
+
+        public void SetWallRange( int faceIndex, int level, int height, ushort tileIndex )
+        {
+            List<ushort> wall = myWallTileIndices[ faceIndex ];
+
+            while ( wall.Count < level + height )
+                wall.Add( 0xffff );
+
+            WallHeight = Math.Max( (byte) ( level + height ), WallHeight );
+
+            for( int i = 0; i < height; ++ i )
+                wall[ level + i ] = tileIndex;
         }
 
         public void CullHiddenWalls( TileBuilder neighbour, Face face )
         {
-            int height = Math.Min( Height, neighbour.Height );
+            int height = Math.Min( WallHeight, neighbour.WallHeight );
             int mfi = face.GetIndex();
             int nfi = ( mfi + 2 ) & 0x3;
             for ( int i = 0; i < height; ++i )
-                if ( WallTileIndices[ mfi, i ] != 0xffff && neighbour.WallTileIndices[ nfi, i ] != 0xffff )
-                    WallTileIndices[ mfi, i ] = neighbour.WallTileIndices[ nfi, i ] = 0xffff;
+            {
+                if ( GetWall( mfi, i ) != 0xffff && neighbour.GetWall( nfi, i ) != 0xffff )
+                {
+                    SetWall( mfi, i );
+                    neighbour.SetWall( nfi, i );
+                }
+            }
+        }
+
+        public ushort[ , ] GetWallTileIndices()
+        {
+            ushort[ , ] indices = new ushort[ 4, WallHeight ];
+            for ( int i = 0; i < 4; ++i )
+            {
+                for ( int j = 0; j < WallHeight; ++j )
+                {
+                    if ( j < myWallTileIndices[ i ].Count )
+                        indices[ i, j ] = myWallTileIndices[ i ][ j ];
+                    else
+                        indices[ i, j ] = 0xffff;
+                }
+            }
+            return indices;
         }
 
         public Tile Create( int x, int y )

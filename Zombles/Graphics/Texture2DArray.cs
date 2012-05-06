@@ -73,9 +73,9 @@ namespace Zombles.Graphics
             GL.TexParameter( TextureTarget.Texture2DArray,
                 TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Nearest );
             GL.TexParameter( TextureTarget.Texture2DArray,
-                TextureParameterName.TextureWrapS, (int) TextureWrapMode.Repeat );
+                TextureParameterName.TextureWrapS, (int) TextureWrapMode.Clamp );
             GL.TexParameter( TextureTarget.Texture2DArray,
-                TextureParameterName.TextureWrapT, (int) TextureWrapMode.Repeat );
+                TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp );
             GL.TexImage3D( TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
                 Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, myData );
         }

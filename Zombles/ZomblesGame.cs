@@ -10,6 +10,7 @@ using ResourceLib;
 
 using Zombles.Graphics;
 using Zombles.Geometry;
+using Zombles.Geometry.Generation;
 
 namespace Zombles
 {
@@ -22,7 +23,7 @@ namespace Zombles
         private bool myCaptureMouse;
 
         public ZomblesGame()
-            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0, 1 ) )
+            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0, 1 ), "Zombles" )
         {
             myIgnoreMouse = false;
             myCaptureMouse = true;
@@ -44,12 +45,13 @@ namespace Zombles
 
             TileManager.Initialize();
 
-            myTestBlock = new Block( -32, -32, 64, 64 );
-            myTestBlock.Generate();
+            BlockGenerator gen = new BlockGenerator();
+
+            myTestBlock = gen.Generate( -8, -12, 16, 24 );
 
             myGeoShader = new GeometryShader( Width, Height );
 
-            myGeoShader.CameraPosition = new Vector3( -4.0f, 16.0f, -4.0f );
+            myGeoShader.CameraPosition = new Vector3( 0.0f, 16.0f, 0.0f );
             myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
 
             Mouse.Move += OnMouseMove;

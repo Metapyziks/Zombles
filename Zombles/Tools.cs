@@ -225,5 +225,13 @@ namespace Zombles
                     return -1;
             }
         }
+
+        public static String NextTexture( this Random rand, String prefix, int min, int max )
+        {
+            if ( !prefix.EndsWith( "_" ) )
+                prefix += "_";
+
+            return prefix + rand.Next( min, max ).ToString( "X" ).ToLower();
+        }
     }
 }

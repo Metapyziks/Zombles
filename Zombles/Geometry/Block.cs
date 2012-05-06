@@ -34,45 +34,12 @@ namespace Zombles.Geometry
             myVertsChanged = false;
         }
 
-        public void Generate( int seed = 0 )
+        public void BuildTiles( TileBuilder[,] tiles )
         {
-            Random rand = ( seed == 0 ? new Random() : new Random( seed ) );
-
-            TileBuilder[,] builders = new TileBuilder[ Width, Height ];
-
-            for ( int x = 0; x < Width; ++x )
-            {
-                for ( int y = 0; y < Height; ++y )
-                {
-                    builders[ x, y ] = new TileBuilder( 1 );
-                    builders[ x, y ].SetFloor( "floor_concrete_0" );
-                }
-            }
-
-            for ( int i = 0; i < 64; ++i )
-            {
-                int x = rand.Next( 1, Width - 1 );
-                int y = rand.Next( 1, Height - 1 );
-
-                builders[ x, y ].SetFloor();
-                builders[ x, y ].SetRoof( "floor_crate_0" );
-                builders[ x + 1, y ].SetWall( Face.West, "wall_crate_0" );
-                builders[ x, y + 1 ].SetWall( Face.North, "wall_crate_0" );
-                builders[ x - 1, y ].SetWall( Face.East, "wall_crate_0" );
-                builders[ x, y - 1 ].SetWall( Face.South, "wall_crate_0" );
-            }
-
-            for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-            {
-                TileBuilder b = builders[ x, y ];
-                if ( x < Width - 1 )  b.CullHiddenWalls( builders[ x + 1, y ], Face.East );
-                if ( y < Height - 1 ) b.CullHiddenWalls( builders[ x, y + 1 ], Face.South );
-            }
-
             lock ( myTiles )
             {
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                    myTiles[ x, y ] = builders[ x, y ].Create( X + x, Y + y );
+                        myTiles[ x, y ] = tiles[ x, y ].Create( X + x, Y + y );
 
                 myVertsChanged = true;
             }
