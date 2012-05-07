@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Zombles.Graphics;
+
 namespace Zombles.Geometry
 {
     public class City
@@ -12,6 +14,11 @@ namespace Zombles.Geometry
         public City( int width, int height )
         {
             RootDistrict = new District( 0, 0, width, height );
+        }
+
+        public void Render( GeometryShader shader, bool baseOnly = false )
+        {
+            RootDistrict.Render( shader, baseOnly );
         }
     }
 }

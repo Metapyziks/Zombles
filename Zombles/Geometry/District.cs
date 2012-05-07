@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Zombles.Graphics;
+
 namespace Zombles.Geometry
 {
     public class District
@@ -55,6 +57,17 @@ namespace Zombles.Geometry
         {
             IsLeaf = true;
             Block = block;
+        }
+
+        public void Render( GeometryShader shader, bool baseOnly = false )
+        {
+            if ( IsBranch )
+            {
+                ChildA.Render( shader, baseOnly );
+                ChildB.Render( shader, baseOnly );
+            }
+            else if ( IsLeaf )
+                Block.Render( shader, baseOnly );
         }
     }
 }

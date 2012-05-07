@@ -12,16 +12,25 @@ namespace Zombles.Graphics
 
         private Vector3 myCameraPosition;
         private Vector2 myCameraRotation;
+        private float myCameraScale;
         private Matrix4 myPerspectiveMatrix;
 
+        private bool myPerspectiveChanged;
         private bool myViewChanged;
 
-        public Vector3 CameraPosition
+        public int ScreenWidth { get; private set; }
+        public int ScreenHeight { get; private set; }
+
+        public Vector2 CameraPosition
         {
-            get { return myCameraPosition; }
+            get
+            {
+                return new Vector2( myCameraPosition.X, myCameraPosition.Z );
+            }
             set
             {
-                myCameraPosition = value;
+                myCameraPosition.X = value.X;
+                myCameraPosition.Z = value.Y;
                 myViewChanged = true;
             }
         }
@@ -34,13 +43,22 @@ namespace Zombles.Graphics
                 myViewChanged = true;
             }
         }
+        public float CameraScale
+        {
+            get { return myCameraScale; }
+            set
+            {
+                myCameraScale = value;
+                myPerspectiveChanged = true;
+            }
+        }
         public Matrix4 PerspectiveMatrix
         {
             get { return myPerspectiveMatrix; }
             set
             {
                 myPerspectiveMatrix = value;
-                myViewChanged = true;
+                myPerspectiveChanged = true;
             }
         }
 
@@ -93,8 +111,12 @@ namespace Zombles.Graphics
 
             BeginMode = BeginMode.Quads;
 
-            CameraPosition = new Vector3();
-            CameraRotation = new Vector2();
+            myCameraPosition = new Vector3();
+            myCameraRotation = new Vector2();
+            myCameraScale = 1.0f;
+
+            myPerspectiveChanged = true;
+            myViewChanged = true;
         }
 
         public GeometryShader( int width, int height )
@@ -106,12 +128,9 @@ namespace Zombles.Graphics
 
         public void SetScreenSize( int width, int height )
         {
-            PerspectiveMatrix = Matrix4.CreateOrthographic(
-                width / 32.0f,
-                height / 32.0f,
-                0.25f, 64.0f
-            );
-            UpdateViewMatrix();
+            ScreenWidth = width;
+            ScreenHeight = height;
+            UpdatePerspectiveMatrix();
         }
 
         protected override void OnCreate()
@@ -126,16 +145,38 @@ namespace Zombles.Graphics
             myViewMatrixLoc = GL.GetUniformLocation( Program, "view_matrix" );
         }
 
+        private void UpdatePerspectiveMatrix()
+        {
+            float width = ScreenWidth / ( 8.0f * myCameraScale );
+            float height = ScreenHeight / ( 8.0f * myCameraScale );
+
+            double ang = Math.PI / 2.0 - myCameraRotation.X;
+
+            double hoff = height * Math.Sin( ang );
+            myCameraPosition.Y = (float) ( hoff / 2.0 ) + 8.0f;
+            float znear = 0.0f;
+            float zfar = (float) ( ( hoff + 8.0f ) / Math.Cos( ang ) );
+
+            myPerspectiveMatrix = Matrix4.CreateOrthographic(
+                width,
+                height,
+                znear, zfar
+            );
+            UpdateViewMatrix();
+
+            myPerspectiveChanged = false;
+        }
+
         private void UpdateViewMatrix()
         {
-            float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - CameraRotation.X ) * CameraPosition.Y );
+            float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - myCameraRotation.X ) * myCameraPosition.Y );
 
-            Matrix4 yRot = Matrix4.CreateRotationY( CameraRotation.Y );
-            Matrix4 xRot = Matrix4.CreateRotationX( CameraRotation.X );
-            Matrix4 trns = Matrix4.CreateTranslation( -CameraPosition );
+            Matrix4 yRot = Matrix4.CreateRotationY( myCameraRotation.Y );
+            Matrix4 xRot = Matrix4.CreateRotationX( myCameraRotation.X );
+            Matrix4 trns = Matrix4.CreateTranslation( -myCameraPosition );
             Matrix4 offs = Matrix4.CreateTranslation( 0.0f, 0.0f, -rotOffset );
 
-            myViewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), offs ), xRot ), PerspectiveMatrix );
+            myViewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), offs ), xRot ), myPerspectiveMatrix );
 
             GL.UniformMatrix4( myViewMatrixLoc, false, ref myViewMatrix );
 
@@ -144,7 +185,9 @@ namespace Zombles.Graphics
 
         protected override void OnStartBatch()
         {
-            if ( myViewChanged )
+            if ( myPerspectiveChanged )
+                UpdatePerspectiveMatrix();
+            else if ( myViewChanged )
                 UpdateViewMatrix();
 
             GL.Enable( EnableCap.DepthTest );

@@ -11,7 +11,14 @@ namespace Zombles.Geometry.Generation
         private int myMaxLongSide;
         private int myMaxShortSide;
 
-        public void AddBlockGenerator( BlockGenerator gen, double frequency )
+        public CityGenerator()
+        {
+            myBlockTypes = new Dictionary<BlockGenerator, double>();
+            myMaxLongSide = 0;
+            myMaxShortSide = 0;
+        }
+
+        public void AddBlockGenerator( BlockGenerator gen, double frequency = 1.0 )
         {
             myBlockTypes.Add( gen, frequency );
             if ( gen.MaxLongSide > myMaxLongSide )
@@ -20,10 +27,10 @@ namespace Zombles.Geometry.Generation
                 myMaxShortSide = gen.MaxShortSide;
         }
 
-        protected bool WillFit( int width, int height )
+        protected bool WillFit( int width, int height, bool acceptLarger = false )
         {
             foreach ( BlockGenerator gen in myBlockTypes.Keys )
-                if ( gen.WillFit( width, height ) )
+                if ( myBlockTypes[ gen ] > 0.0 && gen.WillFit( width, height, acceptLarger ) )
                     return true;
 
             return false;
@@ -35,9 +42,14 @@ namespace Zombles.Geometry.Generation
             double freq = double.MaxValue;
             foreach ( BlockGenerator gen in myBlockTypes.Keys )
             {
-                if ( gen.WillFit( width, height ) && myBlockTypes[ gen ] > 0.0f )
+                if ( gen.WillFit( width, height ) )
                 {
-                    double val = rand.NextDouble() / myBlockTypes[ gen ];
+                    double val = myBlockTypes[ gen ];
+                    if ( val <= 0.0 )
+                        val = double.MaxValue / 2.0;
+                    else
+                        val = rand.NextDouble() / val;
+
                     if ( val < freq )
                     {
                         cur = gen;
@@ -53,10 +65,11 @@ namespace Zombles.Geometry.Generation
         {
             List<BlockGenerator> gens = new List<BlockGenerator>();
             foreach ( BlockGenerator gen in myBlockTypes.Keys )
-                if ( gen.WillFit( width, height ) && myBlockTypes[ gen ] > 0.0f )
+                if ( gen.WillFit( width, height ) )
                     gens.Add( gen );
 
-            return gens.OrderBy( x => rand.NextDouble() / myBlockTypes[ x ] ).ToArray();
+            return gens.OrderBy( x => myBlockTypes[ x ] <= 0.0
+                ? double.MaxValue : rand.NextDouble() / myBlockTypes[ x ] ).ToArray();
         }
 
         public City Generate( int width, int height, int seed = 0 )
@@ -78,13 +91,25 @@ namespace Zombles.Geometry.Generation
             int min = 4;
             bool fit = false;
 
-            while ( min <= district.Width / 2
-                && !( fit = WillFit( horz ? district.Width : min, horz ? min : district.Height ) ) )
+            while ( min * 2 < ( horz ? district.Height : district.Width ) - 1
+                && !( fit = WillFit( horz ? district.Width : min, horz ? min : district.Height, true ) ) )
                 ++min;
+
+            if ( !fit )
+            {
+                horz = !horz;
+
+                min = 4;
+                fit = false;
+
+                while ( min * 2 < ( horz ? district.Height : district.Width ) - 1
+                    && !( fit = WillFit( horz ? district.Width : min, horz ? min : district.Height, true ) ) )
+                    ++min;
+            }
 
             if ( fit )
             {
-                district.Split( horz, rand.Next( min, district.Width - min ) );
+                district.Split( horz, rand.Next( min, ( horz ? district.Height : district.Width ) - min ) );
                 Subdivide( district.ChildA, rand );
                 Subdivide( district.ChildB, rand );
             }

@@ -14,27 +14,27 @@ namespace Zombles.Geometry.Generation
 
         protected BlockGenerator( int minSide, int maxSide )
         {
-            MinShortSide = minSide;
-            MinLongSide = minSide;
-            MaxShortSide = maxSide;
-            MaxLongSide = maxSide;
+            MinShortSide = minSide + 4;
+            MinLongSide = minSide + 4;
+            MaxShortSide = maxSide + 4;
+            MaxLongSide = maxSide + 4;
         }
 
         protected BlockGenerator( int minShortSide, int minLongSide, int maxShortSide, int maxLongSide )
         {
-            MinShortSide = minShortSide;
-            MinLongSide = minLongSide;
-            MaxShortSide = maxShortSide;
-            MaxLongSide = maxLongSide;
+            MinShortSide = minShortSide + 4;
+            MinLongSide = minLongSide + 4;
+            MaxShortSide = maxShortSide + 4;
+            MaxLongSide = maxLongSide + 4;
         }
 
-        public bool WillFit( int width, int height )
+        public bool WillFit( int width, int height, bool acceptLarger = false )
         {
             int sh = Math.Min( width, height );
             int ln = Math.Max( width, height );
 
-            return sh >= MinShortSide && sh <= MaxShortSide
-                && ln >= MinLongSide && ln <= MaxLongSide;
+            return sh >= MinShortSide && ln >= MinLongSide &&
+                ( acceptLarger || ( ln <= MaxLongSide && sh <= MaxShortSide ) );
         }
 
         public Block Generate( int x, int y, int width, int height, int seed = 0 )
