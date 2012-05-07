@@ -10,7 +10,7 @@ namespace Zombles.Geometry.Generation
         private WarehouseBuildingGen myBuildingGen;
 
         public WarehouseBlockGen()
-            : base( 10, 14, 20, 32 )
+            : base( 8, 12, 24, 32 )
         {
             myBuildingGen = new WarehouseBuildingGen();
         }
@@ -20,7 +20,7 @@ namespace Zombles.Geometry.Generation
             for ( int x = 2; x < width - 2; ++x ) for ( int y = 2; y < height - 2; ++y )
                     tiles[ x, y ].SetFloor( "floor_concrete_0" );
 
-            myBuildingGen.Generate( 3, 3, width - 6, height - 6, tiles, rand );
+            myBuildingGen.Generate( 2, 2, width - 4, height - 4, tiles, rand );
         }
     }
 }

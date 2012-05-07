@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Diagnostics;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -9,6 +10,7 @@ using OpenTK.Input;
 using ResourceLib;
 
 using Zombles.Graphics;
+using Zombles.UI;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
@@ -16,7 +18,20 @@ namespace Zombles
 {
     public class ZomblesGame : GameWindow
     {
+        private const int WorldSize = 256;
+
+        private SpriteShader mySpriteShader;
+        private UIObject myUIRoot;
+
+        private UILabel myFPSText;
+
+        private long myTotalFrameTime;
+        private int myFramesCompleted;
+
+        private Stopwatch myFrameTimer;
+
         private GeometryShader myGeoShader;
+        private CityGenerator myGenerator;
         private City myTestCity;
 
         private bool myHideTop;
@@ -27,14 +42,20 @@ namespace Zombles
         private bool myCaptureMouse;
 
         public ZomblesGame()
-            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 0 ), 8, 0 ), "Zombles" )
+            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 8, 0 ), "Zombles" )
         {
+            VSync = VSyncMode.Off;
+
             myHideTop = false;
 
             myCamMoveSpeed = 64.0f;
 
             myIgnoreMouse = false;
             myCaptureMouse = true;
+
+            myTotalFrameTime = 0;
+            myFramesCompleted = 0;
+            myFrameTimer = new Stopwatch();
         }
 
         protected override void OnLoad( EventArgs e )
@@ -51,33 +72,49 @@ namespace Zombles
                 if ( line.Length > 0 && File.Exists( dataPath + line ) )
                     Res.MountArchive( Res.LoadArchive( dataPath + line ) );
 
+            mySpriteShader = new SpriteShader( Width, Height );
+            myUIRoot = new UIObject( new Vector2( Width, Height ) );
+
+            myFPSText = new UILabel( Font.Large, new Vector2( 4.0f, 4.0f ) );
+            Title = myFPSText.Text = "FT: ??ms FPS: ?? MEM: ??";
+            myUIRoot.AddChild( myFPSText );
+
             TileManager.Initialize();
 
-            int worldSize = 256;
-
-            CityGenerator gen = new CityGenerator();
-            gen.AddBlockGenerator( new WarehouseBlockGen(), 1.0 );
-            gen.AddBlockGenerator( new EmptyBlockGen(), 0.0 );
-            myTestCity = gen.Generate( worldSize, worldSize );
-
-            int blockCount = 0;
-            foreach( Block block in myTestCity )
-                ++blockCount;
+            myGenerator = new CityGenerator();
+            myGenerator.AddBlockGenerator( new WarehouseBlockGen(), 1.0 );
+            myGenerator.AddBlockGenerator( new EmptyBlockGen(), 0.0 );
+            myTestCity = myGenerator.Generate( WorldSize, WorldSize );
 
             myGeoShader = new GeometryShader( Width, Height );
 
-            myGeoShader.CameraPosition = new Vector2( worldSize, worldSize ) / 2.0f;
+            myGeoShader.CameraPosition = new Vector2( WorldSize, WorldSize ) / 2.0f;
             myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
             myGeoShader.CameraScale = 1.0f;
 
             Mouse.Move += OnMouseMove;
+            Mouse.ButtonUp += OnMouseButtonEvent;
+            Mouse.ButtonDown += OnMouseButtonEvent;
             Mouse.WheelChanged += OnMouseWheelChanged;
 
             System.Windows.Forms.Cursor.Hide();
+
+            myFrameTimer.Start();
         }
 
         protected override void OnUpdateFrame( FrameEventArgs e )
         {
+            if ( myTotalFrameTime >= Stopwatch.Frequency )
+            {
+                double period = myTotalFrameTime / ( Stopwatch.Frequency / 1000d ) / myFramesCompleted;
+                double freq = 1000 / period;
+
+                myTotalFrameTime = 0;
+                myFramesCompleted = 0;
+
+                Title = myFPSText.Text = string.Format( "FT: {0:F}ms FPS: {1:F} MEM: {2:F}MB", period, freq, Process.GetCurrentProcess().PrivateMemorySize64 / ( 1024d * 1024d ) );
+            }
+
             Vector2 movement = new Vector2( 0.0f, 0.0f );
             float angleY = myGeoShader.CameraRotation.Y;
 
@@ -118,7 +155,15 @@ namespace Zombles
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
 
+            mySpriteShader.Begin();
+            myUIRoot.Render( mySpriteShader );
+            mySpriteShader.End();
+
             SwapBuffers();
+
+            myTotalFrameTime += myFrameTimer.ElapsedTicks;
+            ++myFramesCompleted;
+            myFrameTimer.Restart();
         }
 
         private void OnMouseMove( object sender, MouseMoveEventArgs e )
@@ -142,7 +187,7 @@ namespace Zombles
             }
             else
             {
-                // myUIRoot.SendMouseMoveEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+                myUIRoot.SendMouseMoveEvent( new Vector2( Mouse.X, Mouse.Y ), e );
             }
         }
 
@@ -173,6 +218,23 @@ namespace Zombles
             {
                 myHideTop = !myHideTop;
             }
+            else if ( e.KeyChar == 'g' )
+            {
+                myTestCity = myGenerator.Generate( WorldSize, WorldSize );
+            }
+
+            if ( !myCaptureMouse )
+            {
+                myUIRoot.SendKeyPressEvent( e );
+            }
+        }
+
+        private void OnMouseButtonEvent( object sender, MouseButtonEventArgs e )
+        {
+            if ( !myCaptureMouse )
+            {
+                myUIRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            }
         }
 
         protected override void OnMouseLeave( EventArgs e )
@@ -182,6 +244,13 @@ namespace Zombles
                 myIgnoreMouse = true;
                 System.Windows.Forms.Cursor.Position = new System.Drawing.Point( Bounds.Left + Width / 2, Bounds.Top + Height / 2 );
             }
+        }
+
+        public override void Dispose()
+        {
+            myTestCity.Dispose();
+
+            base.Dispose();
         }
     }
 }

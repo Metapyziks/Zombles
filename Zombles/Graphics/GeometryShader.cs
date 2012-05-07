@@ -194,6 +194,7 @@ namespace Zombles.Graphics
             GL.Enable( EnableCap.CullFace );
 
             GL.CullFace( CullFaceMode.Front );
+            GL.BlendFunc( BlendingFactorSrc.One, BlendingFactorDest.Zero );
         }
 
         protected override void OnEndBatch()

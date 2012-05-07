@@ -7,7 +7,7 @@ using Zombles.Graphics;
 
 namespace Zombles.Geometry
 {
-    public class City : IEnumerable<Block>
+    public class City : IEnumerable<Block>, IDisposable
     {
         private VertexBuffer myVertexBuffer;
 
@@ -41,6 +41,11 @@ namespace Zombles.Geometry
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void Dispose()
+        {
+            myVertexBuffer.Dispose();
         }
     }
 }

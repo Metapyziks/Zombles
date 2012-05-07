@@ -849,15 +849,8 @@ namespace Zombles.UI
                 if ( RenderObject != null )
                     RenderObject( this, new RenderEventArgs( shader, parentPosition ) );
 
-                try
-                {
-                    foreach ( UIObject child in myChildren )
-                        child.Render( shader, parentPosition + myPaddingTopLeft );
-                }
-                catch ( Exception )
-                {
-
-                }
+                foreach ( UIObject child in myChildren )
+                    child.Render( shader, parentPosition + myPaddingTopLeft );
             }
         }
     }
