@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4DDB57AE-D369-489D-B354-15B93902585D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Zombles</RootNamespace>
     <AssemblyName>Zombles</AssemblyName>
@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -49,6 +52,7 @@
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\City.cs" />
     <Compile Include="Geometry\District.cs" />
+    <Compile Include="Geometry\DistrictEnumerator.cs" />
     <Compile Include="Geometry\Face.cs" />
     <Compile Include="Geometry\Generation\BlockGenerator.cs" />
     <Compile Include="Geometry\Generation\BuildingGenerator.cs" />
