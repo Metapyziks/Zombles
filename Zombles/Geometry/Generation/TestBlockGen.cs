@@ -10,7 +10,7 @@ namespace Zombles.Geometry.Generation
         private TestBuildingGen myBuildingGen;
 
         public TestBlockGen()
-            : base( 4, 4 )
+            : base( 10, 16, 16, 24 )
         {
             myBuildingGen = new TestBuildingGen();
         }

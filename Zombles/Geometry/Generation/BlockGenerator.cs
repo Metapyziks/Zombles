@@ -7,13 +7,34 @@ namespace Zombles.Geometry.Generation
 {
     public abstract class BlockGenerator
     {
-        public readonly int MinWidth;
-        public readonly int MinHeight;
+        public readonly int MinShortSide;
+        public readonly int MinLongSide;
+        public readonly int MaxShortSide;
+        public readonly int MaxLongSide;
 
-        protected BlockGenerator( int minWidth, int minHeight )
+        protected BlockGenerator( int minSide, int maxSide )
         {
-            MinWidth = minWidth;
-            MinHeight = minHeight;
+            MinShortSide = minSide;
+            MinLongSide = minSide;
+            MaxShortSide = maxSide;
+            MaxLongSide = maxSide;
+        }
+
+        protected BlockGenerator( int minShortSide, int minLongSide, int maxShortSide, int maxLongSide )
+        {
+            MinShortSide = minShortSide;
+            MinLongSide = minLongSide;
+            MaxShortSide = maxShortSide;
+            MaxLongSide = maxLongSide;
+        }
+
+        public bool WillFit( int width, int height )
+        {
+            int sh = Math.Min( width, height );
+            int ln = Math.Max( width, height );
+
+            return sh >= MinShortSide && sh <= MaxShortSide
+                && ln >= MinLongSide && ln <= MaxLongSide;
         }
 
         public Block Generate( int x, int y, int width, int height, int seed = 0 )
