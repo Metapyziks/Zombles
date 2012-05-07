@@ -59,7 +59,7 @@
     <Compile Include="Geometry\Generation\CityGenerator.cs" />
     <Compile Include="Geometry\Generation\EmptyBlockGen.cs" />
     <Compile Include="Geometry\Generation\WarehouseBlockGen.cs" />
-    <Compile Include="Geometry\Generation\TestBuildingGen.cs" />
+    <Compile Include="Geometry\Generation\WarehouseBuildingGen.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />

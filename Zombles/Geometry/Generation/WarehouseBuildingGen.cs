@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Zombles.Geometry.Generation
 {
-    public class TestBuildingGen : BuildingGenerator
+    public class WarehouseBuildingGen : BuildingGenerator
     {
-        public TestBuildingGen()
+        public WarehouseBuildingGen()
             : base( 4, 4 )
         {
 

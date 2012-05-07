@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Zombles.Graphics
 {
-    sealed class VertexBuffer
+    public class VertexBuffer
     {
         private int myStride;
 

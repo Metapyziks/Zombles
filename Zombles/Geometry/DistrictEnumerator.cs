@@ -38,7 +38,7 @@ namespace Zombles.Geometry
                 myCurDistrict = myRootDistrict;
             else if ( myCurDistrict.IsLeaf )
             {
-                while( !myCurDistrict.IsRoot && myCurDistrict == myCurDistrict.Parent.ChildB )
+                while ( !myCurDistrict.IsRoot && myCurDistrict == myCurDistrict.Parent.ChildB )
                     myCurDistrict = myCurDistrict.Parent;
 
                 if ( myCurDistrict.IsRoot )

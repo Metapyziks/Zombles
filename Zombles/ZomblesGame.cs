@@ -53,14 +53,20 @@ namespace Zombles
 
             TileManager.Initialize();
 
+            int worldSize = 256;
+
             CityGenerator gen = new CityGenerator();
             gen.AddBlockGenerator( new WarehouseBlockGen(), 1.0 );
             gen.AddBlockGenerator( new EmptyBlockGen(), 0.0 );
-            myTestCity = gen.Generate( 256, 256 );
+            myTestCity = gen.Generate( worldSize, worldSize );
+
+            int blockCount = 0;
+            foreach( Block block in myTestCity )
+                ++blockCount;
 
             myGeoShader = new GeometryShader( Width, Height );
 
-            myGeoShader.CameraPosition = new Vector2( 128.0f, 128.0f );
+            myGeoShader.CameraPosition = new Vector2( worldSize, worldSize ) / 2.0f;
             myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
             myGeoShader.CameraScale = 1.0f;
 

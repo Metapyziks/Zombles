@@ -10,12 +10,6 @@ namespace Zombles.Geometry.Generation
         public readonly int MinWidth;
         public readonly int MinHeight;
 
-        public BuildingGenerator()
-            : this( 1, 1 )
-        {
-
-        }
-
         protected BuildingGenerator( int minWidth, int minHeight )
         {
             MinWidth = minWidth;
@@ -31,7 +25,7 @@ namespace Zombles.Geometry.Generation
         public abstract void Generate( int x, int y, int width, int height, TileBuilder[ , ] tiles, Random rand );
 
         /// <summary>
-        /// Sets the wall indices of two adjacent tiles to build a wall
+        /// Sets the wall indices of a row of adjacent tiles to build a wall
         /// </summary>
         /// <param name="x">Horizontal position of the wall</param>
         /// <param name="y">Vertical position of the wall</param>

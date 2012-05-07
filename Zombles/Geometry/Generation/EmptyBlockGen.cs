@@ -8,7 +8,7 @@ namespace Zombles.Geometry.Generation
     public class EmptyBlockGen : BlockGenerator
     {
         public EmptyBlockGen()
-            : base( 0, 32 )
+            : base( 0, 256 )
         {
 
         }
