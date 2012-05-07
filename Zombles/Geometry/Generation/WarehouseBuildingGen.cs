@@ -35,7 +35,7 @@ namespace Zombles.Geometry.Generation
                 tiles[ tx, ty - 1 ].SetWall( Face.South, 0, "wall_crate_0" );
             }
 
-            Func<int,bool,String> texFunc = delegate( int level, bool isInterior )
+            Func<int,int,bool,String> texFunc = delegate( int horzpos, int level, bool isInterior )
             {
                 if( level < rheight )
                     return rand.NextTexture( "wall_brick_", 4 );

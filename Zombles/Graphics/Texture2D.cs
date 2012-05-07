@@ -102,12 +102,6 @@ namespace Zombles.Graphics
             }
         }
 
-        public Texture2D( string resourceKey )
-            : this( Res.Get<Bitmap>( resourceKey ) )
-        {
-
-        }
-
         public Vector2 GetCoords( Vector2 pos )
         {
             return GetCoords( pos.X, pos.Y );

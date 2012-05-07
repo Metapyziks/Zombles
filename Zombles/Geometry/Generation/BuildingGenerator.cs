@@ -24,6 +24,12 @@ namespace Zombles.Geometry.Generation
 
         public abstract void Generate( int x, int y, int width, int height, TileBuilder[ , ] tiles, Random rand );
 
+        protected void BuildFloor( int x, int y, int width, int height,
+            Func<int, int, String> textureFunc, TileBuilder[ , ] tiles )
+        {
+
+        }
+
         /// <summary>
         /// Sets the wall indices of a row of adjacent tiles to build a wall
         /// </summary>
@@ -33,10 +39,10 @@ namespace Zombles.Geometry.Generation
         /// <param name="width">Width of the wall</param>
         /// <param name="height">Height of the wall</param>
         /// <param name="textureFunc">Function deciding which texture to apply to a wall tile.
-        /// Params are: int level, bool isInterior</param>
+        /// Params are: int horzpos, int level, bool isInterior</param>
         /// <param name="tiles">Tile array to build the wall in</param>
         protected void BuildWall( int x, int y, Face face, int width, int height,
-            Func<int,bool,String> textureFunc, TileBuilder[ , ] tiles )
+            Func<int,int,bool,String> textureFunc, TileBuilder[ , ] tiles )
         {
             for ( int j = 0; j < width; ++j )
             {
@@ -44,9 +50,9 @@ namespace Zombles.Geometry.Generation
                 int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
                 for ( int i = 0; i < height; ++i )
                 {
-                    tiles[ tx, ty ].SetWall( face, i, textureFunc( i, true ) );
+                    tiles[ tx, ty ].SetWall( face, i, textureFunc( j, i, true ) );
                     tiles[ tx + face.GetNormalX(), ty + face.GetNormalY() ]
-                        .SetWall( face.GetOpposite(), i, textureFunc( i, false ) );
+                        .SetWall( face.GetOpposite(), i, textureFunc( j, i, false ) );
                 }
             }
         }
