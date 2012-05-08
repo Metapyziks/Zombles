@@ -235,10 +235,10 @@ namespace Zombles.Graphics
                     maxy = v.Y;
             }
 
-            int iminx = (int) Math.Floor( minx ) - 1;
-            int iminy = (int) Math.Floor( miny ) - 1;
-            int imaxx = (int) Math.Floor( maxx ) + 1;
-            int imaxy = (int) Math.Floor( maxy ) + 1;
+            int iminx = (int) Math.Floor( minx );
+            int iminy = (int) Math.Floor( miny );
+            int imaxx = (int) Math.Ceiling( maxx );
+            int imaxy = (int) Math.Ceiling( maxy );
 
             ViewBounds = new Rectangle( iminx, iminy, imaxx - iminx, imaxy - iminy );
         }        
