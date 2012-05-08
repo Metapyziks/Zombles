@@ -24,7 +24,8 @@ namespace Zombles
         public ZomblesGame()
             : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 8, 0 ), "Zombles" )
         {
-            VSync = VSyncMode.Off;
+            VSync = VSyncMode.On;
+            WindowBorder = WindowBorder.Fixed;
 
             CurrentScene = null;
         }

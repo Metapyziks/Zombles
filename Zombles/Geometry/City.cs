@@ -30,7 +30,9 @@ namespace Zombles.Geometry
 
         public void Render( GeometryShader shader, bool baseOnly = false )
         {
+            myVertexBuffer.StartBatch( shader );
             RootDistrict.Render( myVertexBuffer, shader, baseOnly );
+            myVertexBuffer.EndBatch( shader );
         }
 
         public IEnumerator<Block> GetEnumerator()

@@ -34,12 +34,21 @@ namespace Zombles.Graphics
                 myViewChanged = true;
             }
         }
-        public Vector2 CameraRotation
+        public float CameraPitch
         {
-            get { return myCameraRotation; }
+            get { return myCameraRotation.X; }
             set
             {
-                myCameraRotation = value;
+                myCameraRotation.X = value;
+                myPerspectiveChanged = true;
+            }
+        }
+        public float CameraRotation
+        {
+            get { return myCameraRotation.Y; }
+            set
+            {
+                myCameraRotation.Y = value;
                 myViewChanged = true;
             }
         }
@@ -112,7 +121,7 @@ namespace Zombles.Graphics
             BeginMode = BeginMode.Quads;
 
             myCameraPosition = new Vector3();
-            myCameraRotation = new Vector2();
+            myCameraRotation = new Vector2( MathHelper.Pi * 30.0f / 180.0f, 0.0f );
             myCameraScale = 1.0f;
 
             myPerspectiveChanged = true;
@@ -163,6 +172,12 @@ namespace Zombles.Graphics
                 znear, zfar
             );
             UpdateViewMatrix();
+
+            float sin = (float) Math.Sin( myCameraRotation.X );
+            float cos = (float) Math.Cos( myCameraRotation.X );
+
+            float zoff = height / 2.0f * sin;
+            float xoff = width / 2.0f;
 
             myPerspectiveChanged = false;
         }

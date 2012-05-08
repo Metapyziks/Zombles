@@ -11,7 +11,7 @@ namespace Zombles
         public static void Main( string[] args )
         {
             ZomblesGame game = new ZomblesGame();
-            game.Run();
+            game.Run( 120, 60 );
             game.Dispose();
         }
     }

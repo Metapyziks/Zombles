@@ -34,6 +34,18 @@ namespace Zombles.Graphics
         private bool myHideTop;
 
         private float myCamMoveSpeed;
+        private int myCamDir;
+        private DateTime myCamRotTime;
+        private int myOldCamDir;
+
+        private float TargetCameraRotation
+        {
+            get { return ( ( myCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
+        }
+        private float PreviousCameraRotation
+        {
+            get { return ( ( myOldCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
+        }
 
         private bool myIgnoreMouse;
         private bool myCaptureMouse;
@@ -44,9 +56,11 @@ namespace Zombles.Graphics
             myHideTop = false;
 
             myCamMoveSpeed = 64.0f;
+            myCamDir = 2;
+            myCamRotTime = DateTime.MinValue;
 
             myIgnoreMouse = false;
-            myCaptureMouse = true;
+            myCaptureMouse = false;
 
             myTotalFrameTime = 0;
             myFramesCompleted = 0;
@@ -71,10 +85,8 @@ namespace Zombles.Graphics
                 myGeoShader = new GeometryShader( Width, Height );
 
                 myGeoShader.CameraPosition = new Vector2( WorldSize, WorldSize ) / 2.0f;
-                myGeoShader.CameraRotation = new Vector2( (float) Math.PI * 30.0f / 180.0f, 0.0f );
-                myGeoShader.CameraScale = 1.0f;
-
-                System.Windows.Forms.Cursor.Hide();
+                myGeoShader.CameraRotation = TargetCameraRotation;
+                myGeoShader.CameraScale = 4.0f;
 
                 myFrameTimer.Start();
             }
@@ -94,7 +106,7 @@ namespace Zombles.Graphics
             }
 
             Vector2 movement = new Vector2( 0.0f, 0.0f );
-            float angleY = myGeoShader.CameraRotation.Y;
+            float angleY = myGeoShader.CameraRotation;
 
             if ( Keyboard[ Key.D ] )
             {
@@ -123,6 +135,30 @@ namespace Zombles.Graphics
                 myGeoShader.CameraPosition = myGeoShader.CameraPosition + movement *
                     (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
             }
+
+            if ( ( DateTime.Now - myCamRotTime ).TotalSeconds >= 0.25 )
+            {
+                if ( myGeoShader.CameraRotation != TargetCameraRotation )
+                    myGeoShader.CameraRotation = TargetCameraRotation;
+
+                if ( Keyboard[ Key.Q ] || Keyboard[ Key.E ] )
+                {
+                    myOldCamDir = myCamDir;
+                    myCamRotTime = DateTime.Now;
+
+                    if ( Keyboard[ Key.Q ] )
+                        myCamDir = ( myCamDir + 1 ) % 16;
+                    if ( Keyboard[ Key.E ] )
+                        myCamDir = ( myCamDir + 15 ) % 16;
+                }
+            }
+            else
+            {
+                float diff = Tools.AngleDif( TargetCameraRotation, PreviousCameraRotation );
+                float time = (float) ( ( DateTime.Now - myCamRotTime ).TotalSeconds / 0.25 );
+
+                myGeoShader.CameraRotation = Tools.WrapAngle( PreviousCameraRotation + diff * time );
+            }
         }
 
         public override void OnRenderFrame( FrameEventArgs e )
@@ -148,12 +184,6 @@ namespace Zombles.Graphics
 
             if ( myCaptureMouse )
             {
-                Vector2 rot = myGeoShader.CameraRotation;
-
-                rot.Y += e.XDelta / 180.0f;
-
-                myGeoShader.CameraRotation = rot;
-
                 myIgnoreMouse = true;
                 System.Windows.Forms.Cursor.Position = new System.Drawing.Point( Bounds.Left + Width / 2, Bounds.Top + Height / 2 );
             }
@@ -165,28 +195,17 @@ namespace Zombles.Graphics
 
         public override void OnMouseWheelChanged( MouseWheelEventArgs e )
         {
-            if ( myCaptureMouse )
-            {
-                if ( e.DeltaPrecise >= 0.0f )
-                    myGeoShader.CameraScale *= 1.0f + ( e.DeltaPrecise / 4.0f );
-                else
-                    myGeoShader.CameraScale /= 1.0f - ( e.DeltaPrecise / 4.0f );
+            if ( e.DeltaPrecise >= 0.0f )
+                myGeoShader.CameraScale *= 1.0f + ( e.DeltaPrecise / 4.0f );
+            else
+                myGeoShader.CameraScale /= 1.0f - ( e.DeltaPrecise / 4.0f );
 
-                myCamMoveSpeed = 64.0f / myGeoShader.CameraScale;
-            }
+            myCamMoveSpeed = 64.0f / myGeoShader.CameraScale;
         }
 
         public override void OnKeyPress( KeyPressEventArgs e )
         {
-            if ( e.KeyChar == 0x1b )
-            {
-                myCaptureMouse = !myCaptureMouse;
-                if ( myCaptureMouse )
-                    System.Windows.Forms.Cursor.Hide();
-                else
-                    System.Windows.Forms.Cursor.Show();
-            }
-            else if ( e.KeyChar == 'x' )
+            if ( e.KeyChar == 'x' )
             {
                 myHideTop = !myHideTop;
             }

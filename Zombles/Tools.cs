@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using OpenTK;
+
 namespace Zombles
 {
     internal static class Tools
@@ -207,6 +209,21 @@ namespace Zombles
                 ++i;
 
             return i;
+        }
+
+        public static float WrapAngle( float ang )
+        {
+            return ang - (float) Math.Floor( ang / ( MathHelper.TwoPi ) + 0.5f ) * MathHelper.TwoPi;
+        }
+
+        public static float WrapAngle( float ang, float basis )
+        {
+            return WrapAngle( ang - basis ) + basis;
+        }
+
+        public static float AngleDif( float angA, float angB )
+        {
+            return WrapAngle( angA - angB );
         }
 
         public static int GetIndex( this Geometry.Face face )

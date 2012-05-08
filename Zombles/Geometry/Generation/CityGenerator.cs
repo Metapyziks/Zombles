@@ -88,7 +88,8 @@ namespace Zombles.Geometry.Generation
 
         private void Subdivide( District district, Random rand )
         {
-            bool horz = rand.Next( district.Width + district.Height ) >= district.Width;
+            bool horz = rand.Next( district.Width * district.Width + district.Height * district.Height )
+                >= district.Width * district.Width;
             int min = 4;
             bool fit = false;
 
