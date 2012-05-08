@@ -94,7 +94,8 @@ namespace Zombles.Geometry.Generation
             bool fit = false;
 
             while ( min * 2 < ( horz ? district.Height : district.Width ) - 1
-                && !( fit = WillFit( horz ? district.Width : min, horz ? min : district.Height, true ) ) )
+                && !( fit = WillFit( ( horz ? district.Width : min ) - 4,
+                    ( horz ? min : district.Height ) - 4, true ) ) )
                 ++min;
 
             if ( !fit )
@@ -105,7 +106,8 @@ namespace Zombles.Geometry.Generation
                 fit = false;
 
                 while ( min * 2 < ( horz ? district.Height : district.Width ) - 1
-                    && !( fit = WillFit( horz ? district.Width : min, horz ? min : district.Height, true ) ) )
+                    && !( fit = WillFit( ( horz ? district.Width : min ) - 4,
+                        ( horz ? min : district.Height ) - 4, true ) ) )
                     ++min;
             }
 
@@ -117,8 +119,9 @@ namespace Zombles.Geometry.Generation
             }
             else
             {
-                BlockGenerator gen = GetRandomBlockGenerator( district.Width, district.Height, rand );
-                district.SetBlock( gen.Generate( district.X, district.Y, district.Width, district.Height, rand ) );
+                BlockGenerator gen = GetRandomBlockGenerator( district.Width - 4, district.Height - 4, rand );
+                district.SetBlock( gen.Generate( district.X, district.Y, district.Width, district.Height,
+                    2, 2, 2, 2, rand ) );
             }
         }
     }
