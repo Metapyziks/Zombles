@@ -111,7 +111,7 @@ namespace Zombles.Graphics
                 void main( void )
                 {
                     vec4 clr = texture2DArray( tiles, var_tex );
-                    if( clr.a == 0.0 )
+                    if( clr.a < 1.0 )
                         discard;
    
                     out_frag_colour = vec4( clr.rgb * var_shade, 1.0 );
