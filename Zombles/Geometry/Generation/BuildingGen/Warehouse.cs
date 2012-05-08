@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Zombles.Geometry.Generation
+namespace Zombles.Geometry.Generation.BuildingGen
 {
-    public class WarehouseBuildingGen : BuildingGenerator
+    public class Warehouse : BuildingGenerator
     {
-        public WarehouseBuildingGen()
+        public Warehouse()
             : base( 4, 4 )
         {
 
