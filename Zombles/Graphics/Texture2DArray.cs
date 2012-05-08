@@ -69,7 +69,7 @@ namespace Zombles.Graphics
         protected override void Load()
         {
             GL.TexParameter( TextureTarget.Texture2DArray,
-                TextureParameterName.TextureMinFilter, (int) TextureMinFilter.Nearest );
+                TextureParameterName.TextureMinFilter, (int) TextureMinFilter.NearestMipmapNearest );
             GL.TexParameter( TextureTarget.Texture2DArray,
                 TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Nearest );
             GL.TexParameter( TextureTarget.Texture2DArray,
@@ -78,6 +78,7 @@ namespace Zombles.Graphics
                 TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp );
             GL.TexImage3D( TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
                 Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, myData );
+            GL.GenerateMipmap( GenerateMipmapTarget.Texture2DArray );
         }
     }
 }

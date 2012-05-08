@@ -37,6 +37,16 @@ namespace Zombles.Graphics
         private int myCamDir;
         private DateTime myCamRotTime;
         private int myOldCamDir;
+        private bool myMapView;
+
+        private float TargetCameraPitch
+        {
+            get { return myMapView ? MathHelper.Pi * 90.0f / 180.0f : MathHelper.Pi * 30.0f / 180.0f; }
+        }
+        private float PreviousCameraPitch
+        {
+            get { return myMapView ? MathHelper.Pi * 30.0f / 180.0f : MathHelper.Pi * 90.0f / 180.0f; }
+        }
 
         private float TargetCameraRotation
         {
@@ -58,6 +68,7 @@ namespace Zombles.Graphics
             myCamMoveSpeed = 64.0f;
             myCamDir = 2;
             myCamRotTime = DateTime.MinValue;
+            myMapView = false;
 
             myIgnoreMouse = false;
             myCaptureMouse = false;
@@ -140,8 +151,25 @@ namespace Zombles.Graphics
             {
                 if ( myGeoShader.CameraRotation != TargetCameraRotation )
                     myGeoShader.CameraRotation = TargetCameraRotation;
+                if ( myGeoShader.CameraPitch != TargetCameraPitch )
+                    myGeoShader.CameraPitch = TargetCameraPitch;
 
-                if ( Keyboard[ Key.Q ] || Keyboard[ Key.E ] )
+                if ( Keyboard[ Key.M ] )
+                {
+                    myMapView = !myMapView;
+                    if ( myMapView )
+                    {
+                        myOldCamDir = myCamDir;
+                        myCamDir = 0;
+                    }
+                    else
+                    {
+                        myCamDir = myOldCamDir;
+                        myOldCamDir = 0;
+                    }
+                    myCamRotTime = DateTime.Now;
+                }
+                else if ( !myMapView && ( Keyboard[ Key.Q ] || Keyboard[ Key.E ] ) )
                 {
                     myOldCamDir = myCamDir;
                     myCamRotTime = DateTime.Now;
@@ -154,10 +182,14 @@ namespace Zombles.Graphics
             }
             else
             {
-                float diff = Tools.AngleDif( TargetCameraRotation, PreviousCameraRotation );
+                float rdiff = Tools.AngleDif( TargetCameraRotation, PreviousCameraRotation );
+                float pdiff = Tools.AngleDif( TargetCameraPitch, PreviousCameraPitch );
                 float time = (float) ( ( DateTime.Now - myCamRotTime ).TotalSeconds / 0.25 );
 
-                myGeoShader.CameraRotation = Tools.WrapAngle( PreviousCameraRotation + diff * time );
+                myGeoShader.CameraRotation = Tools.WrapAngle( PreviousCameraRotation + rdiff * time );
+
+                if( myGeoShader.CameraPitch != TargetCameraPitch )
+                    myGeoShader.CameraPitch = Tools.WrapAngle( PreviousCameraPitch + pdiff * time );
             }
         }
 

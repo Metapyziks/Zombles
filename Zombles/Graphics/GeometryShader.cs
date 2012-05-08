@@ -39,8 +39,11 @@ namespace Zombles.Graphics
             get { return myCameraRotation.X; }
             set
             {
-                myCameraRotation.X = value;
-                myPerspectiveChanged = true;
+                if ( value != myCameraRotation.X )
+                {
+                    myCameraRotation.X = value;
+                    myPerspectiveChanged = true;
+                }
             }
         }
         public float CameraRotation
@@ -162,9 +165,9 @@ namespace Zombles.Graphics
             double ang = Math.PI / 2.0 - myCameraRotation.X;
 
             double hoff = height * Math.Sin( ang );
-            myCameraPosition.Y = (float) ( hoff / 2.0 ) + 8.0f;
+            myCameraPosition.Y = (float) ( hoff / 2.0 ) + 16.0f;
             float znear = 0.0f;
-            float zfar = (float) ( ( hoff + 8.0f ) / Math.Cos( ang ) );
+            float zfar = (float) ( ( hoff + 16.0f ) / Math.Cos( ang ) ) + 1.0f;
 
             myPerspectiveMatrix = Matrix4.CreateOrthographic(
                 width,
@@ -172,12 +175,6 @@ namespace Zombles.Graphics
                 znear, zfar
             );
             UpdateViewMatrix();
-
-            float sin = (float) Math.Sin( myCameraRotation.X );
-            float cos = (float) Math.Cos( myCameraRotation.X );
-
-            float zoff = height / 2.0f * sin;
-            float xoff = width / 2.0f;
 
             myPerspectiveChanged = false;
         }
