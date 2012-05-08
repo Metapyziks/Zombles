@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 using Zombles.Graphics;
 
@@ -9,12 +10,14 @@ namespace Zombles.Geometry
 {
     public class District : IEnumerable<Block>
     {
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Width;
-        public readonly int Height;
+        public readonly Rectangle Bounds;
         public readonly int LongSide;
         public readonly int ShortSide;
+
+        public int X { get { return Bounds.X; } }
+        public int Y { get { return Bounds.Y; } }
+        public int Width { get { return Bounds.Width; } }
+        public int Height { get { return Bounds.Height; } }
 
         public bool IsRoot { get; private set; }
         public bool IsBranch { get; private set; }
@@ -32,10 +35,7 @@ namespace Zombles.Geometry
 
         private District( District parent, int x, int y, int width, int height )
         {
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
+            Bounds = new Rectangle( x, y, width, height );
             LongSide = Math.Max( Width, Height );
             ShortSide = Math.Min( Width, Height );
 
@@ -93,8 +93,10 @@ namespace Zombles.Geometry
         {
             if ( IsBranch )
             {
-                ChildA.Render( vb, shader, baseOnly );
-                ChildB.Render( vb, shader, baseOnly );
+                if( ChildA.Bounds.IntersectsWith( shader.ViewBounds ) )
+                    ChildA.Render( vb, shader, baseOnly );
+                if ( ChildB.Bounds.IntersectsWith( shader.ViewBounds ) )
+                    ChildB.Render( vb, shader, baseOnly );
             }
             else if ( IsLeaf )
                 Block.Render( vb, shader, baseOnly );

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -73,6 +74,8 @@ namespace Zombles.Graphics
                 myPerspectiveChanged = true;
             }
         }
+
+        public Rectangle ViewBounds { get; private set; }
 
         public GeometryShader()
         {
@@ -162,12 +165,10 @@ namespace Zombles.Graphics
             float width = ScreenWidth / ( 8.0f * myCameraScale );
             float height = ScreenHeight / ( 8.0f * myCameraScale );
 
-            double ang = Math.PI / 2.0 - myCameraRotation.X;
-
-            double hoff = height * Math.Sin( ang );
+            double hoff = height * Math.Cos( myCameraRotation.X );
             myCameraPosition.Y = (float) ( hoff / 2.0 ) + 16.0f;
             float znear = 0.0f;
-            float zfar = (float) ( ( hoff + 16.0f ) / Math.Cos( ang ) ) + 1.0f;
+            float zfar = (float) ( ( hoff + 16.0f ) / Math.Sin( myCameraRotation.X ) ) + 1.0f;
 
             myPerspectiveMatrix = Matrix4.CreateOrthographic(
                 width,
@@ -181,6 +182,8 @@ namespace Zombles.Graphics
 
         private void UpdateViewMatrix()
         {
+            UpdateViewBounds();
+
             float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - myCameraRotation.X ) * myCameraPosition.Y );
 
             Matrix4 yRot = Matrix4.CreateRotationY( myCameraRotation.Y );
@@ -194,6 +197,51 @@ namespace Zombles.Graphics
 
             myViewChanged = false;
         }
+
+        private void UpdateViewBounds()
+        {
+            float width = ScreenWidth / ( 8.0f * myCameraScale );
+            float height = ScreenHeight / ( 8.0f * myCameraScale );
+
+            float xoff = width * 0.5f;
+            float zoff = (float) ( height / Math.Sin( myCameraRotation.X ) * 0.5 );
+
+            Vector2[] vs = new Vector2[]
+            {
+                new Vector2( -xoff, +zoff ), new Vector2( +xoff, +zoff ),
+                new Vector2( -xoff, -zoff ), new Vector2( +xoff, -zoff )
+            };
+
+            float sin = (float) Math.Sin( myCameraRotation.Y );
+            float cos = (float) Math.Cos( myCameraRotation.Y );
+
+            float minx = float.MaxValue;
+            float miny = float.MaxValue;
+            float maxx = float.MinValue;
+            float maxy = float.MinValue;
+
+            for ( int i = 0; i < 4; ++i )
+            {
+                Vector2 v = vs[ i ];
+                v = new Vector2( myCameraPosition.X + cos * v.X - sin * v.Y,
+                    myCameraPosition.Z + sin * v.X + cos * v.Y );
+                if ( v.X < minx )
+                    minx = v.X;
+                if ( v.X > maxx )
+                    maxx = v.X;
+                if ( v.Y < miny )
+                    miny = v.Y;
+                if ( v.Y > maxy )
+                    maxy = v.Y;
+            }
+
+            int iminx = (int) Math.Floor( minx ) - 1;
+            int iminy = (int) Math.Floor( miny ) - 1;
+            int imaxx = (int) Math.Floor( maxx ) + 1;
+            int imaxy = (int) Math.Floor( maxy ) + 1;
+
+            ViewBounds = new Rectangle( iminx, iminy, imaxx - iminx, imaxy - iminy );
+        }        
 
         protected override void OnStartBatch()
         {
