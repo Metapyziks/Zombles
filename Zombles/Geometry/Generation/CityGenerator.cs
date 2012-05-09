@@ -90,7 +90,7 @@ namespace Zombles.Geometry.Generation
             int borderLeft, int borderTop,
             int borderRight, int borderBottom, Random rand )
         {
-            int nextBorder = ( depth < 4 ? 3 : depth < 8 ? 2 : 1 );
+            int nextBorder = depth < 4 ? 3 : depth < 6 ? 2 : 1;
 
             int minHorz = 0;
             bool fitHorz = false;
@@ -110,15 +110,19 @@ namespace Zombles.Geometry.Generation
 
             if ( horz )
             {
-                district.Split( true, rand.Next( borderTop + nextBorder + minHorz,
-                    district.Height - borderBottom - minHorz - nextBorder ) );
+                int min = borderTop + nextBorder + minHorz;
+                int max = district.Height - borderBottom - minHorz - nextBorder;
+                int mid = ( min + max ) / 2;
+                district.Split( true, rand.Next( ( min + mid ) / 2, ( mid + max ) / 2 ) );
                 Subdivide( district.ChildA, depth + 1, borderLeft, borderTop, borderRight, nextBorder, rand );
                 Subdivide( district.ChildB, depth + 1, borderLeft, nextBorder, borderRight, borderBottom, rand );
             }
             else if( !horz && fitVert )
             {
-                district.Split( false, rand.Next( minVert + borderLeft + nextBorder,
-                    district.Width - borderRight - minVert - nextBorder ) );
+                int min = minVert + borderLeft + nextBorder;
+                int max = district.Width - borderRight - minVert - nextBorder;
+                int mid = ( min + max ) / 2;
+                district.Split( false, rand.Next( ( min + mid ) / 2, ( mid + max ) / 2 ) );
                 Subdivide( district.ChildA, depth + 1, borderLeft, borderTop, nextBorder, borderBottom, rand );
                 Subdivide( district.ChildB, depth + 1, nextBorder, borderTop, borderRight, borderBottom, rand );
             }
