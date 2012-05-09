@@ -20,12 +20,23 @@ namespace Zombles.Geometry.Generation
         public static void BuildFloor( int x, int y, int width, int height, int level,
             String texture, TileBuilder[ , ] tiles )
         {
-            for ( int i = 0; i < width; ++i ) for ( int j = 0; j < height; ++j )
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
+            for ( int i = 0; i < width; ++i )
+            {
+                int tx = x + i;
+                if ( tx >= 0 && tx < tw )
                 {
-                    int tx = x + i;
-                    int ty = y + j;
-                    tiles[ tx, ty ].SetFloor( level, texture );
+                    for ( int j = 0; j < height; ++j )
+                    {
+                        int ty = y + j;
+
+                        if ( ty >= 0 && ty < th )
+                            tiles[ tx, ty ].SetFloor( level, texture );
+                    }
                 }
+            }
         }
 
         /// <summary>
@@ -42,12 +53,23 @@ namespace Zombles.Geometry.Generation
         public static void BuildFloor( int x, int y, int width, int height, int level,
             Func<int, int, String> textureFunc, TileBuilder[ , ] tiles )
         {
-            for ( int i = 0; i < width; ++i ) for ( int j = 0; j < height; ++j )
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
+            for ( int i = 0; i < width; ++i )
+            {
+                int tx = x + i;
+                if ( tx >= 0 && tx < tw )
                 {
-                    int tx = x + i;
-                    int ty = y + j;
-                    tiles[ tx, ty ].SetFloor( level, textureFunc( i, j ) );
+                    for ( int j = 0; j < height; ++j )
+                    {
+                        int ty = y + j;
+
+                        if( ty >= 0 && ty < th )
+                            tiles[ tx, ty ].SetFloor( level, textureFunc( i, j ) );
+                    }
                 }
+            }
         }
 
         /// <summary>
@@ -63,12 +85,23 @@ namespace Zombles.Geometry.Generation
         public static void BuildRoof( int x, int y, int width, int height, int level,
             String texture, TileBuilder[ , ] tiles )
         {
-            for ( int i = 0; i < width; ++i ) for ( int j = 0; j < height; ++j )
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
+            for ( int i = 0; i < width; ++i )
+            {
+                int tx = x + i;
+                if ( tx >= 0 && tx < tw )
                 {
-                    int tx = x + i;
-                    int ty = y + j;
-                    tiles[ tx, ty ].SetRoof( level, texture );
+                    for ( int j = 0; j < height; ++j )
+                    {
+                        int ty = y + j;
+
+                        if ( ty >= 0 && ty < th )
+                            tiles[ tx, ty ].SetRoof( level, texture );
+                    }
                 }
+            }
         }
 
         /// <summary>
@@ -85,12 +118,23 @@ namespace Zombles.Geometry.Generation
         public static void BuildRoof( int x, int y, int width, int height, int level,
             Func<int, int, String> textureFunc, TileBuilder[ , ] tiles )
         {
-            for ( int i = 0; i < width; ++i ) for ( int j = 0; j < height; ++j )
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
+            for ( int i = 0; i < width; ++i )
+            {
+                int tx = x + i;
+                if ( tx >= 0 && tx < tw )
                 {
-                    int tx = x + i;
-                    int ty = y + j;
-                    tiles[ tx, ty ].SetRoof( level, textureFunc( i, j ) );
+                    for ( int j = 0; j < height; ++j )
+                    {
+                        int ty = y + j;
+
+                        if ( ty >= 0 && ty < th )
+                            tiles[ tx, ty ].SetRoof( level, textureFunc( i, j ) );
+                    }
                 }
+            }
         }
 
         /// <summary>
@@ -106,12 +150,17 @@ namespace Zombles.Geometry.Generation
         public static void BuildWall( int x, int y, Face face, int width, int height,
             String texture, TileBuilder[ , ] tiles )
         {
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
             for ( int j = 0; j < width; ++j )
             {
                 int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
                 int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-                for ( int i = 0; i < height; ++i )
-                    tiles[ tx, ty ].SetWall( face, i, texture );
+
+                if( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                    for ( int i = 0; i < height; ++i )
+                        tiles[ tx, ty ].SetWall( face, i, texture );
             }
         }
 
@@ -129,16 +178,24 @@ namespace Zombles.Geometry.Generation
         public static void BuildWall( int x, int y, Face face, int width, int height,
             String inTexture, String exTexture, TileBuilder[ , ] tiles )
         {
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
             for ( int j = 0; j < width; ++j )
             {
                 int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
                 int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-                for ( int i = 0; i < height; ++i )
-                {
-                    tiles[ tx, ty ].SetWall( face, i, inTexture );
-                    tiles[ tx + face.GetNormalX(), ty + face.GetNormalY() ]
-                        .SetWall( face.GetOpposite(), i, exTexture );
-                }
+
+                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                    for ( int i = 0; i < height; ++i )
+                        tiles[ tx, ty ].SetWall( face, i, inTexture );
+
+                tx += face.GetNormalX();
+                ty += face.GetNormalY();
+
+                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                    for ( int i = 0; i < height; ++i )
+                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, exTexture );
             }
         }
 
@@ -156,16 +213,24 @@ namespace Zombles.Geometry.Generation
         public static void BuildWall( int x, int y, Face face, int width, int height,
             Func<int, int, bool, String> textureFunc, TileBuilder[ , ] tiles )
         {
+            int tw = tiles.GetLength( 0 );
+            int th = tiles.GetLength( 1 );
+
             for ( int j = 0; j < width; ++j )
             {
                 int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
                 int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-                for ( int i = 0; i < height; ++i )
-                {
-                    tiles[ tx, ty ].SetWall( face, i, textureFunc( j, i, true ) );
-                    tiles[ tx + face.GetNormalX(), ty + face.GetNormalY() ]
-                        .SetWall( face.GetOpposite(), i, textureFunc( j, i, false ) );
-                }
+
+                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                    for ( int i = 0; i < height; ++i )
+                        tiles[ tx, ty ].SetWall( face, i, textureFunc( j, i, true ) );
+
+                tx += face.GetNormalX();
+                ty += face.GetNormalY();
+
+                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                    for ( int i = 0; i < height; ++i )
+                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, textureFunc( j, i, false ) );
             }
         }
 
@@ -214,24 +279,27 @@ namespace Zombles.Geometry.Generation
             for ( int tx = 0; tx < width; ++tx ) for ( int ty = 0; ty < height; ++ty )
                 tiles[ tx, ty ] = new TileBuilder();
 
-            Func<int, int, String> roadFunc = delegate( int tx, int ty )
-            {
-                return rand.NextTexture( "floor_road_", 0, 4 );
-            };
-
-            int innerLeft = borderLeft ;
+            int innerLeft = borderLeft;
             int innerTop = borderTop;
             int innerRight = width - borderRight;
             int innerBottom = height - borderBottom;
             int innerWidth = width - borderLeft - borderRight;
             int innerHeight = height - borderTop - borderBottom;
 
-            BuildFloor( 0, 0, borderLeft, height, 0, roadFunc, tiles );
-            BuildFloor( borderLeft, 0, innerWidth, borderTop, 0, roadFunc, tiles );
-            BuildFloor( innerRight, 0, borderRight, height, 0, roadFunc, tiles );
-            BuildFloor( borderLeft, innerBottom, innerWidth, borderBottom, 0, roadFunc, tiles );
+            Func<int, int, String> roadFunc = delegate( int tx, int ty )
+            {
+                return rand.NextTexture( "floor_road_", 0, 4 );
+            };
 
-            int texOffset = 8; bool horz = true;
+            Func<int, int, String> innerFunc = delegate( int tx, int ty )
+            {
+                return "floor_concrete_0";
+            };
+
+            BuildFloor( 0, 0, width, height, 0, roadFunc, tiles );
+            BuildFloor( innerLeft - 1, innerTop - 1, innerWidth + 2, innerHeight + 2, 0, innerFunc, tiles );
+
+            int texOffset = 0; bool horz = false;
             Func<int, int, String> pavementFunc = delegate( int tx, int ty )
             {
                 if ( ( horz && tx % 8 == 4 ) || ( !horz && ty % 8 == 4 ) )
@@ -240,17 +308,35 @@ namespace Zombles.Geometry.Generation
                 return rand.NextTexture( "floor_pavement_", texOffset, texOffset + 2 );
             };
 
-            BuildFloor( innerLeft - 1, innerTop - 1, 1, 1, 0, "floor_pavement_b", tiles );
-            BuildFloor( innerLeft, innerTop - 1, innerWidth, 1, 0, pavementFunc, tiles );
-            texOffset = 4; horz = false;
-            BuildFloor( innerRight, innerTop - 1, 1, 1, 0, "floor_pavement_7", tiles );
-            BuildFloor( innerRight, innerTop, 1, innerHeight, 0, pavementFunc, tiles );
-            texOffset = 0; horz = true;
-            BuildFloor( innerRight, innerBottom, 1, 1, 0, "floor_pavement_3", tiles );
-            BuildFloor( innerLeft, innerBottom, innerWidth, 1, 0, pavementFunc, tiles );
-            texOffset = 12; horz = true;
-            BuildFloor( innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f", tiles );
-            BuildFloor( innerLeft - 1, innerTop, 1, innerHeight, 0, pavementFunc, tiles );
+            if ( borderBottom > 1 )
+            {
+                texOffset = 0; horz = true;
+                BuildFloor( innerLeft - 1, innerBottom, innerWidth + 2, 1, 0, pavementFunc, tiles );
+            }
+            if ( borderRight > 1 )
+            {
+                texOffset = 4; horz = false;
+                BuildFloor( innerRight, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc, tiles );
+            }
+            if ( borderTop > 1 )
+            {
+                texOffset = 8; horz = true;
+                BuildFloor( innerLeft - 1, innerTop - 1, innerWidth + 2, 1, 0, pavementFunc, tiles );
+            }
+            if ( borderLeft > 1 )
+            {
+                texOffset = 12; horz = false;
+                BuildFloor( innerLeft - 1, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc, tiles );
+            }
+
+            if( borderBottom > 1 && borderRight > 1 )
+                BuildFloor( innerRight, innerBottom, 1, 1, 0, "floor_pavement_3", tiles );
+            if ( borderTop > 1 && borderRight > 1 )
+                BuildFloor( innerRight, innerTop - 1, 1, 1, 0, "floor_pavement_7", tiles );
+            if ( borderTop > 1 && borderLeft > 1 )
+                BuildFloor( innerLeft - 1, innerTop - 1, 1, 1, 0, "floor_pavement_b", tiles );
+            if ( borderBottom > 1 && borderLeft > 1 )
+                BuildFloor( innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f", tiles );
 
             Generate( width, height, borderLeft, borderTop, borderRight, borderBottom, tiles, rand );
 
