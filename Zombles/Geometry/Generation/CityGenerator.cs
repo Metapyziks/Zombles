@@ -105,10 +105,10 @@ namespace Zombles.Geometry.Generation
                 !( fitVert = WillFit( minVert, district.Height - borderTop - borderBottom, true ) ) )
                 ++minVert;
 
-            bool horz = fitHorz && rand.Next( district.Width * district.Width + district.Height * district.Height )
-                >= district.Width * district.Width;
+            bool horz = fitHorz && ( !fitVert || rand.Next( district.Width * district.Width + district.Height * district.Height )
+                >= district.Width * district.Width );
 
-            if ( horz && fitHorz )
+            if ( horz )
             {
                 district.Split( true, rand.Next( borderTop + nextBorder + minHorz,
                     district.Height - borderBottom - minHorz - nextBorder ) );
