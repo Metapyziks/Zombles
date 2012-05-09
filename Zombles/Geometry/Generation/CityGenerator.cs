@@ -81,7 +81,7 @@ namespace Zombles.Geometry.Generation
         public City Generate( int width, int height, Random rand )
         {
             City city = new City( width, height );
-            Subdivide( city.RootDistrict, 0, 1, 1, 1, 1, rand );
+            Subdivide( city.RootDistrict, 0, 3, 3, 3, 3, rand );
             city.UpdateVertexBuffer();
             return city;
         }

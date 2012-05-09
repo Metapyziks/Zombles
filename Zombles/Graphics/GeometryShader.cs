@@ -9,18 +9,26 @@ namespace Zombles.Graphics
     public class GeometryShader : ShaderProgram
     {
         private Matrix4 myViewMatrix;
+        private Vector2 myWorldOffset;
         private int myViewMatrixLoc;
+        private int myWorldOffsetLoc;
 
         private Vector3 myCameraPosition;
         private Vector2 myCameraRotation;
         private float myCameraScale;
         private Matrix4 myPerspectiveMatrix;
+        private RectangleF myViewBounds;
+        private Rectangle myOffsetViewBounds;
 
         private bool myPerspectiveChanged;
         private bool myViewChanged;
+        private bool myOffsetChanged;
 
         public int ScreenWidth { get; private set; }
         public int ScreenHeight { get; private set; }
+
+        public int WrapWidth { get; private set; }
+        public int WrapHeight { get; private set; }
 
         public Vector2 CameraPosition
         {
@@ -30,8 +38,37 @@ namespace Zombles.Graphics
             }
             set
             {
-                myCameraPosition.X = value.X;
-                myCameraPosition.Z = value.Y;
+                CameraHorizontalPosition = value.X;
+                CameraVerticalPosition = value.Y;
+            }
+        }
+        public float CameraHorizontalPosition
+        {
+            get
+            {
+                return myCameraPosition.X;
+            }
+            set
+            {
+                if ( WrapWidth > 0 )
+                    value -= (int) Math.Floor( value / WrapWidth ) * WrapWidth;
+
+                myCameraPosition.X = value;
+                myViewChanged = true;
+            }
+        }
+        public float CameraVerticalPosition
+        {
+            get
+            {
+                return myCameraPosition.Z;
+            }
+            set
+            {
+                if ( WrapHeight > 0 )
+                    value -= (int) Math.Floor( value / WrapHeight ) * WrapHeight;
+
+                myCameraPosition.Z = value;
                 myViewChanged = true;
             }
         }
@@ -56,6 +93,33 @@ namespace Zombles.Graphics
                 myViewChanged = true;
             }
         }
+        public Vector2 WorldOffset
+        {
+            get { return myWorldOffset; }
+            set
+            {
+                myWorldOffset = value;
+                myOffsetChanged = true;
+            }
+        }
+        public float WorldHorizontalOffset
+        {
+            get { return myWorldOffset.X; }
+            set
+            {
+                myWorldOffset.X = value;
+                myOffsetChanged = true;
+            }
+        }
+        public float WorldVerticalOffset
+        {
+            get { return myWorldOffset.Y; }
+            set
+            {
+                myWorldOffset.Y = value;
+                myOffsetChanged = true;
+            }
+        }
         public float CameraScale
         {
             get { return myCameraScale; }
@@ -75,12 +139,13 @@ namespace Zombles.Graphics
             }
         }
 
-        public Rectangle ViewBounds { get; private set; }
+        public Rectangle ViewBounds { get { return myOffsetViewBounds; } }
 
         public GeometryShader()
         {
             ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
             vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
+            vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
             vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
             vert.AddVarying( ShaderVarType.Vec3, "var_tex" );
             vert.AddVarying( ShaderVarType.Float, "var_shade" );
@@ -98,9 +163,9 @@ namespace Zombles.Graphics
                     var_shade = 1.0 - 0.125 * float( ( dat >> 3 ) & 0x1 );
 
                     gl_Position = view_matrix * vec4(
-                        in_vertex.x,
+                        in_vertex.x + world_offset.x,
                         float( ( dat >> 4 ) & 0xf ) / 2.0,
-                        in_vertex.y,
+                        in_vertex.y + world_offset.y,
                         1.0
                     );
                 }
@@ -132,6 +197,7 @@ namespace Zombles.Graphics
 
             myPerspectiveChanged = true;
             myViewChanged = true;
+            myOffsetChanged = true;
         }
 
         public GeometryShader( int width, int height )
@@ -148,6 +214,12 @@ namespace Zombles.Graphics
             UpdatePerspectiveMatrix();
         }
 
+        public void SetWrapSize( int width, int height )
+        {
+            WrapWidth = width;
+            WrapHeight = height;
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -158,6 +230,7 @@ namespace Zombles.Graphics
             SetTexture( "tiles", TileManager.TexArray );
 
             myViewMatrixLoc = GL.GetUniformLocation( Program, "view_matrix" );
+            myWorldOffsetLoc = GL.GetUniformLocation( Program, "world_offset" );
         }
 
         private void UpdatePerspectiveMatrix()
@@ -198,6 +271,12 @@ namespace Zombles.Graphics
             myViewChanged = false;
         }
 
+        private void UpdateWorldOffset()
+        {
+            GL.Uniform2( myWorldOffsetLoc, ref myWorldOffset );
+            myOffsetChanged = false;
+        }
+
         private void UpdateViewBounds()
         {
             float width = ScreenWidth / ( 8.0f * myCameraScale );
@@ -235,13 +314,27 @@ namespace Zombles.Graphics
                     maxy = v.Y;
             }
 
-            int iminx = (int) Math.Floor( minx );
-            int iminy = (int) Math.Floor( miny );
-            int imaxx = (int) Math.Ceiling( maxx );
-            int imaxy = (int) Math.Ceiling( maxy );
+            float hwid = (float) ( WrapWidth >> 1 );
+            float hhei = (float) ( WrapHeight >> 1 );
 
-            ViewBounds = new Rectangle( iminx, iminy, imaxx - iminx, imaxy - iminy );
-        }        
+            minx = Math.Max( myCameraPosition.X - hwid, minx );
+            miny = Math.Max( myCameraPosition.Z - hhei, miny );
+            maxx = Math.Min( myCameraPosition.X + hwid, maxx );
+            maxy = Math.Min( myCameraPosition.Z + hhei, maxy );
+
+            myViewBounds = new RectangleF( minx, miny, maxx - minx, maxy - miny );
+            UpdateViewBoundsOffset();
+        }
+
+        private void UpdateViewBoundsOffset()
+        {
+            int l = (int) Math.Floor( myViewBounds.Left - myWorldOffset.X );
+            int t = (int) Math.Floor( myViewBounds.Top - myWorldOffset.Y );
+            int r = (int) Math.Ceiling( myViewBounds.Right - myWorldOffset.X );
+            int b = (int) Math.Ceiling( myViewBounds.Bottom - myWorldOffset.Y );
+
+            myOffsetViewBounds = new Rectangle( l, t, r - l, b - t );
+        }
 
         protected override void OnStartBatch()
         {
@@ -249,6 +342,11 @@ namespace Zombles.Graphics
                 UpdatePerspectiveMatrix();
             else if ( myViewChanged )
                 UpdateViewMatrix();
+            if ( myOffsetChanged )
+            {
+                UpdateWorldOffset();
+                UpdateViewBoundsOffset();
+            }
 
             GL.Enable( EnableCap.DepthTest );
             GL.Enable( EnableCap.CullFace );

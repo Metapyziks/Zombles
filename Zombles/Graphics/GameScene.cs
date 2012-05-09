@@ -95,6 +95,7 @@ namespace Zombles.Graphics
                 myTestCity = myGenerator.Generate( WorldSize, WorldSize );
 
                 myGeoShader = new GeometryShader( Width, Height );
+                myGeoShader.SetWrapSize( WorldSize, WorldSize );
 
                 myGeoShader.CameraPosition = new Vector2( WorldSize, WorldSize ) / 2.0f;
                 myGeoShader.CameraRotation = TargetCameraRotation;
@@ -196,6 +197,26 @@ namespace Zombles.Graphics
 
         public override void OnRenderFrame( FrameEventArgs e )
         {
+            myGeoShader.WorldHorizontalOffset = 0;
+            myGeoShader.WorldVerticalOffset = 0;
+            myGeoShader.StartBatch();
+            myTestCity.Render( myGeoShader, myHideTop );
+            myGeoShader.EndBatch();
+            if ( myGeoShader.CameraHorizontalPosition < WorldSize / 2 )
+                myGeoShader.WorldHorizontalOffset = -WorldSize;
+            else
+                myGeoShader.WorldHorizontalOffset = WorldSize;
+            myGeoShader.StartBatch();
+            myTestCity.Render( myGeoShader, myHideTop );
+            myGeoShader.EndBatch();
+            if ( myGeoShader.CameraVerticalPosition < WorldSize / 2 )
+                myGeoShader.WorldVerticalOffset = -WorldSize;
+            else
+                myGeoShader.WorldVerticalOffset = WorldSize;
+            myGeoShader.StartBatch();
+            myTestCity.Render( myGeoShader, myHideTop );
+            myGeoShader.EndBatch();
+            myGeoShader.WorldHorizontalOffset = 0;
             myGeoShader.StartBatch();
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();

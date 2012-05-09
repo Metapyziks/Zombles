@@ -13,6 +13,9 @@ namespace Zombles.Geometry
 
         public District RootDistrict { get; private set; }
 
+        public int Width { get { return RootDistrict.Width; } }
+        public int Height { get { return RootDistrict.Height; } }
+
         public City( int width, int height )
         {
             RootDistrict = new District( 0, 0, width, height );
