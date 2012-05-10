@@ -67,7 +67,8 @@ md "$(SolutionDir)Content\scripts\scripts"
 xcopy "$(ProjectDir)*.cs" "$(SolutionDir)Content\scripts\scripts\" /s /c /q /i /y
 rmdir "$(SolutionDir)Content\scripts\scripts\Properties" /s /q
 cd "$(SolutionDir)Content"
-"$(SolutionDir)Content\RSABuilder" "$(SolutionDir)Content\scripts"
+RSABuilder "$(SolutionDir)Content\scripts"
+xcopy "sh_scripts.rsa" "$(SolutionDir)bin\$(ConfigurationName)\Data\" /s /c /q /i /y
 cd "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
