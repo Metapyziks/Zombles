@@ -14,7 +14,7 @@ namespace Zombles.Scripts.Geometry.Generation.BuildingGen
 
         }
 
-        public override void Generate( int x, int y, int width, int height, TileBuilder[ , ] tiles, Random rand )
+        public override void Generate( TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
         {
             int rheight = rand.Next( 5 ) + 3;
 
@@ -43,10 +43,10 @@ namespace Zombles.Scripts.Geometry.Generation.BuildingGen
                 return "wall_brick_7";
             };
 
-            BuildWall( x, y, Face.North, width, rheight + 1, texFunc, tiles );
-            BuildWall( x, y, Face.West, height, rheight + 1, texFunc, tiles );
-            BuildWall( x, y + height - 1, Face.South, width, rheight + 1, texFunc, tiles );
-            BuildWall( x + width - 1, y, Face.East, height, rheight + 1, texFunc, tiles );
+            GenHelper.BuildWall( tiles, x, y, Face.North, width, rheight + 1, texFunc );
+            GenHelper.BuildWall( tiles, x, y, Face.West, height, rheight + 1, texFunc );
+            GenHelper.BuildWall( tiles, x, y + height - 1, Face.South, width, rheight + 1, texFunc );
+            GenHelper.BuildWall( tiles, x + width - 1, y, Face.East, height, rheight + 1, texFunc );
         }
     }
 }

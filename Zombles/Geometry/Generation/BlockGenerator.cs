@@ -87,233 +87,6 @@ namespace Zombles.Geometry.Generation
             stGenerators = valid.ToArray();
         }
 
-        /// <summary>
-        /// Sets the floor index of a rectangle of tiles to build a floor
-        /// </summary>
-        /// <param name="x">Horizontal start position</param>
-        /// <param name="y">Vertical start position</param>
-        /// <param name="width">Width of the floor</param>
-        /// <param name="height">Depth of the floor</param>
-        /// <param name="level">Height of the floor from the ground</param>
-        /// <param name="texture">Tile texture name</param>
-        /// <param name="tiles">Tile array to build the floor in</param>
-        public static void BuildFloor( int x, int y, int width, int height, int level,
-            String texture, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int i = 0; i < width; ++i )
-            {
-                int tx = x + i;
-                if ( tx >= 0 && tx < tw )
-                {
-                    for ( int j = 0; j < height; ++j )
-                    {
-                        int ty = y + j;
-
-                        if ( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetFloor( level, texture );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the floor index of a rectangle of tiles to build a floor
-        /// </summary>
-        /// <param name="x">Horizontal start position</param>
-        /// <param name="y">Vertical start position</param>
-        /// <param name="width">Width of the floor</param>
-        /// <param name="height">Depth of the floor</param>
-        /// <param name="level">Height of the floor from the ground</param>
-        /// <param name="textureFunc">Function deciding which texture to apply to a floor tile.
-        /// Params are: int horzpos, int vertpos</param>
-        /// <param name="tiles">Tile array to build the floor in</param>
-        public static void BuildFloor( int x, int y, int width, int height, int level,
-            Func<int, int, String> textureFunc, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int i = 0; i < width; ++i )
-            {
-                int tx = x + i;
-                if ( tx >= 0 && tx < tw )
-                {
-                    for ( int j = 0; j < height; ++j )
-                    {
-                        int ty = y + j;
-
-                        if( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetFloor( level, textureFunc( i, j ) );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the roof index of a rectangle of tiles to build a roof
-        /// </summary>
-        /// <param name="x">Horizontal start position</param>
-        /// <param name="y">Vertical start position</param>
-        /// <param name="width">Width of the roof</param>
-        /// <param name="height">Depth of the roof</param>
-        /// <param name="level">Height of the roof from the ground</param>
-        /// <param name="texture">Tile texture name</param>
-        /// <param name="tiles">Tile array to build the roof in</param>
-        public static void BuildRoof( int x, int y, int width, int height, int level,
-            String texture, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int i = 0; i < width; ++i )
-            {
-                int tx = x + i;
-                if ( tx >= 0 && tx < tw )
-                {
-                    for ( int j = 0; j < height; ++j )
-                    {
-                        int ty = y + j;
-
-                        if ( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetRoof( level, texture );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the roof index of a rectangle of tiles to build a roof
-        /// </summary>
-        /// <param name="x">Horizontal start position</param>
-        /// <param name="y">Vertical start position</param>
-        /// <param name="width">Width of the roof</param>
-        /// <param name="height">Depth of the roof</param>
-        /// <param name="level">Height of the roof from the ground</param>
-        /// <param name="textureFunc">Function deciding which texture to apply to a roof tile.
-        /// Params are: int horzpos, int vertpos</param>
-        /// <param name="tiles">Tile array to build the roof in</param>
-        public static void BuildRoof( int x, int y, int width, int height, int level,
-            Func<int, int, String> textureFunc, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int i = 0; i < width; ++i )
-            {
-                int tx = x + i;
-                if ( tx >= 0 && tx < tw )
-                {
-                    for ( int j = 0; j < height; ++j )
-                    {
-                        int ty = y + j;
-
-                        if ( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetRoof( level, textureFunc( i, j ) );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the wall indices of a row of tiles to build a wall
-        /// </summary>
-        /// <param name="x">Horizontal position of the wall</param>
-        /// <param name="y">Vertical position of the wall</param>
-        /// <param name="face">Direction the wall is facing</param>
-        /// <param name="width">Width of the wall</param>
-        /// <param name="height">Height of the wall</param>
-        /// <param name="texture">Tile texture name</param>
-        /// <param name="tiles">Tile array to build the wall in</param>
-        public static void BuildWall( int x, int y, Face face, int width, int height,
-            String texture, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int j = 0; j < width; ++j )
-            {
-                int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
-                int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-
-                if( tx >= 0 && tx < tw && ty >= 0 && ty < th )
-                    for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, texture );
-            }
-        }
-
-        /// <summary>
-        /// Sets the wall indices of a row of adjacent tiles to build a wall
-        /// </summary>
-        /// <param name="x">Horizontal position of the wall</param>
-        /// <param name="y">Vertical position of the wall</param>
-        /// <param name="face">Direction the wall is facing</param>
-        /// <param name="width">Width of the wall</param>
-        /// <param name="height">Height of the wall</param>
-        /// <param name="inTexture">Interior tile texture name</param>
-        /// <param name="exTexture">Exterior tile texture name</param>
-        /// <param name="tiles">Tile array to build the wall in</param>
-        public static void BuildWall( int x, int y, Face face, int width, int height,
-            String inTexture, String exTexture, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int j = 0; j < width; ++j )
-            {
-                int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
-                int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-
-                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
-                    for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, inTexture );
-
-                tx += face.GetNormalX();
-                ty += face.GetNormalY();
-
-                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
-                    for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, exTexture );
-            }
-        }
-
-        /// <summary>
-        /// Sets the wall indices of a row of adjacent tiles to build a wall
-        /// </summary>
-        /// <param name="x">Horizontal position of the wall</param>
-        /// <param name="y">Vertical position of the wall</param>
-        /// <param name="face">Direction the wall is facing</param>
-        /// <param name="width">Width of the wall</param>
-        /// <param name="height">Height of the wall</param>
-        /// <param name="textureFunc">Function deciding which texture to apply to a wall tile.
-        /// Params are: int horzpos, int level, bool isInterior</param>
-        /// <param name="tiles">Tile array to build the wall in</param>
-        public static void BuildWall( int x, int y, Face face, int width, int height,
-            Func<int, int, bool, String> textureFunc, TileBuilder[ , ] tiles )
-        {
-            int tw = tiles.GetLength( 0 );
-            int th = tiles.GetLength( 1 );
-
-            for ( int j = 0; j < width; ++j )
-            {
-                int tx = x + ( face == Face.North || face == Face.South ? j : 0 );
-                int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
-
-                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
-                    for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, textureFunc( j, i, true ) );
-
-                tx += face.GetNormalX();
-                ty += face.GetNormalY();
-
-                if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
-                    for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, textureFunc( j, i, false ) );
-            }
-        }
-
         public readonly double Frequency;
 
         public readonly int MinShortSide;
@@ -382,8 +155,8 @@ namespace Zombles.Geometry.Generation
                 return "floor_concrete_0";
             };
 
-            BuildFloor( 0, 0, width, height, 0, roadFunc, tiles );
-            BuildFloor( innerLeft - 1, innerTop - 1, innerWidth + 2, innerHeight + 2, 0, innerFunc, tiles );
+            GenHelper.BuildFloor( tiles, 0, 0, width, height, 0, roadFunc );
+            GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, innerWidth + 2, innerHeight + 2, 0, innerFunc );
 
             int texOffset = 0; bool horz = false;
             Func<int, int, String> pavementFunc = delegate( int tx, int ty )
@@ -397,41 +170,41 @@ namespace Zombles.Geometry.Generation
             if ( borderBottom > 1 )
             {
                 texOffset = 0; horz = true;
-                BuildFloor( innerLeft - 1, innerBottom, innerWidth + 2, 1, 0, pavementFunc, tiles );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, innerWidth + 2, 1, 0, pavementFunc );
             }
             if ( borderRight > 1 )
             {
                 texOffset = 4; horz = false;
-                BuildFloor( innerRight, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc, tiles );
+                GenHelper.BuildFloor( tiles, innerRight, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc );
             }
             if ( borderTop > 1 )
             {
                 texOffset = 8; horz = true;
-                BuildFloor( innerLeft - 1, innerTop - 1, innerWidth + 2, 1, 0, pavementFunc, tiles );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, innerWidth + 2, 1, 0, pavementFunc );
             }
             if ( borderLeft > 1 )
             {
                 texOffset = 12; horz = false;
-                BuildFloor( innerLeft - 1, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc, tiles );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, 1, innerHeight + 2, 0, pavementFunc );
             }
 
             if( borderBottom > 1 && borderRight > 1 )
-                BuildFloor( innerRight, innerBottom, 1, 1, 0, "floor_pavement_3", tiles );
+                GenHelper.BuildFloor( tiles, innerRight, innerBottom, 1, 1, 0, "floor_pavement_3" );
             if ( borderTop > 1 && borderRight > 1 )
-                BuildFloor( innerRight, innerTop - 1, 1, 1, 0, "floor_pavement_7", tiles );
+                GenHelper.BuildFloor( tiles, innerRight, innerTop - 1, 1, 1, 0, "floor_pavement_7" );
             if ( borderTop > 1 && borderLeft > 1 )
-                BuildFloor( innerLeft - 1, innerTop - 1, 1, 1, 0, "floor_pavement_b", tiles );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, 1, 1, 0, "floor_pavement_b" );
             if ( borderBottom > 1 && borderLeft > 1 )
-                BuildFloor( innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f", tiles );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f" );
 
-            Generate( width, height, borderLeft, borderTop, borderRight, borderBottom, tiles, rand );
+            Generate( tiles, width, height, borderLeft, borderTop, borderRight, borderBottom, rand );
 
             Block block = new Block( x, y, width, height );
             block.BuildTiles( tiles );
             return block;
         }
 
-        protected abstract void Generate( int width, int height, int borderLeft, int borderTop,
-            int borderRight, int borderBottom, TileBuilder[ , ] tiles, Random rand );
+        protected abstract void Generate( TileBuilder[ , ] tiles, int width, int height, int borderLeft, int borderTop,
+            int borderRight, int borderBottom, Random rand );
     }
 }

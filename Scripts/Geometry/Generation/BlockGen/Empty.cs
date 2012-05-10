@@ -13,13 +13,13 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
 
         }
 
-        protected override void Generate( int width, int height, int borderLeft, int borderTop,
-            int borderRight, int borderBottom, TileBuilder[ , ] tiles, Random rand )
+        protected override void Generate( TileBuilder[ , ] tiles, int width, int height, int borderLeft, int borderTop,
+            int borderRight, int borderBottom, Random rand )
         {
-            BuildFloor( borderLeft, borderTop,
+            GenHelper.BuildFloor( tiles, borderLeft, borderTop,
                 width - borderLeft - borderRight,
                 height - borderTop - borderBottom,
-                0, "floor_concrete_0", tiles );
+                0, "floor_concrete_0" );
         }
     }
 }
