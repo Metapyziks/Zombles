@@ -6,7 +6,7 @@ using OpenTK;
 
 namespace Zombles
 {
-    internal static class Tools
+    public static class Tools
     {
         public static bool DoesExtend( this Type self, Type type )
         {

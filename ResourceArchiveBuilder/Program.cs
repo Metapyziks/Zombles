@@ -13,6 +13,7 @@ namespace ResourceArchiveBuilder
         {
             if ( first )
             {
+                Res.RegisterManager<Zombles.RScriptManager>();
                 Res.RegisterManager<Zombles.Graphics.RTexture2DManager>();
                 first = false;
             }

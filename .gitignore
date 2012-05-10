@@ -4,6 +4,8 @@ bin
 ResourceArchiveBuilder/obj
 ResourceLib/obj
 Zombles/obj
+Scripts/obj
+Scripts/bin
 Content/*.exe
 Content/*.dll
 Content/*.xml

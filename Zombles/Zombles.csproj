@@ -57,9 +57,6 @@
     <Compile Include="Geometry\Generation\BlockGenerator.cs" />
     <Compile Include="Geometry\Generation\BuildingGenerator.cs" />
     <Compile Include="Geometry\Generation\CityGenerator.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />
-    <Compile Include="Geometry\Generation\BuildingGen\Warehouse.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
@@ -79,6 +76,7 @@
     <Compile Include="Graphics\VertexBuffer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UI\UIButton.cs" />
     <Compile Include="UI\UILabel.cs" />

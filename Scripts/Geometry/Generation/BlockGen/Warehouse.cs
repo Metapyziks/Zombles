@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Zombles.Geometry.Generation.BlockGen
+using Zombles.Geometry;
+using Zombles.Geometry.Generation;
+
+namespace Zombles.Scripts.Geometry.Generation.BlockGen
 {
     public class Warehouse : BlockGenerator
     {
         private BuildingGen.Warehouse myBuildingGen;
 
         public Warehouse()
-            : base( 8, 12, 24, 32 )
+            : base( 1.0, 8, 12, 24, 32 )
         {
             myBuildingGen = new BuildingGen.Warehouse();
         }

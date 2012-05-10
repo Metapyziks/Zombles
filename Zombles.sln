@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceLib", "ResourceLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceArchiveBuilder", "ResourceArchiveBuilder\ResourceArchiveBuilder.csproj", "{9D971034-AA3A-4364-A41E-80CFBD58F461}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{9D971034-AA3A-4364-A41E-80CFBD58F461}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9D971034-AA3A-4364-A41E-80CFBD58F461}.Release|x86.ActiveCfg = Release|x86
 		{9D971034-AA3A-4364-A41E-80CFBD58F461}.Release|x86.Build.0 = Release|x86
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A3C5EDC6-03C6-42E6-945E-3CEC0F3DAFA7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

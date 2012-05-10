@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Zombles.Geometry.Generation.BuildingGen
+using Zombles;
+using Zombles.Geometry;
+using Zombles.Geometry.Generation;
+
+namespace Zombles.Scripts.Geometry.Generation.BuildingGen
 {
     public class Warehouse : BuildingGenerator
     {

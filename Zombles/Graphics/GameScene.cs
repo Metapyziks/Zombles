@@ -13,7 +13,6 @@ using ResourceLib;
 using Zombles.UI;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
-using Zombles.Geometry.Generation.BlockGen;
 
 namespace Zombles.Graphics
 {
@@ -90,8 +89,6 @@ namespace Zombles.Graphics
                 AddChild( myFPSText );
 
                 myGenerator = new CityGenerator();
-                myGenerator.AddBlockGenerator( new Warehouse(), 1.0 );
-                myGenerator.AddBlockGenerator( new Empty(), 0.0 );
                 myTestCity = myGenerator.Generate( WorldSize, WorldSize );
 
                 myGeoShader = new GeometryShader( Width, Height );

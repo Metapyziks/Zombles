@@ -32,6 +32,7 @@ namespace Zombles
 
         protected override void OnLoad( EventArgs e )
         {
+            Res.RegisterManager<RScriptManager>();
             Res.RegisterManager<RTexture2DManager>();
 
             String dataPath = "Data" + Path.DirectorySeparatorChar;

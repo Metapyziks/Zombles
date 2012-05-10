@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Zombles.Geometry.Generation.BlockGen
+using Zombles.Geometry;
+using Zombles.Geometry.Generation;
+
+namespace Zombles.Scripts.Geometry.Generation.BlockGen
 {
     public class Empty : BlockGenerator
     {
         public Empty()
-            : base( 0, 256 )
+            : base( 0.0, 0, 256 )
         {
 
         }

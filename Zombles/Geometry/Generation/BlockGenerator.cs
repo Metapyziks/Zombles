@@ -2,11 +2,91 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace Zombles.Geometry.Generation
 {
     public abstract class BlockGenerator
     {
+        private static BlockGenerator[] stGenerators;
+
+        public static BlockGenerator[] GetAll()
+        {
+            if ( stGenerators == null )
+                FindGenerators();
+
+            return stGenerators;
+        }
+        
+        public static bool WillAnyFit( int width, int height, bool acceptLarger = false )
+        {
+            if ( stGenerators == null )
+                FindGenerators();
+
+            foreach ( BlockGenerator gen in stGenerators )
+                if ( gen.Frequency > 0.0 && gen.WillFit( width, height, acceptLarger ) )
+                    return true;
+
+            return false;
+        }
+
+        public static BlockGenerator GetRandom( int width, int height, Random rand )
+        {
+            if ( stGenerators == null )
+                FindGenerators();
+
+            BlockGenerator cur = null;
+            double freq = double.MaxValue;
+            foreach ( BlockGenerator gen in stGenerators )
+            {
+                if ( gen.WillFit( width, height ) )
+                {
+                    double val = gen.Frequency;
+                    if ( val <= 0.0 )
+                        val = double.MaxValue / 2.0;
+                    else
+                        val = rand.NextDouble() / val;
+
+                    if ( val < freq )
+                    {
+                        cur = gen;
+                        freq = val;
+                    }
+                }
+            }
+
+            return cur;
+        }
+
+        public static BlockGenerator[] GetAllRandom( int width, int height, Random rand )
+        {
+            if ( stGenerators == null )
+                FindGenerators();
+
+            List<BlockGenerator> gens = new List<BlockGenerator>();
+            foreach ( BlockGenerator gen in stGenerators )
+                if ( gen.WillFit( width, height ) )
+                    gens.Add( gen );
+
+            return gens.OrderBy( x => x.Frequency <= 0.0
+                ? double.MaxValue : rand.NextDouble() / x.Frequency ).ToArray();
+        }
+
+        public static void FindGenerators()
+        {
+            Type[] types = Scripts.GetTypes( typeof( BlockGenerator ) );
+            List<BlockGenerator> valid = new List<BlockGenerator>();
+
+            for ( int i = 0; i < types.Length; ++i )
+            {
+                ConstructorInfo cns = types[ i ].GetConstructor( new Type[ 0 ] );
+                if( cns != null )
+                    valid.Add( cns.Invoke( new object[ 0 ] ) as BlockGenerator );
+            }
+
+            stGenerators = valid.ToArray();
+        }
+
         /// <summary>
         /// Sets the floor index of a rectangle of tiles to build a floor
         /// </summary>
@@ -234,21 +314,27 @@ namespace Zombles.Geometry.Generation
             }
         }
 
+        public readonly double Frequency;
+
         public readonly int MinShortSide;
         public readonly int MinLongSide;
         public readonly int MaxShortSide;
         public readonly int MaxLongSide;
 
-        protected BlockGenerator( int minSide, int maxSide )
+        protected BlockGenerator( double frequency, int minSide, int maxSide )
         {
+            Frequency = frequency;
+
             MinShortSide = minSide;
             MinLongSide = minSide;
             MaxShortSide = maxSide;
             MaxLongSide = maxSide;
         }
 
-        protected BlockGenerator( int minShortSide, int minLongSide, int maxShortSide, int maxLongSide )
+        protected BlockGenerator( double frequency, int minShortSide, int minLongSide, int maxShortSide, int maxLongSide )
         {
+            Frequency = frequency;
+
             MinShortSide = minShortSide;
             MinLongSide = minLongSide;
             MaxShortSide = maxShortSide;
