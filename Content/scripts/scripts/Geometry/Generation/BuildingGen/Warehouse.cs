@@ -29,11 +29,7 @@ namespace Zombles.Scripts.Geometry.Generation.BuildingGen
                 int tx = rand.Next( x, x + width );
                 int ty = rand.Next( y, y + height );
 
-                tiles[ tx, ty ].SetFloor( 1, "floor_crate_0" );
-                tiles[ tx + 1, ty ].SetWall( Face.West, 0, "wall_crate_0" );
-                tiles[ tx, ty + 1 ].SetWall( Face.North, 0, "wall_crate_0" );
-                tiles[ tx - 1, ty ].SetWall( Face.East, 0, "wall_crate_0" );
-                tiles[ tx, ty - 1 ].SetWall( Face.South, 0, "wall_crate_0" );
+                GenHelper.BuildSolid( tiles, tx, ty, 1, 1, 1, "wall_crate_0", "floor_crate_0" );
             }
 
             Func<int,int,bool,String> texFunc = delegate( int horzpos, int level, bool isInterior )
