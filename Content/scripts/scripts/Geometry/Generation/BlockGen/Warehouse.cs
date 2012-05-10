@@ -7,12 +7,12 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
 {
     public class Warehouse : BlockGenerator
     {
-        private BuildingGen.Warehouse myBuildingGen;
+        private StructureGen.Warehouse myBuildingGen;
 
         public Warehouse()
             : base( 1.0, 8, 12, 24, 32 )
         {
-            myBuildingGen = new BuildingGen.Warehouse();
+            myBuildingGen = new StructureGen.Warehouse();
         }
 
         protected override void Generate( TileBuilder[ , ] tiles, int width, int height,

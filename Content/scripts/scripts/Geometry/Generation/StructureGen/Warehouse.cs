@@ -4,9 +4,9 @@ using Zombles;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
-namespace Zombles.Scripts.Geometry.Generation.BuildingGen
+namespace Zombles.Scripts.Geometry.Generation.StructureGen
 {
-    public class Warehouse : BuildingGenerator
+    public class Warehouse : StructureGenerator
     {
         public Warehouse()
             : base( 4, 4 )

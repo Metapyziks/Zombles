@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Zombles.Geometry.Generation
 {
-    public abstract class BuildingGenerator
+    public abstract class StructureGenerator
     {
         public readonly int MinWidth;
         public readonly int MinHeight;
 
-        protected BuildingGenerator( int minWidth, int minHeight )
+        protected StructureGenerator( int minWidth, int minHeight )
         {
             MinWidth = minWidth;
             MinHeight = minHeight;
