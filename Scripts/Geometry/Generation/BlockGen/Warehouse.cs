@@ -24,6 +24,12 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
                 height - borderTop - borderBottom,
                 0, "floor_concrete_0" );
 
+            myBuildingGen.EntranceFaces =
+                ( borderLeft > 1 ? Face.West : Face.None ) |
+                ( borderTop > 1 ? Face.North : Face.None ) |
+                ( borderRight > 1 ? Face.East : Face.None ) |
+                ( borderBottom > 1 ? Face.South : Face.None );
+
             myBuildingGen.Generate( tiles, borderLeft, borderTop,
                 width - borderLeft - borderRight,
                 height - borderTop - borderBottom, rand );

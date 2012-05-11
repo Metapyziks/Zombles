@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
 
 using OpenTK;
+
+using Zombles.Geometry;
 
 namespace Zombles
 {
@@ -301,6 +304,25 @@ namespace Zombles
                 prefix += "_";
 
             return prefix + rand.Next( min, max ).ToString( "X" ).ToLower();
+        }
+
+        // I wish I could think of a better way of doing this
+        public static Face NextFace( this Random rand, Face mask = Face.All )
+        {
+            if ( mask == Face.None )
+                return Face.None;
+
+            List<Face> valid = new List<Face>();
+            if ( ( mask & Face.West ) != 0 )
+                valid.Add( Face.West );
+            if ( ( mask & Face.North ) != 0 )
+                valid.Add( Face.North );
+            if ( ( mask & Face.East ) != 0 )
+                valid.Add( Face.East );
+            if ( ( mask & Face.South ) != 0 )
+                valid.Add( Face.South );
+
+            return valid[ rand.Next( valid.Count ) ];
         }
     }
 }

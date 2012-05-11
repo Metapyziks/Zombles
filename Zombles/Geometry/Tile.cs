@@ -45,7 +45,7 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if ( FloorHeight < 2 && FloorTileIndex != 0xffff )
+            if ( FloorHeight <= 2 && FloorTileIndex != 0xffff )
                 ++count;
             if ( RoofHeight > FloorHeight && RoofHeight == 1 && RoofTileIndex != 0xffff )
                 ++count;
@@ -62,7 +62,7 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if ( FloorHeight > 1 && FloorTileIndex != 0xffff )
+            if ( FloorHeight > 2 && FloorTileIndex != 0xffff )
                 ++count;
             if ( RoofHeight > FloorHeight && RoofHeight > 1 && RoofTileIndex != 0xffff )
                 ++count;
@@ -77,7 +77,7 @@ namespace Zombles.Geometry
 
         public void GetBaseVertices( float[] verts, ref int offset )
         {
-            if( FloorHeight < 2 )
+            if( FloorHeight <= 2 )
                 GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
 
             if ( RoofHeight > FloorHeight && RoofHeight == 1 )
@@ -90,7 +90,7 @@ namespace Zombles.Geometry
 
         public void GetTopVertices( float[] verts, ref int offset )
         {
-            if ( FloorHeight > 1 )
+            if ( FloorHeight > 2 )
                 GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
 
             if ( RoofHeight > FloorHeight && RoofHeight > 1 )

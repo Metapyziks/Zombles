@@ -6,6 +6,7 @@
         West = 1,
         North = 2,
         East = 4,
-        South = 8
+        South = 8,
+        All = West | North | East | South
     }
 }

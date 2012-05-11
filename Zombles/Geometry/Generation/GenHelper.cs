@@ -150,6 +150,23 @@ namespace Zombles.Geometry.Generation
         public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
             int width, int height, String texture )
         {
+            BuildWall( tiles, x, y, face, width, 0, height, texture );
+        }
+
+        /// <summary>
+        /// Sets the wall indices of a row of tiles to build a wall
+        /// </summary>
+        /// <param name="x">Horizontal position of the wall</param>
+        /// <param name="y">Vertical position of the wall</param>
+        /// <param name="face">Direction the exterior of the wall is facing</param>
+        /// <param name="width">Width of the wall</param>
+        /// <param name="offset">Distance from the ground</param>
+        /// <param name="height">Height of the wall</param>
+        /// <param name="texture">Tile texture name</param>
+        /// <param name="tiles">Tile array to build the wall in</param>
+        public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
+            int width, int offset, int height, String texture )
+        {
             int tw = tiles.GetLength( 0 );
             int th = tiles.GetLength( 1 );
 
@@ -160,7 +177,7 @@ namespace Zombles.Geometry.Generation
 
                 if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
                     for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, texture );
+                        tiles[ tx, ty ].SetWall( face, i + offset, texture );
             }
         }
 
@@ -178,6 +195,24 @@ namespace Zombles.Geometry.Generation
         public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
             int width, int height, String inTexture, String exTexture )
         {
+            BuildWall( tiles, x, y, face, width, 0, height, inTexture, exTexture );
+        }
+
+        /// <summary>
+        /// Sets the wall indices of a row of adjacent tiles to build a wall
+        /// </summary>
+        /// <param name="x">Horizontal position of the wall</param>
+        /// <param name="y">Vertical position of the wall</param>
+        /// <param name="face">Direction the exterior of the wall is facing</param>
+        /// <param name="width">Width of the wall</param>
+        /// <param name="offset">Distance from the ground</param>
+        /// <param name="height">Height of the wall</param>
+        /// <param name="inTexture">Interior tile texture name</param>
+        /// <param name="exTexture">Exterior tile texture name</param>
+        /// <param name="tiles">Tile array to build the wall in</param>
+        public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
+            int width, int offset, int height, String inTexture, String exTexture )
+        {
             int tw = tiles.GetLength( 0 );
             int th = tiles.GetLength( 1 );
 
@@ -188,14 +223,14 @@ namespace Zombles.Geometry.Generation
 
                 if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
                     for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, inTexture );
+                        tiles[ tx, ty ].SetWall( face, i + offset, inTexture );
 
                 tx += face.GetNormalX();
                 ty += face.GetNormalY();
 
                 if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
                     for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, exTexture );
+                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i + offset, exTexture );
             }
         }
 
@@ -208,11 +243,31 @@ namespace Zombles.Geometry.Generation
         /// <param name="width">Width of the wall</param>
         /// <param name="height">Height of the wall</param>
         /// <param name="textureFunc">Function deciding which texture to apply to a wall tile.
-        /// Params are: int horzpos, int level, bool isInterior</param>
+        /// Params are: int horzpos, int level, Face face, bool isInterior</param>
         /// <param name="tiles">Tile array to build the wall in</param>
         public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
-            int width, int height, Func<int, int, bool, String> textureFunc )
+            int width, int height, Func<int, int, Face, bool, String> textureFunc )
         {
+            BuildWall( tiles, x, y, face, width, 0, height, textureFunc );
+        }
+
+        /// <summary>
+        /// Sets the wall indices of a row of adjacent tiles to build a wall
+        /// </summary>
+        /// <param name="x">Horizontal position of the wall</param>
+        /// <param name="y">Vertical position of the wall</param>
+        /// <param name="face">Direction the exterior of the wall is facing</param>
+        /// <param name="width">Width of the wall</param>
+        /// <param name="offset">Distance from the ground</param>
+        /// <param name="height">Height of the wall</param>
+        /// <param name="textureFunc">Function deciding which texture to apply to a wall tile.
+        /// Params are: int horzpos, int level, Face face, bool isInterior</param>
+        /// <param name="tiles">Tile array to build the wall in</param>
+        public static void BuildWall( TileBuilder[ , ] tiles, int x, int y, Face face,
+            int width, int offset, int height, Func<int, int, Face, bool, String> textureFunc )
+        {
+            Face opp = face.GetOpposite();
+
             int tw = tiles.GetLength( 0 );
             int th = tiles.GetLength( 1 );
 
@@ -222,15 +277,27 @@ namespace Zombles.Geometry.Generation
                 int ty = y + ( face == Face.East || face == Face.West ? j : 0 );
 
                 if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                {
                     for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face, i, textureFunc( j, i, true ) );
+                    {
+                        String tex = textureFunc( j, i + offset, face, true );
+                        if( tex != null )
+                            tiles[ tx, ty ].SetWall( face, i + offset, tex );
+                    }
+                }
 
                 tx += face.GetNormalX();
                 ty += face.GetNormalY();
 
                 if ( tx >= 0 && tx < tw && ty >= 0 && ty < th )
+                {
                     for ( int i = 0; i < height; ++i )
-                        tiles[ tx, ty ].SetWall( face.GetOpposite(), i, textureFunc( j, i, false ) );
+                    {
+                        String tex = textureFunc( j, i + offset, opp, false );
+                        if ( tex != null )
+                            tiles[ tx, ty ].SetWall( opp, i + offset, tex );
+                    }
+                }
             }
         }
 

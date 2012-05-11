@@ -24,6 +24,9 @@ namespace Zombles.Graphics
 
         public static ushort GetTileIndex( String name )
         {
+            if ( name == "" || name == null )
+                return 0xffff;
+
             if ( !name.StartsWith( "images_tiles_" ) )
                 name = "images_tiles_" + name;
 
