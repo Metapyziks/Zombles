@@ -72,7 +72,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     int entranceX = x + entranceOffset;
                     int entranceY = entrance == Face.North ? y : y + height;
                     GenHelper.BuildWall( tiles, entranceX - 1, entranceY, Face.North, 1, 3,
-                        "wall_brick_9", "wall_brick_8" );
+                        "wall_brick_8", "wall_brick_9" );
                     for ( int i = 0; i < entranceCount; ++i )
                     {
                         int doorOffset = rand.Next( 0, 2 ) * 2;
@@ -85,8 +85,8 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                             Face.North, 1, 3, "wall_brick_a", "wall_brick_a" );
                     }
                     GenHelper.BuildWall( tiles, entranceX  + entranceCount * ( entranceSize + 1 ) - 1,
-                        entranceY, Face.West, 1, 3,
-                        "wall_brick_8", "wall_brick_9" );
+                        entranceY, Face.North, 1, 3,
+                        "wall_brick_9", "wall_brick_8" );
                 }
             }
         }
