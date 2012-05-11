@@ -11,10 +11,11 @@ using OpenTK.Graphics;
 using ResourceLib;
 
 using Zombles.UI;
+using Zombles.Graphics;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
-namespace Zombles.Graphics
+namespace Zombles
 {
     public class GameScene : Scene
     {

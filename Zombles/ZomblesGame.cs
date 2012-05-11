@@ -25,6 +25,8 @@ namespace Zombles
             : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 8, 0 ), "Zombles" )
         {
             VSync = VSyncMode.On;
+            Context.SwapInterval = 1;
+
             WindowBorder = WindowBorder.Fixed;
 
             CurrentScene = null;

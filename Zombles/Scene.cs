@@ -7,8 +7,9 @@ using OpenTK;
 using OpenTK.Input;
 
 using Zombles.UI;
+using Zombles.Graphics;
 
-namespace Zombles.Graphics
+namespace Zombles
 {
     public class Scene : IDisposable
     {
@@ -50,6 +51,12 @@ namespace Zombles.Graphics
         public MouseDevice Mouse
         {
             get { return GameWindow.Mouse; }
+        }
+
+        public bool CursorVisible
+        {
+            get { return GameWindow.CursorVisible; }
+            set { GameWindow.CursorVisible = value; }
         }
 
         public Scene( ZomblesGame gameWindow )
