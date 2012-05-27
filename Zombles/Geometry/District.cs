@@ -48,15 +48,26 @@ namespace Zombles.Geometry
 
         public void Split( bool horizontal, int offset )
         {
+            if ( offset < 1 )
+                throw new ArgumentOutOfRangeException( "Cannot split with an offset less than 1." );
+
             IsBranch = true;
             IsLeaf = false;
             if ( horizontal )
             {
+                if ( offset > Height - 1 )
+                    throw new ArgumentOutOfRangeException( "Cannot split with an offset greater than "
+                        + ( Height - 1 ) + "." );
+
                 ChildA = new District( this, X, Y, Width, offset );
                 ChildB = new District( this, X, Y + offset, Width, Height - offset );
             }
             else
             {
+                if ( offset > Width - 1 )
+                    throw new ArgumentOutOfRangeException( "Cannot split with an offset greater than "
+                        + ( Width - 1 ) + "." );
+
                 ChildA = new District( this, X, Y, offset, Height );
                 ChildB = new District( this, X + offset, Y, Width - offset, Height );
             }

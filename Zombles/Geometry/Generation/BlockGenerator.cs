@@ -30,7 +30,27 @@ namespace Zombles.Geometry.Generation
             return false;
         }
 
-        public static BlockGenerator GetRandom( int width, int height, Random rand )
+        public static double FitnessScore( int width, int height )
+        {
+            if ( stGenerators == null )
+                FindGenerators();
+
+            double total = 0.0;
+            double score = 0.0;
+
+            foreach ( BlockGenerator gen in stGenerators )
+            {
+                total += gen.Frequency;
+                if ( gen.WillFit( width, height, false ) )
+                    score += gen.Frequency;
+                else if ( gen.WillFit( width, height, true ) )
+                    score += gen.Frequency / 2.0f;
+            }
+
+            return score / total;
+        }
+
+        public static BlockGenerator GetRandom( int width, int height, Random rand, bool acceptLarger = false )
         {
             if ( stGenerators == null )
                 FindGenerators();
@@ -39,7 +59,7 @@ namespace Zombles.Geometry.Generation
             double freq = double.MaxValue;
             foreach ( BlockGenerator gen in stGenerators )
             {
-                if ( gen.WillFit( width, height ) )
+                if ( gen.WillFit( width, height, acceptLarger ) )
                 {
                     double val = gen.Frequency;
                     if ( val <= 0.0 )
