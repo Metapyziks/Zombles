@@ -23,103 +23,59 @@ namespace Zombles.Geometry.Generation
 
         private void Subdivide( District district, int depth,
             int borderLeft, int borderTop,
-            int borderRight, int borderBottom, Random rand,
-            BlockGenerator target = null )
+            int borderRight, int borderBottom, Random rand )
         {
-            int nextBorder = depth < 4 ? 3 : depth < 6 ? 2 : 1;
-
             int width = district.Width - borderLeft - borderRight;
             int height = district.Height - borderTop - borderBottom;
 
-            if( target == null )
-                target = BlockGenerator.GetRandom( width, height, rand, true );
-
-            if ( target.WillFit( width, height, false ) )
+            if ( BlockGenerator.WillAnyFit( width, height ) )
             {
-                district.SetBlock( target.Generate( district.X, district.Y, district.Width, district.Height,
+                BlockGenerator gen = BlockGenerator.GetRandom( width, height, rand );
+                district.SetBlock( gen.Generate( district.X, district.Y, district.Width, district.Height,
                     borderLeft, borderTop, borderRight, borderBottom, rand ) );
+            }
+
+            int nextBorder = depth < 4 ? 3 : depth < 6 ? 2 : 1;
+
+            int minHorz = 0;
+            double fitHorz = 0.0;
+            int minVert = 0;
+            double fitVert = 0.0;
+
+            while ( ( minHorz + nextBorder ) * 2 + borderTop + borderBottom <= district.Height &&
+                ( fitHorz = BlockGenerator.FitnessScore( district.Width - borderLeft - borderRight, minHorz ) ) == 0.0 )
+                ++minHorz;
+
+            while ( ( minVert + nextBorder ) * 2 + borderLeft + borderRight <= district.Width &&
+                ( fitVert = BlockGenerator.FitnessScore( minVert, district.Height - borderTop - borderBottom ) ) == 0.0 )
+                ++minVert;
+
+            bool horz = fitHorz > 0.0 && ( fitVert == 0.0 || fitHorz > fitVert ||
+                ( fitHorz == fitVert && rand.NextDouble() > 0.5 ) );
+
+            if ( horz )
+            {
+                int min = borderTop + nextBorder + minHorz;
+                int max = district.Height - borderBottom - minHorz - nextBorder;
+                int mid = ( min + max ) / 2;
+                district.Split( true, rand.Next( ( min + mid ) / 2, ( mid + max ) / 2 ) );
+                Subdivide( district.ChildA, depth + 1, borderLeft, borderTop, borderRight, nextBorder, rand );
+                Subdivide( district.ChildB, depth + 1, borderLeft, nextBorder, borderRight, borderBottom, rand );
+            }
+            else if( fitVert > 0.0 )
+            {
+                int min = minVert + borderLeft + nextBorder;
+                int max = district.Width - borderRight - minVert - nextBorder;
+                int mid = ( min + max ) / 2;
+                district.Split( false, rand.Next( ( min + mid ) / 2, ( mid + max ) / 2 ) );
+                Subdivide( district.ChildA, depth + 1, borderLeft, borderTop, nextBorder, borderBottom, rand );
+                Subdivide( district.ChildB, depth + 1, nextBorder, borderTop, borderRight, borderBottom, rand );
             }
             else
             {
-                int minHL = target.MinLongSide;
-                int maxHL = target.MaxLongSide;
-                double fitHL = BlockGenerator.FitnessScore( width, height - maxHL - nextBorder * 2 );
-
-                int minHS = target.MinShortSide;
-                int maxHS = target.MaxShortSide;
-                double fitHS = BlockGenerator.FitnessScore( width, height - maxHS - nextBorder * 2 );
-
-                int minH, maxH;
-                double fitH;
-
-                if ( fitHL > fitHS || ( fitHL == fitHS && rand.NextDouble() < 0.5 ) )
-                {
-                    minH = minHL; maxH = maxHL; fitH = fitHL;
-                }
-                else
-                {
-                    minH = minHS; maxH = maxHS; fitH = fitHS;
-                }
-
-                int minVL = target.MinLongSide;
-                int maxVL = target.MaxLongSide;
-                double fitVL = BlockGenerator.FitnessScore( width - maxVL - nextBorder * 2, height );
-
-                int minVS = target.MinShortSide;
-                int maxVS = target.MaxShortSide;
-                double fitVS = BlockGenerator.FitnessScore( width - maxVS - nextBorder * 2, height );
-
-                int minV, maxV;
-                double fitV;
-
-                if ( fitVL > fitVS || ( fitVL == fitVS && rand.NextDouble() < 0.5 ) )
-                {
-                    minV = minVL; maxV = maxVL; fitV = fitVL;
-                }
-                else
-                {
-                    minV = minVS; maxV = maxVS; fitV = fitVS;
-                }
-
-                if ( fitH != fitV || fitH != 0.0 )
-                {
-                    bool splitSide = rand.NextDouble() < 0.5;
-
-                    if ( fitH > fitV || ( fitH == fitV && rand.NextDouble() < 0.5 ) )
-                    {
-                        if( splitSide )
-                            district.Split( true, borderTop + nextBorder + rand.Next( minH, maxH ) );
-                        else
-                            district.Split( true, district.Height - borderBottom - nextBorder - rand.Next( minH, maxH ) );
-
-                        Subdivide( district.ChildA, depth + 1,
-                            borderLeft, borderTop, borderRight, nextBorder,
-                            rand, splitSide ? target : null );
-                        Subdivide( district.ChildB, depth + 1,
-                            borderLeft, nextBorder, borderRight, borderBottom,
-                            rand, splitSide ? null : target );
-                    }
-                    else
-                    {
-                        if ( splitSide )
-                            district.Split( false, borderLeft + nextBorder + rand.Next( minV, maxV ) );
-                        else
-                            district.Split( false, district.Width - borderRight - nextBorder - rand.Next( minV, maxV ) );
-
-                        Subdivide( district.ChildA, depth + 1,
-                            borderLeft, borderTop, nextBorder, borderBottom,
-                            rand, splitSide ? target : null );
-                        Subdivide( district.ChildB, depth + 1,
-                            nextBorder, borderTop, borderRight, borderBottom,
-                            rand, splitSide ? null : target );
-                    }
-                }
-                else
-                {
-                    target = BlockGenerator.GetRandom( width, height, rand );
-                    district.SetBlock( target.Generate( district.X, district.Y, district.Width, district.Height,
-                        borderLeft, borderTop, borderRight, borderBottom, rand ) );
-                }
+                BlockGenerator gen = BlockGenerator.GetRandom( width, height, rand );
+                district.SetBlock( gen.Generate( district.X, district.Y, district.Width, district.Height,
+                    borderLeft, borderTop, borderRight, borderBottom, rand ) );
             }
         }
     }

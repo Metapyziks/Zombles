@@ -10,7 +10,7 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
         private StructureGen.Park myParkGen;
 
         public Park()
-            : base( 0.25, 2, 32 )
+            : base( 1.0 / 32.0, 8, 32 )
         {
             myParkGen = new StructureGen.Park();
         }

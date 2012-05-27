@@ -293,7 +293,7 @@ namespace Zombles.Geometry.Generation
                 {
                     for ( int i = 0; i < height; ++i )
                     {
-                        String tex = textureFunc( j, i + offset, opp, false );
+                        String tex = textureFunc( j, i + offset, face, false );
                         if ( tex != null )
                             tiles[ tx, ty ].SetWall( opp, i + offset, tex );
                     }
