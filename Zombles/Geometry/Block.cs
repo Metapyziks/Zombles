@@ -50,6 +50,18 @@ namespace Zombles.Geometry
             myEnts.Remove( ent );
         }
 
+        public void Think( double dt )
+        {
+            foreach ( Entity ent in myEnts )
+                ent.Think( dt );
+        }
+
+        public void PostThink()
+        {
+            for( int i = myEnts.Count - 1; i >= 0; --i )
+                myEnts[ i ].UpdateBlock();
+        }
+
         public int GetVertexCount()
         {
             myBaseVertCount = 0;
@@ -78,7 +90,7 @@ namespace Zombles.Geometry
             }
         }
 
-        public void Render( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
+        public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             vb.Render( shader, myVertOffset, ( baseOnly ? myBaseVertCount : myBaseVertCount + myTopVertCount ) );
         }

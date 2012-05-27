@@ -28,6 +28,7 @@ namespace Zombles
 
         private Stopwatch myFrameTimer;
 
+        private Camera myCamera;
         private GeometryShader myGeoShader;
         private CityGenerator myGenerator;
         private City myTestCity;
@@ -49,11 +50,11 @@ namespace Zombles
             get { return myMapView ? MathHelper.Pi * 30.0f / 180.0f : MathHelper.Pi * 90.0f / 180.0f; }
         }
 
-        private float TargetCameraRotation
+        private float TargetCameraYaw
         {
             get { return ( ( myCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
         }
-        private float PreviousCameraRotation
+        private float PreviousCameraYaw
         {
             get { return ( ( myOldCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
         }
@@ -92,12 +93,15 @@ namespace Zombles
                 myGenerator = new CityGenerator();
                 myTestCity = myGenerator.Generate( WorldSize, WorldSize );
 
-                myGeoShader = new GeometryShader( Width, Height );
-                myGeoShader.SetWrapSize( WorldSize, WorldSize );
+                myCamera = new Camera( Width, Height, 4.0f );
+                myCamera.SetWrapSize( WorldSize, WorldSize );
+                myCamera.Position = new Vector2( WorldSize, WorldSize ) / 2.0f;
+                myCamera.Yaw = TargetCameraYaw;
 
-                myGeoShader.CameraPosition = new Vector2( WorldSize, WorldSize ) / 2.0f;
-                myGeoShader.CameraRotation = TargetCameraRotation;
-                myGeoShader.CameraScale = 4.0f;
+                myGeoShader = new GeometryShader();
+                myGeoShader.Camera = myCamera;
+
+                myCamera.UpdatePerspectiveMatrix();
 
                 myFrameTimer.Start();
             }
@@ -117,7 +121,7 @@ namespace Zombles
             }
 
             Vector2 movement = new Vector2( 0.0f, 0.0f );
-            float angleY = myGeoShader.CameraRotation;
+            float angleY = myCamera.Yaw;
 
             if ( Keyboard[ Key.D ] )
             {
@@ -143,16 +147,16 @@ namespace Zombles
             if ( movement.Length != 0 )
             {
                 movement.Normalize();
-                myGeoShader.CameraPosition = myGeoShader.CameraPosition + movement *
+                myCamera.Position += movement *
                     (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
             }
 
             if ( ( DateTime.Now - myCamRotTime ).TotalSeconds >= 0.25 )
             {
-                if ( myGeoShader.CameraRotation != TargetCameraRotation )
-                    myGeoShader.CameraRotation = TargetCameraRotation;
-                if ( myGeoShader.CameraPitch != TargetCameraPitch )
-                    myGeoShader.CameraPitch = TargetCameraPitch;
+                if ( myCamera.Yaw != TargetCameraYaw )
+                    myCamera.Yaw = TargetCameraYaw;
+                if ( myCamera.Pitch != TargetCameraPitch )
+                    myCamera.Pitch = TargetCameraPitch;
 
                 if ( Keyboard[ Key.M ] )
                 {
@@ -182,39 +186,46 @@ namespace Zombles
             }
             else
             {
-                float rdiff = Tools.AngleDif( TargetCameraRotation, PreviousCameraRotation );
+                float rdiff = Tools.AngleDif( TargetCameraYaw, PreviousCameraYaw );
                 float pdiff = Tools.AngleDif( TargetCameraPitch, PreviousCameraPitch );
                 float time = (float) ( ( DateTime.Now - myCamRotTime ).TotalSeconds / 0.25 );
 
-                myGeoShader.CameraRotation = Tools.WrapAngle( PreviousCameraRotation + rdiff * time );
+                myCamera.Yaw = Tools.WrapAngle( PreviousCameraYaw + rdiff * time );
 
-                if( myGeoShader.CameraPitch != TargetCameraPitch )
-                    myGeoShader.CameraPitch = Tools.WrapAngle( PreviousCameraPitch + pdiff * time );
+                if ( myCamera.Pitch != TargetCameraPitch )
+                    myCamera.Pitch = Tools.WrapAngle( PreviousCameraPitch + pdiff * time );
             }
+
+            myCamera.UpdatePerspectiveMatrix();
+            myCamera.UpdateViewMatrix();
         }
 
         public override void OnRenderFrame( FrameEventArgs e )
         {
-            myGeoShader.WorldHorizontalOffset = 0;
-            myGeoShader.WorldVerticalOffset = 0;
+            myCamera.WorldHorizontalOffset = 0;
+            myCamera.WorldVerticalOffset = 0;
+            myCamera.UpdateViewBoundsOffset();
             myGeoShader.StartBatch();
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
-            if ( myGeoShader.CameraHorizontalPosition < WorldSize / 2 )
-                myGeoShader.WorldHorizontalOffset = -WorldSize;
+            if ( myCamera.Position.X < WorldSize / 2 )
+                myCamera.WorldHorizontalOffset = -WorldSize;
             else
-                myGeoShader.WorldHorizontalOffset = WorldSize;
+                myCamera.WorldHorizontalOffset = WorldSize;
+            myCamera.UpdateViewBoundsOffset();
             myGeoShader.StartBatch();
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
-            if ( myGeoShader.CameraVerticalPosition < WorldSize / 2 )
-                myGeoShader.WorldVerticalOffset = -WorldSize;
+            if ( myCamera.Position.Y < WorldSize / 2 )
+                myCamera.WorldVerticalOffset = -WorldSize;
             else
-                myGeoShader.WorldVerticalOffset = WorldSize;
+                myCamera.WorldVerticalOffset = WorldSize;
+            myCamera.UpdateViewBoundsOffset();
             myGeoShader.StartBatch();
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
-            myGeoShader.WorldHorizontalOffset = 0;
+            myCamera.WorldHorizontalOffset = 0;
+            myCamera.UpdateViewBoundsOffset();
             myGeoShader.StartBatch();
             myTestCity.Render( myGeoShader, myHideTop );
             myGeoShader.EndBatch();
@@ -248,11 +259,11 @@ namespace Zombles
         public override void OnMouseWheelChanged( MouseWheelEventArgs e )
         {
             if ( e.DeltaPrecise >= 0.0f )
-                myGeoShader.CameraScale *= 1.0f + ( e.DeltaPrecise / 4.0f );
+                myCamera.Scale *= 1.0f + ( e.DeltaPrecise / 4.0f );
             else
-                myGeoShader.CameraScale /= 1.0f - ( e.DeltaPrecise / 4.0f );
+                myCamera.Scale /= 1.0f - ( e.DeltaPrecise / 4.0f );
 
-            myCamMoveSpeed = 64.0f / myGeoShader.CameraScale;
+            myCamMoveSpeed = 64.0f / myCamera.Scale;
         }
 
         public override void OnKeyPress( KeyPressEventArgs e )

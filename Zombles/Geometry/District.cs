@@ -132,13 +132,13 @@ namespace Zombles.Geometry
         {
             if ( IsBranch )
             {
-                if( ChildA.Bounds.IntersectsWith( shader.ViewBounds ) )
+                if( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
                     ChildA.Render( vb, shader, baseOnly );
-                if ( ChildB.Bounds.IntersectsWith( shader.ViewBounds ) )
+                if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
                     ChildB.Render( vb, shader, baseOnly );
             }
             else if ( IsLeaf )
-                Block.Render( vb, shader, baseOnly );
+                Block.RenderGeometry( vb, shader, baseOnly );
         }
 
         public IEnumerator<Block> GetEnumerator()

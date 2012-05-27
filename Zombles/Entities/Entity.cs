@@ -54,7 +54,12 @@ namespace Zombles.Entities
             where T : Component
         {
             T comp = Component.Create<T>( this );
-            myComponents.Add( typeof( T ), comp );
+            Type type = typeof( T );
+
+            do
+                myComponents.Add( typeof( T ), comp );
+            while ( ( type = type.BaseType ) != typeof( Component ) );
+
             return comp;
         }
 
@@ -100,7 +105,6 @@ namespace Zombles.Entities
                     comp.OnRemove();
 
                 IsValid = false;
-                UpdateBlock();
             }
         }
 

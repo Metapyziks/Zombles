@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Entities\Component.cs" />
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Render.cs" />
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\City.cs" />
     <Compile Include="Geometry\District.cs" />
@@ -66,9 +67,11 @@
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
+    <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />
     <Compile Include="GameScene.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
+    <Compile Include="Graphics\ShaderProgram3D.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Graphics\ShaderBuilder.cs" />
     <Compile Include="Graphics\ShaderProgram.cs" />

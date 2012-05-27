@@ -48,12 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Park.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\CratePile.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\Park.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\Warehouse.cs" />
+    <None Include="Geometry\Generation\BlockGen\Empty.cs" />
+    <None Include="Geometry\Generation\BlockGen\Park.cs" />
+    <None Include="Geometry\Generation\BlockGen\Warehouse.cs" />
+    <None Include="Geometry\Generation\StructureGen\CratePile.cs" />
+    <None Include="Geometry\Generation\StructureGen\Park.cs" />
+    <None Include="Geometry\Generation\StructureGen\Warehouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
