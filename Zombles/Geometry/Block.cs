@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Zombles.Graphics;
+using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
     public class Block
     {
         private Tile[,] myTiles;
+        private List<Entity> myEnts;
 
         private int myBaseVertCount;
         private int myTopVertCount;
@@ -27,6 +30,7 @@ namespace Zombles.Geometry
             Height = height;
 
             myTiles = new Tile[ width, height ];
+            myEnts = new List<Entity>();
         }
 
         public void BuildTiles( TileBuilder[,] tiles )
@@ -34,6 +38,16 @@ namespace Zombles.Geometry
             lock ( myTiles )
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
                         myTiles[ x, y ] = tiles[ x, y ].Create( X + x, Y + y );
+        }
+
+        internal void AddEntity( Entity ent )
+        {
+            myEnts.Add( ent );
+        }
+
+        internal void RemoveEntity( Entity ent )
+        {
+            myEnts.Remove( ent );
         }
 
         public int GetVertexCount()

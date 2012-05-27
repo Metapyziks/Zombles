@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
+using OpenTK;
+
 using Zombles.Graphics;
 
 namespace Zombles.Geometry
@@ -21,6 +23,7 @@ namespace Zombles.Geometry
 
         public bool IsRoot { get; private set; }
         public bool IsBranch { get; private set; }
+        public bool IsHorzSplit { get; private set; }
         public bool IsLeaf { get; private set; }
 
         public District Parent { get; private set; }
@@ -46,6 +49,30 @@ namespace Zombles.Geometry
             Parent = parent;
         }
 
+        public Block GetBlock( Vector2 pos )
+        {
+            if ( IsLeaf )
+                return Block;
+
+            if ( IsBranch )
+            {
+                if ( IsHorzSplit )
+                {
+                    if ( pos.Y >= ChildB.Y )
+                        return ChildB.GetBlock( pos );
+                    return ChildA.GetBlock( pos );
+                }
+                else
+                {
+                    if ( pos.X >= ChildB.X )
+                        return ChildB.GetBlock( pos );
+                    return ChildA.GetBlock( pos );
+                }
+            }
+
+            return null;
+        }
+
         public void Split( bool horizontal, int offset )
         {
             if ( offset < 1 )
@@ -53,6 +80,7 @@ namespace Zombles.Geometry
 
             IsBranch = true;
             IsLeaf = false;
+            IsHorzSplit = horizontal;
             if ( horizontal )
             {
                 if ( offset > Height - 1 )

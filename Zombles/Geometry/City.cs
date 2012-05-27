@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using OpenTK;
+
 using Zombles.Graphics;
 
 namespace Zombles.Geometry
@@ -20,6 +22,11 @@ namespace Zombles.Geometry
         {
             RootDistrict = new District( 0, 0, width, height );
             myVertexBuffer = new VertexBuffer( 3 );
+        }
+
+        public Block GetBlock( Vector2 pos )
+        {
+            return RootDistrict.GetBlock( pos );
         }
 
         public void UpdateVertexBuffer()
