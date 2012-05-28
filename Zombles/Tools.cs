@@ -290,6 +290,11 @@ namespace Zombles
             }
         }
 
+        public static float NextSingle( this Random rand )
+        {
+            return (float) rand.NextDouble();
+        }
+
         public static String NextTexture( this Random rand, String prefix, int max )
         {
             if ( !prefix.EndsWith( "_" ) )

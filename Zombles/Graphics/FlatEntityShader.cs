@@ -55,10 +55,10 @@ namespace Zombles.Graphics
 
                     gl_Position = view_matrix * vec4(
                         position.x + world_offset.x,
-                        position.y,
+                        position.y + in_vertex.y * size.y,
                         position.z + world_offset.y,
                         1.0
-                    ) + vec4( in_vertex.xy * scale * size, 0.0, 0.0 );
+                    ) + vec4( in_vertex.x * scale.x * size.x, 0.0, 0.0, 0.0 );
                 }
             ";
 
@@ -69,7 +69,7 @@ namespace Zombles.Graphics
                 void main( void )
                 {
                     out_frag_colour = texture2DArray( ents, var_tex );
-                    if( out_frag_colour.a < 1.0 )
+                    if( out_frag_colour.a < 0.5 )
                         discard;
                 }
             ";

@@ -11,6 +11,18 @@ namespace Zombles.Entities
 {
     public sealed class Entity : IEnumerable<Component>
     {
+        private static Dictionary<String, Func<Entity>> stEntBuilders = new Dictionary<string,Func<Entity>>();
+
+        public static void Register( String type, Func<Entity> builder )
+        {
+            stEntBuilders.Add( type, builder );
+        }
+
+        public static Entity Create( String type )
+        {
+            return stEntBuilders[ type ]();
+        }
+
         private Dictionary<Type, Component> myComponents;
         private Vector3 myPosition;
         private bool myPosChanged;

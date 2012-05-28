@@ -87,16 +87,23 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         GenHelper.BuildWall( tiles, entranceX + i * ( entranceSize + 1 ) + entranceSize, entranceY,
                             Face.North, 1, 3, "wall_brick_a", "wall_brick_a" );
                     }
-                    GenHelper.BuildWall( tiles, entranceX  + entranceCount * ( entranceSize + 1 ) - 1,
+                    GenHelper.BuildWall( tiles, entranceX + entranceCount * ( entranceSize + 1 ) - 1,
                         entranceY, Face.North, 1, 3,
                         "wall_brick_9", "wall_brick_8" );
                 }
             }
 
-            Entity ent = new Entity( district.City );
-            ent.Position = new Vector3( district.X + district.Width / 2, 0.0f, district.Y + district.Height / 2 );
-            ent.AddComponent<Render>().Size = new Vector2( 0.5f, 1.0f );
-            district.PlaceEntity( ent );
+            int entCount = rand.Next( 128 );
+            for ( int i = 0; i < entCount; ++i )
+            {
+                Entity ent = new Entity( district.City );
+                ent.Position = new Vector3( district.X + rand.NextSingle() * district.Width, 0.0f,
+                    district.Y + rand.NextSingle() * district.Height );
+                Render rend = ent.AddComponent<Render>();
+                rend.Size = new Vector2( 0.5f, 1.0f );
+                rend.TextureIndex = (ushort) rand.Next( 40 );
+                district.PlaceEntity( ent );
+            }
         }
     }
 }
