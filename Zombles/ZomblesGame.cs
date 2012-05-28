@@ -47,7 +47,7 @@ namespace Zombles
                 if ( line.Length > 0 && File.Exists( dataPath + line ) )
                     Res.MountArchive( Res.LoadArchive( dataPath + line ) );
 
-            TileManager.Initialize();
+            TextureManager.Initialize();
 
             SpriteShader = new SpriteShader( Width, Height );
 

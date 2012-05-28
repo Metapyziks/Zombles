@@ -82,7 +82,7 @@
     <Compile Include="Graphics\Texture.cs" />
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2DArray.cs" />
-    <Compile Include="Graphics\TileManager.cs" />
+    <Compile Include="Graphics\TextureManager.cs" />
     <Compile Include="Graphics\VertexBuffer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

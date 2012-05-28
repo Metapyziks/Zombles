@@ -68,7 +68,7 @@ namespace Zombles.Graphics
             AddAttribute( "in_vertex", 3 );
 
             AddTexture( "tiles", TextureUnit.Texture0 );
-            SetTexture( "tiles", TileManager.TexArray );
+            SetTexture( "tiles", TextureManager.Tiles.TexArray );
         }
 
         protected override void OnStartBatch()

@@ -38,13 +38,13 @@ namespace Zombles.Geometry
 
         public void SetFloor( String textureName )
         {
-            FloorTileIndex = TileManager.GetTileIndex( textureName );
+            FloorTileIndex = TextureManager.Tiles.GetIndex( textureName );
         }
 
         public void SetFloor( int height, String textureName )
         {
             FloorHeight = (byte) height;
-            FloorTileIndex = TileManager.GetTileIndex( textureName );
+            FloorTileIndex = TextureManager.Tiles.GetIndex( textureName );
         }
 
         public void SetRoof()
@@ -55,13 +55,13 @@ namespace Zombles.Geometry
 
         public void SetRoof( String textureName )
         {
-            RoofTileIndex = TileManager.GetTileIndex( textureName );
+            RoofTileIndex = TextureManager.Tiles.GetIndex( textureName );
         }
 
         public void SetRoof( int height, String textureName )
         {
             RoofHeight = (byte) height;
-            RoofTileIndex = TileManager.GetTileIndex( textureName );
+            RoofTileIndex = TextureManager.Tiles.GetIndex( textureName );
         }
 
         public ushort GetWall( Face face, int level )
@@ -91,7 +91,7 @@ namespace Zombles.Geometry
 
         public void SetWall( Face face, int level, String textureName )
         {
-            SetWallRange( face.GetIndex(), level, 1, TileManager.GetTileIndex( textureName ) );
+            SetWallRange( face.GetIndex(), level, 1, TextureManager.Tiles.GetIndex( textureName ) );
         }
 
         public void SetWall( Face face, int level, ushort tileIndex )
@@ -101,7 +101,7 @@ namespace Zombles.Geometry
 
         public void SetWall( int faceIndex, int level, String textureName )
         {
-            SetWallRange( faceIndex, level, 1, TileManager.GetTileIndex( textureName ) );
+            SetWallRange( faceIndex, level, 1, TextureManager.Tiles.GetIndex( textureName ) );
         }
 
         public void SetWall( int faceIndex, int level, ushort tileIndex )
@@ -121,7 +121,7 @@ namespace Zombles.Geometry
 
         public void SetWallRange( Face face, int level, int height, String textureName )
         {
-            SetWallRange( face.GetIndex(), level, height, TileManager.GetTileIndex( textureName ) );
+            SetWallRange( face.GetIndex(), level, height, TextureManager.Tiles.GetIndex( textureName ) );
         }
 
         public void SetWallRange( Face face, int level, int height, ushort tileIndex )
@@ -131,7 +131,7 @@ namespace Zombles.Geometry
 
         public void SetWallRange( int faceIndex, int level, int height, String textureName )
         {
-            SetWallRange( faceIndex, level, height, TileManager.GetTileIndex( textureName ) );
+            SetWallRange( faceIndex, level, height, TextureManager.Tiles.GetIndex( textureName ) );
         }
 
         public void SetWallRange( int faceIndex, int level, int height, ushort tileIndex )
