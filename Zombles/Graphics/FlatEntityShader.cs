@@ -53,9 +53,11 @@ namespace Zombles.Graphics
                             var_tex = vec3( size.x, size.y, texture ); break;
                     }
 
+                    const float yscale = 2.0 / sqrt( 3.0 );
+
                     gl_Position = view_matrix * vec4(
                         position.x + world_offset.x,
-                        position.y + in_vertex.y * size.y,
+                        ( position.y + in_vertex.y * size.y ) * yscale,
                         position.z + world_offset.y,
                         1.0
                     ) + vec4( in_vertex.x * scale.x * size.x, 0.0, 0.0, 0.0 );

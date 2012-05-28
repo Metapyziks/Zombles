@@ -93,7 +93,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                 }
             }
 
-            int entCount = rand.Next( 128 );
+            int entCount = rand.Next( 16 );
             for ( int i = 0; i < entCount; ++i )
             {
                 Entity ent = new Entity( district.City );

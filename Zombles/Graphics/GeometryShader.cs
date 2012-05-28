@@ -29,9 +29,11 @@ namespace Zombles.Graphics
 
                     var_shade = 1.0 - 0.125 * float( ( dat >> 3 ) & 0x1 );
 
+                    const float yscale = 1.0 / sqrt( 3.0 );
+
                     gl_Position = view_matrix * vec4(
                         in_vertex.x + world_offset.x,
-                        float( ( dat >> 4 ) & 0xf ) / 2.0,
+                        float( ( dat >> 4 ) & 0xf ) * yscale,
                         in_vertex.y + world_offset.y,
                         1.0
                     );
