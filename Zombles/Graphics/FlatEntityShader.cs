@@ -10,6 +10,7 @@ namespace Zombles.Graphics
     {
         private static VertexBuffer stVB;
 
+        private int myScaleLoc;
         private int myPositionLoc;
         private int mySizeLoc;
 
@@ -30,6 +31,7 @@ namespace Zombles.Graphics
             ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
             vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
             vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
+            vert.AddUniform( ShaderVarType.Vec2, "scale" );
             vert.AddUniform( ShaderVarType.Vec3, "position" );
             vert.AddUniform( ShaderVarType.Vec2, "size" );
             vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
@@ -44,7 +46,7 @@ namespace Zombles.Graphics
                         position.y,
                         position.z + world_offset.y,
                         1.0
-                    ) + vec4( in_vertex.xy * size, 0.0, 0.0 );
+                    ) + vec4( in_vertex.xy * scale * size, 0.0, 0.0 );
                 }
             ";
 
@@ -71,6 +73,7 @@ namespace Zombles.Graphics
 
             AddAttribute( "in_vertex", 3 );
 
+            myScaleLoc = GL.GetUniformLocation( Program, "scale" );
             myPositionLoc = GL.GetUniformLocation( Program, "position" );
             mySizeLoc = GL.GetUniformLocation( Program, "size" );
         }
@@ -78,6 +81,8 @@ namespace Zombles.Graphics
         protected override void OnStartBatch()
         {
             base.OnStartBatch();
+
+            GL.Uniform2( myScaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale );
 
             GL.Enable( EnableCap.DepthTest );
 
@@ -89,7 +94,7 @@ namespace Zombles.Graphics
         public void Render( Vector3 pos, Vector2 size )
         {
             GL.Uniform3( myPositionLoc, ref pos );
-            GL.Uniform2( mySizeLoc, new Vector2( size.X * 16.0f / Camera.Width, size.Y * 16.0f / Camera.Height ) * Camera.Scale );
+            GL.Uniform2( mySizeLoc, ref size );
             stVB.Render( this );
         }
 
