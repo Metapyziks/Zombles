@@ -13,6 +13,7 @@ namespace Zombles.Graphics
         private int myScaleLoc;
         private int myPositionLoc;
         private int mySizeLoc;
+        private int myTextureLoc;
 
         public FlatEntityShader()
         {
@@ -34,12 +35,23 @@ namespace Zombles.Graphics
             vert.AddUniform( ShaderVarType.Vec2, "scale" );
             vert.AddUniform( ShaderVarType.Vec3, "position" );
             vert.AddUniform( ShaderVarType.Vec2, "size" );
+            vert.AddUniform( ShaderVarType.Float, "texture" );
             vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
-            vert.AddVarying( ShaderVarType.Vec3, "var_colour" );
+            vert.AddVarying( ShaderVarType.Vec3, "var_tex" );
             vert.Logic = @"
                 void main( void )
                 {
-                    var_colour = vec3( 1.0, 0.0, 0.0 );
+                    switch( int( in_vertex.z ) )
+                    {
+                        case 0:
+                            var_tex = vec3( 0.0, 0.0, texture ); break;
+                        case 1:
+                            var_tex = vec3( size.x, 0.0, texture ); break;
+                        case 2:
+                            var_tex = vec3( 0.0, size.y, texture ); break;
+                        case 3:
+                            var_tex = vec3( size.x, size.y, texture ); break;
+                    }
 
                     gl_Position = view_matrix * vec4(
                         position.x + world_offset.x,
@@ -51,11 +63,14 @@ namespace Zombles.Graphics
             ";
 
             ShaderBuilder frag = new ShaderBuilder( ShaderType.FragmentShader, false );
-            frag.AddVarying( ShaderVarType.Vec3, "var_colour" );
+            frag.AddUniform( ShaderVarType.Sampler2DArray, "ents" );
+            frag.AddVarying( ShaderVarType.Vec3, "var_tex" );
             frag.Logic = @"
                 void main( void )
                 {
-                    out_frag_colour = vec4( var_colour, 1.0 );
+                    out_frag_colour = texture2DArray( ents, var_tex );
+                    if( out_frag_colour.a < 1.0 )
+                        discard;
                 }
             ";
 
@@ -73,9 +88,13 @@ namespace Zombles.Graphics
 
             AddAttribute( "in_vertex", 3 );
 
+            AddTexture( "ents", TextureUnit.Texture1 );
+            SetTexture( "ents", TextureManager.Ents.TexArray );
+
             myScaleLoc = GL.GetUniformLocation( Program, "scale" );
             myPositionLoc = GL.GetUniformLocation( Program, "position" );
             mySizeLoc = GL.GetUniformLocation( Program, "size" );
+            myTextureLoc = GL.GetUniformLocation( Program, "texture" );
         }
 
         protected override void OnStartBatch()
@@ -91,10 +110,11 @@ namespace Zombles.Graphics
             stVB.StartBatch( this );
         }
 
-        public void Render( Vector3 pos, Vector2 size )
+        public void Render( Vector3 pos, Vector2 size, ushort texIndex )
         {
             GL.Uniform3( myPositionLoc, ref pos );
             GL.Uniform2( mySizeLoc, ref size );
+            GL.Uniform1( myTextureLoc, (float) texIndex );
             stVB.Render( this );
         }
 
