@@ -7,11 +7,16 @@ using System.Drawing;
 using OpenTK;
 
 using Zombles.Graphics;
+using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
     public class District : IEnumerable<Block>
     {
+        private List<Entity> myUnspawnedEnts;
+
+        public readonly City City;
+
         public readonly Rectangle Bounds;
         public readonly int LongSide;
         public readonly int ShortSide;
@@ -33,11 +38,17 @@ namespace Zombles.Geometry
 
         public Block Block { get; private set; }
 
-        public District( int x, int y, int width, int height )
-            : this( null, x, y, width, height ) { }
+        public District( City city, int x, int y, int width, int height )
+            : this( (District) null, x, y, width, height )
+        {
+            City = city;
+        }
 
         private District( District parent, int x, int y, int width, int height )
         {
+            if( parent != null )
+                City = parent.City;
+
             Bounds = new Rectangle( x, y, width, height );
             LongSide = Math.Max( Width, Height );
             ShortSide = Math.Min( Width, Height );
@@ -47,9 +58,16 @@ namespace Zombles.Geometry
             IsLeaf = false;
 
             Parent = parent;
+
+            myUnspawnedEnts = new List<Entity>();
         }
 
-        public Block GetBlock( Vector2 pos )
+        public void PlaceEntity( Entity ent )
+        {
+            myUnspawnedEnts.Add( ent );
+        }
+
+        public Block GetBlock( float x, float y )
         {
             if ( IsLeaf )
                 return Block;
@@ -58,15 +76,15 @@ namespace Zombles.Geometry
             {
                 if ( IsHorzSplit )
                 {
-                    if ( pos.Y >= ChildB.Y )
-                        return ChildB.GetBlock( pos );
-                    return ChildA.GetBlock( pos );
+                    if ( y >= ChildB.Y )
+                        return ChildB.GetBlock( x, y );
+                    return ChildA.GetBlock( x, y );
                 }
                 else
                 {
-                    if ( pos.X >= ChildB.X )
-                        return ChildB.GetBlock( pos );
-                    return ChildA.GetBlock( pos );
+                    if ( x >= ChildB.X )
+                        return ChildB.GetBlock( x, y );
+                    return ChildA.GetBlock( x, y );
                 }
             }
 
@@ -105,6 +123,11 @@ namespace Zombles.Geometry
         {
             IsLeaf = true;
             Block = block;
+
+            foreach ( Entity ent in myUnspawnedEnts )
+                ent.Spawn();
+
+            myUnspawnedEnts.Clear();
         }
 
         public int GetVertexCount()
@@ -128,17 +151,30 @@ namespace Zombles.Geometry
                 Block.GetVertices( verts, ref i );
         }
 
-        public void Render( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
+        public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             if ( IsBranch )
             {
                 if( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildA.Render( vb, shader, baseOnly );
+                    ChildA.RenderGeometry( vb, shader, baseOnly );
                 if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildB.Render( vb, shader, baseOnly );
+                    ChildB.RenderGeometry( vb, shader, baseOnly );
             }
             else if ( IsLeaf )
                 Block.RenderGeometry( vb, shader, baseOnly );
+        }
+
+        public void RenderEntities( FlatEntityShader shader, bool baseOnly = false )
+        {
+            if ( IsBranch )
+            {
+                if ( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
+                    ChildA.RenderEntities( shader );
+                if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
+                    ChildB.RenderEntities( shader );
+            }
+            else if ( IsLeaf )
+                Block.RenderEntities( shader );
         }
 
         public IEnumerator<Block> GetEnumerator()

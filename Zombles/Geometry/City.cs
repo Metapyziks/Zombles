@@ -20,13 +20,18 @@ namespace Zombles.Geometry
 
         public City( int width, int height )
         {
-            RootDistrict = new District( 0, 0, width, height );
+            RootDistrict = new District( this, 0, 0, width, height );
             myVertexBuffer = new VertexBuffer( 3 );
         }
 
         public Block GetBlock( Vector2 pos )
         {
-            return RootDistrict.GetBlock( pos );
+            return RootDistrict.GetBlock( pos.X, pos.Y );
+        }
+
+        public Block GetBlock( float x, float y )
+        {
+            return RootDistrict.GetBlock( x, y );
         }
 
         public void UpdateVertexBuffer()
@@ -38,11 +43,16 @@ namespace Zombles.Geometry
             myVertexBuffer.SetData( verts );
         }
 
-        public void Render( GeometryShader shader, bool baseOnly = false )
+        public void RenderGeometry( GeometryShader shader, bool baseOnly = false )
         {
             myVertexBuffer.StartBatch( shader );
-            RootDistrict.Render( myVertexBuffer, shader, baseOnly );
+            RootDistrict.RenderGeometry( myVertexBuffer, shader, baseOnly );
             myVertexBuffer.EndBatch( shader );
+        }
+
+        public void RenderEntities( FlatEntityShader shader )
+        {
+            RootDistrict.RenderEntities( shader );
         }
 
         public IEnumerator<Block> GetEnumerator()

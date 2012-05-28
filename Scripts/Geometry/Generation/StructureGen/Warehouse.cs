@@ -1,8 +1,11 @@
 ﻿using System;
 
+using OpenTK;
+
 using Zombles;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
+using Zombles.Entities;
 
 namespace Zombles.Scripts.Geometry.Generation.StructureGen
 {
@@ -20,7 +23,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
             EntranceFaces = entranceFaces;
         }
 
-        public override void Generate( TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
+        public override void Generate( District district, TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
         {
             if ( EntranceFaces != Face.None )
             {
@@ -89,6 +92,11 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         "wall_brick_9", "wall_brick_8" );
                 }
             }
+
+            Entity ent = new Entity( district.City );
+            ent.Position = new Vector3( district.X + district.Width / 2, 0.0f, district.Y + district.Height / 2 );
+            ent.AddComponent<Render>().Size = new Vector2( 0.5f, 1.0f );
+            district.PlaceEntity( ent );
         }
     }
 }

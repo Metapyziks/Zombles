@@ -12,7 +12,7 @@ namespace Zombles.Entities
     public sealed class Entity : IEnumerable<Component>
     {
         private Dictionary<Type, Component> myComponents;
-        private Vector2 myPosition;
+        private Vector3 myPosition;
         private bool myPosChanged;
 
         public readonly City City;
@@ -27,7 +27,7 @@ namespace Zombles.Entities
             private set;
         }
 
-        public Vector2 Position
+        public Vector3 Position
         {
             get { return myPosition; }
             set
@@ -42,11 +42,12 @@ namespace Zombles.Entities
 
         public Entity( City city )
         {
+            City = city;
+
             myComponents = new Dictionary<Type, Component>();
-            myPosition = new Vector2();
+            myPosition = new Vector3();
             myPosChanged = true;
 
-            City = city;
             IsValid = false;
         }
 
@@ -118,10 +119,14 @@ namespace Zombles.Entities
         {
             if ( IsValid && myPosChanged )
             {
-                if ( Block != null )
-                    Block.RemoveEntity( this );
-                Block = City.GetBlock( myPosition );
-                Block.AddEntity( this );
+                Block newBlock = City.GetBlock( myPosition.X, myPosition.Z );
+                if ( newBlock != Block )
+                {
+                    if ( Block != null )
+                        Block.RemoveEntity( this );
+                    Block = newBlock;
+                    Block.AddEntity( this );
+                }
                 myPosChanged = false;
             }
             else if ( !IsValid && Block != null )

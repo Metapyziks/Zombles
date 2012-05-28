@@ -3,39 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using OpenTK;
+
 using Zombles.Graphics;
 
 namespace Zombles.Entities
 {
-    public abstract class Render2D : Component
+    public class Render : Component
     {
-        public Render2D( Entity ent )
+        public Vector2 Size;
+
+        public Render( Entity ent )
             : base( ent )
         {
-
+            Size = new Vector2( 1.0f, 1.0f );
         }
 
-        /*
-        public abstract void OnRender( EntShader2D shader )
+        public virtual void OnRender( FlatEntityShader shader )
         {
-
+            shader.Render( Entity.Position, Size );
         }
-        */
-    }
-
-    public abstract class Render3D : Component
-    {
-        public Render3D( Entity ent )
-            : base( ent )
-        {
-
-        }
-
-        /*
-        public abstract void OnRender( EntShader3D shader )
-        {
-
-        }
-        */
     }
 }

@@ -15,15 +15,15 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
             myParkGen = new StructureGen.Park();
         }
 
-        protected override void Generate( TileBuilder[ , ] tiles, int width, int height,
-            int borderLeft, int borderTop,
-            int borderRight, int borderBottom, Random rand )
+        protected override void Generate( District district, TileBuilder[ , ] tiles,
+             int borderLeft, int borderTop,
+             int borderRight, int borderBottom, Random rand )
         {
             myParkGen.Fence = rand.NextDouble() < 0.75;
 
-            myParkGen.Generate( tiles, borderLeft, borderTop,
-                width - borderLeft - borderRight,
-                height - borderTop - borderBottom, rand );
+            myParkGen.Generate( district, tiles, borderLeft, borderTop,
+                district.Width - borderLeft - borderRight,
+                district.Height - borderTop - borderBottom, rand );
         }
     }
 }

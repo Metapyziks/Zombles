@@ -143,16 +143,19 @@ namespace Zombles.Geometry.Generation
                 ( acceptLarger || ( ln <= MaxLongSide && sh <= MaxShortSide ) );
         }
 
-        public Block Generate( int x, int y, int width, int height, int borderLeft, int borderTop,
+        public Block Generate( District district, int borderLeft, int borderTop,
             int borderRight, int borderBottom, int seed = 0 )
         {
             Random rand = ( seed == 0 ? new Random() : new Random( seed ) );
-            return Generate( x, y, width, height, borderLeft, borderTop, borderRight, borderBottom, rand );
+            return Generate( district, borderLeft, borderTop, borderRight, borderBottom, rand );
         }
 
-        public Block Generate( int x, int y, int width, int height, int borderLeft, int borderTop,
+        public Block Generate( District district, int borderLeft, int borderTop,
             int borderRight, int borderBottom, Random rand )
         {
+            int width = district.Width;
+            int height = district.Height;
+
             TileBuilder[,] tiles = new TileBuilder[ width, height ];
 
             for ( int tx = 0; tx < width; ++tx ) for ( int ty = 0; ty < height; ++ty )
@@ -217,14 +220,14 @@ namespace Zombles.Geometry.Generation
             if ( borderBottom > 1 && borderLeft > 1 )
                 GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f" );
 
-            Generate( tiles, width, height, borderLeft, borderTop, borderRight, borderBottom, rand );
+            Generate( district, tiles, borderLeft, borderTop, borderRight, borderBottom, rand );
 
-            Block block = new Block( x, y, width, height );
+            Block block = new Block( district );
             block.BuildTiles( tiles );
             return block;
         }
 
-        protected abstract void Generate( TileBuilder[ , ] tiles, int width, int height, int borderLeft, int borderTop,
+        protected abstract void Generate( District district, TileBuilder[ , ] tiles, int borderLeft, int borderTop,
             int borderRight, int borderBottom, Random rand );
     }
 }

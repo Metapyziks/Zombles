@@ -10,7 +10,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
     {
         public bool Fence;
 
-        public override void Generate( TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
+        public override void Generate( District district, TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
         {
             Face entryFaces = Face.None;
 

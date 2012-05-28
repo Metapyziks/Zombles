@@ -11,6 +11,7 @@ namespace Zombles.Graphics
 
         private bool myDataSet = false;
 
+        private int myUnitSize;
         private int myVboID;
         private int myLength;
 
@@ -32,10 +33,11 @@ namespace Zombles.Graphics
 
         public void SetData<T>( T[] vertices ) where T : struct
         {
+            myUnitSize = Marshal.SizeOf( typeof( T ) );
             myLength = vertices.Length / myStride;
 
             GL.BindBuffer( BufferTarget.ArrayBuffer, VboID );
-            GL.BufferData( BufferTarget.ArrayBuffer, new IntPtr( vertices.Length * Marshal.SizeOf( typeof( T ) ) ), vertices, BufferUsageHint.StaticDraw );
+            GL.BufferData( BufferTarget.ArrayBuffer, new IntPtr( vertices.Length * myUnitSize ), vertices, BufferUsageHint.StaticDraw );
             GL.BindBuffer( BufferTarget.ArrayBuffer, 0 );
 
             CheckForError();

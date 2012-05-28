@@ -68,6 +68,7 @@
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\FlatEntityShader.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />
     <Compile Include="GameScene.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />

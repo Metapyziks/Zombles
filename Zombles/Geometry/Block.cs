@@ -8,6 +8,9 @@ namespace Zombles.Geometry
 {
     public class Block
     {
+        public readonly City City;
+        public readonly District District;
+
         private Tile[,] myTiles;
         private List<Entity> myEnts;
 
@@ -21,15 +24,18 @@ namespace Zombles.Geometry
         public readonly int Width;
         public readonly int Height;
 
-        public Block( int x, int y, int width, int height )
+        public Block( District district )
         {
-            X = x;
-            Y = y;
+            City = district.City;
+            District = district;
 
-            Width = width;
-            Height = height;
+            X = district.X;
+            Y = district.Y;
 
-            myTiles = new Tile[ width, height ];
+            Width = district.Width;
+            Height = district.Height;
+
+            myTiles = new Tile[ Width, Height ];
             myEnts = new List<Entity>();
         }
 
@@ -52,8 +58,8 @@ namespace Zombles.Geometry
 
         public void Think( double dt )
         {
-            foreach ( Entity ent in myEnts )
-                ent.Think( dt );
+            for ( int i = myEnts.Count - 1; i >= 0; --i )
+                myEnts[ i ].Think( dt );
         }
 
         public void PostThink()
@@ -93,6 +99,13 @@ namespace Zombles.Geometry
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             vb.Render( shader, myVertOffset, ( baseOnly ? myBaseVertCount : myBaseVertCount + myTopVertCount ) );
+        }
+
+        public void RenderEntities( FlatEntityShader shader )
+        {
+            foreach ( Entity ent in myEnts )
+                if ( ent.HasComponent<Render>() )
+                    ent.GetComponent<Render>().OnRender( shader );
         }
     }
 }

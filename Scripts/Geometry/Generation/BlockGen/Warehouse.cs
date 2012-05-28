@@ -15,13 +15,13 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
             myBuildingGen = new StructureGen.Warehouse();
         }
 
-        protected override void Generate( TileBuilder[ , ] tiles, int width, int height,
+        protected override void Generate( District district, TileBuilder[ , ] tiles,
             int borderLeft, int borderTop,
             int borderRight, int borderBottom, Random rand )
         {
             GenHelper.BuildFloor( tiles, borderLeft, borderTop,
-                width - borderLeft - borderRight,
-                height - borderTop - borderBottom,
+                district.Width - borderLeft - borderRight,
+                district.Height - borderTop - borderBottom,
                 0, "floor_concrete_0" );
 
             myBuildingGen.EntranceFaces =
@@ -30,9 +30,9 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
                 ( borderRight > 1 ? Face.East : Face.None ) |
                 ( borderBottom > 1 ? Face.South : Face.None );
 
-            myBuildingGen.Generate( tiles, borderLeft, borderTop,
-                width - borderLeft - borderRight,
-                height - borderTop - borderBottom, rand );
+            myBuildingGen.Generate( district, tiles, borderLeft, borderTop,
+                district.Width - borderLeft - borderRight,
+                district.Height - borderTop - borderBottom, rand );
         }
     }
 }

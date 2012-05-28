@@ -15,7 +15,8 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
             MaxHeight = maxHeight;
         }
 
-        public override void Generate( TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand )
+        public override void Generate( District district, TileBuilder[ , ] tiles,
+            int x, int y, int width, int height, Random rand )
         {
             for ( int tx = 0; tx < width; ++tx )
             {

@@ -30,6 +30,7 @@ namespace Zombles
 
         private Camera myCamera;
         private GeometryShader myGeoShader;
+        private FlatEntityShader myFlatEntShader;
         private CityGenerator myGenerator;
         private City myTestCity;
 
@@ -100,6 +101,9 @@ namespace Zombles
 
                 myGeoShader = new GeometryShader();
                 myGeoShader.Camera = myCamera;
+
+                myFlatEntShader = new FlatEntityShader();
+                myFlatEntShader.Camera = myCamera;
 
                 myCamera.UpdatePerspectiveMatrix();
 
@@ -202,33 +206,23 @@ namespace Zombles
 
         public override void OnRenderFrame( FrameEventArgs e )
         {
-            myCamera.WorldHorizontalOffset = 0;
-            myCamera.WorldVerticalOffset = 0;
-            myCamera.UpdateViewBoundsOffset();
-            myGeoShader.StartBatch();
-            myTestCity.Render( myGeoShader, myHideTop );
-            myGeoShader.EndBatch();
-            if ( myCamera.Position.X < WorldSize / 2 )
-                myCamera.WorldHorizontalOffset = -WorldSize;
-            else
-                myCamera.WorldHorizontalOffset = WorldSize;
-            myCamera.UpdateViewBoundsOffset();
-            myGeoShader.StartBatch();
-            myTestCity.Render( myGeoShader, myHideTop );
-            myGeoShader.EndBatch();
-            if ( myCamera.Position.Y < WorldSize / 2 )
-                myCamera.WorldVerticalOffset = -WorldSize;
-            else
-                myCamera.WorldVerticalOffset = WorldSize;
-            myCamera.UpdateViewBoundsOffset();
-            myGeoShader.StartBatch();
-            myTestCity.Render( myGeoShader, myHideTop );
-            myGeoShader.EndBatch();
-            myCamera.WorldHorizontalOffset = 0;
-            myCamera.UpdateViewBoundsOffset();
-            myGeoShader.StartBatch();
-            myTestCity.Render( myGeoShader, myHideTop );
-            myGeoShader.EndBatch();
+            float x0 = 0.0f;
+            float x1 = ( myCamera.Position.X < WorldSize / 2 ) ? -WorldSize : WorldSize;
+            float y0 = 0.0f;
+            float y1 = ( myCamera.Position.Y < WorldSize / 2 ) ? -WorldSize : WorldSize;
+
+            for ( int i = 0; i < 4; ++i )
+            {
+                myCamera.WorldHorizontalOffset = ( i & 0x1 ) == 0x0 ? x0 : x1;
+                myCamera.WorldVerticalOffset = ( i & 0x2 ) == 0x0 ? y0 : y1;
+                myCamera.UpdateViewBoundsOffset();
+                myGeoShader.StartBatch();
+                myTestCity.RenderGeometry( myGeoShader, myHideTop );
+                myGeoShader.EndBatch();
+                myFlatEntShader.StartBatch();
+                myTestCity.RenderEntities( myFlatEntShader );
+                myFlatEntShader.EndBatch();
+            }
 
             base.OnRenderFrame( e );
 
