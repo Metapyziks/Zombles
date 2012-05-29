@@ -13,15 +13,44 @@ namespace Zombles.Entities
 
     public sealed class Entity : IEnumerable<Component>
     {
-        private static Dictionary<String, EntityBuilderDelegate> stEntBuilders
-            = new Dictionary<string, EntityBuilderDelegate>();
-
-        public static void Register( String type, EntityBuilderDelegate builder )
+        private struct BuilderInfo
         {
-            if ( !stEntBuilders.ContainsKey( type ) )
-                stEntBuilders.Add( type, builder );
+            public readonly String Name;
+            public readonly String Base;
+            public readonly EntityBuilderDelegate Builder;
+
+            public BuilderInfo( String name, EntityBuilderDelegate builder )
+            {
+                Name = name;
+                Base = null;
+                Builder = builder;
+            }
+
+            public BuilderInfo( String name, String baseName, EntityBuilderDelegate builder )
+            {
+                Name = name;
+                Base = baseName;
+                Builder = builder;
+            }
+        }
+
+        private static Dictionary<String, BuilderInfo> stEntBuilders
+            = new Dictionary<string, BuilderInfo>();
+
+        public static void Register( String name, EntityBuilderDelegate builder )
+        {
+            if ( !stEntBuilders.ContainsKey( name ) )
+                stEntBuilders.Add( name, new BuilderInfo( name, builder ) );
             else
-                stEntBuilders[ type ] = builder;
+                stEntBuilders[ name ] = new BuilderInfo( name, builder );
+        }
+
+        public static void Register( String name, String baseName, EntityBuilderDelegate builder )
+        {
+            if ( !stEntBuilders.ContainsKey( name ) )
+                stEntBuilders.Add( name, new BuilderInfo( name, baseName, builder ) );
+            else
+                stEntBuilders[ name ] = new BuilderInfo( name, baseName, builder );
         }
 
         public static Entity Create( City city )
@@ -31,8 +60,9 @@ namespace Zombles.Entities
 
         public static Entity Create( String type, City city )
         {
-            Entity ent = new Entity( city );
-            stEntBuilders[ type ]( ent );
+            BuilderInfo info = stEntBuilders[ type ];
+            Entity ent = ( info.Base != null ? Create( info.Base, city ) : Create( city ) );
+            info.Builder( ent );
             return ent;
         }
 
@@ -83,7 +113,7 @@ namespace Zombles.Entities
             Type type = typeof( T );
 
             do
-                myComponents.Add( typeof( T ), comp );
+                myComponents.Add( type, comp );
             while ( ( type = type.BaseType ) != typeof( Component ) );
 
             return comp;

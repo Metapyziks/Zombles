@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
+using Zombles.Graphics;
+
 namespace Zombles.Entities
 {
     public abstract class Component

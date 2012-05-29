@@ -479,21 +479,18 @@ namespace ResourceLib
             Boolean = 6
         }
 
-        private static Dictionary<String, List<InfoObject>> myInfos = new Dictionary<string, List<InfoObject>>();
+        private static Dictionary<String, Dictionary<String, InfoObject>> myInfos =
+            new Dictionary<string, Dictionary<String, InfoObject>>();
 
         internal static void Register( InfoObject obj )
         {
             if ( !myInfos.ContainsKey( obj.Type ) )
-                myInfos.Add( obj.Type, new List<InfoObject>() );
+                myInfos.Add( obj.Type, new Dictionary<String, InfoObject>() );
 
-            for ( int i = 0; i < myInfos[ obj.Type ].Count; ++i )
-                if ( myInfos[ obj.Type ][ i ].Name == obj.Name )
-                {
-                    myInfos[ obj.Type ][ i ] = obj;
-                    return;
-                }
-
-            myInfos[ obj.Type ].Add( obj );
+            if ( myInfos[ obj.Type ].ContainsKey( obj.Name ) )
+                myInfos[ obj.Type ][ obj.Name ] = obj;
+            else
+                myInfos[ obj.Type ].Add( obj.Name, obj );
         }
 
         public static InfoObject[] GetAll( String type )
@@ -501,7 +498,7 @@ namespace ResourceLib
             if ( !myInfos.ContainsKey( type ) )
                 return new InfoObject[ 0 ];
 
-            return myInfos[ type ].ToArray();
+            return myInfos[ type ].Values.ToArray();
         }
 
         public static InfoObject[] ParseFile( String filePath )
@@ -548,7 +545,7 @@ namespace ResourceLib
                     return InfoType.Array;
                 default:
                     string boolTestStr = str.Substring( startIndex, 4 ).ToLower();
-                    if ( boolTestStr == "true" || boolTestStr == "false" )
+                    if ( boolTestStr == "true" || boolTestStr == "fals" )
                         return InfoType.Boolean;
                     if ( char.IsNumber( str[ startIndex ] ) || str[ startIndex ] == '.' )
                     {
