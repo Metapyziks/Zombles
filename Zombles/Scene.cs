@@ -20,7 +20,7 @@ namespace Zombles
         public ZomblesGame GameWindow { get; private set; }
         public SpriteShader SpriteShader
         {
-            get { return GameWindow.SpriteShader; }
+            get { return ZomblesGame.SpriteShader; }
         }
 
         public int Width
@@ -40,7 +40,7 @@ namespace Zombles
 
         public bool IsCurrent
         {
-            get { return GameWindow.CurrentScene == this; }
+            get { return ZomblesGame.CurrentScene == this; }
         }
 
         public KeyboardDevice Keyboard

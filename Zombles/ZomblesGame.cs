@@ -18,12 +18,12 @@ namespace Zombles
 {
     public class ZomblesGame : GameWindow
     {
-        private Stopwatch myTimer;
+        private static Stopwatch myTimer;
 
-        public Scene CurrentScene { get; private set; }
-        public SpriteShader SpriteShader { get; private set; }
+        public static Scene CurrentScene { get; private set; }
+        public static SpriteShader SpriteShader { get; private set; }
 
-        public double Time
+        public static double Time
         {
             get { return myTimer.Elapsed.TotalSeconds; }
         }
@@ -70,7 +70,7 @@ namespace Zombles
             SetScene( new GameScene( this ) );
         }
 
-        public void SetScene( Scene newScene )
+        public static void SetScene( Scene newScene )
         {
             if ( CurrentScene != null )
                 CurrentScene.OnExit();

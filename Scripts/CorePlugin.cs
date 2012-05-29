@@ -21,19 +21,19 @@ namespace Zombles.Scripts
             Entity.Register( "survivor", "human", delegate( Entity ent )
             {
                 RenderAnim r = ent.GetComponent<RenderAnim>();
-                r.Anim = EntityAnim.GetAnim( "human stand" ); 
+                r.Start( EntityAnim.GetAnim( "human walk" ) );
             } );
 
             Entity.Register( "zombie", "human", delegate( Entity ent )
             {
                 RenderAnim r = ent.GetComponent<RenderAnim>();
-                r.Anim = EntityAnim.GetAnim( "zombie stand" ); 
+                r.Start( EntityAnim.GetAnim( "zombie walk" ) ); 
             } );
         }
 
         protected override void OnCityGenerated()
         {
-            City city = ( Game.CurrentScene as GameScene ).City;
+            City city = ( ZomblesGame.CurrentScene as GameScene ).City;
             Random rand = new Random();
 
             for ( int i = 0; i < 4096; ++i )

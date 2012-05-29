@@ -17,7 +17,7 @@
 (anim) "zombie walk" :
 {
 	"frame count" : 4,
-	"frequency" : 2.0,
+	"frequency" : 1.0,
 	
 	"directional" : true,
 	
