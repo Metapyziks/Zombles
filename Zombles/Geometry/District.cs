@@ -31,6 +31,8 @@ namespace Zombles.Geometry
         public bool IsHorzSplit { get; private set; }
         public bool IsLeaf { get; private set; }
 
+        public int Depth { get; private set; }
+
         public District Parent { get; private set; }
 
         public District ChildA { get; private set; }
@@ -56,6 +58,8 @@ namespace Zombles.Geometry
             IsRoot = parent == null;
             IsBranch = false;
             IsLeaf = false;
+
+            Depth = 1;
 
             Parent = parent;
 
@@ -116,6 +120,18 @@ namespace Zombles.Geometry
 
                 ChildA = new District( this, X, Y, offset, Height );
                 ChildB = new District( this, X + offset, Y, Width - offset, Height );
+            }
+
+            SetDepth( Depth + 1 );
+        }
+
+        private void SetDepth( int newDepth )
+        {
+            if ( Depth < newDepth )
+            {
+                Depth = newDepth;
+                if ( Parent != null )
+                    Parent.SetDepth( newDepth + 1 );
             }
         }
 

@@ -6,7 +6,7 @@ using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
-    public class Block
+    public class Block : IEnumerable<Entity>
     {
         public readonly City City;
         public readonly District District;
@@ -106,6 +106,16 @@ namespace Zombles.Geometry
             foreach ( Entity ent in myEnts )
                 if ( ent.HasComponent<Render>() )
                     ent.GetComponent<Render>().OnRender( shader );
+        }
+
+        public IEnumerator<Entity> GetEnumerator()
+        {
+            return myEnts.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return myEnts.GetEnumerator();
         }
     }
 }

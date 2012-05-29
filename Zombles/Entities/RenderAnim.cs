@@ -52,24 +52,41 @@ namespace Zombles.Entities
 
         public override void OnRender( FlatEntityShader shader )
         {
-            if ( CurAnim != null )
+            if ( CurAnim == null )
+                return;
+
+            int frame = 0;
+            if ( Playing )
             {
-                int frame = 0;
-                if ( Playing )
+                frame = (int) ( ( ZomblesGame.Time - myStartTime ) *
+                    Speed * CurAnim.Frequency * CurAnim.FrameCount );
+
+                if ( frame >= CurAnim.FrameCount )
+                {
+                    myStartTime += 1.0 / ( CurAnim.Frequency * Speed );
+                    CurAnim = NextAnim;
+
+                    if ( CurAnim == null )
+                    {
+                        Playing = false;
+                        return;
+                    }
+                    
                     frame = (int) ( ( ZomblesGame.Time - myStartTime ) *
                         Speed * CurAnim.Frequency * CurAnim.FrameCount ) % CurAnim.FrameCount;
-
-                if ( CurAnim.IsDirectional )
-                {
-                    float diff = Tools.AngleDif( shader.Camera.Rotation.Y, Rotation );
-                    int dir = (int) Math.Round( diff * 2.0f / MathHelper.Pi + 2 ) % 4;
-                    TextureIndex = CurAnim.FrameIndices[ dir, frame ];
                 }
-                else
-                    TextureIndex = CurAnim.FrameIndices[ 0, frame ];
-
-                base.OnRender( shader );
             }
+
+            if ( CurAnim.IsDirectional )
+            {
+                float diff = Tools.AngleDif( shader.Camera.Rotation.Y, Rotation );
+                int dir = (int) Math.Round( diff * 2.0f / MathHelper.Pi + 2 ) % 4;
+                TextureIndex = CurAnim.FrameIndices[ dir, frame ];
+            }
+            else
+                TextureIndex = CurAnim.FrameIndices[ 0, frame ];
+
+            base.OnRender( shader );
         }
     }
 }

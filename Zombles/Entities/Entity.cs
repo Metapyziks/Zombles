@@ -106,14 +106,19 @@ namespace Zombles.Entities
             IsValid = false;
         }
 
-        public T AddComponent<T>()
+        public T SetComponent<T>()
             where T : Component
         {
             T comp = Component.Create<T>( this );
             Type type = typeof( T );
 
             do
-                myComponents.Add( type, comp );
+            {
+                if ( myComponents.ContainsKey( type ) )
+                    myComponents[ type ] = comp;
+                else
+                    myComponents.Add( type, comp );
+            }
             while ( ( type = type.BaseType ) != typeof( Component ) );
 
             return comp;
