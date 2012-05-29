@@ -11,6 +11,7 @@ namespace Zombles
         public static void Main( string[] args )
         {
             ZomblesGame game = new ZomblesGame();
+            Plugin.SetGame( game );
             game.Run();
             game.Dispose();
         }

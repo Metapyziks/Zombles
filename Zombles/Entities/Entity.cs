@@ -9,18 +9,31 @@ using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
+    public delegate void EntityBuilderDelegate( Entity ent );
+
     public sealed class Entity : IEnumerable<Component>
     {
-        private static Dictionary<String, Func<Entity>> stEntBuilders = new Dictionary<string,Func<Entity>>();
+        private static Dictionary<String, EntityBuilderDelegate> stEntBuilders
+            = new Dictionary<string, EntityBuilderDelegate>();
 
-        public static void Register( String type, Func<Entity> builder )
+        public static void Register( String type, EntityBuilderDelegate builder )
         {
-            stEntBuilders.Add( type, builder );
+            if ( !stEntBuilders.ContainsKey( type ) )
+                stEntBuilders.Add( type, builder );
+            else
+                stEntBuilders[ type ] = builder;
         }
 
-        public static Entity Create( String type )
+        public static Entity Create( City city )
         {
-            return stEntBuilders[ type ]();
+            return new Entity( city );
+        }
+
+        public static Entity Create( String type, City city )
+        {
+            Entity ent = new Entity( city );
+            stEntBuilders[ type ]( ent );
+            return ent;
         }
 
         private Dictionary<Type, Component> myComponents;
@@ -52,7 +65,7 @@ namespace Zombles.Entities
             }
         }
 
-        public Entity( City city )
+        private Entity( City city )
         {
             City = city;
 

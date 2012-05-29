@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorePlugin.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Park.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />

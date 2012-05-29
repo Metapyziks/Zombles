@@ -73,6 +73,7 @@
     <Compile Include="GameScene.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
     <Compile Include="Graphics\ShaderProgram3D.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Graphics\ShaderBuilder.cs" />
     <Compile Include="Graphics\ShaderProgram.cs" />

@@ -92,18 +92,6 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         "wall_brick_9", "wall_brick_8" );
                 }
             }
-
-            int entCount = rand.Next( 16 );
-            for ( int i = 0; i < entCount; ++i )
-            {
-                Entity ent = new Entity( district.City );
-                ent.Position = new Vector3( district.X + rand.NextSingle() * district.Width, 0.0f,
-                    district.Y + rand.NextSingle() * district.Height );
-                Render rend = ent.AddComponent<Render>();
-                rend.Size = new Vector2( 0.5f, 1.0f );
-                rend.TextureIndex = (ushort) rand.Next( 40 );
-                district.PlaceEntity( ent );
-            }
         }
     }
 }

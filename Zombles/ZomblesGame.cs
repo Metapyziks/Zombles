@@ -18,14 +18,21 @@ namespace Zombles
 {
     public class ZomblesGame : GameWindow
     {
+        private Stopwatch myTimer;
+
         public Scene CurrentScene { get; private set; }
         public SpriteShader SpriteShader { get; private set; }
+
+        public double Time
+        {
+            get { return myTimer.Elapsed.TotalSeconds; }
+        }
 
         public ZomblesGame()
             : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 8, 0 ), "Zombles" )
         {
-            VSync = VSyncMode.On;
-            Context.SwapInterval = 1;
+            VSync = VSyncMode.Off;
+            // Context.SwapInterval = 1;
 
             WindowBorder = WindowBorder.Fixed;
 
@@ -48,6 +55,7 @@ namespace Zombles
                     Res.MountArchive( Res.LoadArchive( dataPath + line ) );
 
             TextureManager.Initialize();
+            Plugin.Initialize();
 
             SpriteShader = new SpriteShader( Width, Height );
 
@@ -55,6 +63,9 @@ namespace Zombles
             Mouse.ButtonUp += OnMouseButtonUp;
             Mouse.ButtonDown += OnMouseButtonDown;
             Mouse.WheelChanged += OnMouseWheelChanged;
+
+            myTimer = new Stopwatch();
+            myTimer.Start();
 
             SetScene( new GameScene( this ) );
         }
@@ -75,6 +86,8 @@ namespace Zombles
         {
             if ( CurrentScene != null )
                 CurrentScene.OnUpdateFrame( e );
+
+            Plugin.Think( e.Time );
         }
 
         protected override void OnRenderFrame( FrameEventArgs e )

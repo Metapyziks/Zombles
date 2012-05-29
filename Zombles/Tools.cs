@@ -329,5 +329,23 @@ namespace Zombles
 
             return valid[ rand.Next( valid.Count ) ];
         }
+
+        public static bool HasAttribute<T>( this Type type, bool inherit )
+            where T : Attribute
+        {
+            return type.GetCustomAttributes( typeof( T ), inherit ).Length > 0;
+        }
+
+        public static T GetAttribute<T>( this Type type, bool inherit )
+            where T : Attribute
+        {
+            return (T) type.GetCustomAttributes( typeof( T ), inherit )[ 0 ];
+        }
+
+        public static T[] GetAttributes<T>( this Type type, bool inherit )
+            where T : Attribute
+        {
+            return (T[]) type.GetCustomAttributes( typeof( T ), inherit );
+        }
     }
 }
