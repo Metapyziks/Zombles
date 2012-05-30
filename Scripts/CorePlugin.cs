@@ -43,12 +43,21 @@ namespace Zombles.Scripts
                 ent.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 ent.Spawn();
             }
+        }
 
-            NearbyEntityEnumerator iter = new NearbyEntityEnumerator( city, new Vector2( city.Width / 2.0f, city.Height / 2.0f ), 32.0f );
+        protected override void OnThink( double dt )
+        {
+            City city = ( ZomblesGame.CurrentScene as GameScene ).City;
+
+            float x = (float) ( ( Math.Cos( ZomblesGame.Time * Math.PI / 8.0 ) + 1.0 ) * city.Width / 2.0 );
+            float y = (float) ( ( Math.Sin( ZomblesGame.Time * Math.PI / 8.0 ) + 1.0 ) * city.Height / 2.0 );
+
+            NearbyEntityEnumerator iter = new NearbyEntityEnumerator( city, new Vector2( x, y ), 32.0f );
+            float height = (float) ( Math.Sin( ZomblesGame.Time * Math.PI ) + 1.0 ) * 4.0f;
             while ( iter.MoveNext() )
             {
                 Vector3 pos = iter.Current.Position;
-                pos.Y += 8.0f;
+                pos.Y = height;
                 iter.Current.Position = pos;
             }
         }

@@ -15,6 +15,9 @@ namespace Zombles.Entities
         private IEnumerator<Entity> myEntEnumerator;
         private float myRange2;
 
+        private float myHWidth;
+        private float myHHeight;
+
         public readonly City City;
         public readonly Vector2 Center;
         public readonly float Range;
@@ -28,6 +31,9 @@ namespace Zombles.Entities
             myCurDistrict = null;
             myEntEnumerator = null;
             myRange2 = range * range;
+
+            myHWidth = City.Width / 2.0f;
+            myHHeight = City.Height / 2.0f;
         }
 
         public Entity Current
@@ -87,21 +93,32 @@ namespace Zombles.Entities
         {
             float xdiff = 0.0f, ydiff = 0.0f;
             if ( Center.X < district.Bounds.Left )
-                xdiff = district.Bounds.Left - Center.X;
+                xdiff = Math.Min( district.Bounds.Left - Center.X, Center.X - district.Bounds.Right + City.Width );
             else if ( Center.X > district.Bounds.Right )
-                xdiff = district.Bounds.Right - Center.X;
+                xdiff = Math.Min( Center.X - district.Bounds.Right, district.Bounds.Left - Center.X + City.Width );
+
             if ( Center.Y < district.Bounds.Top )
-                ydiff = district.Bounds.Top - Center.Y;
+                ydiff = Math.Min( district.Bounds.Top - Center.Y, Center.Y - district.Bounds.Bottom + City.Height );
             else if ( Center.Y > district.Bounds.Bottom )
-                ydiff = district.Bounds.Bottom - Center.Y;
+                ydiff = Math.Min( Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + City.Height );
 
             return xdiff * xdiff + ydiff * ydiff <= myRange2;
         }
 
         private bool InRange( Entity ent )
         {
-            float xdiff = Center.X - ent.Position.X;
-            float ydiff = Center.Y - ent.Position.Z;
+            float xdiff = ent.Position.X - Center.X;
+            float ydiff = ent.Position.Z - Center.Y;
+
+            if ( xdiff >= myHWidth )
+                xdiff -= City.Width;
+            else if ( xdiff < -myHWidth )
+                xdiff += City.Width;
+
+            if ( ydiff >= myHHeight )
+                ydiff -= City.Height;
+            else if ( ydiff < -myHHeight )
+                ydiff += City.Height;
 
             return xdiff * xdiff + ydiff * ydiff <= myRange2;
         }
