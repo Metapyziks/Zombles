@@ -18,7 +18,11 @@ namespace Zombles
 {
     public class ZomblesGame : GameWindow
     {
+        public const double ThinkFrequency = 60.0;
+        public const double ThinkPeriod = 1.0 / ThinkFrequency;
+
         private static Stopwatch myTimer;
+        private static Stopwatch myThinkTimer;
 
         public static Scene CurrentScene { get; private set; }
         public static SpriteShader SpriteShader { get; private set; }
@@ -67,6 +71,9 @@ namespace Zombles
             myTimer = new Stopwatch();
             myTimer.Start();
 
+            myThinkTimer = new Stopwatch();
+            myThinkTimer.Start();
+
             SetScene( new GameScene( this ) );
         }
 
@@ -84,10 +91,15 @@ namespace Zombles
 
         protected override void OnUpdateFrame( FrameEventArgs e )
         {
-            if ( CurrentScene != null )
-                CurrentScene.OnUpdateFrame( e );
+            if ( myThinkTimer.Elapsed.TotalSeconds < ThinkPeriod )
+                return;
 
-            Plugin.Think( e.Time );
+            myThinkTimer.Restart();
+
+            if ( CurrentScene != null )
+                CurrentScene.OnUpdateFrame( new FrameEventArgs( ThinkPeriod ) );
+
+            Plugin.Think( ThinkPeriod );
         }
 
         protected override void OnRenderFrame( FrameEventArgs e )

@@ -66,7 +66,8 @@ namespace Zombles.Entities
             return ent;
         }
 
-        private Dictionary<Type, Component> myComponents;
+        private List<Component> myComps;
+        private Dictionary<Type, Component> myCompDict;
         private Vector3 myPosition;
         private bool myPosChanged;
 
@@ -100,7 +101,8 @@ namespace Zombles.Entities
         {
             City = city;
 
-            myComponents = new Dictionary<Type, Component>();
+            myComps = new List<Component>();
+            myCompDict = new Dictionary<Type, Component>();
             myPosition = new Vector3();
             myPosChanged = true;
 
@@ -115,12 +117,19 @@ namespace Zombles.Entities
 
             do
             {
-                if ( myComponents.ContainsKey( type ) )
-                    myComponents[ type ] = comp;
+                if ( myCompDict.ContainsKey( type ) )
+                {
+                    if ( myComps.Contains( myCompDict[ type ] ) )
+                        myComps.Remove( myCompDict[ type ] );
+
+                    myCompDict[ type ] = comp;
+                }
                 else
-                    myComponents.Add( type, comp );
+                    myCompDict.Add( type, comp );
             }
             while ( ( type = type.BaseType ) != typeof( Component ) );
+
+            myComps.Add( comp );
 
             return comp;
         }
@@ -128,23 +137,23 @@ namespace Zombles.Entities
         public bool HasComponent<T>()
             where T : Component
         {
-            return myComponents.ContainsKey( typeof( T ) );
+            return myCompDict.ContainsKey( typeof( T ) );
         }
 
         public bool HasComponent( Type t )
         {
-            return myComponents.ContainsKey( t );
+            return myCompDict.ContainsKey( t );
         }
 
         public T GetComponent<T>()
             where T : Component
         {
-            return (T) myComponents[ typeof( T ) ];
+            return (T) myCompDict[ typeof( T ) ];
         }
 
         public Component GetComponent( Type t )
         {
-            return myComponents[ t ];
+            return myCompDict[ t ];
         }
 
         public void Spawn()
@@ -199,7 +208,7 @@ namespace Zombles.Entities
 
         public IEnumerator<Component> GetEnumerator()
         {
-            return myComponents.Values.GetEnumerator();
+            return myComps.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

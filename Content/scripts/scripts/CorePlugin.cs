@@ -46,10 +46,5 @@ namespace Zombles.Scripts
                 ent.Spawn();
             }
         }
-
-        protected override void OnThink( double dt )
-        {
-
-        }
     }
 }

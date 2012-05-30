@@ -15,7 +15,7 @@ namespace Zombles.Scripts
             Entity.Register( "human", delegate( Entity ent )
             {
                 ent.SetComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
-                ent.SetComponent<Collision>().SetDimentions( 0.25f, 0.25f );
+                ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f );
                 ent.SetComponent<Movement>();
                 ent.SetComponent<Control>();
             } );
@@ -45,11 +45,6 @@ namespace Zombles.Scripts
                 ent.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 ent.Spawn();
             }
-        }
-
-        protected override void OnThink( double dt )
-        {
-
         }
     }
 }

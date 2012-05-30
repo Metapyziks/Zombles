@@ -27,16 +27,8 @@ namespace Zombles.Entities
 
         public void Move( Vector2 move )
         {
-            /*
             if ( myCollision != null )
-            {
-                NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
-                    new Vector2( Entity.Position.X, Entity.Position.Z ), 4.0f );
-
-                while ( iter.MoveNext() )
-                    move = myCollision.TryMove( iter.Current, move );
-            }
-            */
+                move = myCollision.TryMove( move );
 
             Vector3 pos = Entity.Position;
             pos.X += move.X;
