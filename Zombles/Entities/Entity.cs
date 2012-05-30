@@ -87,11 +87,12 @@ namespace Zombles.Entities
             get { return myPosition; }
             set
             {
-                if ( !myPosition.Equals( value ) )
-                {
-                    myPosition = value;
-                    myPosChanged = true;
-                }
+                myPosition = value;
+                if( myPosition.X < 0 || myPosition.X >= City.Width )
+                    myPosition.X -= (int) Math.Floor( myPosition.X / City.Width ) * City.Width;
+                if ( myPosition.Z < 0 || myPosition.Z >= City.Height )
+                    myPosition.Z -= (int) Math.Floor( myPosition.Z / City.Height ) * City.Height;
+                myPosChanged = true;
             }
         }
 

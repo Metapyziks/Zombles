@@ -167,6 +167,28 @@ namespace Zombles.Geometry
                 Block.GetVertices( verts, ref i );
         }
 
+        public void Think( double dt )
+        {
+            if ( IsBranch )
+            {
+                ChildA.Think( dt );
+                ChildB.Think( dt );
+            }
+            else if ( IsLeaf )
+                Block.Think( dt );
+        }
+
+        public void PostThink()
+        {
+            if ( IsBranch )
+            {
+                ChildA.PostThink();
+                ChildB.PostThink();
+            }
+            else if ( IsLeaf )
+                Block.PostThink();
+        }
+
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             if ( IsBranch )

@@ -125,6 +125,8 @@ namespace Zombles
                 myFPSText.Text = string.Format( "FT: {0:F}ms FPS: {1:F} MEM: {2:F}MB", period, freq, Process.GetCurrentProcess().PrivateMemorySize64 / ( 1024d * 1024d ) );
             }
 
+            City.Think( e.Time );
+
             Vector2 movement = new Vector2( 0.0f, 0.0f );
             float angleY = Camera.Yaw;
 

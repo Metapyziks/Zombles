@@ -14,8 +14,10 @@ namespace Zombles.Scripts
         {
             Entity.Register( "human", delegate( Entity ent )
             {
-                RenderAnim r = ent.SetComponent<RenderAnim>();
-                r.Size = new Vector2( 0.5f, 1.0f );
+                ent.SetComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
+                ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f );
+                ent.SetComponent<Movement>();
+                ent.SetComponent<Control>();
             } );
 
             Entity.Register( "survivor", "human", delegate( Entity ent )
@@ -36,7 +38,7 @@ namespace Zombles.Scripts
             City city = ( ZomblesGame.CurrentScene as GameScene ).City;
             Random rand = new Random();
 
-            for ( int i = 0; i < 4096; ++i )
+            for ( int i = 0; i < 1024; ++i )
             {
                 Entity ent = Entity.Create( "survivor", city );
                 ent.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
@@ -47,19 +49,7 @@ namespace Zombles.Scripts
 
         protected override void OnThink( double dt )
         {
-            City city = ( ZomblesGame.CurrentScene as GameScene ).City;
 
-            float x = (float) ( ( Math.Cos( ZomblesGame.Time * Math.PI / 8.0 ) + 1.0 ) * city.Width / 2.0 );
-            float y = (float) ( ( Math.Sin( ZomblesGame.Time * Math.PI / 8.0 ) + 1.0 ) * city.Height / 2.0 );
-
-            NearbyEntityEnumerator iter = new NearbyEntityEnumerator( city, new Vector2( x, y ), 32.0f );
-            float height = (float) ( Math.Sin( ZomblesGame.Time * Math.PI ) + 1.0 ) * 4.0f;
-            while ( iter.MoveNext() )
-            {
-                Vector3 pos = iter.Current.Position;
-                pos.Y = height;
-                iter.Current.Position = pos;
-            }
         }
     }
 }

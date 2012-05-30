@@ -45,6 +45,12 @@ namespace Zombles.Geometry
             myVertexBuffer.SetData( verts );
         }
 
+        public void Think( double dt )
+        {
+            RootDistrict.Think( dt );
+            RootDistrict.PostThink();
+        }
+
         public void RenderGeometry( GeometryShader shader, bool baseOnly = false )
         {
             myVertexBuffer.StartBatch( shader );
