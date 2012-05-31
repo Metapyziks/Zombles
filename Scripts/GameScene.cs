@@ -15,6 +15,8 @@ using Zombles.Graphics;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
+using Zombles.Scripts.UI;
+
 namespace Zombles.Scripts
 {
     public class GameScene : Scene
@@ -22,6 +24,7 @@ namespace Zombles.Scripts
         public const int WorldSize = 256;
 
         private UILabel myFPSText;
+        private UIInfectionDisplay myInfDisplay;
 
         private long myTotalFrameTime;
         private int myFramesCompleted;
@@ -85,6 +88,13 @@ namespace Zombles.Scripts
                 myFPSText.Colour = Color4.White;
                 AddChild( myFPSText );
 
+                myInfDisplay = new UIInfectionDisplay();
+                myInfDisplay.Width = Width - 8.0f;
+                myInfDisplay.Height = 8.0f;
+                myInfDisplay.Left = 4.0f;
+                myInfDisplay.Top = Height - 4.0f - myInfDisplay.Height;
+                AddChild( myInfDisplay );
+
                 Generator = new CityGenerator();
                 City = Generator.Generate( WorldSize, WorldSize );
                 Plugin.CityGenerated();
@@ -120,6 +130,8 @@ namespace Zombles.Scripts
             }
 
             City.Think( e.Time );
+
+            myInfDisplay.UpdateBars();
 
             Vector2 movement = new Vector2( 0.0f, 0.0f );
             float angleY = Camera.Yaw;

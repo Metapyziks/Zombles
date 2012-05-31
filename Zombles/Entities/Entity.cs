@@ -219,8 +219,8 @@ namespace Zombles.Entities
 
         public void Think( double dt )
         {
-            foreach ( Component comp in this )
-                comp.OnThink( dt );
+            for( int i = myComps.Count - 1; i >= 0; -- i )
+                myComps[ i ].OnThink( dt );
         }
 
         public void UpdateBlock()

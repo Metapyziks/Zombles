@@ -12,6 +12,10 @@ namespace Zombles.Scripts.Entities
 {
     public class Zombie : Human
     {
+        public static int Count { get; private set; }
+
+        private bool myCounted;
+
         private static EntityAnim stWalkAnim;
         private static EntityAnim stStandAnim;
 
@@ -48,6 +52,28 @@ namespace Zombles.Scripts.Entities
             : base( ent )
         {
             myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 1.25f;
+        }
+
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+
+            if ( !myCounted )
+            {
+                ++Count;
+                myCounted = true;
+            }
+        }
+
+        public override void OnRemove()
+        {
+            base.OnRemove();
+
+            if ( myCounted )
+            {
+                --Count;
+                myCounted = false;
+            }
         }
     }
 }

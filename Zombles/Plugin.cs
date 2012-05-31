@@ -67,7 +67,7 @@ namespace Zombles
 
         public static void Initialize()
         {
-            foreach ( Type t in Scripts.GetTypes( typeof( Plugin ) ) )
+            foreach ( Type t in ScriptManager.GetTypes( typeof( Plugin ) ) )
                 Register( t );
 
             stRegistered = new Dictionary<string, Plugin>();

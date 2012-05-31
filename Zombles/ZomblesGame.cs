@@ -61,7 +61,7 @@ namespace Zombles
                     Res.MountArchive( Res.LoadArchive( dataPath + line ) );
 
             TextureManager.Initialize();
-            Scripts.Compile();
+            ScriptManager.Compile();
             Plugin.Initialize();
 
             SpriteShader = new SpriteShader( Width, Height );
@@ -79,7 +79,7 @@ namespace Zombles
 
             mySpareTime = 0.0;
 
-            SetScene( Scripts.CreateInstance<Scene>( "Zombles.Scripts.GameScene", this ) );
+            SetScene( ScriptManager.CreateInstance<Scene>( "Zombles.Scripts.GameScene", this ) );
         }
 
         public static void SetScene( Scene newScene )

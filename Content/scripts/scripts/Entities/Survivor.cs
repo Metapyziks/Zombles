@@ -10,6 +10,10 @@ namespace Zombles.Scripts.Entities
 {
     public class Survivor : Human
     {
+        public static int Count { get; private set; }
+
+        private bool myCounted;
+
         private static EntityAnim stWalkAnim;
         private static EntityAnim stStandAnim;
 
@@ -132,6 +136,28 @@ namespace Zombles.Scripts.Entities
             {
                 Running = false;
                 UpdateSpeed();
+            }
+        }
+
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+
+            if ( !myCounted )
+            {
+                ++Count;
+                myCounted = true;
+            }
+        }
+
+        public override void OnRemove()
+        {
+            base.OnRemove();
+
+            if ( myCounted )
+            {
+                --Count;
+                myCounted = false;
             }
         }
     }

@@ -25,7 +25,7 @@ namespace Zombles
             String contents = reader.ReadToEnd();
 
             ScriptFile file = new ScriptFile( keyPrefix + fileName, contents );
-            Scripts.Register( file );
+            ScriptManager.Register( file );
             ResourceItem[] items = new ResourceItem[]
         {
             new ResourceItem( keyPrefix + fileName, file )
@@ -37,7 +37,7 @@ namespace Zombles
         public override object LoadFromArchive( BinaryReader stream )
         {
             ScriptFile sf = new ScriptFile( stream );
-            Scripts.Register( sf );
+            ScriptManager.Register( sf );
             return sf;
         }
 
@@ -71,7 +71,7 @@ namespace Zombles
         }
     }
 
-    public static class Scripts
+    public static class ScriptManager
     {
         private static List<ScriptFile> stScripts = new List<ScriptFile>();
 

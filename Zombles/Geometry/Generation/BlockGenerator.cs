@@ -94,7 +94,7 @@ namespace Zombles.Geometry.Generation
 
         public static void FindGenerators()
         {
-            Type[] types = Scripts.GetTypes( typeof( BlockGenerator ) );
+            Type[] types = ScriptManager.GetTypes( typeof( BlockGenerator ) );
             List<BlockGenerator> valid = new List<BlockGenerator>();
 
             for ( int i = 0; i < types.Length; ++i )
