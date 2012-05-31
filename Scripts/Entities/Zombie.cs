@@ -75,7 +75,7 @@ namespace Zombles.Scripts.Entities
 
             if ( ZomblesGame.Time >= myNextBleed )
             {
-                City.SplashBlood( Position2D, 0.25f );
+                City.SplashBlood( Position2D, 0.5f );
                 myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
             }
         }

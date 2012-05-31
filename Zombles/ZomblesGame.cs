@@ -82,6 +82,15 @@ namespace Zombles
             SetScene( ScriptManager.CreateInstance<Scene>( "Zombles.Scripts.GameScene", this ) );
         }
 
+        protected override void OnResize( EventArgs e )
+        {
+            CurrentScene.OnResize();
+
+            SpriteShader.SetScreenSize( Width, Height );
+
+            GL.Viewport( ClientRectangle );
+        }
+
         public static void SetScene( Scene newScene )
         {
             if ( CurrentScene != null )

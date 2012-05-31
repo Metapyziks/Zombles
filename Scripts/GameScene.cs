@@ -85,16 +85,14 @@ namespace Zombles.Scripts
 
             if ( firstTime )
             {
-                myFPSText = new UILabel( Font.Large, new Vector2( 4.0f, 4.0f ) );
+                myFPSText = new UILabel( Font.Large );
                 myFPSText.Colour = Color4.White;
                 AddChild( myFPSText );
 
                 myInfDisplay = new UIInfectionDisplay();
-                myInfDisplay.Width = Width - 8.0f;
-                myInfDisplay.Height = 8.0f;
-                myInfDisplay.Left = 4.0f;
-                myInfDisplay.Top = Height - 4.0f - myInfDisplay.Height;
                 AddChild( myInfDisplay );
+
+                PositionUI();
 
                 Generator = new CityGenerator();
                 City = Generator.Generate( WorldSize, WorldSize );
@@ -119,6 +117,24 @@ namespace Zombles.Scripts
 
                 myFrameTimer.Start();
             }
+        }
+
+        public override void OnResize()
+        {
+            Camera.SetScreenSize( Width, Height );
+
+            PositionUI();
+        }
+
+        private void PositionUI()
+        {
+            myFPSText.Left = 4.0f;
+            myFPSText.Top = 4.0f;
+
+            myInfDisplay.Width = Width - 8.0f;
+            myInfDisplay.Height = 8.0f;
+            myInfDisplay.Left = 4.0f;
+            myInfDisplay.Top = Height - 4.0f - myInfDisplay.Height;
         }
 
         public override void OnUpdateFrame( FrameEventArgs e )
@@ -267,13 +283,21 @@ namespace Zombles.Scripts
 
         public override void OnKeyPress( KeyPressEventArgs e )
         {
-            if ( e.KeyChar == 'x' )
+            if ( char.ToLower( e.KeyChar ) == 'x' )
             {
                 myHideTop = !myHideTop;
             }
-            else if ( e.KeyChar == 'g' )
+            else if ( char.ToLower( e.KeyChar ) == 'f' )
+            {
+                if ( GameWindow.WindowState == WindowState.Fullscreen )
+                    GameWindow.WindowState = WindowState.Normal;
+                else
+                    GameWindow.WindowState = WindowState.Fullscreen;
+            }
+            else if ( char.ToLower( e.KeyChar ) == 'g' )
             {
                 City = Generator.Generate( WorldSize, WorldSize );
+                Plugin.CityGenerated();
             }
 
             base.OnKeyPress( e );

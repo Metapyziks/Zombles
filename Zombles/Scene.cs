@@ -138,6 +138,11 @@ namespace Zombles
             myUIRoot.Render( SpriteShader );
         }
 
+        public virtual void OnResize()
+        {
+
+        }
+
         public virtual void Dispose()
         {
 
