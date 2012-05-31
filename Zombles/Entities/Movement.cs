@@ -11,10 +11,12 @@ namespace Zombles.Entities
     {
         private Collision myCollision;
 
+        public Vector2 Velocity { get; set; }
+
         public Movement( Entity ent )
             : base( ent )
         {
-
+            Velocity = new Vector2();
         }
 
         public override void OnSpawn()
@@ -23,6 +25,17 @@ namespace Zombles.Entities
 
             if ( Entity.HasComponent<Collision>() )
                 myCollision = Entity.GetComponent<Collision>();
+        }
+
+        public void Stop()
+        {
+            Velocity = new Vector2();
+        }
+
+        public override void OnThink( double dt )
+        {
+            if ( Velocity.LengthSquared > 0.0f )
+                Move( Velocity * (float) dt );
         }
 
         public void Move( Vector2 move )

@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
+using OpenTK;
+
 using Zombles.Graphics;
+using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
@@ -19,6 +22,21 @@ namespace Zombles.Entities
                 throw new MissingMethodException( "Type " + t.FullName + " is missing a valid constructor." );
 
             return (T) c.Invoke( new object[] { ent } );
+        }
+
+        protected City City
+        {
+            get { return Entity.City; }
+        }
+
+        protected Vector3 Position
+        {
+            get { return Entity.Position; }
+        }
+
+        protected Vector2 Position2D
+        {
+            get { return Entity.Position2D; }
         }
 
         public readonly Entity Entity;

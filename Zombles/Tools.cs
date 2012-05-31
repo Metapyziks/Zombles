@@ -11,6 +11,8 @@ namespace Zombles
 {
     public static class Tools
     {
+        public static readonly Random Random = new Random();
+
         public static bool DoesExtend( this Type self, Type type )
         {
             return self.BaseType == type || ( self.BaseType != null && self.BaseType.DoesExtend( type ) );

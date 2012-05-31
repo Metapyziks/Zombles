@@ -97,6 +97,21 @@ namespace Zombles.Entities
             }
         }
 
+        public Vector2 Position2D
+        {
+            get { return new Vector2( myPosition.X, myPosition.Z ); }
+            set
+            {
+                myPosition.X = value.X;
+                myPosition.Z = value.Y;
+                if ( myPosition.X < 0 || myPosition.X >= City.Width )
+                    myPosition.X -= (int) Math.Floor( myPosition.X / City.Width ) * City.Width;
+                if ( myPosition.Z < 0 || myPosition.Z >= City.Height )
+                    myPosition.Z -= (int) Math.Floor( myPosition.Z / City.Height ) * City.Height;
+                myPosChanged = true;
+            }
+        }
+
         private Entity( City city )
         {
             City = city;

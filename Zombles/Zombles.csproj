@@ -53,7 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Collision.cs" />
-    <Compile Include="Entities\Control.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\NearbyEntityEnumerator.cs" />
     <Compile Include="Entities\RenderAnim.cs" />

@@ -6,6 +6,8 @@ using Zombles.Graphics;
 using Zombles.Geometry;
 using Zombles.Entities;
 
+using Zombles.Scripts.Entities;
+
 namespace Zombles.Scripts
 {
     public class CorePlugin : Plugin
@@ -17,19 +19,18 @@ namespace Zombles.Scripts
                 ent.SetComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
                 ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
                 ent.SetComponent<Movement>();
-                ent.SetComponent<Control>();
             } );
 
             Entity.Register( "survivor", "human", delegate( Entity ent )
             {
-                RenderAnim r = ent.GetComponent<RenderAnim>();
-                r.Start( EntityAnim.GetAnim( "human walk" ) );
+                ent.SetComponent<Survivor>();
+                ent.SetComponent<SurvivorAI>();
             } );
 
             Entity.Register( "zombie", "human", delegate( Entity ent )
             {
-                RenderAnim r = ent.GetComponent<RenderAnim>();
-                r.Start( EntityAnim.GetAnim( "zombie walk" ) );
+                ent.SetComponent<Zombie>();
+                ent.SetComponent<ZombieAI>();
             } );
         }
 

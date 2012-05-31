@@ -49,6 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="Entities\AI.cs" />
+    <Compile Include="Entities\Human.cs" />
+    <Compile Include="Entities\Survivor.cs" />
+    <Compile Include="Entities\SurvivorAI.cs" />
+    <Compile Include="Entities\Zombie.cs" />
+    <Compile Include="Entities\ZombieAI.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Park.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />
@@ -67,9 +73,7 @@
       <Name>Zombles</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
