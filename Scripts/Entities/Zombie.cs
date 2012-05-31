@@ -21,6 +21,8 @@ namespace Zombles.Scripts.Entities
 
         private float myMoveSpeed;
 
+        private double myNextBleed;
+
         public override EntityAnim WalkAnim
         {
             get
@@ -62,6 +64,19 @@ namespace Zombles.Scripts.Entities
             {
                 ++Count;
                 myCounted = true;
+            }
+
+            myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
+        }
+
+        public override void OnThink( double dt )
+        {
+            base.OnThink( dt );
+
+            if ( ZomblesGame.Time >= myNextBleed )
+            {
+                City.SplashBlood( Position2D, 0.25f );
+                myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
             }
         }
 

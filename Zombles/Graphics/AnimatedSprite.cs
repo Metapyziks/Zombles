@@ -27,7 +27,7 @@ namespace Zombles.Graphics
 
         public double FrameRate;
 
-        public AnimatedSprite( Texture2D texture, int frameWidth, int frameHeight, double frameRate, float scale = 1.0f )
+        public AnimatedSprite( BitmapTexture2D texture, int frameWidth, int frameHeight, double frameRate, float scale = 1.0f )
             : base( texture, scale )
         {
             myFrameWidth = frameWidth;

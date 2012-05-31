@@ -94,7 +94,7 @@ namespace Zombles.Graphics
             }
         }
 
-        public FrameSprite( Texture2D texture, float scale = 1.0f )
+        public FrameSprite( BitmapTexture2D texture, float scale = 1.0f )
             : base( texture, scale )
         {
             myFrameTopLeft = new Vector2();

@@ -4,9 +4,9 @@ namespace Zombles.Graphics
 {
     public class SpriteShader : ShaderProgram2D
     {
-        private Texture2D myTexture;
+        private BitmapTexture2D myTexture;
 
-        public Texture2D Texture
+        public BitmapTexture2D Texture
         {
             get
             {
@@ -91,7 +91,18 @@ namespace Zombles.Graphics
 
         protected override void OnStartBatch()
         {
+            base.OnStartBatch();
+
+            GL.Enable( EnableCap.Blend );
+
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
+        }
+
+        protected override void OnEndBatch()
+        {
+            base.OnEndBatch();
+
+            GL.Disable( EnableCap.Blend );
         }
     }
 }

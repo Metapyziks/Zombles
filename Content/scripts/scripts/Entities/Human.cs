@@ -44,7 +44,7 @@ namespace Zombles.Scripts.Entities
 
         public void StartMoving( Vector2 dir )
         {
-            if ( !Anim.Playing || !Movement.Moving )
+            if ( !Anim.Playing || !Movement.Moving || Anim.CurAnim != WalkAnim )
                 Anim.Start( WalkAnim );
 
             dir.Normalize();
@@ -65,7 +65,7 @@ namespace Zombles.Scripts.Entities
 
         public void StopMoving()
         {
-            if ( !Anim.Playing || Movement.Moving )
+            if ( !Anim.Playing || Movement.Moving || Anim.CurAnim != StandAnim )
                 Anim.Start( StandAnim );
 
             Movement.Stop();

@@ -24,11 +24,11 @@ namespace Zombles.Graphics
         {
             Prefix = filePrefix;
 
-            KeyValuePair<String, Texture2D>[] textures = Res.GetAll<Texture2D>();
+            KeyValuePair<String, BitmapTexture2D>[] textures = Res.GetAll<BitmapTexture2D>();
 
             List<String> tileNames = new List<string>();
 
-            foreach ( KeyValuePair<String, Texture2D> keyVal in textures )
+            foreach ( KeyValuePair<String, BitmapTexture2D> keyVal in textures )
                 if ( keyVal.Key.StartsWith( Prefix ) && keyVal.Value.Width == 8 && keyVal.Value.Height == 8 )
                     tileNames.Add( keyVal.Key );
 

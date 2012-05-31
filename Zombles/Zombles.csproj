@@ -71,11 +71,13 @@
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
+    <Compile Include="Graphics\BloodShader.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\EntityAnim.cs" />
     <Compile Include="Graphics\FlatEntityShader.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
+    <Compile Include="Graphics\LumTexture2D.cs" />
     <Compile Include="Graphics\ShaderProgram3D.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Scene.cs" />
@@ -85,7 +87,7 @@
     <Compile Include="Graphics\SpriteShader.cs" />
     <Compile Include="Graphics\Text.cs" />
     <Compile Include="Graphics\Texture.cs" />
-    <Compile Include="Graphics\Texture2D.cs" />
+    <Compile Include="Graphics\BitmapTexture2D.cs" />
     <Compile Include="Graphics\Texture2DArray.cs" />
     <Compile Include="Graphics\TextureManager.cs" />
     <Compile Include="Graphics\VertexBuffer.cs" />

@@ -13,14 +13,14 @@ namespace Zombles.Graphics
     public class RTexture2DManager : RManager
     {
         public RTexture2DManager()
-            : base( typeof( Texture2D ), 2, "png" )
+            : base( typeof( BitmapTexture2D ), 2, "png" )
         {
 
         }
 
         public override ResourceItem[] LoadFromFile( String keyPrefix, String fileName, String fileExtension, FileStream stream )
         {
-            return new ResourceItem[] { new ResourceItem( keyPrefix + fileName, new Texture2D( new Bitmap( stream ) ) ) };
+            return new ResourceItem[] { new ResourceItem( keyPrefix + fileName, new BitmapTexture2D( new Bitmap( stream ) ) ) };
         }
 
         public override Object LoadFromArchive( BinaryReader stream )
@@ -41,12 +41,12 @@ namespace Zombles.Graphics
                     ) );
                 }
 
-            return new Texture2D( bmp );
+            return new BitmapTexture2D( bmp );
         }
 
         public override void SaveToArchive( BinaryWriter stream, Object item )
         {
-            Texture2D tex = (Texture2D) item;
+            BitmapTexture2D tex = (BitmapTexture2D) item;
             Bitmap bmp = tex.Bitmap;
 
             ushort wid = (ushort) tex.Width;
@@ -67,34 +67,36 @@ namespace Zombles.Graphics
         }
     }
 
-    public class Texture2D : Texture
+    public class BitmapTexture2D : Texture
     {
-        public static readonly Texture2D Blank;
+        public static readonly BitmapTexture2D Blank;
 
-        static Texture2D()
+        static BitmapTexture2D()
         {
             Bitmap blankBmp = new Bitmap( 1, 1 );
             blankBmp.SetPixel( 0, 0, Color.White );
-            Blank = new Texture2D( blankBmp );
+            Blank = new BitmapTexture2D( blankBmp );
         }
+
+        private readonly int myActualSize;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
         public Bitmap Bitmap { get; private set; }
 
-        public Texture2D( Bitmap bitmap )
+        public BitmapTexture2D( Bitmap bitmap )
             : base( TextureTarget.Texture2D )
         {
             Width = bitmap.Width;
             Height = bitmap.Height;
 
-            int size = GetNextPOTS( bitmap.Width, bitmap.Height );
+            myActualSize = GetNextPOTS( bitmap.Width, bitmap.Height );
 
-            if ( size == bitmap.Width && size == bitmap.Height )
+            if ( myActualSize == bitmap.Width && myActualSize == bitmap.Height )
                 Bitmap = bitmap;
             else
             {
-                Bitmap = new Bitmap( size, size );
+                Bitmap = new Bitmap( myActualSize, myActualSize );
 
                 for ( int x = 0; x < Width; ++x )
                     for ( int y = 0; y < Height; ++y )
@@ -111,28 +113,14 @@ namespace Zombles.Graphics
         {
             return new Vector2
             {
-                X = x / Bitmap.Width,
-                Y = y / Bitmap.Height
+                X = x / myActualSize,
+                Y = y / myActualSize
             };
-        }
-
-        public Color GetPixel( int x, int y )
-        {
-            return Bitmap.GetPixel( x, y );
-        }
-
-        public void SetPixel( int x, int y, Color colour )
-        {
-            if ( this == Blank )
-                return;
-
-            Bitmap.SetPixel( x, y, colour );
-            Update();
         }
 
         protected override void Load()
         {
-            GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float) TextureEnvMode.Modulate );
+            GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (int) TextureEnvMode.Modulate );
 
             BitmapData data = Bitmap.LockBits( new Rectangle( 0, 0, Bitmap.Width, Bitmap.Height ), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 
@@ -140,8 +128,8 @@ namespace Zombles.Graphics
 
             Bitmap.UnlockBits( data );
 
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (float) TextureMinFilter.Nearest );
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (float) TextureMagFilter.Nearest );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) TextureMinFilter.Nearest );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Nearest );
         }
     }
 }

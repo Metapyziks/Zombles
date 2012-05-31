@@ -10,7 +10,7 @@ namespace Zombles.Graphics
     public class Texture2DArray : Texture
     {
         private String[] myNames;
-        private Texture2D[] myTextures;
+        private BitmapTexture2D[] myTextures;
 
         private UInt32[] myData;
 
@@ -25,10 +25,10 @@ namespace Zombles.Graphics
             Height = height;
 
             myNames = textureNames;
-            myTextures = new Texture2D[ textureNames.Length ];
+            myTextures = new BitmapTexture2D[ textureNames.Length ];
 
             for ( int i = 0; i < textureNames.Length; ++i )
-                myTextures[ i ] = Res.Get<Texture2D>( myNames[ i ] );
+                myTextures[ i ] = Res.Get<BitmapTexture2D>( myNames[ i ] );
 
             Count = 1;
             while ( Count < textureNames.Length )
@@ -79,6 +79,8 @@ namespace Zombles.Graphics
             GL.TexImage3D( TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
                 Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, myData );
             GL.GenerateMipmap( GenerateMipmapTarget.Texture2DArray );
+
+            myData = null;
         }
     }
 }

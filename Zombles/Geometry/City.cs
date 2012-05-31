@@ -12,6 +12,7 @@ namespace Zombles.Geometry
     public class City : IEnumerable<Block>, IDisposable
     {
         private VertexBuffer myVertexBuffer;
+        private LumTexture2D myBloodMap;
 
         public District RootDistrict { get; private set; }
 
@@ -24,6 +25,26 @@ namespace Zombles.Geometry
         {
             RootDistrict = new District( this, 0, 0, width, height );
             myVertexBuffer = new VertexBuffer( 3 );
+            myBloodMap = new LumTexture2D( width * 2, height * 2 );
+        }
+
+        public void SplashBlood( Vector2 pos, float force )
+        {
+            if ( force <= 0.0f )
+                return;
+
+            int count = (int) ( force * 4.0f );
+
+            for ( int i = 0; i < count; ++i )
+            {
+                float dist = i * 0.125f;
+
+                myBloodMap.Add(
+                    (int) ( ( pos.X + ( Tools.Random.NextSingle() * 2.0f - 1.0f ) * dist ) * 2.0f ),
+                    (int) ( ( pos.Y + ( Tools.Random.NextSingle() * 2.0f - 1.0f ) * dist ) * 2.0f ),
+                    (byte) Tools.Random.Next( 8, 64 )
+                );
+            }
         }
 
         public Block GetBlock( Vector2 pos )
@@ -56,6 +77,12 @@ namespace Zombles.Geometry
             myVertexBuffer.StartBatch( shader );
             RootDistrict.RenderGeometry( myVertexBuffer, shader, baseOnly );
             myVertexBuffer.EndBatch( shader );
+        }
+
+        public void RenderBlood( BloodShader shader )
+        {
+            shader.SetTexture( "bloodmap", myBloodMap );
+            RootDistrict.RenderBlood( shader );
         }
 
         public void RenderEntities( FlatEntityShader shader )

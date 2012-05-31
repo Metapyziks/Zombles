@@ -6,34 +6,40 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Zombles.Graphics
 {
-    public class GeometryShader : ShaderProgram3D
+    public class BloodShader : ShaderProgram3D
     {
-        public GeometryShader()
+        private Vector2 myWorldSize;
+        private int myWorldSizeLoc;
+
+        public Vector2 WorldSize
+        {
+            get { return myWorldSize; }
+            set
+            {
+                myWorldSize = value;
+                GL.Uniform2( myWorldSizeLoc, ref value );
+            }
+        }
+
+        public BloodShader()
         {
             ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
             vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
             vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
-            vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
-            vert.AddVarying( ShaderVarType.Vec3, "var_tex" );
-            vert.AddVarying( ShaderVarType.Float, "var_shade" );
+            vert.AddUniform( ShaderVarType.Vec2, "world_size" );
+            vert.AddAttribute( ShaderVarType.Vec2, "in_vertex" );
+            vert.AddVarying( ShaderVarType.Vec2, "var_tex" );
             vert.Logic = @"
                 void main( void )
                 {
-                    int dat = int( in_vertex.z );
-
-                    var_tex = vec3(
-                        float( dat & 0x1 ),
-                        float( ( dat >> 1 ) & 0x3 ) / 2.0,
-                        float( ( dat >> 8 ) & 0xffff )
+                    var_tex = vec2(
+                        in_vertex.y / world_size.y,
+                        in_vertex.x / world_size.x
                     );
-
-                    var_shade = 1.0 - 0.125 * float( ( dat >> 3 ) & 0x1 );
-
-                    const float yscale = 1.0 / sqrt( 3.0 );
 
                     gl_Position = view_matrix * vec4(
                         in_vertex.x + world_offset.x,
-                        float( ( dat >> 4 ) & 0xf ) * yscale,
+                        1.0 / 16.0,
                         in_vertex.y + world_offset.y,
                         1.0
                     );
@@ -41,17 +47,15 @@ namespace Zombles.Graphics
             ";
 
             ShaderBuilder frag = new ShaderBuilder( ShaderType.FragmentShader, false );
-            frag.AddUniform( ShaderVarType.Sampler2DArray, "tiles" );
-            frag.AddVarying( ShaderVarType.Vec3, "var_tex" );
-            frag.AddVarying( ShaderVarType.Float, "var_shade" );
+            frag.AddUniform( ShaderVarType.Sampler2D, "bloodmap" );
+            frag.AddVarying( ShaderVarType.Vec2, "var_tex" );
             frag.Logic = @"
                 void main( void )
                 {
-                    vec4 clr = texture2DArray( tiles, var_tex );
-                    if( clr.a < 1.0 )
+                    if( texture2DArray( bloodmap, var_tex ).a < 0.25 )
                         discard;
-   
-                    out_frag_colour = vec4( clr.rgb * var_shade, 1.0 );
+
+                    out_frag_colour = vec4( 0.6, 0.0, 0.0, 0.5 );
                 }
             ";
 
@@ -67,10 +71,11 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute( "in_vertex", 3 );
+            myWorldSizeLoc = GL.GetUniformLocation( Program, "world_size" );
 
-            AddTexture( "tiles", TextureUnit.Texture0 );
-            SetTexture( "tiles", TextureManager.Tiles.TexArray );
+            AddAttribute( "in_vertex", 2 );
+
+            AddTexture( "bloodmap", TextureUnit.Texture2 );
         }
 
         protected override void OnStartBatch()
@@ -78,15 +83,15 @@ namespace Zombles.Graphics
             base.OnStartBatch();
 
             GL.Enable( EnableCap.DepthTest );
-            GL.Enable( EnableCap.CullFace );
+            GL.Enable( EnableCap.Blend );
 
-            GL.CullFace( CullFaceMode.Front );
+            GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
         }
 
         protected override void OnEndBatch()
         {
             GL.Disable( EnableCap.DepthTest );
-            GL.Disable( EnableCap.CullFace );
+            GL.Disable( EnableCap.Blend );
         }
     }
 }

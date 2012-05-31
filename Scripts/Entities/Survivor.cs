@@ -90,6 +90,9 @@ namespace Zombles.Scripts.Entities
 
         public void Zombify()
         {
+            City.SplashBlood( Position2D, 2.0f );
+            StopMoving();
+
             Entity.SwapComponent<Survivor, Zombie>();
             Entity.SwapComponent<SurvivorAI, ZombieAI>();
 

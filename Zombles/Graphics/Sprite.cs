@@ -15,7 +15,7 @@ namespace Zombles.Graphics
             }
         }
 
-        private Texture2D myTexture;
+        private BitmapTexture2D myTexture;
         private float[] myVertices;
 
         private Vector2 myPosition;
@@ -307,7 +307,7 @@ namespace Zombles.Graphics
             }
         }
 
-        public Texture2D Texture
+        public BitmapTexture2D Texture
         {
             get
             {
@@ -317,7 +317,7 @@ namespace Zombles.Graphics
 
         public Sprite( float width, float height, Color4 colour )
         {
-            myTexture = Texture2D.Blank;
+            myTexture = BitmapTexture2D.Blank;
 
             Position = new Vector2();
             Scale = new Vector2( width, height );
@@ -330,7 +330,7 @@ namespace Zombles.Graphics
             Colour = colour;
         }
 
-        public Sprite( Texture2D texture, float scale = 1.0f )
+        public Sprite( BitmapTexture2D texture, float scale = 1.0f )
         {
             myTexture = texture;
 

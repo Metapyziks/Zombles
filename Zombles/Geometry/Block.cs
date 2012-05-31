@@ -8,15 +8,17 @@ namespace Zombles.Geometry
 {
     public class Block : IEnumerable<Entity>
     {
-        public readonly City City;
-        public readonly District District;
-
         private Tile[,] myTiles;
         private List<Entity> myEnts;
 
         private int myBaseVertCount;
         private int myTopVertCount;
         private int myVertOffset;
+
+        private float[] myBloodVerts;
+
+        public readonly City City;
+        public readonly District District;
 
         public readonly int X;
         public readonly int Y;
@@ -84,6 +86,15 @@ namespace Zombles.Geometry
 
         public void GetVertices( float[] verts, ref int i )
         {
+            myBloodVerts = new float[ 4 * 2 ]
+            {
+                X, Y,
+                X + Width, Y,
+                X + Width, Y + Height,
+                X, Y + Height
+            };
+
+
             myVertOffset = i / 3;
 
             lock ( myTiles )
@@ -99,6 +110,11 @@ namespace Zombles.Geometry
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             vb.Render( shader, myVertOffset, ( baseOnly ? myBaseVertCount : myBaseVertCount + myTopVertCount ) );
+        }
+
+        public void RenderBlood( BloodShader shader )
+        {
+            shader.Render( myBloodVerts );
         }
 
         public void RenderEntities( FlatEntityShader shader )

@@ -32,7 +32,7 @@ namespace Zombles.Graphics
             }
         }
 
-        internal readonly Texture2D Texture;
+        internal readonly BitmapTexture2D Texture;
 
         public readonly Vector2 CharSize;
 
@@ -54,7 +54,7 @@ namespace Zombles.Graphics
         
         public Font( String charMap )
         {
-            Texture = Res.Get<Texture2D>( charMap );
+            Texture = Res.Get<BitmapTexture2D>( charMap );
 
             CharSize = new Vector2( Texture.Width / 16, Texture.Height / 16 );
         }

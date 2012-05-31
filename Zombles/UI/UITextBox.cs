@@ -51,7 +51,7 @@ namespace Zombles.UI
         {
             PaddingLeft = PaddingTop = PaddingRight = PaddingBottom = 4.0f * scale;
 
-            mySprite = new FrameSprite( Res.Get<Texture2D>( "images_gui_panels" ), scale )
+            mySprite = new FrameSprite( Res.Get<BitmapTexture2D>( "images_gui_panels" ), scale )
             {
                 SubrectSize = new Vector2( 16, 16 ),
                 SubrectOffset = new Vector2( 0, 32 ),

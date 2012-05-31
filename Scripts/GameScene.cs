@@ -33,6 +33,7 @@ namespace Zombles.Scripts
 
         public Camera Camera { get; private set; }
         public GeometryShader GeoShader { get; private set; }
+        public BloodShader BloodShader { get; private set; }
         public FlatEntityShader FlatEntShader { get; private set; }
         public CityGenerator Generator { get; private set; }
         public City City { get; private set; }
@@ -106,6 +107,10 @@ namespace Zombles.Scripts
 
                 GeoShader = new GeometryShader();
                 GeoShader.Camera = Camera;
+
+                BloodShader = new BloodShader();
+                BloodShader.WorldSize = new Vector2( City.Width, City.Height );
+                BloodShader.Camera = Camera;
 
                 FlatEntShader = new FlatEntityShader();
                 FlatEntShader.Camera = Camera;
@@ -231,6 +236,16 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
+            }
+            
+            for ( int i = 0; i < 4; ++i )
+            {
+                Camera.WorldHorizontalOffset = ( i & 0x1 ) == 0x0 ? x0 : x1;
+                Camera.WorldVerticalOffset = ( i & 0x2 ) == 0x0 ? y0 : y1;
+                Camera.UpdateViewBoundsOffset();
+                BloodShader.Begin();
+                City.RenderBlood( BloodShader );
+                BloodShader.End();
             }
 
             base.OnRenderFrame( e );
