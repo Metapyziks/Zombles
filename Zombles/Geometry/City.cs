@@ -74,15 +74,10 @@ namespace Zombles.Geometry
 
         public void RenderGeometry( GeometryShader shader, bool baseOnly = false )
         {
+            shader.SetTexture( "bloodmap", myBloodMap );
             myVertexBuffer.StartBatch( shader );
             RootDistrict.RenderGeometry( myVertexBuffer, shader, baseOnly );
             myVertexBuffer.EndBatch( shader );
-        }
-
-        public void RenderBlood( BloodShader shader )
-        {
-            shader.SetTexture( "bloodmap", myBloodMap );
-            RootDistrict.RenderBlood( shader );
         }
 
         public void RenderEntities( FlatEntityShader shader )

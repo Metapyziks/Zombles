@@ -202,19 +202,6 @@ namespace Zombles.Geometry
                 Block.RenderGeometry( vb, shader, baseOnly );
         }
 
-        public void RenderBlood( BloodShader shader )
-        {
-            if ( IsBranch )
-            {
-                if ( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildA.RenderBlood( shader );
-                if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildB.RenderBlood( shader );
-            }
-            else if ( IsLeaf )
-                Block.RenderBlood( shader );
-        }
-
         public void RenderEntities( FlatEntityShader shader )
         {
             if ( IsBranch )

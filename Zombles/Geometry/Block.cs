@@ -15,8 +15,6 @@ namespace Zombles.Geometry
         private int myTopVertCount;
         private int myVertOffset;
 
-        private float[] myBloodVerts;
-
         public readonly City City;
         public readonly District District;
 
@@ -86,15 +84,6 @@ namespace Zombles.Geometry
 
         public void GetVertices( float[] verts, ref int i )
         {
-            myBloodVerts = new float[ 4 * 2 ]
-            {
-                X, Y,
-                X + Width, Y,
-                X + Width, Y + Height,
-                X, Y + Height
-            };
-
-
             myVertOffset = i / 3;
 
             lock ( myTiles )
@@ -110,11 +99,6 @@ namespace Zombles.Geometry
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
             vb.Render( shader, myVertOffset, ( baseOnly ? myBaseVertCount : myBaseVertCount + myTopVertCount ) );
-        }
-
-        public void RenderBlood( BloodShader shader )
-        {
-            shader.Render( myBloodVerts );
         }
 
         public void RenderEntities( FlatEntityShader shader )
