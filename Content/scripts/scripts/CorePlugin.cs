@@ -16,21 +16,21 @@ namespace Zombles.Scripts
         {
             Entity.Register( "human", delegate( Entity ent )
             {
-                ent.SetComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
-                ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
-                ent.SetComponent<Movement>();
+                ent.AddComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
+                ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
+                ent.AddComponent<Movement>();
             } );
 
             Entity.Register( "survivor", "human", delegate( Entity ent )
             {
-                ent.SetComponent<Survivor>();
-                ent.SetComponent<SurvivorAI>();
+                ent.AddComponent<Survivor>();
+                ent.AddComponent<SurvivorAI>();
             } );
 
             Entity.Register( "zombie", "human", delegate( Entity ent )
             {
-                ent.SetComponent<Zombie>();
-                ent.SetComponent<ZombieAI>();
+                ent.AddComponent<Zombie>();
+                ent.AddComponent<ZombieAI>();
             } );
         }
 
@@ -39,18 +39,21 @@ namespace Zombles.Scripts
             City city = ( ZomblesGame.CurrentScene as GameScene ).City;
             Random rand = new Random();
 
-            for ( int i = 0; i < 1024; ++i )
+            for ( int i = 0; i < 992; ++i )
+            {
+                Entity surv = Entity.Create( "survivor", city );
+                surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
+                surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
+                surv.Spawn();
+            }
+
+            for ( int i = 0; i < 32; ++i )
             {
                 Entity zomb = Entity.Create( "zombie", city );
                 zomb.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 zomb.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 zomb.Spawn();
             }
-
-            Entity surv = Entity.Create( "survivor", city );
-            surv.Position = new Vector3( city.Width / 2.0f, 0.0f, city.Height / 2.0f );
-            surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
-            surv.Spawn();
         }
     }
 }

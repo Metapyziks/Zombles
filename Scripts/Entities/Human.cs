@@ -18,14 +18,12 @@ namespace Zombles.Scripts.Entities
         public abstract EntityAnim WalkAnim { get; }
         public abstract EntityAnim StandAnim { get; }
 
-        public float MoveSpeed { get; set; }
-        public float ViewRadius { get; set; }
+        public abstract float MoveSpeed { get; }
 
         public Human( Entity ent )
             : base( ent )
         {
-            MoveSpeed = 1.0f;
-            ViewRadius = 16.0f;
+
         }
 
         public override void OnSpawn()
@@ -39,27 +37,38 @@ namespace Zombles.Scripts.Entities
             Anim.Start( StandAnim );
         }
 
-        public void Turn( Vector2 dir )
+        public void FaceDirection( Vector2 dir )
         {
             Anim.Rotation = (float) Math.Atan2( dir.Y, dir.X );
         }
 
         public void StartMoving( Vector2 dir )
         {
+            if ( !Anim.Playing || !Movement.Moving )
+                Anim.Start( WalkAnim );
+
             dir.Normalize();
             Movement.Velocity = dir * MoveSpeed;
 
-            Anim.Start( WalkAnim );
             Anim.Speed = MoveSpeed;
 
-            Turn( dir );
+            FaceDirection( dir );
+        }
+
+        public void UpdateSpeed()
+        {
+            if ( !Movement.Moving )
+                return;
+
+            StartMoving( Movement.Velocity );
         }
 
         public void StopMoving()
         {
-            Movement.Stop();
+            if ( !Anim.Playing || Movement.Moving )
+                Anim.Start( StandAnim );
 
-            Anim.Start( StandAnim );
+            Movement.Stop();
         }
     }
 }

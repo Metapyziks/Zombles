@@ -10,8 +10,18 @@ namespace Zombles.Entities
     public class Movement : Component
     {
         private Collision myCollision;
+        private Vector2 myVelocity;
 
-        public Vector2 Velocity { get; set; }
+        public Vector2 Velocity
+        {
+            get { return myVelocity; }
+            set
+            {
+                myVelocity = value;
+                Moving = myVelocity.X != 0.0f || myVelocity.Y != 0.0f;
+            }
+        }
+        public bool Moving { get; private set; }
 
         public Movement( Entity ent )
             : base( ent )

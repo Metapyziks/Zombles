@@ -15,6 +15,8 @@ namespace Zombles.Scripts.Entities
         private static EntityAnim stWalkAnim;
         private static EntityAnim stStandAnim;
 
+        private float myMoveSpeed;
+
         public override EntityAnim WalkAnim
         {
             get
@@ -30,7 +32,6 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-
                 if ( stStandAnim == null )
                     stStandAnim = EntityAnim.GetAnim( "zombie stand" );
 
@@ -38,10 +39,15 @@ namespace Zombles.Scripts.Entities
             }
         }
 
+        public override float MoveSpeed
+        {
+            get { return myMoveSpeed; }
+        }
+
         public Zombie( Entity ent )
             : base( ent )
         {
-            MoveSpeed = 1.0f + Tools.Random.NextSingle();
+            myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 1.25f;
         }
     }
 }

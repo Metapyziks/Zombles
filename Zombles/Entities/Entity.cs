@@ -124,27 +124,44 @@ namespace Zombles.Entities
             IsValid = false;
         }
 
-        public T SetComponent<T>()
+        public T AddComponent<T>()
             where T : Component
         {
             T comp = Component.Create<T>( this );
             Type type = typeof( T );
 
             do
-            {
-                if ( myCompDict.ContainsKey( type ) )
-                {
-                    if ( myComps.Contains( myCompDict[ type ] ) )
-                        myComps.Remove( myCompDict[ type ] );
-
-                    myCompDict[ type ] = comp;
-                }
-                else
-                    myCompDict.Add( type, comp );
-            }
+                myCompDict.Add( type, comp );
             while ( ( type = type.BaseType ) != typeof( Component ) );
 
             myComps.Add( comp );
+
+            return comp;
+        }
+
+        public TNew SwapComponent<TOld, TNew>()
+            where TOld : Component
+            where TNew : Component
+        {
+            TOld old = GetComponent<TOld>();
+
+            if( IsValid )
+                old.OnRemove();
+
+            Type type = typeof( TOld );
+
+            do
+                myCompDict.Remove( type );
+            while ( ( type = type.BaseType ) != typeof( Component ) );
+
+            TNew comp = Component.Create<TNew>( this );
+            type = typeof( TNew );
+
+            do
+                myCompDict.Add( type, comp );
+            while ( ( type = type.BaseType ) != typeof( Component ) );
+
+            myComps[ myComps.IndexOf( old ) ] = comp;
 
             return comp;
         }
@@ -181,6 +198,12 @@ namespace Zombles.Entities
                 foreach ( Component comp in this )
                     comp.OnSpawn();
             }
+        }
+
+        public void UpdateComponents()
+        {
+            foreach ( Component comp in this )
+                comp.OnSpawn();
         }
 
         public void Remove()

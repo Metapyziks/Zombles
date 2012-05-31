@@ -23,11 +23,6 @@ namespace Zombles.Scripts.Entities
                 Human = Entity.GetComponent<Human>();
         }
 
-        protected NearbyEntityEnumerator SearchNearbyEnts()
-        {
-            return new NearbyEntityEnumerator( City, Position2D, Human.ViewRadius );
-        }
-
         protected NearbyEntityEnumerator SearchNearbyEnts( float radius )
         {
             return new NearbyEntityEnumerator( City, Position2D, radius );
