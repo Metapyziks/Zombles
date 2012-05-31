@@ -24,6 +24,8 @@ namespace Zombles
         private static Stopwatch myTimer;
         private static Stopwatch myThinkTimer;
 
+        private static double mySpareTime;
+
         public static Scene CurrentScene { get; private set; }
         public static SpriteShader SpriteShader { get; private set; }
 
@@ -59,6 +61,7 @@ namespace Zombles
                     Res.MountArchive( Res.LoadArchive( dataPath + line ) );
 
             TextureManager.Initialize();
+            Scripts.Compile();
             Plugin.Initialize();
 
             SpriteShader = new SpriteShader( Width, Height );
@@ -74,7 +77,9 @@ namespace Zombles
             myThinkTimer = new Stopwatch();
             myThinkTimer.Start();
 
-            SetScene( new GameScene( this ) );
+            mySpareTime = 0.0;
+
+            SetScene( Scripts.CreateInstance<Scene>( "Zombles.Scripts.GameScene", this ) );
         }
 
         public static void SetScene( Scene newScene )
@@ -91,8 +96,10 @@ namespace Zombles
 
         protected override void OnUpdateFrame( FrameEventArgs e )
         {
-            if ( myThinkTimer.Elapsed.TotalSeconds < ThinkPeriod )
+            if ( myThinkTimer.Elapsed.TotalSeconds + mySpareTime < ThinkPeriod )
                 return;
+
+            mySpareTime += myThinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
 
             myThinkTimer.Restart();
 

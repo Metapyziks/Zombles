@@ -15,7 +15,7 @@ using Zombles.Graphics;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
-namespace Zombles
+namespace Zombles.Scripts
 {
     public class GameScene : Scene
     {
@@ -60,9 +60,6 @@ namespace Zombles
             get { return ( ( myOldCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
         }
 
-        private bool myIgnoreMouse;
-        private bool myCaptureMouse;
-
         public GameScene( ZomblesGame gameWindow )
             : base( gameWindow )
         {
@@ -72,9 +69,6 @@ namespace Zombles
             myCamDir = 2;
             myCamRotTime = DateTime.MinValue;
             myMapView = false;
-
-            myIgnoreMouse = false;
-            myCaptureMouse = false;
 
             myTotalFrameTime = 0;
             myFramesCompleted = 0;
@@ -234,25 +228,6 @@ namespace Zombles
             myFrameTimer.Restart();
         }
 
-        public override void OnMouseMove( MouseMoveEventArgs e )
-        {
-            if ( myIgnoreMouse )
-            {
-                myIgnoreMouse = false;
-                return;
-            }
-
-            if ( myCaptureMouse )
-            {
-                myIgnoreMouse = true;
-                System.Windows.Forms.Cursor.Position = new System.Drawing.Point( Bounds.Left + Width / 2, Bounds.Top + Height / 2 );
-            }
-            else
-            {
-                base.OnMouseMove( e );
-            }
-        }
-
         public override void OnMouseWheelChanged( MouseWheelEventArgs e )
         {
             if ( e.DeltaPrecise >= 0.0f )
@@ -274,19 +249,7 @@ namespace Zombles
                 City = Generator.Generate( WorldSize, WorldSize );
             }
 
-            if ( !myCaptureMouse )
-            {
-                base.OnKeyPress( e );
-            }
-        }
-
-        public override void OnMouseLeave( EventArgs e )
-        {
-            if ( myCaptureMouse )
-            {
-                myIgnoreMouse = true;
-                System.Windows.Forms.Cursor.Position = new System.Drawing.Point( Bounds.Left + Width / 2, Bounds.Top + Height / 2 );
-            }
+            base.OnKeyPress( e );
         }
 
         public override void Dispose()

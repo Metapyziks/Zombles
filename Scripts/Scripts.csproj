@@ -55,6 +55,7 @@
     <Compile Include="Entities\SurvivorAI.cs" />
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="Entities\ZombieAI.cs" />
+    <Compile Include="GameScene.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Park.cs" />
     <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />

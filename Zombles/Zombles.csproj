@@ -75,7 +75,6 @@
     <Compile Include="Graphics\EntityAnim.cs" />
     <Compile Include="Graphics\FlatEntityShader.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />
-    <Compile Include="GameScene.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
     <Compile Include="Graphics\ShaderProgram3D.cs" />
     <Compile Include="Plugin.cs" />

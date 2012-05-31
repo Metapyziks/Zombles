@@ -96,6 +96,7 @@ namespace Zombles
             List<String> myAllowedAssemblies = new List<String>
             {
                 Assembly.GetAssembly( typeof( Math ) ).Location,
+                Assembly.GetAssembly( typeof( Stopwatch ) ).Location,
                 Assembly.GetAssembly( typeof( System.Linq.Enumerable ) ).Location,
                 Assembly.GetAssembly( typeof( OpenTK.Vector2 ) ).Location,
                 Assembly.GetAssembly( typeof( System.Drawing.Rectangle ) ).Location,
