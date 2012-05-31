@@ -7,10 +7,19 @@ using OpenTK;
 
 namespace Zombles.Entities
 {
+    public enum CollisionModel : byte
+    {
+        None = 0,
+        Repel = 1,
+        Box = 2
+    }
+
     public class Collision : Component
     {
-        public Vector2 Size { get; set; }
-        public Vector2 Offset { get; set; }
+        public CollisionModel Model { get; set; }
+
+        public Vector2 Size { get; private set; }
+        public Vector2 Offset { get; private set; }
 
         public float Left
         {
@@ -32,19 +41,21 @@ namespace Zombles.Entities
         public Collision( Entity ent )
             : base( ent )
         {
-
+            Model = CollisionModel.None;
         }
 
-        public void SetDimentions( float width, float height )
+        public Collision SetDimentions( float width, float height )
         {
             Size = new Vector2( width, height );
             Offset = new Vector2( -width / 2.0f, -height / 2.0f );
+            return this;
         }
 
-        public void SetDimentions( float width, float height, float offsx, float offsy )
+        public Collision SetDimentions( float width, float height, float offsx, float offsy )
         {
             Size = new Vector2( width, height );
             Offset = new Vector2( offsx, offsy );
+            return this;
         }
 
         public bool IsIntersecting( Collision other )
@@ -55,6 +66,9 @@ namespace Zombles.Entities
 
         public Vector2 TryMove( Vector2 move )
         {
+            if ( Model == CollisionModel.None )
+                return move;
+
             NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
                 new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f );
 
@@ -64,76 +78,102 @@ namespace Zombles.Entities
             return move;
         }
 
-        public Vector2 TryMove( Entity obstacle, Vector2 move )
+        private Vector2 TryMove( Entity obstacle, Vector2 move )
         {
             if ( obstacle == Entity || !obstacle.HasComponent<Collision>() )
                 return move;
 
             Collision that = obstacle.GetComponent<Collision>();
 
-            if ( this.IsIntersecting( that ) )
+            if ( that.Model == CollisionModel.None )
+                return move;
+
+            if ( this.Model == CollisionModel.Box || that.Model == CollisionModel.Box )
             {
-                float il = that.Right - this.Left;
-                float ir = this.Right - that.Left;
-                float ix = ( il < ir ) ? il : -ir;
-
-                float it = that.Bottom - this.Top;
-                float ib = this.Bottom - that.Top;
-                float iy = ( it < ib ) ? it : -ib;
-
-                if ( Math.Abs( ix ) <= Math.Abs( iy ) )
-                    return new Vector2( ix, move.Y );
-                else
-                    return new Vector2( move.X, iy );
-            }
-
-            if ( move.X > 0 )
-            {
-                if ( this.Right < that.Left && this.Right + move.X > that.Left )
+                if ( this.IsIntersecting( that ) )
                 {
-                    float dx = that.Left - this.Right;
-                    float dy = ( dx / move.X ) * move.Y;
+                    float il = that.Right - this.Left;
+                    float ir = this.Right - that.Left;
+                    float ix = ( il < ir ) ? il : -ir;
 
-                    if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
-                        return new Vector2( dx, move.Y );
+                    float it = that.Bottom - this.Top;
+                    float ib = this.Bottom - that.Top;
+                    float iy = ( it < ib ) ? it : -ib;
+
+                    if ( Math.Abs( ix ) <= Math.Abs( iy ) )
+                        return new Vector2( ix, move.Y );
+                    else
+                        return new Vector2( move.X, iy );
                 }
-            }
-            else if ( move.X < 0 )
-            {
-                if ( this.Left > that.Right && this.Left + move.X < that.Right )
+
+                if ( move.X > 0 )
                 {
-                    float dx = that.Right - this.Left;
-                    float dy = ( dx / move.X ) * move.Y;
+                    if ( this.Right < that.Left && this.Right + move.X > that.Left )
+                    {
+                        float dx = that.Left - this.Right;
+                        float dy = ( dx / move.X ) * move.Y;
 
-                    if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
-                        return new Vector2( dx, move.Y );
+                        if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
+                            return new Vector2( dx, move.Y );
+                    }
                 }
-            }
-
-            if ( move.Y > 0 )
-            {
-                if ( this.Bottom < that.Top && this.Bottom + move.Y > that.Top )
+                else if ( move.X < 0 )
                 {
-                    float dy = that.Top - this.Bottom;
-                    float dx = ( dy / move.Y ) * move.X;
+                    if ( this.Left > that.Right && this.Left + move.X < that.Right )
+                    {
+                        float dx = that.Right - this.Left;
+                        float dy = ( dx / move.X ) * move.Y;
 
-                    if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
-                        return new Vector2( move.X, dy );
+                        if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
+                            return new Vector2( dx, move.Y );
+                    }
                 }
-            }
-            else if ( move.Y < 0 )
-            {
-                if ( this.Top > that.Bottom && this.Top + move.Y < that.Bottom )
+
+                if ( move.Y > 0 )
                 {
-                    float dy = that.Bottom - this.Top;
-                    float dx = ( dy / move.Y ) * move.X;
+                    if ( this.Bottom < that.Top && this.Bottom + move.Y > that.Top )
+                    {
+                        float dy = that.Top - this.Bottom;
+                        float dx = ( dy / move.Y ) * move.X;
 
-                    if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
-                        return new Vector2( move.X, dy );
+                        if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
+                            return new Vector2( move.X, dy );
+                    }
                 }
-            }
+                else if ( move.Y < 0 )
+                {
+                    if ( this.Top > that.Bottom && this.Top + move.Y < that.Bottom )
+                    {
+                        float dy = that.Bottom - this.Top;
+                        float dx = ( dy / move.Y ) * move.X;
 
-            return move;
+                        if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
+                            return new Vector2( move.X, dy );
+                    }
+                }
+
+                return move;
+            }
+            else
+            {
+                if ( this.IsIntersecting( that ) )
+                {
+                    float il = that.Right - this.Left;
+                    float ir = this.Right - that.Left;
+                    float ix = ( il < ir ) ? il : -ir;
+
+                    float it = that.Bottom - this.Top;
+                    float ib = this.Bottom - that.Top;
+                    float iy = ( it < ib ) ? it : -ib;
+
+                    if ( Math.Abs( ix ) <= Math.Abs( iy ) )
+                        return new Vector2( ix / 2.0f + move.X, move.Y );
+                    else
+                        return new Vector2( move.X, iy / 2.0f + move.Y );
+                }
+
+                return move;
+            }
         }
     }
 }

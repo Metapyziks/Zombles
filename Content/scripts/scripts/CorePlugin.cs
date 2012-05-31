@@ -15,7 +15,7 @@ namespace Zombles.Scripts
             Entity.Register( "human", delegate( Entity ent )
             {
                 ent.SetComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
-                ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f );
+                ent.SetComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
                 ent.SetComponent<Movement>();
                 ent.SetComponent<Control>();
             } );
@@ -40,11 +40,16 @@ namespace Zombles.Scripts
 
             for ( int i = 0; i < 1024; ++i )
             {
-                Entity ent = Entity.Create( "survivor", city );
-                ent.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
-                ent.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
-                ent.Spawn();
+                Entity zomb = Entity.Create( "zombie", city );
+                zomb.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
+                zomb.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
+                zomb.Spawn();
             }
+
+            Entity surv = Entity.Create( "survivor", city );
+            surv.Position = new Vector3( city.Width / 2.0f, 0.0f, city.Height / 2.0f );
+            surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
+            surv.Spawn();
         }
     }
 }

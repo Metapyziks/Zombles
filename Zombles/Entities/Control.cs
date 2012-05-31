@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using OpenTK;
 
@@ -15,10 +12,12 @@ namespace Zombles.Entities
         private RenderAnim myAnim;
         private float myDirection;
 
+        private float myMoveSpeed;
+
         public Control( Entity ent )
             : base( ent )
         {
-
+            myMoveSpeed = stRand.NextSingle() + 1.0f;
         }
 
         public override void OnSpawn()
@@ -33,13 +32,14 @@ namespace Zombles.Entities
                 myAnim = Entity.GetComponent<RenderAnim>();
 
             myDirection = myAnim.Rotation = stRand.NextSingle() * MathHelper.TwoPi - MathHelper.Pi;
+            myAnim.Speed = myMoveSpeed / 2.0;
         }
 
         public override void OnThink( double dt )
         {
             Vector2 dir = new Vector2();
-            dir.X = (float) ( Math.Cos( myDirection ) * 2.0 * dt );
-            dir.Y = (float) ( Math.Sin( myDirection ) * 2.0 * dt );
+            dir.X = (float) ( Math.Cos( myDirection ) * dt ) * myMoveSpeed;
+            dir.Y = (float) ( Math.Sin( myDirection ) * dt ) * myMoveSpeed;
             myMovement.Move( dir );
         }
     }
