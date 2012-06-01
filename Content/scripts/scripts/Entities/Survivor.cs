@@ -17,6 +17,8 @@ namespace Zombles.Scripts.Entities
         private static EntityAnim stWalkAnim;
         private static EntityAnim stStandAnim;
 
+        public bool IsInfected { get; private set; }
+
         public float TiredSpeed { get; private set; }
         public float WalkSpeed { get; private set; }
         public float RunSpeed { get; private set; }
@@ -67,9 +69,9 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                return Running ? RunSpeed :
-                    Stamina < MaxStamina ? TiredSpeed :
-                    WalkSpeed;
+                return !Health.Alive ? 0.0f :
+                    ( Running ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed ) *
+                    ( Health.Value < 60 ? Math.Max( Health.Value / 60.0f, 0.125f ) : 1.0f );
             }
         }
 
@@ -86,17 +88,39 @@ namespace Zombles.Scripts.Entities
             Stamina = MaxStamina;
 
             RecoverRate = 1.0f / 3.0f;
+
+            IsInfected = false;
+        }
+
+        public void Infect()
+        {
+            IsInfected = true;
         }
 
         public void Zombify()
         {
-            City.SplashBlood( Position2D, 2.0f );
-            StopMoving();
-
             Entity.SwapComponent<Survivor, Zombie>();
             Entity.SwapComponent<SurvivorAI, ZombieAI>();
 
             Entity.UpdateComponents();
+
+            Health.Revive();
+        }
+
+        protected override void OnDamaged( object sender, DamagedEventArgs e )
+        {
+            base.OnDamaged( sender, e );
+
+            if ( !IsInfected && e.HasAttacker && e.Attacker.HasComponent<Zombie>() )
+                Infect();
+        }
+
+        protected override void OnKilled( object sender, KilledEventArgs e )
+        {
+            base.OnKilled( sender, e );
+
+            if ( IsInfected )
+                Zombify();
         }
 
         public override void OnThink( double dt )
@@ -145,6 +169,9 @@ namespace Zombles.Scripts.Entities
         public override void OnSpawn()
         {
             base.OnSpawn();
+
+            Health.SetMaximum( 100 );
+            Health.Revive();
 
             if ( !myCounted )
             {

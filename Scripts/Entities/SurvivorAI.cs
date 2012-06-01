@@ -36,6 +36,9 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink( double dt )
         {
+            if ( !Human.Health.Alive )
+                return;
+
             if ( ZomblesGame.Time - myLastSearch > TargetSearchInterval )
             {
                 myLastSearch = ZomblesGame.Time + Tools.Random.NextSingle() * TargetSearchInterval;

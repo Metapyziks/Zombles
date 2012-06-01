@@ -12,8 +12,9 @@ namespace Zombles.Scripts.Entities
 {
     public abstract class Human : Component
     {
-        protected Movement Movement { get; private set; }
-        protected RenderAnim Anim { get; private set; }
+        public Movement Movement { get; private set; }
+        public RenderAnim Anim { get; private set; }
+        public Health Health { get; private set; }
 
         public abstract EntityAnim WalkAnim { get; }
         public abstract EntityAnim StandAnim { get; }
@@ -34,7 +35,43 @@ namespace Zombles.Scripts.Entities
             if ( Entity.HasComponent<RenderAnim>() )
                 Anim = Entity.GetComponent<RenderAnim>();
 
+            if ( Entity.HasComponent<Health>() )
+            {
+                Health = Entity.GetComponent<Health>();
+
+                Health.Healed += OnHealed;
+                Health.Damaged += OnDamaged;
+                Health.Killed += OnKilled;
+            }
+
             Anim.Start( StandAnim );
+        }
+
+        public override void OnRemove()
+        {
+            if ( Health != null )
+            {
+                Health.Healed -= OnHealed;
+                Health.Damaged -= OnDamaged;
+                Health.Killed -= OnKilled;
+            }
+        }
+
+        protected virtual void OnHealed( object sender, HealedEventArgs e )
+        {
+            UpdateSpeed();
+        }
+
+        protected virtual void OnDamaged( object sender, DamagedEventArgs e )
+        {
+            City.SplashBlood( Position2D, Math.Min( 0.25f * e.Damage + 0.5f, 4.0f ) );
+            UpdateSpeed();
+        }
+
+        protected virtual void OnKilled( object sender, KilledEventArgs e )
+        {
+            City.SplashBlood( Position2D, 4.0f );
+            StopMoving();
         }
 
         public void FaceDirection( Vector2 dir )

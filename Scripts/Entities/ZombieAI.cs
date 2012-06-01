@@ -12,10 +12,12 @@ namespace Zombles.Scripts.Entities
     public class ZombieAI : AI
     {
         private const double TargetSearchInterval = 1.0;
+        private const double AttackInterval = 1.0;
 
         private float myViewRadius;
 
         private double myLastSearch;
+        private double myLastAttack;
         private Entity myCurTarget;
 
         public ZombieAI( Entity ent )
@@ -34,6 +36,9 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink( double dt )
         {
+            if ( !Human.Health.Alive )
+                return;
+
             if ( ZomblesGame.Time - myLastSearch > TargetSearchInterval )
                 FindTarget();
             
@@ -45,10 +50,10 @@ namespace Zombles.Scripts.Entities
                     myCurTarget = null;
                 else
                 {
-                    if ( diff.LengthSquared < 1.0f )
+                    if ( ZomblesGame.Time - myLastAttack > AttackInterval && diff.LengthSquared < 1.0f )
                     {
-                        myCurTarget.GetComponent<Survivor>().Zombify();
-                        myCurTarget = null;
+                        myCurTarget.GetComponent<Health>().Damage( Tools.Random.Next( 10, 25 ) );
+                        myLastAttack = ZomblesGame.Time;
                     }
                     else
                         Human.StartMoving( myCurTarget.Position2D - Position2D );
