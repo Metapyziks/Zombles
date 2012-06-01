@@ -58,12 +58,6 @@ namespace Zombles.Entities
             return this;
         }
 
-        public bool IsIntersecting( Collision other )
-        {
-            return this.Left < other.Right && this.Right > other.Left
-                && this.Top < other.Bottom && this.Bottom > other.Top;
-        }
-
         public Vector2 TryMove( Vector2 move )
         {
             if ( Model == CollisionModel.None )
@@ -88,18 +82,37 @@ namespace Zombles.Entities
             if ( that.Model == CollisionModel.None )
                 return move;
 
+            Vector2 diff = City.Difference( Position2D, that.Position2D );
+
+            float al = Offset.X;
+            float ar = al + Size.X;
+            float at = Offset.Y;
+            float ab = at + Size.Y;
+
+            float bl = diff.X + that.Offset.X;
+            float br = bl + that.Size.X;
+            float bt = diff.Y + that.Offset.Y;
+            float bb = bt + that.Size.Y;
+
+            bool intersecting = al < br && ar > bl && at < bb && ab > bt;
+
+            float ix = 0.0f, iy = 0.0f;
+
+            if ( intersecting )
+            {
+                float il = br - al;
+                float ir = ar - bl;
+                ix = ( il < ir ) ? il : -ir;
+
+                float it = bb - at;
+                float ib = ab - bt;
+                iy = ( it < ib ) ? it : -ib;
+            }
+
             if ( this.Model == CollisionModel.Box || that.Model == CollisionModel.Box )
             {
-                if ( this.IsIntersecting( that ) )
+                if ( intersecting )
                 {
-                    float il = that.Right - this.Left;
-                    float ir = this.Right - that.Left;
-                    float ix = ( il < ir ) ? il : -ir;
-
-                    float it = that.Bottom - this.Top;
-                    float ib = this.Bottom - that.Top;
-                    float iy = ( it < ib ) ? it : -ib;
-
                     if ( Math.Abs( ix ) <= Math.Abs( iy ) )
                         return new Vector2( ix, move.Y );
                     else
@@ -108,46 +121,46 @@ namespace Zombles.Entities
 
                 if ( move.X > 0 )
                 {
-                    if ( this.Right < that.Left && this.Right + move.X > that.Left )
+                    if ( ar < bl && ar + move.X > bl )
                     {
-                        float dx = that.Left - this.Right;
+                        float dx = bl - ar;
                         float dy = ( dx / move.X ) * move.Y;
 
-                        if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
+                        if ( at + dy < bb && ab + dy > bt )
                             return new Vector2( dx, move.Y );
                     }
                 }
                 else if ( move.X < 0 )
                 {
-                    if ( this.Left > that.Right && this.Left + move.X < that.Right )
+                    if ( al > br && al + move.X < br )
                     {
-                        float dx = that.Right - this.Left;
+                        float dx = br - al;
                         float dy = ( dx / move.X ) * move.Y;
 
-                        if ( this.Top + dy < that.Bottom && this.Bottom + dy > that.Top )
+                        if ( at + dy < bb && ab + dy > bt )
                             return new Vector2( dx, move.Y );
                     }
                 }
 
                 if ( move.Y > 0 )
                 {
-                    if ( this.Bottom < that.Top && this.Bottom + move.Y > that.Top )
+                    if ( at < bt && at + move.Y > bt )
                     {
-                        float dy = that.Top - this.Bottom;
+                        float dy = bt - ab;
                         float dx = ( dy / move.Y ) * move.X;
 
-                        if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
+                        if ( al + dx < br && ar + dx > bl )
                             return new Vector2( move.X, dy );
                     }
                 }
                 else if ( move.Y < 0 )
                 {
-                    if ( this.Top > that.Bottom && this.Top + move.Y < that.Bottom )
+                    if ( at > bb && at + move.Y < bb )
                     {
-                        float dy = that.Bottom - this.Top;
+                        float dy = bb - at;
                         float dx = ( dy / move.Y ) * move.X;
 
-                        if ( this.Left + dx < that.Right && this.Right + dx > that.Left )
+                        if ( al + dx < br && ar + dx > bl )
                             return new Vector2( move.X, dy );
                     }
                 }
@@ -156,16 +169,8 @@ namespace Zombles.Entities
             }
             else
             {
-                if ( this.IsIntersecting( that ) )
+                if ( intersecting )
                 {
-                    float il = that.Right - this.Left;
-                    float ir = this.Right - that.Left;
-                    float ix = ( il < ir ) ? il : -ir;
-
-                    float it = that.Bottom - this.Top;
-                    float ib = this.Bottom - that.Top;
-                    float iy = ( it < ib ) ? it : -ib;
-
                     if ( Math.Abs( ix ) <= Math.Abs( iy ) )
                         return new Vector2( ix / 2.0f + move.X, move.Y );
                     else

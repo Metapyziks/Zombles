@@ -107,20 +107,7 @@ namespace Zombles.Entities
 
         private bool InRange( Entity ent )
         {
-            float xdiff = ent.Position.X - Center.X;
-            float ydiff = ent.Position.Z - Center.Y;
-
-            if ( xdiff >= myHWidth )
-                xdiff -= City.Width;
-            else if ( xdiff < -myHWidth )
-                xdiff += City.Width;
-
-            if ( ydiff >= myHHeight )
-                ydiff -= City.Height;
-            else if ( ydiff < -myHHeight )
-                ydiff += City.Height;
-
-            return xdiff * xdiff + ydiff * ydiff <= myRange2;
+            return City.Difference( Center, ent.Position2D ).LengthSquared <= myRange2;
         }
 
         public void Reset()
