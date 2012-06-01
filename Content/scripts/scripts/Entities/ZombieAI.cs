@@ -36,7 +36,7 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink( double dt )
         {
-            if ( !Human.Health.Alive )
+            if ( !Human.Health.IsAlive )
                 return;
 
             if ( ZomblesGame.Time - myLastSearch > TargetSearchInterval )
@@ -46,14 +46,17 @@ namespace Zombles.Scripts.Entities
             {
                 Vector2 diff = myCurTarget.Position2D - Position2D;
 
-                if ( !myCurTarget.HasComponent<Survivor>() || diff.LengthSquared > myViewRadius * myViewRadius )
+                Health targHealth = myCurTarget.GetComponent<Health>();
+
+                if ( !myCurTarget.HasComponent<Survivor>() || !targHealth.IsAlive || diff.LengthSquared > myViewRadius * myViewRadius )
                     myCurTarget = null;
-                else
+                else if ( ZomblesGame.Time - myLastAttack > AttackInterval )
                 {
-                    if ( ZomblesGame.Time - myLastAttack > AttackInterval && diff.LengthSquared < 1.0f )
+                    if ( diff.LengthSquared < 1.0f )
                     {
-                        myCurTarget.GetComponent<Health>().Damage( Tools.Random.Next( 10, 25 ) );
+                        targHealth.Damage( Tools.Random.Next( 10, 25 ), Entity );
                         myLastAttack = ZomblesGame.Time;
+                        Human.StopMoving();
                     }
                     else
                         Human.StartMoving( myCurTarget.Position2D - Position2D );
@@ -70,6 +73,9 @@ namespace Zombles.Scripts.Entities
             while ( it.MoveNext() )
             {
                 if ( !it.Current.HasComponent<Survivor>() )
+                    continue;
+
+                if ( !it.Current.GetComponent<Health>().IsAlive )
                     continue;
 
                 float dist = ( it.Current.Position2D - Position2D ).LengthSquared;

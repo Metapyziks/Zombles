@@ -52,7 +52,7 @@ namespace Zombles.Entities
         public int MaxHealth { get; private set; }
         public int Value { get; private set; }
 
-        public bool Alive { get; private set; }
+        public bool IsAlive { get; private set; }
 
         public event EventHandler<HealedEventArgs> Healed;
         public event EventHandler<DamagedEventArgs> Damaged;
@@ -64,13 +64,13 @@ namespace Zombles.Entities
             MaxHealth = 1;
             Value = 1;
 
-            Alive = true;
+            IsAlive = true;
         }
 
         public void Revive()
         {
             Value = MaxHealth;
-            Alive = true;
+            IsAlive = true;
 
             if ( Healed != null )
                 Healed( this, new HealedEventArgs( MaxHealth ) );
@@ -110,7 +110,7 @@ namespace Zombles.Entities
                 if ( Value <= 0 )
                 {
                     Value = 0;
-                    Alive = false;
+                    IsAlive = false;
 
                     if ( Killed != null )
                         Killed( this, new KilledEventArgs( attacker ) );

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 using Zombles.Entities;
 using Zombles.Graphics;
@@ -69,7 +70,7 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                return !Health.Alive ? 0.0f :
+                return !Health.IsAlive ? 0.0f :
                     ( Running ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed ) *
                     ( Health.Value < 60 ? Math.Max( Health.Value / 60.0f, 0.125f ) : 1.0f );
             }
