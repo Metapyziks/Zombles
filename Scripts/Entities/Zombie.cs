@@ -21,7 +21,9 @@ namespace Zombles.Scripts.Entities
 
         private float myMoveSpeed;
 
+        private double myTurnTime;
         private double myNextBleed;
+        private double myBleedTime;
 
         public override EntityAnim WalkAnim
         {
@@ -54,6 +56,7 @@ namespace Zombles.Scripts.Entities
             : base( ent )
         {
             myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 1.25f;
+            myBleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
         }
 
         public override void OnSpawn()
@@ -66,6 +69,7 @@ namespace Zombles.Scripts.Entities
                 myCounted = true;
             }
 
+            myTurnTime = ZomblesGame.Time;
             myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
         }
 
@@ -73,7 +77,7 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink( dt );
 
-            if ( ZomblesGame.Time >= myNextBleed )
+            if ( ZomblesGame.Time - myTurnTime < myBleedTime && ZomblesGame.Time >= myNextBleed )
             {
                 City.SplashBlood( Position2D, 0.5f );
                 myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
