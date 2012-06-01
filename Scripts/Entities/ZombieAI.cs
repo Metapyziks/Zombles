@@ -44,7 +44,7 @@ namespace Zombles.Scripts.Entities
             
             if( myCurTarget != null )
             {
-                Vector2 diff = myCurTarget.Position2D - Position2D;
+                Vector2 diff = City.Difference( Position2D, myCurTarget.Position2D );
 
                 Health targHealth = myCurTarget.GetComponent<Health>();
 
@@ -59,7 +59,7 @@ namespace Zombles.Scripts.Entities
                         Human.StopMoving();
                     }
                     else
-                        Human.StartMoving( myCurTarget.Position2D - Position2D );
+                        Human.StartMoving( diff );
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace Zombles.Scripts.Entities
         private void FindTarget()
         {
             Entity closest = null;
-            float bestDist = myViewRadius * myViewRadius;
+            float bestDist2 = myViewRadius * myViewRadius;
 
             NearbyEntityEnumerator it = SearchNearbyEnts( myViewRadius );
             while ( it.MoveNext() )
@@ -78,11 +78,13 @@ namespace Zombles.Scripts.Entities
                 if ( !it.Current.GetComponent<Health>().IsAlive )
                     continue;
 
-                float dist = ( it.Current.Position2D - Position2D ).LengthSquared;
-                if ( dist < bestDist )
+                Vector2 diff = City.Difference( Position2D, it.Current.Position2D );
+
+                float dist2 = diff.LengthSquared;
+                if ( dist2 < bestDist2 )
                 {
                     closest = it.Current;
-                    bestDist = dist;
+                    bestDist2 = dist2;
                 }
             }
 

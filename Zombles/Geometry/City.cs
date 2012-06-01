@@ -28,6 +28,23 @@ namespace Zombles.Geometry
             myBloodMap = new LumTexture2D( width * 2, height * 2 );
         }
 
+        public Vector2 Difference( Vector2 a, Vector2 b )
+        {
+            Vector2 diff = b - a;
+
+            if ( diff.X >= Width >> 1 )
+                diff.X -= Width;
+            else if ( diff.X < -( Width >> 1 ) )
+                diff.X += Width;
+
+            if ( diff.Y >= Height >> 1 )
+                diff.Y -= Height;
+            else if ( diff.Y < -( Height >> 1 ) )
+                diff.Y += Height;
+
+            return diff;
+        }
+
         public void SplashBlood( Vector2 pos, float force )
         {
             if ( force <= 0.0f )

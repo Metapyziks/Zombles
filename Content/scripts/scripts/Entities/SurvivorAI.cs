@@ -51,7 +51,7 @@ namespace Zombles.Scripts.Entities
                     Entity cur = it.Current;
                     if ( cur.HasComponent<Zombie>() )
                     {
-                        Vector2 diff = cur.Position2D - Position2D;
+                        Vector2 diff = City.Difference( Position2D, cur.Position2D );
                         float dist2 = diff.LengthSquared;
 
                         if ( dist2 > 0 )
