@@ -100,8 +100,11 @@ namespace Zombles.Scripts.Entities
 
         public void Zombify()
         {
-            Entity.SwapComponent<Survivor, Zombie>();
-            Entity.SwapComponent<HumanControl, ZombieAI>();
+            if ( Entity.HasComponent<Survivor>() )
+                Entity.SwapComponent<Survivor, Zombie>();
+
+            if ( Entity.HasComponent<HumanControl>() )
+                Entity.SwapComponent<HumanControl, ZombieAI>();
 
             Entity.UpdateComponents();
 

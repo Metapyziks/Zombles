@@ -148,7 +148,7 @@ namespace Zombles.Entities
             if( IsValid )
                 old.OnRemove();
 
-            Type type = typeof( TOld );
+            Type type = old.GetType();
 
             do
                 myCompDict.Remove( type );

@@ -86,7 +86,7 @@ namespace Zombles.Entities
 
         public void Heal( int value )
         {
-            if ( value > 0 )
+            if ( value > 0 && IsAlive )
             {
                 Value += value;
 
@@ -100,7 +100,7 @@ namespace Zombles.Entities
 
         public void Damage( int value, Entity attacker = null )
         {
-            if ( value > 0 )
+            if ( value > 0 && IsAlive )
             {
                 Value -= value;
 
