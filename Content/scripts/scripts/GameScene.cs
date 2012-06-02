@@ -12,6 +12,7 @@ using ResourceLib;
 
 using Zombles.UI;
 using Zombles.Graphics;
+using Zombles.Entities;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
@@ -30,12 +31,6 @@ namespace Zombles.Scripts
         private int myFramesCompleted;
 
         private Stopwatch myFrameTimer;
-
-        public Camera Camera { get; private set; }
-        public GeometryShader GeoShader { get; private set; }
-        public FlatEntityShader FlatEntShader { get; private set; }
-        public CityGenerator Generator { get; private set; }
-        public City City { get; private set; }
 
         private bool myHideTop;
 
@@ -62,6 +57,14 @@ namespace Zombles.Scripts
         {
             get { return ( ( myOldCamDir % 16 ) * 180.0f / 8.0f - 180.0f ) * MathHelper.Pi / 180.0f; }
         }
+
+        public Camera Camera { get; private set; }
+        public GeometryShader GeoShader { get; private set; }
+        public FlatEntityShader FlatEntShader { get; private set; }
+        public CityGenerator Generator { get; private set; }
+        public City City { get; private set; }
+
+        public Entity ControlledEnt { get; set; }
 
         public GameScene( ZomblesGame gameWindow )
             : base( gameWindow )
@@ -95,12 +98,13 @@ namespace Zombles.Scripts
 
                 Generator = new CityGenerator();
                 City = Generator.Generate( WorldSize, WorldSize );
-                Plugin.CityGenerated();
 
                 Camera = new Camera( Width, Height, 4.0f );
                 Camera.SetWrapSize( WorldSize, WorldSize );
                 Camera.Position = new Vector2( WorldSize, WorldSize ) / 2.0f;
                 Camera.Yaw = TargetCameraYaw;
+
+                Plugin.CityGenerated();
 
                 GeoShader = new GeometryShader();
                 GeoShader.Camera = Camera;
@@ -149,35 +153,38 @@ namespace Zombles.Scripts
 
             myInfDisplay.UpdateBars();
 
-            Vector2 movement = new Vector2( 0.0f, 0.0f );
-            float angleY = Camera.Yaw;
+            if ( ControlledEnt == null )
+            {
+                Vector2 movement = new Vector2( 0.0f, 0.0f );
+                float angleY = Camera.Yaw;
 
-            if ( Keyboard[ Key.D ] )
-            {
-                movement.X += (float) Math.Cos( angleY );
-                movement.Y += (float) Math.Sin( angleY );
-            }
-            if ( Keyboard[ Key.A ] )
-            {
-                movement.X -= (float) Math.Cos( angleY );
-                movement.Y -= (float) Math.Sin( angleY );
-            }
-            if ( Keyboard[ Key.S ] )
-            {
-                movement.Y += (float) Math.Cos( angleY );
-                movement.X -= (float) Math.Sin( angleY );
-            }
-            if ( Keyboard[ Key.W ] )
-            {
-                movement.Y -= (float) Math.Cos( angleY );
-                movement.X += (float) Math.Sin( angleY );
-            }
+                if ( Keyboard[ Key.D ] )
+                {
+                    movement.X += (float) Math.Cos( angleY );
+                    movement.Y += (float) Math.Sin( angleY );
+                }
+                if ( Keyboard[ Key.A ] )
+                {
+                    movement.X -= (float) Math.Cos( angleY );
+                    movement.Y -= (float) Math.Sin( angleY );
+                }
+                if ( Keyboard[ Key.S ] )
+                {
+                    movement.Y += (float) Math.Cos( angleY );
+                    movement.X -= (float) Math.Sin( angleY );
+                }
+                if ( Keyboard[ Key.W ] )
+                {
+                    movement.Y -= (float) Math.Cos( angleY );
+                    movement.X += (float) Math.Sin( angleY );
+                }
 
-            if ( movement.Length != 0 )
-            {
-                movement.Normalize();
-                Camera.Position += movement *
-                    (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
+                if ( movement.Length != 0 )
+                {
+                    movement.Normalize();
+                    Camera.Position += movement *
+                        (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
+                }
             }
 
             if ( ( DateTime.Now - myCamRotTime ).TotalSeconds >= 0.25 )

@@ -76,12 +76,18 @@ namespace Zombles.Scripts.Entities
 
         public void FaceDirection( Vector2 dir )
         {
+            if ( !Health.IsAlive )
+                return;
+
             Anim.Rotation = (float) Math.Atan2( dir.Y, dir.X );
         }
 
         public void StartMoving( Vector2 dir )
         {
-            if ( !Anim.Playing || !Movement.Moving || Anim.CurAnim != WalkAnim )
+            if ( !Health.IsAlive )
+                return;
+
+            if ( !Anim.Playing || !Movement.IsMoving || Anim.CurAnim != WalkAnim )
                 Anim.Start( WalkAnim );
 
             dir.Normalize();
@@ -94,7 +100,7 @@ namespace Zombles.Scripts.Entities
 
         public void UpdateSpeed()
         {
-            if ( !Movement.Moving )
+            if ( !Movement.IsMoving )
                 return;
 
             StartMoving( Movement.Velocity );
@@ -102,7 +108,7 @@ namespace Zombles.Scripts.Entities
 
         public void StopMoving()
         {
-            if ( !Anim.Playing || Movement.Moving || Anim.CurAnim != StandAnim )
+            if ( !Anim.Playing || Movement.IsMoving || Anim.CurAnim != StandAnim )
                 Anim.Start( StandAnim );
 
             Movement.Stop();

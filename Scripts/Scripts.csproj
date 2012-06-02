@@ -49,8 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="Entities\AI.cs" />
+    <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />
+    <Compile Include="Entities\PlayerControlled.cs" />
     <Compile Include="Entities\Survivor.cs" />
     <Compile Include="Entities\SurvivorAI.cs" />
     <Compile Include="Entities\Zombie.cs" />

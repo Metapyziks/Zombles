@@ -33,7 +33,7 @@ namespace Zombles.Scripts.Entities
             get; private set;
         }
 
-        public bool Running
+        public bool IsRunning
         {
             get;
             private set;
@@ -41,7 +41,7 @@ namespace Zombles.Scripts.Entities
 
         public bool CanRun
         {
-            get { return !Running && Stamina > Math.Max( 0.5f, MaxStamina / 2.0 ); }
+            get { return !IsRunning && Stamina > Math.Max( 0.5f, MaxStamina / 2.0 ); }
         }
 
         public override EntityAnim WalkAnim
@@ -71,7 +71,7 @@ namespace Zombles.Scripts.Entities
             get
             {
                 return !Health.IsAlive ? 0.0f :
-                    ( Running ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed ) *
+                    ( IsRunning ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed ) *
                     ( Health.Value < 60 ? Math.Max( Health.Value / 60.0f, 0.125f ) : 1.0f );
             }
         }
@@ -79,11 +79,11 @@ namespace Zombles.Scripts.Entities
         public Survivor( Entity ent )
             : base( ent )
         {
-            float speedMul = Tools.Random.NextSingle() * 0.5f + 0.75f;
+            float speedMul = Tools.Random.NextSingle() * 0.5f + 1.5f;
 
             TiredSpeed = 0.75f * speedMul;
             WalkSpeed  = 1.00f * speedMul;
-            RunSpeed   = 3.00f * speedMul;
+            RunSpeed   = 2.00f * speedMul;
 
             MaxStamina = 3.0f + Tools.Random.NextSingle() * 4.0f;
             Stamina = MaxStamina;
@@ -101,7 +101,7 @@ namespace Zombles.Scripts.Entities
         public void Zombify()
         {
             Entity.SwapComponent<Survivor, Zombie>();
-            Entity.SwapComponent<SurvivorAI, ZombieAI>();
+            Entity.SwapComponent<HumanControl, ZombieAI>();
 
             Entity.UpdateComponents();
 
@@ -126,7 +126,7 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink( double dt )
         {
-            if ( Running )
+            if ( IsRunning )
             {
                 Stamina = Math.Max( 0, Stamina - (float) dt );
 
@@ -153,16 +153,16 @@ namespace Zombles.Scripts.Entities
             if ( CanRun )
             {
                 Stamina -= 0.5f;
-                Running = true;
+                IsRunning = true;
                 UpdateSpeed();
             }
         }
 
         public void StopRunning()
         {
-            if ( Running )
+            if ( IsRunning )
             {
-                Running = false;
+                IsRunning = false;
                 UpdateSpeed();
             }
         }

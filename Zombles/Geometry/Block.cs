@@ -39,6 +39,14 @@ namespace Zombles.Geometry
             myEnts = new List<Entity>();
         }
 
+        public Tile this[ int x, int y ]
+        {
+            get
+            {
+                return myTiles[ x - X, y - Y ];
+            }
+        }
+
         public void BuildTiles( TileBuilder[,] tiles )
         {
             lock ( myTiles )

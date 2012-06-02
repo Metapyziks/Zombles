@@ -55,7 +55,7 @@ namespace Zombles.Scripts.Entities
         public Zombie( Entity ent )
             : base( ent )
         {
-            myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 1.25f;
+            myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 1.5f;
             myBleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
         }
 

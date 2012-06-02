@@ -18,10 +18,10 @@ namespace Zombles.Entities
             set
             {
                 myVelocity = value;
-                Moving = myVelocity.X != 0.0f || myVelocity.Y != 0.0f;
+                IsMoving = myVelocity.X != 0.0f || myVelocity.Y != 0.0f;
             }
         }
-        public bool Moving { get; private set; }
+        public bool IsMoving { get; private set; }
 
         public Movement( Entity ent )
             : base( ent )

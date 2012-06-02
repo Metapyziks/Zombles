@@ -9,7 +9,7 @@ using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
 {
-    public class ZombieAI : AI
+    public class ZombieAI : HumanControl
     {
         private const double TargetSearchInterval = 1.0;
         private const double AttackInterval = 1.0;

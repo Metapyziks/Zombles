@@ -7,11 +7,11 @@ using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
 {
-    public class AI : Component
+    public class HumanControl : Component
     {
         protected Human Human { get; private set; }
 
-        public AI( Entity ent )
+        public HumanControl( Entity ent )
             : base( ent )
         {
 

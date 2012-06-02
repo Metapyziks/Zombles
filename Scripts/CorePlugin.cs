@@ -46,6 +46,14 @@ namespace Zombles.Scripts
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 surv.Spawn();
+
+                if ( i == 0 )
+                {
+                    GameScene scene = ZomblesGame.CurrentScene as GameScene;
+                    surv.SwapComponent<SurvivorAI, PlayerControlled>();
+                    surv.UpdateComponents();
+                    scene.ControlledEnt = surv;
+                }
             }
 
             for ( int i = 0; i < 32; ++i )
