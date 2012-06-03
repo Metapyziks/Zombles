@@ -5,6 +5,8 @@ using System.Text;
 
 using OpenTK;
 
+using Zombles.Geometry;
+
 namespace Zombles.Entities
 {
     public enum CollisionModel : byte
@@ -64,12 +66,51 @@ namespace Zombles.Entities
                 return move;
 
             NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
-                new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f );
+                new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f + move.Length );
 
             while ( iter.MoveNext() )
                 move = TryMove( iter.Current, move );
 
-            return move;
+            float xm = 1.0f, ym = 1.0f;
+
+            if ( move.X > 0 )
+            {
+                float dydx = move.Y / move.X;
+
+                int startX = (int) Math.Ceiling( Right );
+                float y = Position.Z + ( startX - Right ) * dydx;
+
+                Block blk = null;
+
+                for ( int ix = startX; ix < Right + move.X; ++ix, y += dydx )
+                {
+                    int wx = ( ix - 1 ) - (int) Math.Floor( (double) ( ix - 1 ) / City.Width ) * City.Width;
+                    int sx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
+
+                    int minY = (int) Math.Floor( y + Offset.Y );
+                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y );
+
+                    for ( int iy = minY; iy <= maxY; ++iy )
+                    {
+                        int wy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
+
+                        if ( blk == null || wx < blk.X || wy < blk.Y ||
+                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            blk = City.GetBlock( wx, wy );
+
+                        Tile t = blk[ wx, wy ];
+
+                        if ( t.IsWallSolid( Face.East ) )
+                        {
+                            xm = ( ix - Right ) / move.X;
+                            ix = (int) Math.Ceiling( Right + move.X );
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return new Vector2( xm * move.X, ym * move.Y );
         }
 
         private Vector2 TryMove( Entity obstacle, Vector2 move )

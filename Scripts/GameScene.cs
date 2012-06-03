@@ -25,6 +25,7 @@ namespace Zombles.Scripts
         public const int WorldSize = 256;
 
         private UILabel myFPSText;
+        private UILabel myPosText;
         private UIInfectionDisplay myInfDisplay;
 
         private long myTotalFrameTime;
@@ -91,6 +92,10 @@ namespace Zombles.Scripts
                 myFPSText.Colour = Color4.White;
                 AddChild( myFPSText );
 
+                myPosText = new UILabel( Font.Large );
+                myPosText.Colour = Color4.White;
+                AddChild( myPosText );
+
                 myInfDisplay = new UIInfectionDisplay();
                 AddChild( myInfDisplay );
 
@@ -130,6 +135,9 @@ namespace Zombles.Scripts
             myFPSText.Left = 4.0f;
             myFPSText.Top = 4.0f;
 
+            myPosText.Left = 4.0f;
+            myPosText.Top = 8.0f + Font.Large.CharHeight;
+
             myInfDisplay.Width = Width - 8.0f;
             myInfDisplay.Height = 8.0f;
             myInfDisplay.Left = 4.0f;
@@ -146,8 +154,11 @@ namespace Zombles.Scripts
                 myTotalFrameTime = 0;
                 myFramesCompleted = 0;
 
-                myFPSText.Text = string.Format( "FT: {0:F}ms FPS: {1:F} MEM: {2:F}MB", period, freq, Process.GetCurrentProcess().PrivateMemorySize64 / ( 1024d * 1024d ) );
+                myFPSText.Text = string.Format( "FT: {0:F}ms FPS: {1:F} MEM: {2:F}MB",
+                    period, freq, Process.GetCurrentProcess().PrivateMemorySize64 / ( 1024d * 1024d ) );
             }
+
+            myPosText.Text = string.Format( "X: {0:F} Y: {1:F}", Camera.Position.X, Camera.Position.Y );
 
             City.Think( e.Time );
 

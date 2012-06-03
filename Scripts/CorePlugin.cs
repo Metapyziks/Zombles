@@ -40,7 +40,7 @@ namespace Zombles.Scripts
             City city = ( ZomblesGame.CurrentScene as GameScene ).City;
             Random rand = new Random();
 
-            for ( int i = 0; i < 992; ++i )
+            for ( int i = 0; i < 1 /*992*/; ++i )
             {
                 Entity surv = Entity.Create( "survivor", city );
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
@@ -56,6 +56,7 @@ namespace Zombles.Scripts
                 }
             }
 
+            /*
             for ( int i = 0; i < 32; ++i )
             {
                 Entity zomb = Entity.Create( "zombie", city );
@@ -63,6 +64,7 @@ namespace Zombles.Scripts
                 zomb.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 zomb.Spawn();
             }
+            */
         }
     }
 }
