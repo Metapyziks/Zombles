@@ -100,9 +100,9 @@ namespace Zombles.Entities
 
                         bool hit = false;
 
-                        Tile t = blk[ wx, wy ];
+                        Tile tw = blk[ wx, wy ];
 
-                        hit = t.IsWallSolid( Face.East );
+                        hit = tw.IsWallSolid( Face.East );
 
                         if( !hit )
                         {
@@ -110,10 +110,10 @@ namespace Zombles.Entities
                                     sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
                                 blk = City.GetBlock( sx, wy );
 
-                            t = blk[ sx, wy ];
+                            Tile ts = blk[ sx, wy ];
 
-                            hit = ( iy > minY && t.IsWallSolid( Face.North ) ) ||
-                                ( iy < maxY && t.IsWallSolid( Face.South ) );
+                            hit = ( iy > minY && ts.IsWallSolid( Face.North ) && !tw.IsWallSolid( Face.North ) ) ||
+                                ( iy < maxY && ts.IsWallSolid( Face.South ) && !tw.IsWallSolid( Face.South ) );
                         }
 
                         if ( hit )
@@ -152,9 +152,9 @@ namespace Zombles.Entities
 
                         bool hit = false;
 
-                        Tile t = blk[ wx, wy ];
+                        Tile tw = blk[ wx, wy ];
 
-                        hit = t.IsWallSolid( Face.West );
+                        hit = tw.IsWallSolid( Face.West );
 
                         if ( !hit )
                         {
@@ -162,16 +162,121 @@ namespace Zombles.Entities
                                     sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
                                 blk = City.GetBlock( sx, wy );
 
-                            t = blk[ sx, wy ];
+                            Tile ts = blk[ sx, wy ];
 
-                            hit = ( iy > minY && t.IsWallSolid( Face.North ) ) ||
-                                ( iy < maxY && t.IsWallSolid( Face.South ) );
+                            hit = ( iy > minY && ts.IsWallSolid( Face.North ) && !tw.IsWallSolid( Face.North ) ) ||
+                                ( iy < maxY && ts.IsWallSolid( Face.South ) && !tw.IsWallSolid( Face.South ) );
                         }
 
                         if ( hit )
                         {
                             xm = ( ix - Left ) / move.X;
                             ix = (int) Math.Floor( Left + move.X );
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if ( move.Y > 0 )
+            {
+                float dxdy = move.X / move.Y;
+
+                int startY = (int) Math.Ceiling( Bottom );
+                float x = Position.X + ( startY - Bottom ) * dxdy;
+
+                Block blk = null;
+
+                for ( int iy = startY; iy < Bottom + move.Y; ++iy, x += dxdy )
+                {
+                    int wy = ( iy - 1 ) - (int) Math.Floor( (double) ( iy - 1 ) / City.Height ) * City.Height;
+                    int sy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
+
+                    int minX = (int) Math.Floor( x + Offset.X );
+                    int maxX = (int) Math.Floor( x + Offset.X + Size.X );
+
+                    for ( int ix = minX; ix <= maxX; ++ix )
+                    {
+                        int wx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
+
+                        if ( blk == null || wx < blk.X || wy < blk.Y ||
+                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            blk = City.GetBlock( wx, wy );
+
+                        bool hit = false;
+
+                        Tile tw = blk[ wx, wy ];
+
+                        hit = tw.IsWallSolid( Face.South );
+
+                        if ( !hit )
+                        {
+                            if ( sy < blk.X || wy < blk.Y ||
+                                    sy >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                                blk = City.GetBlock( wx, sy );
+
+                            Tile ts = blk[ wx, sy ];
+
+                            hit = ( ix > minX && ts.IsWallSolid( Face.West ) && !tw.IsWallSolid( Face.West ) ) ||
+                                ( ix < maxX && ts.IsWallSolid( Face.East ) && !tw.IsWallSolid( Face.East ) );
+                        }
+
+                        if ( hit )
+                        {
+                            ym = ( iy - Bottom ) / move.Y;
+                            iy = (int) Math.Ceiling( Bottom + move.Y );
+                            break;
+                        }
+                    }
+                }
+            }
+            else if ( move.Y < 0 )
+            {
+                float dxdy = move.X / -move.Y;
+
+                int startY = (int) Math.Floor( Top );
+                float x = Position.X + ( Top - startY ) * dxdy;
+
+                Block blk = null;
+
+                for ( int iy = startY; iy > Top + move.Y; --iy, x += dxdy )
+                {
+                    int wy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
+                    int sy = ( iy - 1 ) - (int) Math.Floor( (double) ( iy - 1 ) / City.Height ) * City.Height;
+
+                    int minX = (int) Math.Floor( x + Offset.X );
+                    int maxX = (int) Math.Floor( x + Offset.X + Size.X );
+
+                    for ( int ix = minX; ix <= maxX; ++ix )
+                    {
+                        int wx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
+
+                        if ( blk == null || wx < blk.X || wy < blk.Y ||
+                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            blk = City.GetBlock( wx, wy );
+
+                        bool hit = false;
+
+                        Tile tw = blk[ wx, wy ];
+
+                        hit = tw.IsWallSolid( Face.North );
+
+                        if ( !hit )
+                        {
+                            if ( sy < blk.X || wy < blk.Y ||
+                                    sy >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                                blk = City.GetBlock( wx, sy );
+
+                            Tile ts = blk[ wx, sy ];
+
+                            hit = ( ix > minX && ts.IsWallSolid( Face.West ) && !tw.IsWallSolid( Face.West ) ) ||
+                                ( ix < maxX && ts.IsWallSolid( Face.East ) && !tw.IsWallSolid( Face.East ) );
+                        }
+
+                        if ( hit )
+                        {
+                            ym = ( iy - Top ) / move.Y;
+                            iy = (int) Math.Ceiling( Top + move.Y );
                             break;
                         }
                     }
