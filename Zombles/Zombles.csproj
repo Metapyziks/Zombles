@@ -71,6 +71,7 @@
     <Compile Include="Geometry\Generation\GenHelper.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
+    <Compile Include="Geometry\Trace.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\EntityAnim.cs" />
