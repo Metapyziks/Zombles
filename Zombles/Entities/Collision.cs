@@ -73,6 +73,8 @@ namespace Zombles.Entities
 
             float xm = 1.0f, ym = 1.0f;
 
+            float error = 1.0f / 32.0f;
+
             if ( move.X > 0 )
             {
                 float dydx = move.Y / move.X;
@@ -87,8 +89,8 @@ namespace Zombles.Entities
                     int wx = ( ix - 1 ) - (int) Math.Floor( (double) ( ix - 1 ) / City.Width ) * City.Width;
                     int sx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
 
-                    int minY = (int) Math.Floor( y + Offset.Y );
-                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y );
+                    int minY = (int) Math.Floor( y + Offset.Y + error );
+                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y - error );
 
                     for ( int iy = minY; iy <= maxY; ++iy )
                     {
@@ -139,8 +141,8 @@ namespace Zombles.Entities
                     int wx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
                     int sx = ( ix - 1 ) - (int) Math.Floor( (double) ( ix - 1 ) / City.Width ) * City.Width;
 
-                    int minY = (int) Math.Floor( y + Offset.Y );
-                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y );
+                    int minY = (int) Math.Floor( y + Offset.Y + error );
+                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y - error );
 
                     for ( int iy = minY; iy <= maxY; ++iy )
                     {
@@ -192,8 +194,8 @@ namespace Zombles.Entities
                     int wy = ( iy - 1 ) - (int) Math.Floor( (double) ( iy - 1 ) / City.Height ) * City.Height;
                     int sy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
 
-                    int minX = (int) Math.Floor( x + Offset.X );
-                    int maxX = (int) Math.Floor( x + Offset.X + Size.X );
+                    int minX = (int) Math.Floor( x + Offset.X + error );
+                    int maxX = (int) Math.Floor( x + Offset.X + Size.X - error );
 
                     for ( int ix = minX; ix <= maxX; ++ix )
                     {
@@ -211,8 +213,8 @@ namespace Zombles.Entities
 
                         if ( !hit )
                         {
-                            if ( sy < blk.X || wy < blk.Y ||
-                                    sy >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            if ( wx < blk.X || sy < blk.Y ||
+                                    wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height )
                                 blk = City.GetBlock( wx, sy );
 
                             Tile ts = blk[ wx, sy ];
@@ -244,8 +246,8 @@ namespace Zombles.Entities
                     int wy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
                     int sy = ( iy - 1 ) - (int) Math.Floor( (double) ( iy - 1 ) / City.Height ) * City.Height;
 
-                    int minX = (int) Math.Floor( x + Offset.X );
-                    int maxX = (int) Math.Floor( x + Offset.X + Size.X );
+                    int minX = (int) Math.Floor( x + Offset.X + error );
+                    int maxX = (int) Math.Floor( x + Offset.X + Size.X - error );
 
                     for ( int ix = minX; ix <= maxX; ++ix )
                     {
@@ -263,8 +265,8 @@ namespace Zombles.Entities
 
                         if ( !hit )
                         {
-                            if ( sy < blk.X || wy < blk.Y ||
-                                    sy >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            if ( wx < blk.X || sy < blk.Y ||
+                                    wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height )
                                 blk = City.GetBlock( wx, sy );
 
                             Tile ts = blk[ wx, sy ];
