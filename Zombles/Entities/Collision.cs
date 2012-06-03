@@ -106,6 +106,20 @@ namespace Zombles.Entities
                             ix = (int) Math.Ceiling( Right + move.X );
                             break;
                         }
+
+                        if ( sx < blk.X || wy < blk.Y ||
+                                sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                            blk = City.GetBlock( sx, wy );
+
+                        t = blk[ sx, wy ];
+
+                        if ( ( iy > minY && t.IsWallSolid( Face.North ) ) ||
+                            ( iy < maxY && t.IsWallSolid( Face.South ) ) )
+                        {
+                            xm = ( ix - Right ) / move.X;
+                            ix = (int) Math.Ceiling( Right + move.X );
+                            break;
+                        }
                     }
                 }
             }
