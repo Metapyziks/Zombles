@@ -124,7 +124,7 @@ namespace Zombles.Geometry
             }
 
             if ( xm == 1.0f && ym == 1.0f )
-                return new TraceResult( this, Target );
+                return new TraceResult( this, vec );
 
             if ( xm <= ym )
                 return new TraceResult( this, xm * vec, xf );
@@ -135,15 +135,22 @@ namespace Zombles.Geometry
 
     public class TraceResult
     {
+        public readonly City City;
+
         public Vector2 Origin { get; private set; }
         public Vector2 Normal { get; private set; }
         public Vector2 Target { get; private set; }
+        public Vector2 Vector { get; private set; }
 
         public float Length
         {
-            get { return ( End - Origin ).Length; }
+            get { return Vector.Length; }
         }
-        public Vector2 End { get; private set; }
+
+        public Vector2 End
+        {
+            get { return City.Wrap( Origin + Vector ); }
+        }
 
         public float Ratio
         {
@@ -161,24 +168,26 @@ namespace Zombles.Geometry
         public Face Face { get; private set; }
         public Entity Entity { get; private set; }
 
-        internal TraceResult( Trace trace, Vector2 end )
+        internal TraceResult( Trace trace, Vector2 vec )
         {
+            City = trace.City;
+
             Origin = trace.Origin;
             Target = trace.Target;
             Normal = trace.Normal;
 
-            End = end;
+            Vector = vec;
         }
 
-        internal TraceResult( Trace trace, Vector2 end, Entity ent )
-            : this( trace, end )
+        internal TraceResult( Trace trace, Vector2 vec, Entity ent )
+            : this( trace, vec )
         {
             HitEntity = true;
             Entity = ent;
         }
 
-        internal TraceResult( Trace trace, Vector2 end, Face face )
-            : this( trace, end )
+        internal TraceResult( Trace trace, Vector2 vec, Face face )
+            : this( trace, vec )
         {
             HitWorld = true;
             Face = face;

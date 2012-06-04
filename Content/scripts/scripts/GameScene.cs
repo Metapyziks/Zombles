@@ -41,6 +41,9 @@ namespace Zombles.Scripts
         private int myOldCamDir;
         private bool myMapView;
 
+        private TraceResult myTrace;
+        private DebugTraceShader myTraceShader;
+
         private float TargetCameraPitch
         {
             get { return myMapView ? MathHelper.Pi * 90.0f / 180.0f : MathHelper.Pi * 30.0f / 180.0f; }
@@ -117,6 +120,11 @@ namespace Zombles.Scripts
                 FlatEntShader = new FlatEntityShader();
                 FlatEntShader.Camera = Camera;
 
+                myTrace = null;
+
+                myTraceShader = new DebugTraceShader();
+                myTraceShader.Camera = Camera;
+
                 Camera.UpdatePerspectiveMatrix();
 
                 myFrameTimer.Start();
@@ -161,6 +169,13 @@ namespace Zombles.Scripts
             myPosText.Text = string.Format( "X: {0:F} Y: {1:F}", Camera.Position.X, Camera.Position.Y );
 
             City.Think( e.Time );
+
+            var trace = new Zombles.Geometry.Trace( City );
+            trace.Origin = Camera.Position;
+            trace.Normal = new Vector2( (float) Math.Sin( Camera.Yaw ), (float) -Math.Cos( Camera.Yaw ) );
+            trace.Length = 32.0f;
+
+            myTrace = trace.GetResult();
 
             myInfDisplay.UpdateBars();
 
@@ -265,6 +280,12 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
+                if ( myTrace != null )
+                {
+                    myTraceShader.Begin();
+                    myTraceShader.Render( myTrace );
+                    myTraceShader.End();
+                }
             }
 
             base.OnRenderFrame( e );

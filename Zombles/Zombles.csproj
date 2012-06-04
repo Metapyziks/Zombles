@@ -74,6 +74,7 @@
     <Compile Include="Geometry\Trace.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\DebugTraceShader.cs" />
     <Compile Include="Graphics\EntityAnim.cs" />
     <Compile Include="Graphics\FlatEntityShader.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />

@@ -107,8 +107,6 @@ namespace Zombles.Graphics
 
             GL.Enable( EnableCap.DepthTest );
 
-            GL.BlendFunc( BlendingFactorSrc.One, BlendingFactorDest.Zero );
-
             stVB.StartBatch( this );
         }
 
