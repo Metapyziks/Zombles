@@ -45,6 +45,14 @@ namespace Zombles.Geometry
             return diff;
         }
 
+        public Vector2 Wrap( Vector2 pos )
+        {
+            pos.X -= (int) Math.Floor( pos.X / Width ) * Width;
+            pos.Y -= (int) Math.Floor( pos.Y / Height ) * Height;
+
+            return pos;
+        }
+
         public void SplashBlood( Vector2 pos, float force )
         {
             if ( force <= 0.0f )
