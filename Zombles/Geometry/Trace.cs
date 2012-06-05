@@ -68,6 +68,8 @@ namespace Zombles.Geometry
 
             Face xf = ( vec.X > 0.0f ? Face.East : Face.West );
             Face yf = ( vec.Y > 0.0f ? Face.South : Face.North );
+            
+            bool hitGeo = false;
 
             if ( HitGeometry )
             {
@@ -96,6 +98,7 @@ namespace Zombles.Geometry
                         if ( blk[ wx, wy ].IsWallSolid( xf ) )
                         {
                             xm = ( ix - Origin.X ) / vec.X;
+                            hitGeo = true;
                             break;
                         }
                     }
@@ -126,19 +129,123 @@ namespace Zombles.Geometry
                         if ( blk[ wx, wy ].IsWallSolid( yf ) )
                         {
                             ym = ( iy - Origin.Y ) / vec.Y;
+                            hitGeo = true;
                             break;
                         }
                     }
                 }
             }
 
-            if ( xm == 1.0f && ym == 1.0f )
-                return new TraceResult( this, vec );
+            Face hitFace = Face.None;
 
-            if ( xm <= ym )
-                return new TraceResult( this, xm * vec, xf );
+            if ( hitGeo )
+            {
+                if ( xm <= ym )
+                {
+                    vec *= xm;
+                    hitFace = xf;
+                }
+                else
+                {
+                    vec *= ym;
+                    hitFace = yf;
+                }
+            }
+
+            Entity hitEnt = null;
+
+            if ( HitEntities )
+            {
+                NearbyEntityEnumerator it = new NearbyEntityEnumerator(
+                    City, Origin + vec / 2.0f, vec.Length / 2.0f + 2.0f );
+
+                float ratio = 1.0f;
+                float dydx = vec.Y / vec.X;
+                float dxdy = vec.X / vec.Y;
+
+                while ( it.MoveNext() )
+                {
+                    Entity ent = it.Current;
+                    if ( ent.HasComponent<Collision>() )
+                    {
+                        Collision col = ent.GetComponent<Collision>();
+                        if ( col.Model != CollisionModel.None &&
+                            ( HitEntityPredicate == null || HitEntityPredicate( ent ) ) )
+                        {
+                            Vector2 diff = City.Difference( Origin, ent.Position2D );
+
+                            float lt = diff.X + col.Offset.X;
+                            float rt = lt + col.Size.X;
+                            float tp = diff.Y + col.Offset.Y;
+                            float bt = tp + col.Size.Y;
+
+                            if ( vec.X != 0 )
+                            {
+                                float dx = 0.0f;
+                                bool hit = false;
+                                if ( vec.X > 0 && vec.X * ratio > lt )
+                                {
+                                    dx = lt;
+                                    hit = true;
+                                }
+                                else if ( vec.X < 0 && vec.X * ratio < rt )
+                                {
+                                    dx = rt;
+                                    hit = true;
+                                }
+
+                                if ( hit )
+                                {
+                                    float y = dydx * dx;
+
+                                    if ( y > tp && y < bt )
+                                    {
+                                        ratio = dx / vec.X;
+                                        hitEnt = ent;
+                                    }
+                                }
+                            }
+
+                            if ( vec.Y != 0 )
+                            {
+                                float dy = 0.0f;
+                                bool hit = false;
+                                if ( vec.Y > 0 && vec.Y * ratio > tp )
+                                {
+                                    dy = tp;
+                                    hit = true;
+                                }
+                                else if ( vec.Y < 0 && vec.Y * ratio < bt )
+                                {
+                                    dy = bt;
+                                    hit = true;
+                                }
+
+                                if ( hit )
+                                {
+                                    float x = dxdy * dy;
+
+                                    if ( x > lt && x < rt )
+                                    {
+                                        ratio = dy / vec.Y;
+                                        hitEnt = ent;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if( hitEnt != null )
+                    vec *= ratio;
+            }
+
+            if ( hitEnt != null )
+                return new TraceResult( this, vec, hitEnt );
+            else if ( hitGeo )
+                return new TraceResult( this, vec, hitFace );
             else
-                return new TraceResult( this, ym * vec, yf );
+                return new TraceResult( this, vec );
         }
     }
 

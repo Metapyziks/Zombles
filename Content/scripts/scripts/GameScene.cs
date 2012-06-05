@@ -75,7 +75,7 @@ namespace Zombles.Scripts
         {
             myHideTop = false;
 
-            myCamMoveSpeed = 64.0f;
+            myCamMoveSpeed = 16.0f;
             myCamDir = 2;
             myCamRotTime = DateTime.MinValue;
             myMapView = false;
@@ -172,6 +172,9 @@ namespace Zombles.Scripts
 
             var trace = new Zombles.Geometry.Trace( City );
             trace.Origin = Camera.Position;
+            trace.HitGeometry = true;
+            trace.HitEntities = true;
+            trace.HitEntityPredicate = ( x => x != ControlledEnt );
             trace.Normal = new Vector2( (float) Math.Sin( Camera.Yaw ), (float) -Math.Cos( Camera.Yaw ) );
             trace.Length = 32.0f;
 

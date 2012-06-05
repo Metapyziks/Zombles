@@ -74,6 +74,11 @@ namespace Zombles.Scripts.Entities
             StopMoving();
         }
 
+        public void Attack( Vector2 dir )
+        {
+
+        }
+
         public void FaceDirection( Vector2 dir )
         {
             if ( !Health.IsAlive )
