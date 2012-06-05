@@ -3,6 +3,8 @@
 	"frame count" : 1,
 	"frequency" : 1.0,
 	
+	"size" : { "width" : 4, "height" : 8 },
+	
 	"directional" : true,
 	
 	"frames" :
@@ -19,6 +21,8 @@
 	"frame count" : 4,
 	"frequency" : 0.5,
 	
+	"size" : { "width" : 4, "height" : 8 },
+	
 	"directional" : true,
 	
 	"frames" :
@@ -28,4 +32,16 @@
 		[ "human_walk_e0", "human_walk_e1", "human_walk_e2", "human_walk_e3" ],
 		[ "human_walk_s0", "human_walk_s1", "human_walk_s2", "human_walk_s3" ]
 	]
+},
+
+(anim) "human dead" :
+{
+	"frame count" : 1,
+	"frequency" : 1.0,
+	
+	"size" : { "width" : 8, "height" : 2 },
+	
+	"directional" : false,
+	
+	"frames" : [ "human_dead" ]
 }

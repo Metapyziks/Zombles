@@ -16,7 +16,7 @@ namespace Zombles.Scripts
         {
             Entity.Register( "human", delegate( Entity ent )
             {
-                ent.AddComponent<RenderAnim>().Size = new Vector2( 0.5f, 1.0f );
+                ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
                 ent.AddComponent<Movement>();
                 ent.AddComponent<Health>();
@@ -50,6 +50,7 @@ namespace Zombles.Scripts
                 surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 surv.Spawn();
 
+                /*
                 if ( i == 0 )
                 {
                     GameScene scene = ZomblesGame.CurrentScene as GameScene;
@@ -57,6 +58,7 @@ namespace Zombles.Scripts
                     surv.UpdateComponents();
                     scene.ControlledEnt = surv;
                 }
+                */
             }
 
             for ( int i = 0; i < zoms; ++i )

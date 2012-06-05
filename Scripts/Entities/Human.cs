@@ -19,6 +19,7 @@ namespace Zombles.Scripts.Entities
 
         public abstract EntityAnim WalkAnim { get; }
         public abstract EntityAnim StandAnim { get; }
+        public abstract EntityAnim DeadAnim { get; }
 
         public abstract float MoveSpeed { get; }
 
@@ -30,6 +31,10 @@ namespace Zombles.Scripts.Entities
 
         public override void OnSpawn()
         {
+            Movement = null;
+            Anim = null;
+            Health = null;
+
             if ( Entity.HasComponent<Movement>() )
                 Movement = Entity.GetComponent<Movement>();
 
@@ -45,7 +50,8 @@ namespace Zombles.Scripts.Entities
                 Health.Killed += OnKilled;
             }
 
-            Anim.Start( StandAnim );
+            if( !Anim.Playing )
+                Anim.Start( StandAnim );
         }
 
         public override void OnRemove()
@@ -73,10 +79,21 @@ namespace Zombles.Scripts.Entities
         {
             City.SplashBlood( Position2D, 4.0f );
             StopMoving();
+
+            Anim.Start( DeadAnim );
+
+            Entity.RemoveComponent<HumanControl>();
+            Entity.RemoveComponent<Collision>();
+            Entity.RemoveComponent<Movement>();
+
+            Entity.UpdateComponents();
         }
 
         public virtual void Attack( Vector2 dir )
         {
+            if ( !Health.IsAlive )
+                return;
+
             FaceDirection( dir );
 
             Trace trace = new Trace( City );
@@ -85,7 +102,7 @@ namespace Zombles.Scripts.Entities
             trace.HitEntityPredicate = ( x => x != Entity );
             trace.Origin = Position2D;
             trace.Normal = dir;
-            trace.Length = 1.0f;
+            trace.Length = 32.0f;
 
             TraceResult res = trace.GetResult();
             if ( res.HitEntity && res.Entity.HasComponent<Health>() )
@@ -102,7 +119,7 @@ namespace Zombles.Scripts.Entities
 
         public void StartMoving( Vector2 dir )
         {
-            if ( !Health.IsAlive )
+            if ( Movement == null || !Health.IsAlive )
                 return;
 
             if ( !Anim.Playing || !Movement.IsMoving || Anim.CurAnim != WalkAnim )
@@ -118,6 +135,9 @@ namespace Zombles.Scripts.Entities
 
         public void UpdateSpeed()
         {
+            if ( Movement == null )
+                return;
+
             if ( !Movement.IsMoving )
                 return;
 
@@ -126,6 +146,9 @@ namespace Zombles.Scripts.Entities
 
         public void StopMoving()
         {
+            if ( Movement == null )
+                return;
+
             if ( !Anim.Playing || Movement.IsMoving || Anim.CurAnim != StandAnim )
                 Anim.Start( StandAnim );
 

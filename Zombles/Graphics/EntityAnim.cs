@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using OpenTK;
+
 using ResourceLib;
 
 namespace Zombles.Graphics
@@ -30,6 +32,8 @@ namespace Zombles.Graphics
         public readonly String Name;
         public readonly double Frequency;
 
+        public readonly Vector2 Size;
+
         public readonly int FrameCount;
         public readonly bool IsDirectional;
 
@@ -42,6 +46,12 @@ namespace Zombles.Graphics
 
             FrameCount = (int) obj[ "frame count" ].AsInteger();
             Frequency = obj[ "frequency" ].AsDouble();
+
+            InfoObject size = obj[ "size" ] as InfoObject;
+            Size = new Vector2(
+                size[ "width" ].AsInteger() / 8.0f,
+                size[ "height" ].AsInteger() / 8.0f
+            );
 
             IsDirectional = obj[ "directional" ].AsBoolean();
 

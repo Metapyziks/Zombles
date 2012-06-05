@@ -139,6 +139,19 @@ namespace Zombles.Entities
             return comp;
         }
 
+        public void RemoveComponent<T>()
+            where T : Component
+        {
+            T comp = GetComponent<T>();
+            Type type = typeof( T );
+
+            do
+                myCompDict.Remove( type );
+            while ( ( type = type.BaseType ) != typeof( Component ) );
+
+            myComps.Remove( comp );
+        }
+
         public TNew SwapComponent<TOld, TNew>()
             where TOld : Component
             where TNew : Component

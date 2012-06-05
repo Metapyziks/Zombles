@@ -18,6 +18,7 @@ namespace Zombles.Scripts.Entities
 
         private static EntityAnim stWalkAnim;
         private static EntityAnim stStandAnim;
+        private static EntityAnim stDeadAnim;
 
         private float myMoveSpeed;
 
@@ -47,6 +48,17 @@ namespace Zombles.Scripts.Entities
             }
         }
 
+        public override EntityAnim DeadAnim
+        {
+            get
+            {
+                if ( stDeadAnim == null )
+                    stDeadAnim = EntityAnim.GetAnim( "zombie dead" );
+
+                return stDeadAnim;
+            }
+        }
+
         public override float MoveSpeed
         {
             get { return myMoveSpeed; }
@@ -62,6 +74,12 @@ namespace Zombles.Scripts.Entities
         public override void OnSpawn()
         {
             base.OnSpawn();
+
+            if ( Health.IsAlive && Health.MaxHealth == 1 )
+            {
+                Health.SetMaximum( 50 );
+                Health.Revive();
+            }
 
             if ( !myCounted )
             {

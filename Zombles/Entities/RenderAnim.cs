@@ -55,6 +55,8 @@ namespace Zombles.Entities
             if ( CurAnim == null )
                 return;
 
+            Size = CurAnim.Size;
+
             int frame = 0;
             if ( Playing )
             {
