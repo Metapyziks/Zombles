@@ -53,6 +53,14 @@ namespace Zombles
             get { return GameWindow.Mouse; }
         }
 
+        public Vector2 MousePos
+        {
+            get
+            {
+                return new Vector2( Mouse.X, Mouse.Y );
+            }
+        }
+
         public bool CursorVisible
         {
             get { return GameWindow.CursorVisible; }

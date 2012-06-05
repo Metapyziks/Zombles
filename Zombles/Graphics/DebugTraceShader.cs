@@ -38,9 +38,11 @@ namespace Zombles.Graphics
             vert.Logic = @"
                 void main( void )
                 {
+                    const float yscale = 2.0 / sqrt( 3.0 );
+
                     gl_Position = view_matrix * vec4(
                         in_vertex.x + world_offset.x,
-                        0.5,
+                        0.5 * yscale,
                         in_vertex.y + world_offset.y,
                         1.0
                     );

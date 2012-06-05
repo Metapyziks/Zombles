@@ -175,6 +175,27 @@ namespace Zombles.Graphics
             WrapHeight = height;
         }
 
+        public Vector2 ScreenToWorld( Vector2 pos, float height = 0.0f )
+        {
+            pos -= new Vector2( Width * 0.5f, Height * 0.5f );
+            pos /= 8.0f * myScale;
+            pos.Y /= (float) Math.Sin( myRotation.X );
+            pos.Y += height * 4.0f * (float) ( Math.Cos( myRotation.X ) / Math.Sqrt( 3.0 ) );
+
+            float sin = (float) Math.Sin( myRotation.Y );
+            float cos = (float) Math.Cos( myRotation.Y );
+
+            pos = new Vector2(
+                myPosition.X + cos * pos.X - sin * pos.Y,
+                myPosition.Z + sin * pos.X + cos * pos.Y
+            );
+
+            pos.X -= (int) Math.Floor( pos.X / WrapWidth  ) * WrapWidth;
+            pos.Y -= (int) Math.Floor( pos.Y / WrapHeight ) * WrapHeight;
+
+            return pos;
+        }
+
         public void UpdatePerspectiveMatrix()
         {
             if ( myPerspectiveChanged )

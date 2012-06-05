@@ -7,6 +7,7 @@ using OpenTK;
 
 using Zombles.Entities;
 using Zombles.Graphics;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
@@ -74,9 +75,21 @@ namespace Zombles.Scripts.Entities
             StopMoving();
         }
 
-        public void Attack( Vector2 dir )
+        public virtual void Attack( Vector2 dir )
         {
+            FaceDirection( dir );
 
+            Trace trace = new Trace( City );
+            trace.HitGeometry = true;
+            trace.HitEntities = true;
+            trace.HitEntityPredicate = ( x => x != Entity );
+            trace.Origin = Position2D;
+            trace.Normal = dir;
+            trace.Length = 1.0f;
+
+            TraceResult res = trace.GetResult();
+            if ( res.HitEntity && res.Entity.HasComponent<Health>() )
+                res.Entity.GetComponent<Health>().Damage( Tools.Random.Next( 10, 25 ), Entity );
         }
 
         public void FaceDirection( Vector2 dir )

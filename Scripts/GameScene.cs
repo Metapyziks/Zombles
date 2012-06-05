@@ -175,7 +175,13 @@ namespace Zombles.Scripts
             trace.HitGeometry = true;
             trace.HitEntities = true;
             trace.HitEntityPredicate = ( x => x != ControlledEnt );
-            trace.Normal = new Vector2( (float) Math.Sin( Camera.Yaw ), (float) -Math.Cos( Camera.Yaw ) );
+            if ( ControlledEnt != null )
+            {
+                RenderAnim anim = ControlledEnt.GetComponent<RenderAnim>();
+                trace.Normal = new Vector2( (float) Math.Cos( anim.Rotation ), (float) Math.Sin( anim.Rotation ) );
+            }
+            else
+                trace.Normal = new Vector2( (float) Math.Sin( Camera.Yaw ), (float) -Math.Cos( Camera.Yaw ) );
             trace.Length = 32.0f;
 
             myTrace = trace.GetResult();

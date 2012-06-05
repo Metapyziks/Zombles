@@ -30,8 +30,15 @@ namespace Zombles.Scripts.Entities
         {
             GameScene scene = ZomblesGame.CurrentScene as GameScene;
             KeyboardState keyboard = Keyboard.GetState();
+            MouseState mouse = Mouse.GetState();
 
             Survivor surv = Human as Survivor;
+
+            if ( mouse.LeftButton == ButtonState.Pressed )
+            {
+                Vector2 pos = scene.Camera.ScreenToWorld( scene.MousePos, 0.5f );
+                surv.Attack( City.Difference( Position2D, pos ) );
+            }
 
             if ( keyboard[ Key.ShiftLeft ] )
             {

@@ -179,16 +179,16 @@ namespace Zombles.Geometry
                             float tp = diff.Y + col.Offset.Y;
                             float bt = tp + col.Size.Y;
 
-                            if ( vec.X != 0 )
+                            if ( vec.X != 0.0f )
                             {
                                 float dx = 0.0f;
                                 bool hit = false;
-                                if ( vec.X > 0 && vec.X * ratio > lt )
+                                if ( vec.X > 0.0f && lt >= 0.0f && vec.X * ratio > lt )
                                 {
                                     dx = lt;
                                     hit = true;
                                 }
-                                else if ( vec.X < 0 && vec.X * ratio < rt )
+                                else if ( vec.X < 0.0f && rt <= 0.0f && vec.X * ratio < rt )
                                 {
                                     dx = rt;
                                     hit = true;
@@ -206,16 +206,16 @@ namespace Zombles.Geometry
                                 }
                             }
 
-                            if ( vec.Y != 0 )
+                            if ( vec.Y != 0.0f )
                             {
                                 float dy = 0.0f;
                                 bool hit = false;
-                                if ( vec.Y > 0 && vec.Y * ratio > tp )
+                                if ( vec.Y > 0.0f && tp >= 0.0f && vec.Y * ratio > tp )
                                 {
                                     dy = tp;
                                     hit = true;
                                 }
-                                else if ( vec.Y < 0 && vec.Y * ratio < bt )
+                                else if ( vec.Y < 0.0f && bt <= 0.0f && vec.Y * ratio < bt )
                                 {
                                     dy = bt;
                                     hit = true;

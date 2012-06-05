@@ -60,9 +60,9 @@ namespace Zombles.Scripts.Entities
 
                     if ( ZomblesGame.Time - myLastAttack > AttackInterval )
                     {
-                        if ( diff.LengthSquared < 1.0f )
+                        if ( diff.LengthSquared < 0.75f )
                         {
-                            targHealth.Damage( Tools.Random.Next( 10, 25 ), Entity );
+                            Human.Attack( diff );
                             myLastAttack = ZomblesGame.Time;
                             Human.StopMoving();
                         }
