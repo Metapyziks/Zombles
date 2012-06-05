@@ -110,6 +110,7 @@ namespace Zombles.Scripts
                 Camera = new Camera( Width, Height, 4.0f );
                 Camera.SetWrapSize( WorldSize, WorldSize );
                 Camera.Position = new Vector2( WorldSize, WorldSize ) / 2.0f;
+                Camera.Pitch = TargetCameraPitch;
                 Camera.Yaw = TargetCameraYaw;
 
                 Plugin.CityGenerated();
@@ -175,13 +176,8 @@ namespace Zombles.Scripts
             trace.HitGeometry = true;
             trace.HitEntities = true;
             trace.HitEntityPredicate = ( x => x != ControlledEnt );
-            if ( ControlledEnt != null )
-            {
-                RenderAnim anim = ControlledEnt.GetComponent<RenderAnim>();
-                trace.Normal = new Vector2( (float) Math.Cos( anim.Rotation ), (float) Math.Sin( anim.Rotation ) );
-            }
-            else
-                trace.Normal = new Vector2( (float) Math.Sin( Camera.Yaw ), (float) -Math.Cos( Camera.Yaw ) );
+            trace.Normal = City.Difference( Camera.Position,
+                Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
             trace.Length = 32.0f;
 
             myTrace = trace.GetResult();
