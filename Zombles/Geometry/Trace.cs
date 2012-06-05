@@ -11,10 +11,20 @@ namespace Zombles.Geometry
 {
     public class Trace
     {
+        private Vector2 myNormal; 
+
         public readonly City City;
 
         public Vector2 Origin { get; set; }
-        public Vector2 Normal { get; set; }
+        public Vector2 Normal
+        {
+            get { return myNormal; }
+            set
+            {
+                myNormal = value;
+                myNormal.Normalize();
+            }
+        }
 
         public float Length { get; set; }
 
@@ -38,7 +48,6 @@ namespace Zombles.Geometry
             set
             {
                 Normal = value;
-                Normal.Normalize();
                 Length = value.Length;
             }
         }

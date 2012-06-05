@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 
 using Zombles.Entities;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
@@ -40,6 +41,11 @@ namespace Zombles.Scripts.Entities
 
                 myFleePos = new Vector2();
 
+                Trace trace = new Trace( City );
+                trace.Origin = Position2D;
+                trace.HitGeometry = true;
+                trace.HitEntities = false;
+
                 NearbyEntityEnumerator it = SearchNearbyEnts( myFleeRadius );
                 while ( it.MoveNext() )
                 {
@@ -51,10 +57,15 @@ namespace Zombles.Scripts.Entities
 
                         if ( dist2 > 0 )
                         {
-                            myFleePos -= diff / dist2;
+                            trace.Target = cur.Position2D;
 
-                            if ( dist2 < myRunRadius * myRunRadius )
-                                ( Human as Survivor ).StartRunning();
+                            if ( !trace.GetResult().Hit )
+                            {
+                                myFleePos -= diff / dist2;
+
+                                if ( dist2 < myRunRadius * myRunRadius )
+                                    ( Human as Survivor ).StartRunning();
+                            }
                         }
                     }
                 }
