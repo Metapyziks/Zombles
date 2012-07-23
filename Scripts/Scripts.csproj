@@ -54,6 +54,7 @@
     <Compile Include="Entities\PlayerControlled.cs" />
     <Compile Include="Entities\Survivor.cs" />
     <Compile Include="Entities\SurvivorAI.cs" />
+    <Compile Include="Entities\Waypoint.cs" />
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="Entities\ZombieAI.cs" />
     <Compile Include="GameScene.cs" />

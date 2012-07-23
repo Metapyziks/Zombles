@@ -19,7 +19,7 @@ namespace Zombles.Scripts.Entities
             : base( ent )
         {
             myFleeRadius = 4.0f + Tools.Random.NextSingle() * 6.0f;
-            myRunRadius = 2.0f  + Tools.Random.NextSingle() * 4.0f;
+            myRunRadius  = 2.0f + Tools.Random.NextSingle() * 4.0f;
         }
 
         public override void OnSpawn()

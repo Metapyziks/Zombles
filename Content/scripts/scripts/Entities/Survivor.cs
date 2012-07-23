@@ -136,7 +136,7 @@ namespace Zombles.Scripts.Entities
 
         protected override void OnKilled( object sender, KilledEventArgs e )
         {
-            if ( IsInfected )
+            if ( IsInfected && Tools.Random.NextDouble() < 0.74 )
                 Zombify();
             else
                 base.OnKilled( sender, e );
