@@ -31,8 +31,13 @@ namespace Zombles.Geometry.Generation
             if ( BlockGenerator.WillAnyFit( width, height ) )
             {
                 BlockGenerator gen = BlockGenerator.GetRandom( width, height, rand );
-                district.SetBlock( gen.Generate( district, borderLeft, borderTop,
-                    borderRight, borderBottom, rand ) );
+
+                if ( depth > 3 && rand.Next( width * height ) == 0 )
+                {
+                    district.SetBlock( gen.Generate( district, borderLeft, borderTop,
+                        borderRight, borderBottom, rand ) );
+                    return;
+                }
             }
 
             int nextBorder = depth < 4 ? 3 : depth < 6 ? 2 : 1;

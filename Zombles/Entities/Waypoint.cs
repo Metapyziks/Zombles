@@ -145,7 +145,6 @@ namespace Zombles.Entities
                 }
                 else
                 {
-                    //return;
                     pos = new Vector2( (int) ( rand.NextSingle() * city.Width ) + 0.5f,
                         (int) ( rand.NextSingle() * city.Height ) + 0.5f );
                 }
