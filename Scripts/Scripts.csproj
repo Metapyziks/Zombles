@@ -48,13 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CorePlugin.cs" />
+    <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />
     <Compile Include="Entities\PlayerControlled.cs" />
     <Compile Include="Entities\Survivor.cs" />
     <Compile Include="Entities\SurvivorAI.cs" />
-    <Compile Include="Entities\Waypoint.cs" />
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="Entities\ZombieAI.cs" />
     <Compile Include="GameScene.cs" />

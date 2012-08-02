@@ -112,8 +112,16 @@ namespace Zombles.Geometry
         public void RenderEntities( FlatEntityShader shader )
         {
             foreach ( Entity ent in myEnts )
-                if ( ent.HasComponent<Render>() )
-                    ent.GetComponent<Render>().OnRender( shader );
+                if ( ent.HasComponent<Render2D>() )
+                    ent.GetComponent<Render2D>().OnRender( shader );
+        }
+
+        public void RenderPaths( DebugTraceShader shader )
+        {
+            foreach ( Entity ent in myEnts )
+                if ( ent.HasComponent<Waypoint>() )
+                    foreach ( PathEdge path in ent.GetComponent<Waypoint>().Connections )
+                        shader.Render( path );
         }
 
         public IEnumerator<Entity> GetEnumerator()

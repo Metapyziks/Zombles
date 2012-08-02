@@ -9,7 +9,7 @@ using Zombles.Graphics;
 
 namespace Zombles.Entities
 {
-    public class RenderAnim : Render
+    public class RenderAnim : Render2D
     {
         private double myStartTime;
 

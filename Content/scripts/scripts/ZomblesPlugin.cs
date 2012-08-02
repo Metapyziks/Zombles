@@ -10,11 +10,19 @@ using Zombles.Scripts.Entities;
 
 namespace Zombles.Scripts
 {
-    public class CorePlugin : Plugin
+    public class ZomblesPlugin : Plugin
     {
         protected override void OnInitialize()
         {
-            Entity.Register( "human", delegate( Entity ent )
+            Entity.Register( "waypoint", ent =>
+            {
+                ent.AddComponent<Waypoint>();
+//#if DEBUG
+                ent.AddComponent<Render2D>().TextureIndex = TextureManager.Ents.GetIndex( "waypoint" );
+//#endif
+            } );
+
+            Entity.Register( "human", ent =>
             {
                 ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
@@ -22,13 +30,13 @@ namespace Zombles.Scripts
                 ent.AddComponent<Health>();
             } );
 
-            Entity.Register( "survivor", "human", delegate( Entity ent )
+            Entity.Register( "survivor", "human", ent =>
             {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<SurvivorAI>();
             } );
 
-            Entity.Register( "zombie", "human", delegate( Entity ent )
+            Entity.Register( "zombie", "human", ent =>
             {
                 ent.AddComponent<Zombie>();
                 ent.AddComponent<ZombieAI>();
@@ -38,14 +46,16 @@ namespace Zombles.Scripts
         protected override void OnCityGenerated()
         {
             City city = ( ZomblesGame.CurrentScene as GameScene ).City;
-            Random rand = new Random();
+            Random rand = Tools.Random;
+
+            Waypoint.GenerateNetwork( city );
 
             int count = ( city.Width * city.Height ) / 64;
             int zoms = Math.Max( count / 32, 8 );
 
             for ( int i = 0; i < count - zoms; ++i )
             {
-                Entity surv = Entity.Create( "survivor", city );
+                Entity surv = Entity.Create( city, "survivor" );
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 surv.Spawn();
@@ -63,7 +73,7 @@ namespace Zombles.Scripts
 
             for ( int i = 0; i < zoms; ++i )
             {
-                Entity zomb = Entity.Create( "zombie", city );
+                Entity zomb = Entity.Create( city, "zombie" );
                 zomb.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 zomb.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 zomb.Spawn();

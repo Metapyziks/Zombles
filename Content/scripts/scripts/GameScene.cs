@@ -285,12 +285,13 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
-                if ( myTrace != null )
-                {
-                    myTraceShader.Begin();
-                    myTraceShader.Render( myTrace );
-                    myTraceShader.End();
-                }
+//#if DEBUG
+                myTraceShader.Begin();
+                City.RenderPaths( myTraceShader );
+                //if ( myTrace != null )
+                //    myTraceShader.Render( myTrace );
+                myTraceShader.End();
+//#endif
             }
 
             base.OnRenderFrame( e );

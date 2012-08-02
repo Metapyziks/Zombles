@@ -58,10 +58,10 @@ namespace Zombles.Entities
             return new Entity( city );
         }
 
-        public static Entity Create( String type, City city )
+        public static Entity Create( City city, String type )
         {
             BuilderInfo info = stEntBuilders[ type ];
-            Entity ent = ( info.Base != null ? Create( info.Base, city ) : Create( city ) );
+            Entity ent = ( info.Base != null ? Create( city, info.Base ) : Create( city ) );
             info.Builder( ent );
             return ent;
         }

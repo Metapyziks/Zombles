@@ -110,6 +110,11 @@ namespace Zombles.Geometry
             RootDistrict.RenderEntities( shader );
         }
 
+        public void RenderPaths( DebugTraceShader shader )
+        {
+            RootDistrict.RenderPaths( shader );
+        }
+
         public IEnumerator<Block> GetEnumerator()
         {
             return new DistrictEnumerator( RootDistrict );

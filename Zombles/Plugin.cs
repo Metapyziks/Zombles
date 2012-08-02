@@ -6,6 +6,7 @@ using System.Reflection;
 
 using Zombles.Geometry;
 using Zombles.Graphics;
+using Zombles.Entities;
 
 namespace Zombles
 {

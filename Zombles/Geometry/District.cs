@@ -215,6 +215,19 @@ namespace Zombles.Geometry
                 Block.RenderEntities( shader );
         }
 
+        public void RenderPaths( DebugTraceShader shader )
+        {
+            if ( IsBranch )
+            {
+                if ( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
+                    ChildA.RenderPaths( shader );
+                if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
+                    ChildB.RenderPaths( shader );
+            }
+            else if ( IsLeaf )
+                Block.RenderPaths( shader );
+        }
+
         public IEnumerator<Block> GetEnumerator()
         {
             return new DistrictEnumerator( this );

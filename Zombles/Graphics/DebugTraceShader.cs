@@ -7,6 +7,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 using Zombles.Geometry;
+using Zombles.Entities;
 
 namespace Zombles.Graphics
 {
@@ -90,6 +91,12 @@ namespace Zombles.Graphics
         {
             GL.VertexAttrib2( Attributes[ 0 ].Location, trace.Origin );
             GL.VertexAttrib2( Attributes[ 0 ].Location, trace.Origin + trace.Vector );
+        }
+
+        public void Render( PathEdge path )
+        {
+            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin );
+            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin + path.Vector );
         }
 
         protected override void OnEndBatch()

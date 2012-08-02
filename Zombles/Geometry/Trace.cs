@@ -11,6 +11,17 @@ namespace Zombles.Geometry
 {
     public class Trace
     {
+        public static TraceResult Quick( City city, Vector2 start, Vector2 end, bool hitEnts = false, bool hitGeom = true )
+        {
+            return new Trace( city )
+            {
+                Origin = start,
+                Target = end,
+                HitEntities = hitEnts,
+                HitGeometry = hitGeom
+            }.GetResult();
+        }
+
         private Vector2 myNormal; 
 
         public readonly City City;
@@ -22,7 +33,10 @@ namespace Zombles.Geometry
             set
             {
                 myNormal = value;
-                myNormal.Normalize();
+                if ( myNormal.LengthSquared == 0.0f )
+                    myNormal = new Vector2( 1.0f, 0.0f );
+                else
+                    myNormal.Normalize();
             }
         }
 

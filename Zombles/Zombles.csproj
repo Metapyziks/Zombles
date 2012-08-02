@@ -59,7 +59,8 @@
     <Compile Include="Entities\RenderAnim.cs" />
     <Compile Include="Entities\Component.cs" />
     <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\Render.cs" />
+    <Compile Include="Entities\Render2D.cs" />
+    <Compile Include="Entities\Waypoint.cs" />
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\City.cs" />
     <Compile Include="Geometry\District.cs" />
