@@ -37,7 +37,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     }
 
                     if ( level < fenceHeight - 1 )
-                        return "wall_brick_0";
+                        return "wall_brick0_0";
                     return "wall_fence_0";
                 };
             Func <int, int, string> floorFunc =

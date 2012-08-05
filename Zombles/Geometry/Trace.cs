@@ -11,7 +11,8 @@ namespace Zombles.Geometry
 {
     public class Trace
     {
-        public static TraceResult Quick( City city, Vector2 start, Vector2 end, bool hitEnts = false, bool hitGeom = true )
+        public static TraceResult Quick( City city, Vector2 start, Vector2 end,
+            bool hitEnts = false, bool hitGeom = true )
         {
             return new Trace( city )
             {

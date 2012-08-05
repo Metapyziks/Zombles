@@ -29,13 +29,15 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
             {
                 int rheight = rand.Next( 3 ) + 4;
 
+                string wallGroup = "wall_brick" + rand.Next( 2 ) + "_";
+
                 GenHelper.BuildRoof( tiles, x, y, width, height, rheight, "floor_roof_0" );
 
                 Func<int,int,Face,bool,String> texFunc = delegate( int horzpos, int level, Face face, bool isInterior )
                 {
                     if ( level < rheight )
-                        return rand.NextTexture( "wall_brick_", 4 );
-                    return "wall_brick_7";
+                        return rand.NextTexture( wallGroup, 4 );
+                    return wallGroup + "7";
                 };
 
                 GenHelper.BuildWall( tiles, x, y, Face.North, width, rheight + 1, texFunc );
@@ -53,7 +55,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     int entranceX = entrance == Face.West ? x : x + width;
                     int entranceY = y + entranceOffset;
                     GenHelper.BuildWall( tiles, entranceX, entranceY - 1, Face.West, 1, 3,
-                        "wall_brick_9", "wall_brick_8" );
+                        wallGroup + "9", wallGroup + "8" );
                     for ( int i = 0; i < entranceCount; ++i )
                     {
                         int doorOffset = ( !open && i == entranceCount - 1 ? 1 : rand.Next( 0, 2 ) ) * 2;
@@ -66,7 +68,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         GenHelper.BuildWall( tiles, entranceX, entranceY + i * ( entranceSize + 1 ),
                             Face.West, entranceSize, doorOffset, doorHeight, "wall_garage_0", "wall_garage_0" );
                         GenHelper.BuildWall( tiles, entranceX, entranceY + i * ( entranceSize + 1 ) + entranceSize,
-                            Face.West, 1, 3, "wall_brick_a", "wall_brick_a" );
+                            Face.West, 1, 3, wallGroup + "a", wallGroup + "a" );
 
                         if ( doorOffset >= 2 )
                             Waypoint.AddHint( new Vector2( district.X + entranceX,
@@ -74,7 +76,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     }
                     GenHelper.BuildWall( tiles, entranceX,
                         entranceY + entranceCount * ( entranceSize + 1 ) - 1, Face.West, 1, 3,
-                        "wall_brick_8", "wall_brick_9" );
+                        wallGroup + "8", wallGroup + "9" );
                 }
                 else
                 {
@@ -83,7 +85,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     int entranceX = x + entranceOffset;
                     int entranceY = entrance == Face.North ? y : y + height;
                     GenHelper.BuildWall( tiles, entranceX - 1, entranceY, Face.North, 1, 3,
-                        "wall_brick_8", "wall_brick_9" );
+                        wallGroup + "8", wallGroup + "9" );
                     for ( int i = 0; i < entranceCount; ++i )
                     {
                         int doorOffset = ( !open && i == entranceCount - 1 ? 1 : rand.Next( 0, 2 ) ) * 2;
@@ -96,7 +98,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         GenHelper.BuildWall( tiles, entranceX + i * ( entranceSize + 1 ), entranceY,
                             Face.North, entranceSize, doorOffset, doorHeight, "wall_garage_0", "wall_garage_0" );
                         GenHelper.BuildWall( tiles, entranceX + i * ( entranceSize + 1 ) + entranceSize, entranceY,
-                            Face.North, 1, 3, "wall_brick_a", "wall_brick_a" );
+                            Face.North, 1, 3, wallGroup + "a", wallGroup + "a" );
 
                         if( doorOffset >= 2 )
                             Waypoint.AddHint( new Vector2( district.X + entranceX
@@ -105,7 +107,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     }
                     GenHelper.BuildWall( tiles, entranceX + entranceCount * ( entranceSize + 1 ) - 1,
                         entranceY, Face.North, 1, 3,
-                        "wall_brick_9", "wall_brick_8" );
+                        wallGroup + "9", wallGroup + "8" );
                 }
             }
         }

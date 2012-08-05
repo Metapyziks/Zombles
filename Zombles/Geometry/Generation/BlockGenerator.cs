@@ -155,7 +155,7 @@ namespace Zombles.Geometry.Generation
         {
             int width = district.Width;
             int height = district.Height;
-
+            
             TileBuilder[,] tiles = new TileBuilder[ width, height ];
 
             for ( int tx = 0; tx < width; ++tx ) for ( int ty = 0; ty < height; ++ty )
