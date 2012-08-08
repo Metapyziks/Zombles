@@ -84,11 +84,11 @@ namespace Zombles
 
         protected override void OnResize( EventArgs e )
         {
-            //SpriteShader.SetScreenSize( Width, Height );
+            SpriteShader.SetScreenSize( Width, Height );
 
-            //CurrentScene.OnResize();
+            CurrentScene.OnResize();
 
-            //GL.Viewport( ClientRectangle );
+            GL.Viewport( ClientRectangle );
         }
 
         public static void SetScene( Scene newScene )

@@ -288,7 +288,7 @@ namespace Zombles.Scripts
 //#if DEBUG
                 myTraceShader.Begin();
                 City.RenderPaths( myTraceShader );
-                //if ( myTrace != null )
+                // if ( myTrace != null )
                 //    myTraceShader.Render( myTrace );
                 myTraceShader.End();
 //#endif

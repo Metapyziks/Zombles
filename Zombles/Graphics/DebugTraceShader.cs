@@ -74,7 +74,7 @@ namespace Zombles.Graphics
             AddAttribute( "in_vertex", 2 );
 
             myColourLoc = GL.GetUniformLocation( Program, "colour" );
-            Colour = Color4.White;
+            Colour = new Color4( 255, 255, 255, 127 );
         }
 
         protected override void OnStartBatch()
