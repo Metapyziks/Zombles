@@ -179,8 +179,6 @@ namespace Zombles.Geometry
             float top = Origin.Y + offset.Y;
             float bottom = top + HullSize.Y;
 
-            float error = 0.0f;
-
             if ( vec.X != 0.0f )
             {
                 float dydx = vec.Y / vec.X;
@@ -201,8 +199,8 @@ namespace Zombles.Geometry
                     int wx = ( ix + wxa ) - (int) Math.Floor( (double) ( ix + wxa ) / City.Width ) * City.Width;
                     int sx = ( ix + sxa ) - (int) Math.Floor( (double) ( ix + sxa ) / City.Width ) * City.Width;
 
-                    int minY = (int) Math.Floor( y + offset.Y + error );
-                    int maxY = (int) Math.Floor( y + offset.Y + HullSize.Y - error );
+                    int minY = (int) Math.Floor( y + offset.Y );
+                    int maxY = (int) Math.Floor( y + offset.Y + HullSize.Y );
 
                     for ( int iy = minY; iy <= maxY; ++iy )
                     {
@@ -260,8 +258,8 @@ namespace Zombles.Geometry
                     int wy = ( iy + wya ) - (int) Math.Floor( (double) ( iy + wya ) / City.Height ) * City.Height;
                     int sy = ( iy + sya ) - (int) Math.Floor( (double) ( iy + sya ) / City.Height ) * City.Height;
 
-                    int minX = (int) Math.Floor( x + offset.X + error );
-                    int maxX = (int) Math.Floor( x + offset.X + HullSize.X - error );
+                    int minX = (int) Math.Floor( x + offset.X );
+                    int maxX = (int) Math.Floor( x + offset.X + HullSize.X );
 
                     for ( int ix = minX; ix <= maxX; ++ix )
                     {
