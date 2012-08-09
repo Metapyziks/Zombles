@@ -12,14 +12,15 @@ namespace Zombles.Geometry
     public class Trace
     {
         public static TraceResult Quick( City city, Vector2 start, Vector2 end,
-            bool hitEnts = false, bool hitGeom = true )
+            bool hitEnts = false, bool hitGeom = true, Vector2 hullSize = default( Vector2 ) )
         {
             return new Trace( city )
             {
                 Origin = start,
                 Target = end,
                 HitEntities = hitEnts,
-                HitGeometry = hitGeom
+                HitGeometry = hitGeom,
+                HullSize = hullSize
             }.GetResult();
         }
 
@@ -73,10 +74,11 @@ namespace Zombles.Geometry
         {
             City = city;
 
-            HullSize = new Vector2( 0.0f, 0.0f );
-
             HitGeometry = true;
             HitEntities = false;
+
+
+            HullSize = new Vector2( 0.0f, 0.0f );
         }
 
         private Face GeometryTrace( ref Vector2 vec )
@@ -152,6 +154,84 @@ namespace Zombles.Geometry
             if ( hitFace == xf )
                 vec *= xm;
             else if( hitFace == yf )
+                vec *= ym;
+
+            return hitFace;
+        }
+
+        private Face GeometryTraceHull( ref Vector2 vec )
+        {
+            Face xf = ( vec.X > 0.0f ? Face.East : Face.West );
+            Face yf = ( vec.Y > 0.0f ? Face.South : Face.North );
+
+            float xm = 1.0f, ym = 1.0f;
+            Face hitFace = Face.None;
+
+            if ( vec.X != 0.0f )
+            {
+                float dydx = vec.Y / vec.X;
+
+                int startX = (int) ( vec.X > 0.0f ? Math.Ceiling( Origin.X ) : Math.Floor( Origin.X ) );
+                float y = Origin.Y + ( startX - Origin.X ) * dydx;
+
+                int xa = ( vec.X > 0.0f ? 1 : -1 );
+                int wxa = ( vec.X > 0.0f ? -1 : 0 );
+                int xe = (int) ( vec.X > 0.0f ? Math.Ceiling( Origin.X + vec.X ) : Math.Floor( Origin.X + vec.X ) );
+
+                Block blk = null;
+
+                for ( int ix = startX; ix != xe; ix += xa, y += xa * dydx )
+                {
+                    int wx = ( ix + wxa ) - (int) Math.Floor( (double) ( ix + wxa ) / City.Width ) * City.Width;
+                    int wy = (int) ( y - (int) Math.Floor( y / City.Height ) * City.Height );
+
+                    if ( blk == null || wx < blk.X || wy < blk.Y ||
+                            wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                        blk = City.GetBlock( wx, wy );
+
+                    if ( blk[ wx, wy ].IsWallSolid( xf ) )
+                    {
+                        xm = ( ix - Origin.X ) / vec.X;
+                        hitFace = xf;
+                        break;
+                    }
+                }
+            }
+
+            if ( vec.Y != 0.0f )
+            {
+                float dxdy = vec.X / vec.Y;
+
+                int startY = (int) ( vec.Y > 0.0f ? Math.Ceiling( Origin.Y ) : Math.Floor( Origin.Y ) );
+                float x = Origin.X + ( startY - Origin.Y ) * dxdy;
+
+                int ya = ( vec.Y > 0.0f ? 1 : -1 );
+                int wya = ( vec.Y > 0.0f ? -1 : 0 );
+                int ye = (int) ( vec.Y > 0.0f ? Math.Ceiling( Origin.Y + vec.Y ) : Math.Floor( Origin.Y + vec.Y ) );
+
+                Block blk = null;
+
+                for ( int iy = startY; iy != ye; iy += ya, x += ya * dxdy )
+                {
+                    int wy = ( iy + wya ) - (int) Math.Floor( (double) ( iy + wya ) / City.Height ) * City.Height;
+                    int wx = (int) ( x - (int) Math.Floor( x / City.Width ) * City.Width );
+
+                    if ( blk == null || wx < blk.X || wy < blk.Y ||
+                            wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
+                        blk = City.GetBlock( wx, wy );
+
+                    if ( blk[ wx, wy ].IsWallSolid( yf ) )
+                    {
+                        ym = ( iy - Origin.Y ) / vec.Y;
+                        hitFace = yf;
+                        break;
+                    }
+                }
+            }
+
+            if ( hitFace == xf )
+                vec *= xm;
+            else if ( hitFace == yf )
                 vec *= ym;
 
             return hitFace;
@@ -253,7 +333,7 @@ namespace Zombles.Geometry
             
             Face hitFace = Face.None;
             if ( HitGeometry )
-                hitFace = GeometryTrace( ref vec );
+                hitFace = HullSize.LengthSquared == 0 ? GeometryTrace( ref vec ) : GeometryTraceHull( ref vec );
 
             Entity hitEnt = null;
             if ( HitEntities )

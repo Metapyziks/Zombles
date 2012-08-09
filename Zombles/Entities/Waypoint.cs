@@ -74,6 +74,7 @@ namespace Zombles.Entities
     public class Waypoint : Component
     {
         public const float ConnectionRadius = 8.0f;
+        public static readonly Vector2 ConnectionHullSize = new Vector2( 0.5f, 0.5f );
 
         private static List<Vector2> stHints = new List<Vector2>();
 
@@ -98,10 +99,10 @@ namespace Zombles.Entities
                     if ( waypoint.Position2D.Equals( pos ) )
                         return false;
 
-                    TraceResult res = Trace.Quick( city, pos, waypoint.Position2D );
+                    TraceResult res = Trace.Quick( city, pos, waypoint.Position2D, false, true, ConnectionHullSize );
                     
                     if( res.Hit )
-                        res = Trace.Quick( city, waypoint.Position2D, pos );
+                        res = Trace.Quick( city, waypoint.Position2D, pos, false, true, ConnectionHullSize );
 
                     if( !res.Hit )
                     {
@@ -184,12 +185,12 @@ namespace Zombles.Entities
                 if ( near.Current.HasComponent<Waypoint>() )
                 {
                     Waypoint other = near.Current.GetComponent<Waypoint>();
-                    
-                    TraceResult res = Trace.Quick( City, Position2D, other.Position2D );
+
+                    TraceResult res = Trace.Quick( City, Position2D, other.Position2D, false, true, ConnectionHullSize );
                     if ( !res.Hit )
                         Connections.Add( new PathEdge( this, res.Vector ) );
-                    
-                    res = Trace.Quick( City, other.Position2D, Position2D );
+
+                    res = Trace.Quick( City, other.Position2D, Position2D, false, true, ConnectionHullSize );
                     if ( !res.Hit )
                         other.Connections.Add( new PathEdge( other, res.Vector ) );
 
