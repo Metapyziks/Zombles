@@ -57,7 +57,6 @@ namespace Zombles.Scripts
             {
                 Entity surv = Entity.Create( city, "survivor" );
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
-                surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 surv.Spawn();
 
                 /*if ( i == 0 )
@@ -73,7 +72,6 @@ namespace Zombles.Scripts
             {
                 Entity zomb = Entity.Create( city, "zombie" );
                 zomb.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
-                zomb.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 zomb.Spawn();
             }
         }

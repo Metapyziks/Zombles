@@ -179,7 +179,7 @@ namespace Zombles.Geometry
             float top = Origin.Y + offset.Y;
             float bottom = top + HullSize.Y;
 
-            float error = 1.0f / 32.0f;
+            float error = 0.0f;
 
             if ( vec.X != 0.0f )
             {
