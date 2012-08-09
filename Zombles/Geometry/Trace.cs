@@ -87,7 +87,6 @@ namespace Zombles.Geometry
             Face yf = ( vec.Y > 0.0f ? Face.South : Face.North );
 
             float xm = 1.0f, ym = 1.0f;
-            Face hitFace = Face.None;
 
             if ( vec.X != 0.0f )
             {
@@ -114,7 +113,6 @@ namespace Zombles.Geometry
                     if ( blk[ wx, wy ].IsWallSolid( xf ) )
                     {
                         xm = ( ix - Origin.X ) / vec.X;
-                        hitFace = xf;
                         break;
                     }
                 }
@@ -145,18 +143,26 @@ namespace Zombles.Geometry
                     if ( blk[ wx, wy ].IsWallSolid( yf ) )
                     {
                         ym = ( iy - Origin.Y ) / vec.Y;
-                        hitFace = yf;
                         break;
                     }
                 }
             }
 
-            if ( hitFace == xf )
-                vec *= xm;
-            else if( hitFace == yf )
-                vec *= ym;
+            if ( xm < 1.0f || ym < 1.0f )
+            {
+                if ( xm <= ym )
+                {
+                    vec *= xm;
+                    return xf;
+                }
+                else
+                {
+                    vec *= ym;
+                    return yf;
+                }
+            }
 
-            return hitFace;
+            return Face.None;
         }
 
         private Face GeometryTraceHull( ref Vector2 vec )
@@ -165,7 +171,6 @@ namespace Zombles.Geometry
             Face yf = ( vec.Y > 0.0f ? Face.South : Face.North );
 
             float xm = 1.0f, ym = 1.0f;
-            Face hitFace = Face.None;
 
             Vector2 offset = -HullSize / 2.0f;
 
@@ -227,7 +232,6 @@ namespace Zombles.Geometry
 
                         if ( hit )
                         {
-                            hitFace = xf;
                             xm = ( ix - startX ) / vec.X;
                             ix = xe - xa;
                             break;
@@ -287,7 +291,6 @@ namespace Zombles.Geometry
 
                         if ( hit )
                         {
-                            hitFace = yf;
                             ym = ( iy - startY ) / vec.Y;
                             iy = ye - ya;
                             break;
@@ -296,12 +299,21 @@ namespace Zombles.Geometry
                 }
             }
 
-            if ( hitFace == xf )
-                vec *= xm;
-            else if ( hitFace == yf )
-                vec *= ym;
+            if ( xm < 1.0f || ym < 1.0f )
+            {
+                if ( xm <= ym )
+                {
+                    vec *= xm;
+                    return xf;
+                }
+                else
+                {
+                    vec *= ym;
+                    return yf;
+                }
+            }
 
-            return hitFace;
+            return Face.None;
         }
 
         private Entity EntityTrace( ref Vector2 vec )

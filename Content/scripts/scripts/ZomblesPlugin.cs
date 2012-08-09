@@ -60,15 +60,13 @@ namespace Zombles.Scripts
                 surv.GetComponent<RenderAnim>().Rotation = ( rand.NextSingle() - 0.5f ) * MathHelper.TwoPi;
                 surv.Spawn();
 
-                /*
-                if ( i == 0 )
+                /*if ( i == 0 )
                 {
                     GameScene scene = ZomblesGame.CurrentScene as GameScene;
                     surv.SwapComponent<SurvivorAI, PlayerControlled>();
                     surv.UpdateComponents();
                     scene.ControlledEnt = surv;
-                }
-                */
+                }*/
             }
 
             for ( int i = 0; i < zoms; ++i )

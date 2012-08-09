@@ -174,8 +174,9 @@ namespace Zombles.Scripts
             var trace = new Zombles.Geometry.Trace( City );
             trace.Origin = Camera.Position;
             trace.HitGeometry = true;
-            trace.HitEntities = true;
-            trace.HitEntityPredicate = ( x => x != ControlledEnt );
+            trace.HitEntities = false;
+            // trace.HitEntityPredicate = ( x => x != ControlledEnt );
+            trace.HullSize = new Vector2( 0.5f, 0.5f );
             trace.Normal = City.Difference( Camera.Position,
                 Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
             trace.Length = 32.0f;
@@ -288,8 +289,12 @@ namespace Zombles.Scripts
 //#if DEBUG
                 myTraceShader.Begin();
                 City.RenderPaths( myTraceShader );
-                // if ( myTrace != null )
-                //    myTraceShader.Render( myTrace );
+                if ( myTrace != null )
+                {
+                    myTraceShader.Colour = Color4.Red;
+                    myTraceShader.Render( myTrace );
+                    myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
+                }
                 myTraceShader.End();
 //#endif
             }
