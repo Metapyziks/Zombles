@@ -49,7 +49,7 @@ namespace Zombles.Scripts
             City city = ( ZomblesGame.CurrentScene as GameScene ).City;
             Random rand = Tools.Random;
 
-            // Waypoint.GenerateNetwork( city );
+            Waypoint.GenerateNetwork( city );
 
             int count = ( city.Width * city.Height ) / 64;
             int zoms = Math.Max( count / 32, 8 );
