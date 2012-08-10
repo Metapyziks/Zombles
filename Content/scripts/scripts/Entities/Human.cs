@@ -111,7 +111,7 @@ namespace Zombles.Scripts.Entities
             trace.HitEntityPredicate = ( x => x != Entity );
             trace.Origin = Position2D;
             trace.Normal = dir;
-            trace.Length = 32.0f;
+            trace.Length = 1.0f;
 
             TraceResult res = trace.GetResult();
             if ( res.HitEntity && res.Entity.HasComponent<Health>() )
