@@ -13,6 +13,8 @@ namespace Zombles.Entities
 
     public sealed class Entity : IEnumerable<Component>
     {
+        private static uint stNextID = 0;
+
         private struct BuilderInfo
         {
             public readonly String Name;
@@ -71,6 +73,8 @@ namespace Zombles.Entities
         private Vector3 myPosition;
         private bool myPosChanged;
 
+        public readonly uint ID;
+
         public readonly City City;
         public Block Block
         {
@@ -114,6 +118,7 @@ namespace Zombles.Entities
 
         private Entity( City city )
         {
+            ID = stNextID++;
             City = city;
 
             myComps = new List<Component>();

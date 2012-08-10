@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Zombles.Entities;
+using OpenTK;
 
 namespace Zombles.Geometry.Generation
 {
@@ -221,6 +223,11 @@ namespace Zombles.Geometry.Generation
                 GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f" );
 
             Generate( district, tiles, borderLeft, borderTop, borderRight, borderBottom, rand );
+
+            Waypoint.AddHint( new Vector2( district.X + borderLeft - 1, district.Y + borderTop - 1 ) );
+            Waypoint.AddHint( new Vector2( district.X + district.Width - borderRight + 1, district.Y + borderTop - 1 ) );
+            Waypoint.AddHint( new Vector2( district.X + district.Width - borderRight + 1, district.Y + district.Height - borderBottom + 1 ) );
+            Waypoint.AddHint( new Vector2( district.X + borderLeft - 1, district.Y + district.Height - borderBottom + 1 ) );
 
             Block block = new Block( district );
             block.BuildTiles( tiles );

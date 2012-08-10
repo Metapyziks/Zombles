@@ -17,9 +17,10 @@ namespace Zombles.Scripts
             Entity.Register( "waypoint", ent =>
             {
                 ent.AddComponent<Waypoint>();
-//#if DEBUG
-                ent.AddComponent<Render2D>().TextureIndex = TextureManager.Ents.GetIndex( "waypoint" );
-//#endif
+
+                //
+                // ent.AddComponent<Render2D>().TextureIndex = TextureManager.Ents.GetIndex( "waypoint" );
+                //
             } );
 
             Entity.Register( "human", ent =>

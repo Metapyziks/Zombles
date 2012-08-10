@@ -24,6 +24,11 @@ namespace Zombles.Entities
             return (T) c.Invoke( new object[] { ent } );
         }
 
+        protected uint ID
+        {
+            get { return Entity.ID; }
+        }
+
         protected City City
         {
             get { return Entity.City; }

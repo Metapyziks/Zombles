@@ -11,9 +11,14 @@ namespace Zombles.Geometry
         private Tile[,] myTiles;
         private List<Entity> myEnts;
 
-        private int myBaseVertCount;
-        private int myTopVertCount;
-        private int myVertOffset;
+        private int myBaseGeomVertCount;
+        private int myTopGeomVertCount;
+        private int myGeomVertOffset;
+
+        private int myPathVertCount;
+        private int myPathVertOffset;
+
+        private List<PathEdge> myPaths;
 
         public readonly City City;
         public readonly District District;
@@ -76,23 +81,23 @@ namespace Zombles.Geometry
                 myEnts[ i ].UpdateBlock();
         }
 
-        public int GetVertexCount()
+        public int GetGeometryVertexCount()
         {
-            myBaseVertCount = 0;
-            myTopVertCount = 0;
+            myBaseGeomVertCount = 0;
+            myTopGeomVertCount = 0;
 
             for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
             {
-                myBaseVertCount += myTiles[ x, y ].GetBaseVertexCount();
-                myTopVertCount += myTiles[ x, y ].GetTopVertexCount();
+                myBaseGeomVertCount += myTiles[ x, y ].GetBaseVertexCount();
+                myTopGeomVertCount += myTiles[ x, y ].GetTopVertexCount();
             }
 
-            return myBaseVertCount + myTopVertCount;
+            return myBaseGeomVertCount + myTopGeomVertCount;
         }
 
-        public void GetVertices( float[] verts, ref int i )
+        public void GetGeometryVertices( float[] verts, ref int i )
         {
-            myVertOffset = i / 3;
+            myGeomVertOffset = i / 3;
 
             lock ( myTiles )
             {
@@ -104,9 +109,46 @@ namespace Zombles.Geometry
             }
         }
 
+        public int GetPathVertexCount()
+        {
+            myPathVertCount = 0;
+            myPaths = new List<PathEdge>();
+
+            foreach ( Entity ent in this )
+            {
+                if ( ent.HasComponent<Waypoint>() )
+                {
+                    Waypoint waypoint = ent.GetComponent<Waypoint>();
+                    foreach ( PathEdge edge in waypoint.Connections )
+                    {
+                        if ( edge.EndWaypoint.Entity.ID < waypoint.Entity.ID || !edge.EndWaypoint.IsConnected( waypoint ) )
+                        {
+                            myPathVertCount += 2;
+                            myPaths.Add( edge );
+                        }
+                    }
+                }
+            }
+
+            return myPathVertCount;
+        }
+
+        public void GetPathVertices( float[] verts, ref int i )
+        {
+            myPathVertOffset = i / 2;
+
+            foreach ( PathEdge edge in myPaths )
+            {
+                verts[ i++ ] = edge.Origin.X;
+                verts[ i++ ] = edge.Origin.Y;
+                verts[ i++ ] = edge.Origin.X + edge.Vector.X;
+                verts[ i++ ] = edge.Origin.Y + edge.Vector.Y;
+            }
+        }
+
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
-            vb.Render( shader, myVertOffset, ( baseOnly ? myBaseVertCount : myBaseVertCount + myTopVertCount ) );
+            vb.Render( shader, myGeomVertOffset, ( baseOnly ? myBaseGeomVertCount : myBaseGeomVertCount + myTopGeomVertCount ) );
         }
 
         public void RenderEntities( FlatEntityShader shader )
@@ -116,12 +158,9 @@ namespace Zombles.Geometry
                     ent.GetComponent<Render2D>().OnRender( shader );
         }
 
-        public void RenderPaths( DebugTraceShader shader )
+        public void RenderPaths( VertexBuffer vb, DebugTraceShader shader )
         {
-            foreach ( Entity ent in myEnts )
-                if ( ent.HasComponent<Waypoint>() )
-                    foreach ( PathEdge path in ent.GetComponent<Waypoint>().Connections )
-                        shader.Render( path );
+            vb.Render( shader, myPathVertOffset, myPathVertCount );
         }
 
         public IEnumerator<Entity> GetEnumerator()

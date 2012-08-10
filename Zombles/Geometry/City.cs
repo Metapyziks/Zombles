@@ -6,13 +6,17 @@ using System.Text;
 using OpenTK;
 
 using Zombles.Graphics;
+using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
     public class City : IEnumerable<Block>, IDisposable
     {
-        private VertexBuffer myVertexBuffer;
+        private VertexBuffer myGeomVertexBuffer;
+        private VertexBuffer myPathVertexBuffer;
         private LumTexture2D myBloodMap;
+
+        private bool mySetPathVB;
 
         public District RootDistrict { get; private set; }
 
@@ -24,8 +28,11 @@ namespace Zombles.Geometry
         public City( int width, int height )
         {
             RootDistrict = new District( this, 0, 0, width, height );
-            myVertexBuffer = new VertexBuffer( 3 );
+            myGeomVertexBuffer = new VertexBuffer( 3 );
+            myPathVertexBuffer = new VertexBuffer( 2 );
             myBloodMap = new LumTexture2D( width * 2, height * 2 );
+
+            mySetPathVB = false;
         }
 
         public Vector2 Difference( Vector2 a, Vector2 b )
@@ -82,13 +89,22 @@ namespace Zombles.Geometry
             return RootDistrict.GetBlock( x, y );
         }
 
-        public void UpdateVertexBuffer()
+        public void UpdateGeometryVertexBuffer()
         {
-            int count = RootDistrict.GetVertexCount();
+            int count = RootDistrict.GetGeometryVertexCount();
             float[] verts = new float[ count * 3 ];
             int i = 0;
-            RootDistrict.GetVertices( verts, ref i );
-            myVertexBuffer.SetData( verts );
+            RootDistrict.GetGeometryVertices( verts, ref i );
+            myGeomVertexBuffer.SetData( verts );
+        }
+
+        public void UpdatePathVertexBuffer()
+        {
+            int count = RootDistrict.GetPathVertexCount();
+            float[] verts = new float[ count * 2 ];
+            int i = 0;
+            RootDistrict.GetPathVertices( verts, ref i );
+            myPathVertexBuffer.SetData( verts );
         }
 
         public void Think( double dt )
@@ -100,9 +116,9 @@ namespace Zombles.Geometry
         public void RenderGeometry( GeometryShader shader, bool baseOnly = false )
         {
             shader.SetTexture( "bloodmap", myBloodMap );
-            myVertexBuffer.StartBatch( shader );
-            RootDistrict.RenderGeometry( myVertexBuffer, shader, baseOnly );
-            myVertexBuffer.EndBatch( shader );
+            myGeomVertexBuffer.StartBatch( shader );
+            RootDistrict.RenderGeometry( myGeomVertexBuffer, shader, baseOnly );
+            myGeomVertexBuffer.EndBatch( shader );
         }
 
         public void RenderEntities( FlatEntityShader shader )
@@ -112,7 +128,15 @@ namespace Zombles.Geometry
 
         public void RenderPaths( DebugTraceShader shader )
         {
-            RootDistrict.RenderPaths( shader );
+            if ( !mySetPathVB )
+            {
+                UpdatePathVertexBuffer();
+                mySetPathVB = true;
+            }
+
+            myPathVertexBuffer.StartBatch( shader );
+            RootDistrict.RenderPaths( myPathVertexBuffer, shader );
+            myPathVertexBuffer.EndBatch( shader );
         }
 
         public IEnumerator<Block> GetEnumerator()
@@ -127,7 +151,7 @@ namespace Zombles.Geometry
 
         public void Dispose()
         {
-            myVertexBuffer.Dispose();
+            myGeomVertexBuffer.Dispose();
         }
     }
 }

@@ -146,25 +146,46 @@ namespace Zombles.Geometry
             myUnspawnedEnts.Clear();
         }
 
-        public int GetVertexCount()
+        public int GetGeometryVertexCount()
         {
             if ( IsBranch )
-                return ChildA.GetVertexCount() + ChildB.GetVertexCount();
+                return ChildA.GetGeometryVertexCount() + ChildB.GetGeometryVertexCount();
             else if ( IsLeaf )
-                return Block.GetVertexCount();
+                return Block.GetGeometryVertexCount();
 
             return 0;
         }
 
-        public void GetVertices( float[] verts, ref int i )
+        public void GetGeometryVertices( float[] verts, ref int i )
         {
             if ( IsBranch )
             {
-                ChildA.GetVertices( verts, ref i );
-                ChildB.GetVertices( verts, ref i );
+                ChildA.GetGeometryVertices( verts, ref i );
+                ChildB.GetGeometryVertices( verts, ref i );
             }
             else if ( IsLeaf )
-                Block.GetVertices( verts, ref i );
+                Block.GetGeometryVertices( verts, ref i );
+        }
+
+        public int GetPathVertexCount()
+        {
+            if ( IsBranch )
+                return ChildA.GetPathVertexCount() + ChildB.GetPathVertexCount();
+            else if ( IsLeaf )
+                return Block.GetPathVertexCount();
+
+            return 0;
+        }
+
+        public void GetPathVertices( float[] verts, ref int i )
+        {
+            if ( IsBranch )
+            {
+                ChildA.GetPathVertices( verts, ref i );
+                ChildB.GetPathVertices( verts, ref i );
+            }
+            else if ( IsLeaf )
+                Block.GetPathVertices( verts, ref i );
         }
 
         public void Think( double dt )
@@ -215,17 +236,17 @@ namespace Zombles.Geometry
                 Block.RenderEntities( shader );
         }
 
-        public void RenderPaths( DebugTraceShader shader )
+        public void RenderPaths( VertexBuffer vb, DebugTraceShader shader )
         {
             if ( IsBranch )
             {
                 if ( ChildA.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildA.RenderPaths( shader );
+                    ChildA.RenderPaths( vb, shader );
                 if ( ChildB.Bounds.IntersectsWith( shader.Camera.ViewBounds ) )
-                    ChildB.RenderPaths( shader );
+                    ChildB.RenderPaths( vb, shader );
             }
             else if ( IsLeaf )
-                Block.RenderPaths( shader );
+                Block.RenderPaths( vb, shader );
         }
 
         public IEnumerator<Block> GetEnumerator()

@@ -286,9 +286,10 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
-//#if DEBUG
-                myTraceShader.Begin();
+                myTraceShader.StartBatch();
                 City.RenderPaths( myTraceShader );
+                myTraceShader.EndBatch();
+                myTraceShader.Begin();
                 if ( myTrace != null )
                 {
                     myTraceShader.Colour = Color4.Red;
@@ -296,7 +297,6 @@ namespace Zombles.Scripts
                     myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
                 }
                 myTraceShader.End();
-//#endif
             }
 
             base.OnRenderFrame( e );

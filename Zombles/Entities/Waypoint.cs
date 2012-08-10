@@ -11,13 +11,19 @@ namespace Zombles.Entities
 {
     public struct PathEdge
     {
+        public readonly Waypoint StartWaypoint;
+        public readonly Waypoint EndWaypoint;
+
         public readonly Vector2 Origin;
         public readonly Vector2 Vector;
         public readonly float Length;
 
-        public PathEdge( Waypoint waypoint, Vector2 vector )
+        public PathEdge( Waypoint startWaypoint, Waypoint endWaypoint, Vector2 vector )
         {
-            Origin = waypoint.Entity.Position2D;
+            StartWaypoint = startWaypoint;
+            EndWaypoint = endWaypoint;
+
+            Origin = startWaypoint.Entity.Position2D;
             Vector = vector;
 
             Length = Vector.Length;
@@ -73,7 +79,8 @@ namespace Zombles.Entities
 
     public class Waypoint : Component
     {
-        public const float ConnectionRadius = 8.0f;
+        public const int NetworkQuality = 65536;
+        public const float ConnectionRadius = 4.0f;
         public static readonly Vector2 ConnectionHullSize = new Vector2( 0.5f, 0.5f );
 
         private static List<Vector2> stHints = new List<Vector2>();
@@ -107,7 +114,7 @@ namespace Zombles.Entities
                     if( !res.Hit )
                     {
                         if ( res.Vector.LengthSquared < 1.0f ||
-                            !hint && res.Vector.LengthSquared < 16.0f )
+                            !hint && res.Vector.LengthSquared < 4.0f )
                             close = true;
 
                         if ( group == null )
@@ -133,7 +140,7 @@ namespace Zombles.Entities
             int count = 0;
 
             int tries = 0;
-            while ( tries++ < 1024 )
+            while ( tries++ < NetworkQuality )
             {
                 Vector2 pos;
                 bool hint = false;
@@ -172,6 +179,11 @@ namespace Zombles.Entities
             Connections = null;
         }
 
+        public bool IsConnected( Waypoint waypoint )
+        {
+            return Connections.Exists( x => x.EndWaypoint == waypoint );
+        }
+
         public override void OnSpawn()
         {
             Connections = new List<PathEdge>();
@@ -188,11 +200,11 @@ namespace Zombles.Entities
 
                     TraceResult res = Trace.Quick( City, Position2D, other.Position2D, false, true, ConnectionHullSize );
                     if ( !res.Hit )
-                        Connections.Add( new PathEdge( this, res.Vector ) );
+                        Connections.Add( new PathEdge( this, other, res.Vector ) );
 
                     res = Trace.Quick( City, other.Position2D, Position2D, false, true, ConnectionHullSize );
                     if ( !res.Hit )
-                        other.Connections.Add( new PathEdge( other, res.Vector ) );
+                        other.Connections.Add( new PathEdge( other, this, res.Vector ) );
 
                     if ( Group == null )
                         other.Group.Add( this );

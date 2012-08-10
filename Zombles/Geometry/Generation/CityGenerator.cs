@@ -17,7 +17,7 @@ namespace Zombles.Geometry.Generation
         {
             City city = new City( width, height );
             Subdivide( city.RootDistrict, 0, 3, 3, 3, 3, rand );
-            city.UpdateVertexBuffer();
+            city.UpdateGeometryVertexBuffer();
             return city;
         }
 
