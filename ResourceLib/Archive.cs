@@ -78,7 +78,8 @@ namespace ResourceLib
 
                 RManager manager = Res.GetManager( extension );
 
-                resources.Add( new ResourceInfo { FilePath = file, CurPath = curPath, FileName = fileName, Extension = extension, Manager = manager } );
+                if( manager != null )
+                    resources.Add( new ResourceInfo { FilePath = file, CurPath = curPath, FileName = fileName, Extension = extension, Manager = manager } );
             }
 
             foreach ( String dir in Directory.EnumerateDirectories( directoryPath ) )
