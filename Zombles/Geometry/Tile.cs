@@ -151,10 +151,21 @@ namespace Zombles.Geometry
 
             int ol = ( level & 0x1 ) << 1;
 
-            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = tt | ( 0x0 + ol );
-            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = tt | ( 0x1 + ol );
-            verts[ i++ ] = br.X; verts[ i++ ] = br.Z; verts[ i++ ] = bt | ( 0x3 + ol );
-            verts[ i++ ] = tl.X; verts[ i++ ] = tl.Z; verts[ i++ ] = bt | ( 0x2 + ol );
+            int xFace = ( ( (int) face & 0xa ) != 0 ? 0x1000 : 0 );
+            int yFace = ( ( (int) face & 0xc ) != 0 ? 0x1000 : 0 );
+
+            verts[ i++ ] = ( (int) tl.X & 0xfff ) | xFace;
+            verts[ i++ ] = ( (int) tl.Z & 0xfff ) | yFace;
+            verts[ i++ ] = tt | ( 0x0 + ol );
+            verts[ i++ ] = ( (int) br.X & 0xfff ) | xFace;
+            verts[ i++ ] = ( (int) br.Z & 0xfff ) | yFace;
+            verts[ i++ ] = tt | ( 0x1 + ol );
+            verts[ i++ ] = ( (int) br.X & 0xfff ) | xFace;
+            verts[ i++ ] = ( (int) br.Z & 0xfff ) | yFace;
+            verts[ i++ ] = bt | ( 0x3 + ol );
+            verts[ i++ ] = ( (int) tl.X & 0xfff ) | xFace;
+            verts[ i++ ] = ( (int) tl.Z & 0xfff ) | yFace;
+            verts[ i++ ] = bt | ( 0x2 + ol );
         }
     }
 }

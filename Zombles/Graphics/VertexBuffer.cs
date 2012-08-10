@@ -26,6 +26,11 @@ namespace Zombles.Graphics
             }
         }
 
+        public int Stride
+        {
+            get { return myStride; }
+        }
+
         public VertexBuffer( int stride )
         {
             myStride = stride;

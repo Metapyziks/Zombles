@@ -97,7 +97,7 @@ namespace Zombles.Geometry
         public void UpdateGeometryVertexBuffer()
         {
             int count = RootDistrict.GetGeometryVertexCount();
-            float[] verts = new float[ count * 3 ];
+            float[] verts = new float[ count * myGeomVertexBuffer.Stride ];
             int i = 0;
             RootDistrict.GetGeometryVertices( verts, ref i );
             myGeomVertexBuffer.SetData( verts );
@@ -106,7 +106,7 @@ namespace Zombles.Geometry
         public void UpdatePathVertexBuffer()
         {
             int count = RootDistrict.GetPathVertexCount();
-            float[] verts = new float[ count * 2 ];
+            float[] verts = new float[ count * myPathVertexBuffer.Stride ];
             int i = 0;
             RootDistrict.GetPathVertices( verts, ref i );
             myPathVertexBuffer.SetData( verts );

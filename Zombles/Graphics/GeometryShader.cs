@@ -24,6 +24,9 @@ namespace Zombles.Graphics
                 {
                     int dat = int( in_vertex.z );
 
+                    int x = int( in_vertex.x ) & 0xfff;
+                    int z = int( in_vertex.y ) & 0xfff;
+
                     var_tex = vec3(
                         float( dat & 0x1 ),
                         float( ( dat >> 1 ) & 0x3 ) / 2.0,
@@ -38,14 +41,14 @@ namespace Zombles.Graphics
                     var_blood = max( 1.0 - y / 2.0, 0.0 );
 
                     var_blood_tex = vec2(
-                        in_vertex.y / world_size.y,
-                        in_vertex.x / world_size.x
+                        z / world_size.y,
+                        x / world_size.x
                     );
 
                     gl_Position = view_matrix * vec4(
-                        in_vertex.x + world_offset.x,
+                        x + world_offset.x,
                         y * yscale,
-                        in_vertex.y + world_offset.y,
+                        z + world_offset.y,
                         1.0
                     );
                 }
