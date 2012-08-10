@@ -13,7 +13,8 @@ namespace Zombles.Entities
     {
         None = 0,
         Repel = 1,
-        Box = 2
+        Box = 2,
+        Entity = 4
     }
 
     public class Collision : Component
@@ -65,11 +66,14 @@ namespace Zombles.Entities
             if ( Model == CollisionModel.None )
                 return move;
 
-            NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
-                new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f + move.Length );
+            if ( ( Model & CollisionModel.Entity ) != 0 )
+            {
+                NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
+                    new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f + move.Length );
 
-            while ( iter.MoveNext() )
-                move = TryMove( iter.Current, move );
+                while ( iter.MoveNext() )
+                    move = TryMove( iter.Current, move );
+            }
 
             float xm = 1.0f, ym = 1.0f;
 
@@ -237,7 +241,7 @@ namespace Zombles.Entities
                 iy = ( it < ib ) ? it : -ib;
             }
 
-            if ( this.Model == CollisionModel.Box || that.Model == CollisionModel.Box )
+            if ( ( this.Model & CollisionModel.Box ) != 0 || ( that.Model & CollisionModel.Box ) != 0 )
             {
                 if ( intersecting )
                 {

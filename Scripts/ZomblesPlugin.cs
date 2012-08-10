@@ -26,7 +26,7 @@ namespace Zombles.Scripts
             Entity.Register( "human", ent =>
             {
                 ent.AddComponent<RenderAnim>();
-                ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel;
+                ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel | CollisionModel.Entity;
                 ent.AddComponent<Movement>();
                 ent.AddComponent<Health>();
             } );
