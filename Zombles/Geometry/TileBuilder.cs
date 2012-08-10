@@ -13,6 +13,8 @@ namespace Zombles.Geometry
         public byte FloorHeight { get; private set; }
         public byte RoofHeight { get; private set; }
 
+        public Face RoofSlant { get; private set; }
+
         public ushort FloorTileIndex { get; private set; }
         public ushort RoofTileIndex { get; private set; }
 
@@ -24,6 +26,8 @@ namespace Zombles.Geometry
 
             FloorTileIndex = 0xffff;
             RoofTileIndex = 0xffff;
+
+            RoofSlant = Face.None;
 
             myWallTileIndices = new List<ushort>[ 4 ];
             for ( int i = 0; i < 4; ++i )
@@ -50,6 +54,7 @@ namespace Zombles.Geometry
         public void SetRoof()
         {
             RoofHeight = 0;
+            RoofSlant = Face.None;
             RoofTileIndex = 0xffff;
         }
 
@@ -61,6 +66,13 @@ namespace Zombles.Geometry
         public void SetRoof( int height, String textureName )
         {
             RoofHeight = (byte) height;
+            RoofTileIndex = TextureManager.Tiles.GetIndex( textureName );
+        }
+
+        public void SetRoof( int height, Face slant, String textureName )
+        {
+            RoofHeight = (byte) height;
+            RoofSlant = slant;
             RoofTileIndex = TextureManager.Tiles.GetIndex( textureName );
         }
 

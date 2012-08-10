@@ -37,6 +37,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                 {
                     if ( level < rheight )
                         return rand.NextTexture( wallGroup, 4 );
+
                     return wallGroup + "7";
                 };
 

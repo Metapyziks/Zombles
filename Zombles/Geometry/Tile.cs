@@ -12,6 +12,7 @@ namespace Zombles.Geometry
         public readonly byte WallHeight;
         public readonly byte FloorHeight;
         public readonly byte RoofHeight;
+        public readonly Face RoofSlant;
         public readonly ushort FloorTileIndex;
         public readonly ushort RoofTileIndex;
 
@@ -25,6 +26,7 @@ namespace Zombles.Geometry
             WallHeight = builder.WallHeight;
             FloorHeight = builder.FloorHeight;
             RoofHeight = builder.RoofHeight;
+            RoofSlant = builder.RoofSlant;
             FloorTileIndex = builder.FloorTileIndex;
             RoofTileIndex = builder.RoofTileIndex;
             WallTileIndices = builder.GetWallTileIndices();
@@ -78,10 +80,10 @@ namespace Zombles.Geometry
         public void GetBaseVertices( float[] verts, ref int offset )
         {
             if( FloorHeight <= 2 )
-                GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
+                GetFloorVertices( FloorHeight, Face.None, FloorTileIndex, verts, ref offset );
 
             if ( RoofHeight > FloorHeight && RoofHeight == 1 )
-                GetFloorVertices( RoofHeight, RoofTileIndex, verts, ref offset );
+                GetFloorVertices( RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset );
 
             for ( int i = FloorHeight; i < Math.Min( WallHeight, (byte) 2 ); ++i )
                 for ( int j = 0; j < 4; ++j )
@@ -91,17 +93,17 @@ namespace Zombles.Geometry
         public void GetTopVertices( float[] verts, ref int offset )
         {
             if ( FloorHeight > 2 )
-                GetFloorVertices( FloorHeight, FloorTileIndex, verts, ref offset );
+                GetFloorVertices( FloorHeight, Face.None, FloorTileIndex, verts, ref offset );
 
             if ( RoofHeight > FloorHeight && RoofHeight > 1 )
-                GetFloorVertices( RoofHeight, RoofTileIndex, verts, ref offset );
+                GetFloorVertices( RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset );
 
             for ( int i = Math.Max( FloorHeight, (byte) 2 ); i < WallHeight; ++i )
                 for ( int j = 0; j < 4; ++j )
                     GetWallVertices( (Face) ( 1 << j ), i, WallTileIndices[ j, i ], verts, ref offset );
         }
 
-        private void GetFloorVertices( int level, ushort tile, float[] verts, ref int i )
+        private void GetFloorVertices( int level, Face slant, ushort tile, float[] verts, ref int i )
         {
             if ( tile == 0xffff )
                 return;
@@ -109,10 +111,15 @@ namespace Zombles.Geometry
             int tt = ( tile << ( 4 + 4 ) ) | ( ( level & 0xf ) << 4 )
                 | ( level == FloorHeight && RoofHeight > FloorHeight && RoofTileIndex != 0xffff ? 8 : 0 );
 
-            verts[ i++ ] = X + 0.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = tt | 0x0;
-            verts[ i++ ] = X + 1.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = tt | 0x1;
-            verts[ i++ ] = X + 1.0f; verts[ i++ ] = Y + 1.0f; verts[ i++ ] = tt | 0x5;
-            verts[ i++ ] = X + 0.0f; verts[ i++ ] = Y + 1.0f; verts[ i++ ] = tt | 0x4;
+            int sn = ( slant & Face.North ) != 0 ? 0x10 : 0;
+            int ss = ( slant & Face.South ) != 0 ? 0x10 : 0;
+            int se = ( slant & Face.East ) != 0 ? 0x10 : 0;
+            int sw = ( slant & Face.West ) != 0 ? 0x10 : 0;
+
+            verts[ i++ ] = X + 0.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = ( tt + ( sn | sw ) ) | 0x0;
+            verts[ i++ ] = X + 1.0f; verts[ i++ ] = Y + 0.0f; verts[ i++ ] = ( tt + ( sn | se ) ) | 0x1;
+            verts[ i++ ] = X + 1.0f; verts[ i++ ] = Y + 1.0f; verts[ i++ ] = ( tt + ( ss | se ) ) | 0x5;
+            verts[ i++ ] = X + 0.0f; verts[ i++ ] = Y + 1.0f; verts[ i++ ] = ( tt + ( ss | sw ) ) | 0x4;
         }
 
         private void GetWallVertices( Face face, int level, ushort tile, float[] verts, ref int i )

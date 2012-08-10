@@ -81,9 +81,10 @@ namespace Zombles.Geometry.Generation
         /// <param name="depth">Depth of the roof</param>
         /// <param name="height">Height of the roof from the ground</param>
         /// <param name="texture">Tile texture name</param>
+        /// <param name="slant">Direction of slant</param>
         /// <param name="tiles">Tile array to build the roof in</param>
         public static void BuildRoof( TileBuilder[ , ] tiles, int x, int y,
-            int width, int depth, int height, String texture )
+            int width, int depth, int height, String texture, Face slant = Face.None )
         {
             int tw = tiles.GetLength( 0 );
             int th = tiles.GetLength( 1 );
@@ -98,7 +99,7 @@ namespace Zombles.Geometry.Generation
                         int ty = y + j;
 
                         if ( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetRoof( height, texture );
+                            tiles[ tx, ty ].SetRoof( height, slant, texture );
                     }
                 }
             }
@@ -114,9 +115,10 @@ namespace Zombles.Geometry.Generation
         /// <param name="height">Height of the roof from the ground</param>
         /// <param name="textureFunc">Function deciding which texture to apply to a roof tile.
         /// Params are: int horzpos, int vertpos</param>
+        /// <param name="slant">Direction of slant</param>
         /// <param name="tiles">Tile array to build the roof in</param>
         public static void BuildRoof( TileBuilder[ , ] tiles, int x, int y,
-            int width, int depth, int height, Func<int, int, String> textureFunc )
+            int width, int depth, int height, Func<int, int, String> textureFunc, Face slant = Face.None )
         {
             int tw = tiles.GetLength( 0 );
             int th = tiles.GetLength( 1 );
@@ -131,7 +133,7 @@ namespace Zombles.Geometry.Generation
                         int ty = y + j;
 
                         if ( ty >= 0 && ty < th )
-                            tiles[ tx, ty ].SetRoof( height, textureFunc( i, j ) );
+                            tiles[ tx, ty ].SetRoof( height, slant, textureFunc( i, j ) );
                     }
                 }
             }
