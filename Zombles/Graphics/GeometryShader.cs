@@ -24,6 +24,12 @@ namespace Zombles.Graphics
                 {
                     int dat = int( in_vertex.z );
 
+                    int ix = int( in_vertex.x );
+                    int iz = int( in_vertex.y );
+
+                    int x = ix & 0xfff;
+                    int z = iz & 0xfff;
+
                     var_tex = vec3(
                         float( dat & 0x1 ),
                         float( ( dat >> 1 ) & 0x3 ) / 2.0,
@@ -31,21 +37,37 @@ namespace Zombles.Graphics
                     );
 
                     const float yscale = 1.0 / sqrt( 3.0 );
+                    const vec2 normals[] = vec2[ 4 ]
+                    (
+                        vec2(  0.5,  0.0 ),
+                        vec2(  0.0,  0.5 ),
+                        vec2( -0.5,  0.0 ),
+                        vec2(  0.0, -0.5 )
+                    );
 
                     float y = float( ( dat >> 4 ) & 0xf );
+                    vec2 bloodadd;
+
+                    if( y > 0.0f )
+                    {
+                        int normalno = ( ( ix >> 12 ) & 0x1 ) | ( ( iz >> 11 ) & 0x2 );
+                        bloodadd = normals[ normalno ];
+                    }
+                    else
+                        bloodadd = vec2( 0.0, 0.0 );
 
                     var_shade = 1.0 - 0.125 * float( ( dat >> 3 ) & 0x1 );
                     var_blood = max( 1.0 - y / 2.0, 0.0 );
 
                     var_blood_tex = vec2(
-                        in_vertex.y / world_size.y,
-                        in_vertex.x / world_size.x
+                        ( z + bloodadd.y ) / world_size.y,
+                        ( x + bloodadd.x ) / world_size.x
                     );
 
                     gl_Position = view_matrix * vec4(
-                        in_vertex.x + world_offset.x,
+                        x + world_offset.x,
                         y * yscale,
-                        in_vertex.y + world_offset.y,
+                        z + world_offset.y,
                         1.0
                     );
                 }

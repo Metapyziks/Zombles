@@ -67,7 +67,10 @@ namespace ResourceLib
 
         internal static RManager GetManager( String extension )
         {
-            return stResourceExtensions[ extension ];
+            if( stResourceExtensions.ContainsKey( extension ) )
+                return stResourceExtensions[ extension ];
+
+            return null;
         }
 
         public static void RegisterManager<T>()

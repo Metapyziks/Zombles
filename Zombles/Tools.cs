@@ -266,6 +266,11 @@ namespace Zombles
             }
         }
 
+        public static Vector2 GetNormal( this Geometry.Face face )
+        {
+            return new Vector2( face.GetNormalX(), face.GetNormalY() );
+        }
+
         public static int GetNormalX( this Geometry.Face face )
         {
             switch ( face )

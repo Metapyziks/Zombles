@@ -87,6 +87,15 @@ namespace Zombles.Scripts.Entities
             Entity.RemoveComponent<Movement>();
 
             Entity.UpdateComponents();
+
+            for ( int i = 0; i < 4; ++i )
+            {
+                Face face = (Face) ( 1 << i );
+                Vector2 ray = face.GetNormal() / 2.0f;
+                TraceResult res = Trace.Quick( City, Position2D, Position2D + ray );
+                if ( res.Hit )
+                    Entity.Position2D -= res.Vector;
+            }
         }
 
         public virtual void Attack( Vector2 dir )
@@ -102,7 +111,7 @@ namespace Zombles.Scripts.Entities
             trace.HitEntityPredicate = ( x => x != Entity );
             trace.Origin = Position2D;
             trace.Normal = dir;
-            trace.Length = 32.0f;
+            trace.Length = 1.0f;
 
             TraceResult res = trace.GetResult();
             if ( res.HitEntity && res.Entity.HasComponent<Health>() )
