@@ -224,8 +224,8 @@ namespace Zombles.Geometry
 
                             Tile ts = blk[ sx, wy ];
 
-                            hit = ( iy > minY && ts.IsWallSolid( Face.North ) && !tw.IsWallSolid( Face.North ) ) ||
-                                ( iy < maxY && ts.IsWallSolid( Face.South ) && !tw.IsWallSolid( Face.South ) );
+                            hit = ( iy >= minY && ts.IsWallSolid( Face.North ) && !tw.IsWallSolid( Face.North ) ) ||
+                                ( iy <= maxY && ts.IsWallSolid( Face.South ) && !tw.IsWallSolid( Face.South ) );
                         }
 
                         if ( hit )
@@ -283,8 +283,8 @@ namespace Zombles.Geometry
 
                             Tile ts = blk[ wx, sy ];
 
-                            hit = ( ix > minX && ts.IsWallSolid( Face.West ) && !tw.IsWallSolid( Face.West ) ) ||
-                                ( ix < maxX && ts.IsWallSolid( Face.East ) && !tw.IsWallSolid( Face.East ) );
+                            hit = ( ix >= minX && ts.IsWallSolid( Face.West ) && !tw.IsWallSolid( Face.West ) ) ||
+                                ( ix <= maxX && ts.IsWallSolid( Face.East ) && !tw.IsWallSolid( Face.East ) );
                         }
 
                         if ( hit )
