@@ -56,6 +56,7 @@
     <Compile Include="Entities\Health.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\NearbyEntityEnumerator.cs" />
+    <Compile Include="Entities\Path.cs" />
     <Compile Include="Entities\RenderAnim.cs" />
     <Compile Include="Entities\Component.cs" />
     <Compile Include="Entities\Entity.cs" />
