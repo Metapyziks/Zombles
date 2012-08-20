@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
@@ -97,6 +98,19 @@ namespace Zombles.Graphics
         {
             GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin );
             GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin + path.Vector );
+        }
+
+        public void Render( Path path )
+        {
+            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin );
+            Vector2 prev = path.Origin;
+            for ( int i = 0; i < path.Waypoints.Length; ++i )
+            {
+                GL.VertexAttrib2( Attributes[ 0 ].Location, prev + path.City.Difference( prev, path.Waypoints[ i ].Entity.Position2D ) );
+                GL.VertexAttrib2( Attributes[ 0 ].Location, path.Waypoints[ i ].Entity.Position2D );
+                prev = path.Waypoints[ i ].Entity.Position2D;
+            }
+            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Desination );
         }
 
         protected override void OnEndBatch()

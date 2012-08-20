@@ -9,7 +9,7 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
         private StructureGen.Church myBuildingGen;
 
         public Church()
-            : base(1.0, 10, 14, 24, 32)
+            : base(0.0, 10, 14, 24, 32)
         {
 
             myBuildingGen = new StructureGen.Church();

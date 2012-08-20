@@ -41,7 +41,7 @@ namespace Zombles.Scripts
         private int myOldCamDir;
         private bool myMapView;
 
-        private TraceResult myTrace;
+        private Path myPath;
         private DebugTraceShader myTraceShader;
 
         private float TargetCameraPitch
@@ -121,7 +121,7 @@ namespace Zombles.Scripts
                 FlatEntShader = new FlatEntityShader();
                 FlatEntShader.Camera = Camera;
 
-                myTrace = null;
+                myPath = null;
 
                 myTraceShader = new DebugTraceShader();
                 myTraceShader.Camera = Camera;
@@ -169,19 +169,7 @@ namespace Zombles.Scripts
 
             myPosText.Text = string.Format( "X: {0:F} Y: {1:F}", Camera.Position.X, Camera.Position.Y );
 
-            City.Think( e.Time );
-
-            var trace = new Zombles.Geometry.Trace( City );
-            trace.Origin = Camera.Position;
-            trace.HitGeometry = true;
-            trace.HitEntities = false;
-            // trace.HitEntityPredicate = ( x => x != ControlledEnt );
-            trace.HullSize = new Vector2( 0.5f, 0.5f );
-            trace.Normal = City.Difference( Camera.Position,
-                Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
-            trace.Length = 32.0f;
-
-            myTrace = trace.GetResult();
+            City.Think( e.Time );            
 
             myInfDisplay.UpdateBars();
 
@@ -286,17 +274,20 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
-                myTraceShader.StartBatch();
-                City.RenderPaths( myTraceShader );
-                myTraceShader.EndBatch();
-                myTraceShader.Begin();
-                if ( myTrace != null )
+                if ( myPath != null )
                 {
+                    myTraceShader.Begin();
                     myTraceShader.Colour = Color4.Red;
-                    myTraceShader.Render( myTrace );
+                    myTraceShader.Render( myPath );
                     myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
+                    myTraceShader.End();
                 }
-                myTraceShader.End();
+                else
+                {
+                    myTraceShader.StartBatch();
+                    City.RenderPaths( myTraceShader );
+                    myTraceShader.EndBatch();
+                }
             }
 
             base.OnRenderFrame( e );
@@ -304,6 +295,19 @@ namespace Zombles.Scripts
             myTotalFrameTime += myFrameTimer.ElapsedTicks;
             ++myFramesCompleted;
             myFrameTimer.Restart();
+        }
+
+        public override void OnMouseButtonDown( MouseButtonEventArgs e )
+        {
+            //if ( e.Button == MouseButton.Button1 )
+            {
+                if ( myPath == null )
+                    myPath = Path.Find( City, new Vector2(),
+                        Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
+                else
+                    myPath = Path.Find( City, myPath.Desination,
+                        Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
+            }
         }
 
         public override void OnMouseWheelChanged( MouseWheelEventArgs e )
