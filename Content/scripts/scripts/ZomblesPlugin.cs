@@ -14,13 +14,12 @@ namespace Zombles.Scripts
     {
         protected override void OnInitialize()
         {
+            System.Diagnostics.Debugger.Break();
+
             Entity.Register( "waypoint", ent =>
             {
                 ent.AddComponent<Waypoint>();
-
-                //
                 // ent.AddComponent<Render2D>().TextureIndex = TextureManager.Ents.GetIndex( "waypoint" );
-                //
             } );
 
             Entity.Register( "human", ent =>

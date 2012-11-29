@@ -199,17 +199,19 @@ namespace Zombles.Entities
                     Waypoint other = near.Current.GetComponent<Waypoint>();
 
                     TraceResult res = Trace.Quick( City, Position2D, other.Position2D, false, true, ConnectionHullSize );
-                    if ( !res.Hit )
-                        Connections.Add( new PathEdge( this, other, res.Vector ) );
+                    if ( res.Hit )
+                        res = Trace.Quick( City, other.Position2D, Position2D, false, true, ConnectionHullSize );
 
-                    res = Trace.Quick( City, other.Position2D, Position2D, false, true, ConnectionHullSize );
                     if ( !res.Hit )
+                    {
+                        Connections.Add( new PathEdge( this, other, res.Vector ) );
                         other.Connections.Add( new PathEdge( other, this, res.Vector ) );
 
-                    if ( Group == null )
-                        other.Group.Add( this );
-                    else if( Group != other.Group )
-                        other.Group.Merge( Group );
+                        if ( Group == null )
+                            other.Group.Add( this );
+                        else if ( Group != other.Group )
+                            other.Group.Merge( Group );
+                    }
                 }
             }
 

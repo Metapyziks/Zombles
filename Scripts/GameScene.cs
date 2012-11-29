@@ -282,12 +282,9 @@ namespace Zombles.Scripts
                     myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
                     myTraceShader.End();
                 }
-                else
-                {
-                    myTraceShader.StartBatch();
-                    City.RenderPaths( myTraceShader );
-                    myTraceShader.EndBatch();
-                }
+                //myTraceShader.StartBatch();
+                //City.RenderPaths( myTraceShader );
+                //myTraceShader.EndBatch();
             }
 
             base.OnRenderFrame( e );
