@@ -37,8 +37,8 @@ namespace Zombles
         public ZomblesGame()
             : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 16, 0 ), "Zombles" )
         {
-            VSync = VSyncMode.Adaptive;
-            Context.SwapInterval = 1;
+            VSync = VSyncMode.Off;
+            // Context.SwapInterval = 1;
 
             WindowBorder = WindowBorder.Fixed;
 
@@ -131,7 +131,7 @@ namespace Zombles
         private void OnMouseMove( object sender, MouseMoveEventArgs e )
         {
             if ( CurrentScene != null )
-                CurrentScene.OnMouseMove( e );
+                CurrentScene.TriggerMouseMove( e );
         }
 
         private void OnMouseWheelChanged( object sender, MouseWheelEventArgs e )
@@ -143,13 +143,13 @@ namespace Zombles
         private void OnMouseButtonUp( object sender, MouseButtonEventArgs e )
         {
             if ( CurrentScene != null )
-                CurrentScene.OnMouseButtonUp( e );
+                CurrentScene.TriggerMouseButtonUp( e );
         }
 
         private void OnMouseButtonDown( object sender, MouseButtonEventArgs e )
         {
             if ( CurrentScene != null )
-                CurrentScene.OnMouseButtonDown( e );
+                CurrentScene.TriggerMouseButtonDown( e );
         }
 
         protected override void OnKeyPress( KeyPressEventArgs e )

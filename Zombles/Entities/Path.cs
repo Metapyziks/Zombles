@@ -170,5 +170,10 @@ namespace Zombles.Entities
         public Vector2 Desination { get; private set; }
 
         public Waypoint[] Waypoints { get; private set; }
+
+        public Vector2 this[ int index ]
+        {
+            get { return Waypoints[index].Entity.Position2D; }
+        }
     }
 }

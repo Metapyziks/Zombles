@@ -11,36 +11,26 @@ using Zombles.Graphics;
 
 namespace Zombles.Scripts.Entities
 {
-    public class PlayerControlled : HumanControl
+    public class PlayerControl : HumanControl
     {
-        public PlayerControlled( Entity ent )
+        public PlayerControl( Entity ent )
             : base( ent )
         {
 
         }
 
-        public override void OnSpawn()
-        {
-            base.OnSpawn();
-
-            ( ZomblesGame.CurrentScene as GameScene ).ControlledEnt = Entity;
-        }
-
         public override void OnThink( double dt )
         {
             GameScene scene = ZomblesGame.CurrentScene as GameScene;
-            KeyboardState keyboard = Keyboard.GetState();
-            MouseState mouse = Mouse.GetState();
-
             Survivor surv = Human as Survivor;
 
-            if ( mouse.LeftButton == ButtonState.Pressed )
+            if ( scene.Mouse[MouseButton.Left] )
             {
                 Vector2 pos = scene.Camera.ScreenToWorld( scene.MousePos, 0.5f );
                 surv.Attack( City.Difference( Position2D, pos ) );
             }
 
-            if ( keyboard[ Key.ShiftLeft ] )
+            if ( scene.Keyboard[ Key.ShiftLeft ] )
             {
                 if ( surv.CanRun )
                     surv.StartRunning();
@@ -51,22 +41,22 @@ namespace Zombles.Scripts.Entities
             Vector2 movement = new Vector2();
             float angleY = scene.Camera.Yaw;
 
-            if ( keyboard[ Key.D ] )
+            if ( scene.Keyboard[Key.D] )
             {
                 movement.X += (float) Math.Cos( angleY );
                 movement.Y += (float) Math.Sin( angleY );
             }
-            if ( keyboard[ Key.A ] )
+            if ( scene.Keyboard[Key.A] )
             {
                 movement.X -= (float) Math.Cos( angleY );
                 movement.Y -= (float) Math.Sin( angleY );
             }
-            if ( keyboard[ Key.S ] )
+            if ( scene.Keyboard[Key.S] )
             {
                 movement.Y += (float) Math.Cos( angleY );
                 movement.X -= (float) Math.Sin( angleY );
             }
-            if ( keyboard[ Key.W ] )
+            if ( scene.Keyboard[Key.W] )
             {
                 movement.Y -= (float) Math.Cos( angleY );
                 movement.X += (float) Math.Sin( angleY );
@@ -78,11 +68,6 @@ namespace Zombles.Scripts.Entities
                 Human.StopMoving();
 
             scene.Camera.Position = Position2D;
-        }
-
-        public override void OnRemove()
-        {
-            ( ZomblesGame.CurrentScene as GameScene ).ControlledEnt = null;
         }
     }
 }

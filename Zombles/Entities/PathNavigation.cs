@@ -64,6 +64,11 @@ namespace Zombles.Entities
 
         }
 
+        public void NavigateTo( Vector2 dest )
+        {
+            CurrentPath = Path.Find( City, Entity.Position2D, dest );
+        }
+
         public override void OnThink( double dt )
         {
             if ( CurrentPath != null )

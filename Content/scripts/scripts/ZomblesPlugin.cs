@@ -14,8 +14,6 @@ namespace Zombles.Scripts
     {
         protected override void OnInitialize()
         {
-            System.Diagnostics.Debugger.Break();
-
             Entity.Register( "waypoint", ent =>
             {
                 ent.AddComponent<Waypoint>();
@@ -27,13 +25,14 @@ namespace Zombles.Scripts
                 ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>().SetDimentions( 0.5f, 0.5f ).Model = CollisionModel.Repel | CollisionModel.Entity;
                 ent.AddComponent<Movement>();
+                ent.AddComponent<PathNavigation>();
                 ent.AddComponent<Health>();
             } );
 
             Entity.Register( "survivor", "human", ent =>
             {
                 ent.AddComponent<Survivor>();
-                ent.AddComponent<SurvivorAI>();
+                ent.AddComponent<RTSControl>();
             } );
 
             Entity.Register( "zombie", "human", ent =>
@@ -45,7 +44,8 @@ namespace Zombles.Scripts
 
         protected override void OnCityGenerated()
         {
-            City city = ( ZomblesGame.CurrentScene as GameScene ).City;
+            GameScene scene = ZomblesGame.CurrentScene as GameScene;
+            City city = scene.City;
             Random rand = Tools.Random;
 
             Waypoint.GenerateNetwork( city );
@@ -53,19 +53,15 @@ namespace Zombles.Scripts
             int count = ( city.Width * city.Height ) / 64;
             int zoms = Math.Max( count / 32, 8 );
 
+            System.Diagnostics.Debugger.Break();
+
             for ( int i = 0; i < count - zoms; ++i )
             {
                 Entity surv = Entity.Create( city, "survivor" );
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 surv.Spawn();
 
-                /*if ( i == 0 )
-                {
-                    GameScene scene = ZomblesGame.CurrentScene as GameScene;
-                    surv.SwapComponent<SurvivorAI, PlayerControlled>();
-                    surv.UpdateComponents();
-                    scene.ControlledEnt = surv;
-                }*/
+                scene.SelectedEntities.Add( surv );
             }
 
             for ( int i = 0; i < zoms; ++i )
