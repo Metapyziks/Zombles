@@ -32,7 +32,8 @@ namespace Zombles.Scripts
             Entity.Register( "survivor", "human", ent =>
             {
                 ent.AddComponent<Survivor>();
-                ent.AddComponent<RTSControl>();
+                //ent.AddComponent<RTSControl>();
+                ent.AddComponent<SurvivorAI>();
             } );
 
             Entity.Register( "zombie", "human", ent =>
@@ -53,15 +54,13 @@ namespace Zombles.Scripts
             int count = ( city.Width * city.Height ) / 64;
             int zoms = Math.Max( count / 32, 8 );
 
-            System.Diagnostics.Debugger.Break();
-
             for ( int i = 0; i < count - zoms; ++i )
             {
                 Entity surv = Entity.Create( city, "survivor" );
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 surv.Spawn();
 
-                scene.SelectedEntities.Add( surv );
+                //scene.SelectedEntities.Add( surv );
             }
 
             for ( int i = 0; i < zoms; ++i )

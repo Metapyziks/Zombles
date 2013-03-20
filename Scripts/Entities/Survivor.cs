@@ -136,6 +136,11 @@ namespace Zombles.Scripts.Entities
 
         protected override void OnKilled( object sender, KilledEventArgs e )
         {
+            if (myCounted) {
+                --Count;
+                myCounted = false;
+            }
+
             if ( IsInfected && Tools.Random.NextDouble() < 0.74 )
                 Zombify();
             else
@@ -199,17 +204,6 @@ namespace Zombles.Scripts.Entities
             {
                 ++Count;
                 myCounted = true;
-            }
-        }
-
-        public override void OnRemove()
-        {
-            base.OnRemove();
-
-            if ( myCounted )
-            {
-                --Count;
-                myCounted = false;
             }
         }
     }

@@ -32,7 +32,8 @@ namespace Zombles.Scripts
             Entity.Register( "survivor", "human", ent =>
             {
                 ent.AddComponent<Survivor>();
-                ent.AddComponent<RTSControl>();
+                //ent.AddComponent<RTSControl>();
+                ent.AddComponent<SurvivorAI>();
             } );
 
             Entity.Register( "zombie", "human", ent =>
@@ -59,7 +60,7 @@ namespace Zombles.Scripts
                 surv.Position = new Vector3( rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height );
                 surv.Spawn();
 
-                scene.SelectedEntities.Add( surv );
+                //scene.SelectedEntities.Add( surv );
             }
 
             for ( int i = 0; i < zoms; ++i )
