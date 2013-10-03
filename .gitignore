@@ -11,3 +11,6 @@ Content/*.dll
 Content/*.xml
 Content/*.pdb
 Content/RSABuilder.vshost.exe.manifest
+*Thumbs.db
+*.pdb
+pingme.txt

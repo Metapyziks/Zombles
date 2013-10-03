@@ -276,10 +276,11 @@ namespace Zombles.Scripts
                 myTraceShader.Colour = Color4.Red;
                 foreach ( Entity ent in SelectedEntities )
                 {
-                    if ( ent.HasComponent<PathNavigation>() )
+                    if ( ent.HasComponent<PathNavigation>() && ent.HasComponent<Health>() )
                     {
                         PathNavigation nav = ent.GetComponent<PathNavigation>();
-                        if( nav.CurrentPath != null )
+                        Health health = ent.GetComponent<Health>();
+                        if( nav.CurrentPath != null && health.IsAlive )
                             myTraceShader.Render( nav.CurrentPath );
                     }
                 }

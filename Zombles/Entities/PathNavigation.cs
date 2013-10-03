@@ -30,6 +30,7 @@ namespace Zombles.Entities
             {
                 myCurrentPath = value;
                 myPathProgress = 0;
+                myLastScanTime = ZomblesGame.Time - 1.0;
             }
         }
 

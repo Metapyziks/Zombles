@@ -53,8 +53,6 @@ namespace Zombles.Scripts
             int count = ( city.Width * city.Height ) / 64;
             int zoms = Math.Max( count / 32, 8 );
 
-            System.Diagnostics.Debugger.Break();
-
             for ( int i = 0; i < count - zoms; ++i )
             {
                 Entity surv = Entity.Create( city, "survivor" );
