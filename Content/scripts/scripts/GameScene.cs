@@ -40,8 +40,8 @@ namespace Zombles.Scripts
         private DateTime myCamRotTime;
         private int myOldCamDir;
         private bool myMapView;
+        private bool myDrawPathNetwork;
 
-        private TraceResult myTrace;
         private DebugTraceShader myTraceShader;
 
         private float TargetCameraPitch
@@ -68,7 +68,7 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public City City { get; private set; }
 
-        public Entity ControlledEnt { get; set; }
+        public List<Entity> SelectedEntities { get; private set; }
 
         public GameScene( ZomblesGame gameWindow )
             : base( gameWindow )
@@ -79,6 +79,7 @@ namespace Zombles.Scripts
             myCamDir = 2;
             myCamRotTime = DateTime.MinValue;
             myMapView = false;
+            myDrawPathNetwork = false;
 
             myTotalFrameTime = 0;
             myFramesCompleted = 0;
@@ -107,6 +108,8 @@ namespace Zombles.Scripts
                 Generator = new CityGenerator();
                 City = Generator.Generate( WorldSize, WorldSize );
 
+                SelectedEntities = new List<Entity>();
+
                 Camera = new Camera( Width, Height, 4.0f );
                 Camera.SetWrapSize( WorldSize, WorldSize );
                 Camera.Position = new Vector2( WorldSize, WorldSize ) / 2.0f;
@@ -120,8 +123,6 @@ namespace Zombles.Scripts
 
                 FlatEntShader = new FlatEntityShader();
                 FlatEntShader.Camera = Camera;
-
-                myTrace = null;
 
                 myTraceShader = new DebugTraceShader();
                 myTraceShader.Camera = Camera;
@@ -169,54 +170,39 @@ namespace Zombles.Scripts
 
             myPosText.Text = string.Format( "X: {0:F} Y: {1:F}", Camera.Position.X, Camera.Position.Y );
 
-            City.Think( e.Time );
-
-            var trace = new Zombles.Geometry.Trace( City );
-            trace.Origin = Camera.Position;
-            trace.HitGeometry = true;
-            trace.HitEntities = false;
-            // trace.HitEntityPredicate = ( x => x != ControlledEnt );
-            trace.HullSize = new Vector2( 0.5f, 0.5f );
-            trace.Normal = City.Difference( Camera.Position,
-                Camera.ScreenToWorld( new Vector2( Mouse.X, Mouse.Y ), 0.5f ) );
-            trace.Length = 32.0f;
-
-            myTrace = trace.GetResult();
+            City.Think( e.Time );            
 
             myInfDisplay.UpdateBars();
 
-            if ( ControlledEnt == null )
+            Vector2 movement = new Vector2( 0.0f, 0.0f );
+            float angleY = Camera.Yaw;
+
+            if ( Keyboard[ Key.D ] )
             {
-                Vector2 movement = new Vector2( 0.0f, 0.0f );
-                float angleY = Camera.Yaw;
+                movement.X += (float) Math.Cos( angleY );
+                movement.Y += (float) Math.Sin( angleY );
+            }
+            if ( Keyboard[ Key.A ] )
+            {
+                movement.X -= (float) Math.Cos( angleY );
+                movement.Y -= (float) Math.Sin( angleY );
+            }
+            if ( Keyboard[ Key.S ] )
+            {
+                movement.Y += (float) Math.Cos( angleY );
+                movement.X -= (float) Math.Sin( angleY );
+            }
+            if ( Keyboard[ Key.W ] )
+            {
+                movement.Y -= (float) Math.Cos( angleY );
+                movement.X += (float) Math.Sin( angleY );
+            }
 
-                if ( Keyboard[ Key.D ] )
-                {
-                    movement.X += (float) Math.Cos( angleY );
-                    movement.Y += (float) Math.Sin( angleY );
-                }
-                if ( Keyboard[ Key.A ] )
-                {
-                    movement.X -= (float) Math.Cos( angleY );
-                    movement.Y -= (float) Math.Sin( angleY );
-                }
-                if ( Keyboard[ Key.S ] )
-                {
-                    movement.Y += (float) Math.Cos( angleY );
-                    movement.X -= (float) Math.Sin( angleY );
-                }
-                if ( Keyboard[ Key.W ] )
-                {
-                    movement.Y -= (float) Math.Cos( angleY );
-                    movement.X += (float) Math.Sin( angleY );
-                }
-
-                if ( movement.Length != 0 )
-                {
-                    movement.Normalize();
-                    Camera.Position += movement *
-                        (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
-                }
+            if ( movement.Length != 0 )
+            {
+                movement.Normalize();
+                Camera.Position += movement *
+                    (float) ( e.Time * myCamMoveSpeed * ( Keyboard[ Key.ShiftLeft ] ? 4.0f : 1.0f ) );
             }
 
             if ( ( DateTime.Now - myCamRotTime ).TotalSeconds >= 0.25 )
@@ -286,17 +272,25 @@ namespace Zombles.Scripts
                 FlatEntShader.StartBatch();
                 City.RenderEntities( FlatEntShader );
                 FlatEntShader.EndBatch();
-                myTraceShader.StartBatch();
-                City.RenderPaths( myTraceShader );
-                myTraceShader.EndBatch();
                 myTraceShader.Begin();
-                if ( myTrace != null )
+                myTraceShader.Colour = Color4.Red;
+                foreach ( Entity ent in SelectedEntities )
                 {
-                    myTraceShader.Colour = Color4.Red;
-                    myTraceShader.Render( myTrace );
-                    myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
+                    if ( ent.HasComponent<PathNavigation>() )
+                    {
+                        PathNavigation nav = ent.GetComponent<PathNavigation>();
+                        if( nav.CurrentPath != null )
+                            myTraceShader.Render( nav.CurrentPath );
+                    }
                 }
+                myTraceShader.Colour = new Color4( 255, 255, 255, 127 );
                 myTraceShader.End();
+                if ( myDrawPathNetwork )
+                {
+                    myTraceShader.StartBatch();
+                    City.RenderPaths( myTraceShader );
+                    myTraceShader.EndBatch();
+                }
             }
 
             base.OnRenderFrame( e );
@@ -318,21 +312,24 @@ namespace Zombles.Scripts
 
         public override void OnKeyPress( KeyPressEventArgs e )
         {
-            if ( char.ToLower( e.KeyChar ) == 'x' )
+            switch( char.ToLower( e.KeyChar ) )
             {
-                myHideTop = !myHideTop;
-            }
-            else if ( char.ToLower( e.KeyChar ) == 'f' )
-            {
-                if ( GameWindow.WindowState == WindowState.Fullscreen )
-                    GameWindow.WindowState = WindowState.Normal;
-                else
-                    GameWindow.WindowState = WindowState.Fullscreen;
-            }
-            else if ( char.ToLower( e.KeyChar ) == 'g' )
-            {
-                City = Generator.Generate( WorldSize, WorldSize );
-                Plugin.CityGenerated();
+                case 'x':
+                    myHideTop = !myHideTop;
+                    break;
+                case 'p':
+                    myDrawPathNetwork = !myDrawPathNetwork;
+                    break;
+                case 'f':
+                    if ( GameWindow.WindowState == WindowState.Fullscreen )
+                        GameWindow.WindowState = WindowState.Normal;
+                    else
+                        GameWindow.WindowState = WindowState.Fullscreen;
+                    break;
+                case 'g':
+                    City = Generator.Generate( WorldSize, WorldSize );
+                    Plugin.CityGenerated();
+                    break;
             }
 
             base.OnKeyPress( e );
