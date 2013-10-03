@@ -1,5 +1,5 @@
 
-Zombles.suo
+*.suo
 bin
 ResourceArchiveBuilder/obj
 ResourceLib/obj

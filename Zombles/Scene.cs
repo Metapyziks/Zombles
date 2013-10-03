@@ -94,14 +94,41 @@ namespace Zombles
 
         }
 
+        public event MouseButtonEventHandler MouseButtonDown;
+        internal void TriggerMouseButtonDown( MouseButtonEventArgs e )
+        {
+            if ( MouseButtonDown != null )
+                MouseButtonDown( this, e );
+
+            OnMouseButtonDown( e );
+        }
+
         public virtual void OnMouseButtonDown( MouseButtonEventArgs e )
         {
             myUIRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
         }
 
+        public event MouseButtonEventHandler MouseButtonUp;
+        internal void TriggerMouseButtonUp( MouseButtonEventArgs e )
+        {
+            if ( MouseButtonUp != null )
+                MouseButtonUp( this, e );
+
+            OnMouseButtonUp( e );
+        }
+
         public virtual void OnMouseButtonUp( MouseButtonEventArgs e )
         {
             myUIRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+        }
+
+        public event MouseMoveEventHandler MouseMove;
+        internal void TriggerMouseMove( MouseMoveEventArgs e )
+        {
+            if ( MouseMove != null )
+                MouseMove( this, e );
+
+            OnMouseMove( e );
         }
 
         public virtual void OnMouseMove( MouseMoveEventArgs e )
