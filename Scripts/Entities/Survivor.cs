@@ -51,7 +51,7 @@ namespace Zombles.Scripts.Entities
             get
             {
                 if (stWalkAnim == null)
-                    stWalkAnim = EntityAnim.GetAnim("anim", "human", "walk");
+                    stWalkAnim = EntityAnim.GetAnim("anims", "human", "walk");
 
                 return stWalkAnim;
             }
@@ -62,7 +62,7 @@ namespace Zombles.Scripts.Entities
             get
             {
                 if (stStandAnim == null)
-                    stStandAnim = EntityAnim.GetAnim("anim", "human", "stand");
+                    stStandAnim = EntityAnim.GetAnim("anims", "human", "stand");
 
                 return stStandAnim;
             }
@@ -73,7 +73,7 @@ namespace Zombles.Scripts.Entities
             get
             {
                 if (stDeadAnim == null)
-                    stDeadAnim = EntityAnim.GetAnim("anim", "human", "dead");
+                    stDeadAnim = EntityAnim.GetAnim("anims", "human", "dead");
 
                 return stDeadAnim;
             }

@@ -327,16 +327,16 @@ namespace Zombles
 
         public static String NextTexture( this Random rand, String prefix, int max )
         {
-            if ( !prefix.EndsWith( "_" ) )
-                prefix += "_";
+            if ( !prefix.EndsWith( "/" ) )
+                prefix += "/";
 
             return prefix + rand.Next( max ).ToString( "X" ).ToLower();
         }
 
         public static String NextTexture( this Random rand, String prefix, int min, int max )
         {
-            if ( !prefix.EndsWith( "_" ) )
-                prefix += "_";
+            if ( !prefix.EndsWith( "/" ) )
+                prefix += "/";
 
             return prefix + rand.Next( min, max ).ToString( "X" ).ToLower();
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using ResourceLibrary;
+using System.Drawing;
 
 namespace Zombles.Graphics
 {
@@ -24,7 +25,7 @@ namespace Zombles.Graphics
         private static void DiscoverImages(IEnumerable<String> locator, List<ResourceLocator> tileNames)
         {
             var locatorArr = locator.ToArray();
-            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
+            foreach (var name in Archive.GetAllNames<Bitmap>(locator)) {
                 tileNames.Add(locator.Concat(new String[] { name }).ToArray());
             }
 
@@ -40,9 +41,7 @@ namespace Zombles.Graphics
             var tileNames = new List<ResourceLocator>();
             DiscoverImages(filePrefix, tileNames);
 
-            tileNames.Sort();
-
-            TexArray = new Texture2DArray(8, 8, tileNames.ToArray());
+            TexArray = new Texture2DArray(8, 8, tileNames.OrderBy(x => String.Join("/", x.Parts)).ToArray());
         }
 
         public ushort GetIndex(ResourceLocator namePrefix, params String[] nameSuffix)
