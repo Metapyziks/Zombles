@@ -103,7 +103,7 @@ namespace Zombles
                 stScripts.Add(Archive.Get<ScriptFile>(locatorArr, name));
             }
 
-            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
+            foreach (var name in Archive.GetAllNames<Archive>(locator)) {
                 DiscoverScripts(locator.Concat(new String[] { name }));
             }
         }

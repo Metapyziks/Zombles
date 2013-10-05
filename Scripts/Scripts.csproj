@@ -52,8 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\RTSControl.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Church.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\Church.cs" />
     <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />
@@ -85,18 +83,16 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md "$(SolutionDir)Content\scripts\scripts"
-xcopy "$(ProjectDir)*.cs" "$(SolutionDir)Content\scripts\scripts\" /s /c /q /i /y
+    <PostBuildEvent>rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
+md "$(SolutionDir)Content\scripts\scripts"
+xcopy "$(ProjectDir)*.cs" "$(SolutionDir)Content\scripts\scripts\" /s /c /i /y
 
 rmdir "$(SolutionDir)Content\scripts\scripts\obj" /s /q
 rmdir "$(SolutionDir)Content\scripts\scripts\Properties" /s /q
 
 cd "$(SolutionDir)Content"
-buildarchive "$(SolutionDir)Content\scripts"
-xcopy "sh_scripts.dat" "$(SolutionDir)bin\$(ConfigurationName)\Data\" /s /c /q /i /y
-cd "$(TargetDir)"
-
-rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
+"buildarchive" scripts
+xcopy "scripts.dat" "$(TargetDir)Data\"  /c /y
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

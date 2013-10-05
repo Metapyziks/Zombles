@@ -10,7 +10,7 @@ namespace Zombles.Graphics
 {
     public class Texture2DArray : Texture
     {
-        private String[][] myNames;
+        private ResourceLocator[] myNames;
         private BitmapTexture2D[] myTextures;
 
         private UInt32[] myData;
@@ -19,7 +19,7 @@ namespace Zombles.Graphics
         public int Height { get; private set; }
         public int Count { get; private set; }
 
-        public Texture2DArray(int width, int height, params String[][] textureLocators)
+        public Texture2DArray(int width, int height, params ResourceLocator[] textureLocators)
             : base(TextureTarget.Texture2DArray)
         {
             Width = width;

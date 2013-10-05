@@ -30,8 +30,8 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if ( stWalkAnim == null )
-                    stWalkAnim = EntityAnim.GetAnim( "zombie walk" );
+                if (stWalkAnim == null)
+                    stWalkAnim = EntityAnim.GetAnim("anim", "zombie", "walk");
 
                 return stWalkAnim;
             }
@@ -41,8 +41,8 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if ( stStandAnim == null )
-                    stStandAnim = EntityAnim.GetAnim( "zombie stand" );
+                if (stStandAnim == null)
+                    stStandAnim = EntityAnim.GetAnim("anim", "zombie", "stand");
 
                 return stStandAnim;
             }
@@ -52,8 +52,8 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if ( stDeadAnim == null )
-                    stDeadAnim = EntityAnim.GetAnim( "zombie dead" );
+                if (stDeadAnim == null)
+                    stDeadAnim = EntityAnim.GetAnim("anim", "zombie", "dead");
 
                 return stDeadAnim;
             }
@@ -64,12 +64,12 @@ namespace Zombles.Scripts.Entities
             get { return myMoveSpeed; }
         }
 
-        public Zombie( Entity ent )
-            : base( ent )
+        public Zombie(Entity ent)
+            : base(ent)
         {
             myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 0.5f;
 
-            if ( Tools.Random.NextSingle() < 0.05 )
+            if (Tools.Random.NextSingle() < 0.05)
                 myMoveSpeed += 2.0f;
 
             myBleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
@@ -79,14 +79,12 @@ namespace Zombles.Scripts.Entities
         {
             base.OnSpawn();
 
-            if ( Health.IsAlive && Health.MaxHealth == 1 )
-            {
-                Health.SetMaximum( 50 );
+            if (Health.IsAlive && Health.MaxHealth == 1) {
+                Health.SetMaximum(50);
                 Health.Revive();
             }
 
-            if ( !myCounted )
-            {
+            if (!myCounted) {
                 ++Count;
                 myCounted = true;
             }
@@ -95,13 +93,12 @@ namespace Zombles.Scripts.Entities
             myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
         }
 
-        public override void OnThink( double dt )
+        public override void OnThink(double dt)
         {
-            base.OnThink( dt );
+            base.OnThink(dt);
 
-            if ( ZomblesGame.Time - myTurnTime < myBleedTime && ZomblesGame.Time >= myNextBleed )
-            {
-                City.SplashBlood( Position2D, 0.5f );
+            if (ZomblesGame.Time - myTurnTime < myBleedTime && ZomblesGame.Time >= myNextBleed) {
+                City.SplashBlood(Position2D, 0.5f);
                 myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
             }
         }
@@ -110,8 +107,7 @@ namespace Zombles.Scripts.Entities
         {
             base.OnRemove();
 
-            if ( myCounted )
-            {
+            if (myCounted) {
                 --Count;
                 myCounted = false;
             }

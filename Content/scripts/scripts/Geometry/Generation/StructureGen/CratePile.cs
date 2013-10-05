@@ -25,7 +25,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     if ( rand.Next( 4 ) < 2 )
                     {
                         GenHelper.BuildSolid( tiles, x + tx, y + ty, 1, 1, rand.Next( 1, MaxHeight + 1 ),
-                            "wall_crate_0", "floor_crate_0" );
+                            "wall/crate/0", "floor/crate/0" );
                     }
                 }
             }

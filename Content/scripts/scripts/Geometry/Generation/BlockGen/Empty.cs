@@ -20,7 +20,7 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
             GenHelper.BuildFloor( tiles, borderLeft, borderTop,
                 district.Width - borderLeft - borderRight,
                 district.Height - borderTop - borderBottom,
-                0, "floor_concrete_0" );
+                0, "floor/concrete/0" );
         }
     }
 }

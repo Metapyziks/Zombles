@@ -14,7 +14,7 @@ namespace Zombles.Graphics
 
         public static EntityAnim GetAnim(params String[] nameLocator)
         {
-            var name = String.Join(",", nameLocator);
+            var name = String.Join("/", nameLocator);
 
             if (!stFound.ContainsKey(name)) {
                 stFound.Add(name, new EntityAnim(Archive.Get<JObject>(nameLocator)));

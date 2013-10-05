@@ -31,7 +31,8 @@ namespace Zombles.Scripts.Entities
 
         public float Stamina
         {
-            get; private set;
+            get;
+            private set;
         }
 
         public bool IsRunning
@@ -42,15 +43,15 @@ namespace Zombles.Scripts.Entities
 
         public bool CanRun
         {
-            get { return !IsRunning && Stamina > Math.Max( 0.5f, MaxStamina / 2.0 ); }
+            get { return !IsRunning && Stamina > Math.Max(0.5f, MaxStamina / 2.0); }
         }
 
         public override EntityAnim WalkAnim
         {
             get
             {
-                if ( stWalkAnim == null )
-                    stWalkAnim = EntityAnim.GetAnim( "human walk" );
+                if (stWalkAnim == null)
+                    stWalkAnim = EntityAnim.GetAnim("anim", "human", "walk");
 
                 return stWalkAnim;
             }
@@ -60,8 +61,8 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if ( stStandAnim == null )
-                    stStandAnim = EntityAnim.GetAnim( "human stand" );
+                if (stStandAnim == null)
+                    stStandAnim = EntityAnim.GetAnim("anim", "human", "stand");
 
                 return stStandAnim;
             }
@@ -71,8 +72,8 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if ( stDeadAnim == null )
-                    stDeadAnim = EntityAnim.GetAnim( "human dead" );
+                if (stDeadAnim == null)
+                    stDeadAnim = EntityAnim.GetAnim("anim", "human", "dead");
 
                 return stDeadAnim;
             }
@@ -83,19 +84,19 @@ namespace Zombles.Scripts.Entities
             get
             {
                 return !Health.IsAlive ? 0.0f :
-                    ( IsRunning ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed ) *
-                    ( Health.Value < 60 ? Math.Max( Health.Value / 60.0f, 0.125f ) : 1.0f );
+                    (IsRunning ? RunSpeed : Stamina < MaxStamina ? TiredSpeed : WalkSpeed) *
+                    (Health.Value < 60 ? Math.Max(Health.Value / 60.0f, 0.125f) : 1.0f);
             }
         }
 
-        public Survivor( Entity ent )
-            : base( ent )
+        public Survivor(Entity ent)
+            : base(ent)
         {
             float speedMul = Tools.Random.NextSingle() * 0.5f + 1.5f;
 
             TiredSpeed = 0.75f * speedMul;
-            WalkSpeed  = 1.00f * speedMul;
-            RunSpeed   = 2.00f * speedMul;
+            WalkSpeed = 1.00f * speedMul;
+            RunSpeed = 2.00f * speedMul;
 
             MaxStamina = 3.0f + Tools.Random.NextSingle() * 4.0f;
             Stamina = MaxStamina;
@@ -113,12 +114,12 @@ namespace Zombles.Scripts.Entities
         public void Zombify()
         {
             StopMoving();
-            City.SplashBlood( Position2D, 4.0f );
+            City.SplashBlood(Position2D, 4.0f);
 
-            if ( Entity.HasComponent<Survivor>() )
+            if (Entity.HasComponent<Survivor>())
                 Entity.SwapComponent<Survivor, Zombie>();
 
-            if ( Entity.HasComponent<HumanControl>() )
+            if (Entity.HasComponent<HumanControl>())
                 Entity.SwapComponent<HumanControl, ZombieAI>();
 
             Entity.UpdateComponents();
@@ -126,44 +127,39 @@ namespace Zombles.Scripts.Entities
             Health.Revive();
         }
 
-        protected override void OnDamaged( object sender, DamagedEventArgs e )
+        protected override void OnDamaged(object sender, DamagedEventArgs e)
         {
-            base.OnDamaged( sender, e );
+            base.OnDamaged(sender, e);
 
-            if ( !IsInfected && e.HasAttacker && e.Attacker.HasComponent<Zombie>() && Tools.Random.NextDouble() < 0.37 )
+            if (!IsInfected && e.HasAttacker && e.Attacker.HasComponent<Zombie>() && Tools.Random.NextDouble() < 0.37)
                 Infect();
         }
 
-        protected override void OnKilled( object sender, KilledEventArgs e )
+        protected override void OnKilled(object sender, KilledEventArgs e)
         {
             if (myCounted) {
                 --Count;
                 myCounted = false;
             }
 
-            if ( IsInfected && Tools.Random.NextDouble() < 0.74 )
+            if (IsInfected && Tools.Random.NextDouble() < 0.74)
                 Zombify();
             else
-                base.OnKilled( sender, e );
+                base.OnKilled(sender, e);
         }
 
-        public override void OnThink( double dt )
+        public override void OnThink(double dt)
         {
-            if ( IsRunning )
-            {
-                Stamina = Math.Max( 0, Stamina - (float) dt );
+            if (IsRunning) {
+                Stamina = Math.Max(0, Stamina - (float) dt);
 
-                if ( Stamina == 0.0f )
+                if (Stamina == 0.0f)
                     StopRunning();
-            }
-            else
-            {
-                if ( Stamina < MaxStamina )
-                {
-                    Stamina += (float) ( dt * RecoverRate );
+            } else {
+                if (Stamina < MaxStamina) {
+                    Stamina += (float) (dt * RecoverRate);
 
-                    if ( Stamina >= MaxStamina )
-                    {
+                    if (Stamina >= MaxStamina) {
                         Stamina = MaxStamina;
                         UpdateSpeed();
                     }
@@ -173,8 +169,7 @@ namespace Zombles.Scripts.Entities
 
         public void StartRunning()
         {
-            if ( CanRun )
-            {
+            if (CanRun) {
                 Stamina -= 0.5f;
                 IsRunning = true;
                 UpdateSpeed();
@@ -183,8 +178,7 @@ namespace Zombles.Scripts.Entities
 
         public void StopRunning()
         {
-            if ( IsRunning )
-            {
+            if (IsRunning) {
                 IsRunning = false;
                 UpdateSpeed();
             }
@@ -194,14 +188,12 @@ namespace Zombles.Scripts.Entities
         {
             base.OnSpawn();
 
-            if ( Health.IsAlive && Health.MaxHealth == 1 )
-            {
-                Health.SetMaximum( 100 );
+            if (Health.IsAlive && Health.MaxHealth == 1) {
+                Health.SetMaximum(100);
                 Health.Revive();
             }
 
-            if ( !myCounted )
-            {
+            if (!myCounted) {
                 ++Count;
                 myCounted = true;
             }

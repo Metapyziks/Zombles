@@ -17,18 +17,18 @@ namespace Zombles.Graphics
             Ents = new TextureManager("images", "ents");
         }
 
-        public readonly String[] Prefix;
+        public readonly ResourceLocator Prefix;
 
         internal Texture2DArray TexArray { get; private set; }
 
-        private static void DiscoverImages(IEnumerable<String> locator, List<String[]> tileNames)
+        private static void DiscoverImages(IEnumerable<String> locator, List<ResourceLocator> tileNames)
         {
             var locatorArr = locator.ToArray();
             foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
                 tileNames.Add(locator.Concat(new String[] { name }).ToArray());
             }
 
-            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
+            foreach (var name in Archive.GetAllNames<Archive>(locator)) {
                 DiscoverImages(locator.Concat(new String[] { name }), tileNames);
             }
         }
@@ -36,8 +36,8 @@ namespace Zombles.Graphics
         private TextureManager(params String[] filePrefix)
         {
             Prefix = filePrefix;
-            
-            var tileNames = new List<String[]>();
+
+            var tileNames = new List<ResourceLocator>();
             DiscoverImages(filePrefix, tileNames);
 
             tileNames.Sort();
@@ -45,7 +45,7 @@ namespace Zombles.Graphics
             TexArray = new Texture2DArray(8, 8, tileNames.ToArray());
         }
 
-        public ushort GetIndex(String[] namePrefix, params String[] nameSuffix)
+        public ushort GetIndex(ResourceLocator namePrefix, params String[] nameSuffix)
         {
             var joined = new String[namePrefix.Length + nameSuffix.Length];
             Array.Copy(namePrefix, joined, namePrefix.Length);

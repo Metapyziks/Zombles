@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using Zombles.Entities;
 using OpenTK;
+using ResourceLibrary;
 
 namespace Zombles.Geometry.Generation
 {
@@ -170,26 +171,26 @@ namespace Zombles.Geometry.Generation
             int innerWidth = width - borderLeft - borderRight;
             int innerHeight = height - borderTop - borderBottom;
 
-            Func<int, int, String> roadFunc = delegate( int tx, int ty )
+            Func<int, int, ResourceLocator> roadFunc = delegate(int tx, int ty)
             {
-                return rand.NextTexture( "floor_road_", 0, 4 );
+                return rand.NextTexture( "floor/road/", 0, 4 );
             };
 
-            Func<int, int, String> innerFunc = delegate( int tx, int ty )
+            Func<int, int, ResourceLocator> innerFunc = delegate(int tx, int ty)
             {
-                return "floor_concrete_0";
+                return "floor/concrete/0";
             };
 
             GenHelper.BuildFloor( tiles, 0, 0, width, height, 0, roadFunc );
             GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, innerWidth + 2, innerHeight + 2, 0, innerFunc );
 
             int texOffset = 0; bool horz = false;
-            Func<int, int, String> pavementFunc = delegate( int tx, int ty )
+            Func<int, int, ResourceLocator> pavementFunc = delegate(int tx, int ty)
             {
                 if ( ( horz && tx % 8 == 4 ) || ( !horz && ty % 8 == 4 ) )
-                    return "floor_pavement_" + ( texOffset + 2 ).ToString( "X" ).ToLower();
+                    return "floor/pavement/" + ( texOffset + 2 ).ToString( "X" ).ToLower();
 
-                return rand.NextTexture( "floor_pavement_", texOffset, texOffset + 2 );
+                return rand.NextTexture( "floor/pavement/", texOffset, texOffset + 2 );
             };
 
             if ( borderBottom > 1 )
@@ -214,13 +215,13 @@ namespace Zombles.Geometry.Generation
             }
 
             if( borderBottom > 1 && borderRight > 1 )
-                GenHelper.BuildFloor( tiles, innerRight, innerBottom, 1, 1, 0, "floor_pavement_3" );
+                GenHelper.BuildFloor( tiles, innerRight, innerBottom, 1, 1, 0, "floor/pavement/3" );
             if ( borderTop > 1 && borderRight > 1 )
-                GenHelper.BuildFloor( tiles, innerRight, innerTop - 1, 1, 1, 0, "floor_pavement_7" );
+                GenHelper.BuildFloor( tiles, innerRight, innerTop - 1, 1, 1, 0, "floor/pavement/7" );
             if ( borderTop > 1 && borderLeft > 1 )
-                GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, 1, 1, 0, "floor_pavement_b" );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerTop - 1, 1, 1, 0, "floor/pavement/b" );
             if ( borderBottom > 1 && borderLeft > 1 )
-                GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, 1, 1, 0, "floor_pavement_f" );
+                GenHelper.BuildFloor( tiles, innerLeft - 1, innerBottom, 1, 1, 0, "floor/pavement/f" );
 
             Generate( district, tiles, borderLeft, borderTop, borderRight, borderBottom, rand );
 
