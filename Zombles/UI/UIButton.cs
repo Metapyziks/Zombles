@@ -2,8 +2,6 @@ using System;
 
 using OpenTK;
 
-using ResourceLib;
-
 using Zombles.Graphics;
 using OpenTK.Graphics;
 
@@ -43,58 +41,57 @@ namespace Zombles.UI
             }
         }
 
-        public UIButton( float scale = 1.0f )
-            : this( new Vector2(), new Vector2(), scale )
+        public UIButton(float scale = 1.0f)
+            : this(new Vector2(), new Vector2(), scale)
         {
 
         }
 
-        public UIButton( Vector2 size, float scale = 1.0f )
-            : this( size, new Vector2(), scale )
+        public UIButton(Vector2 size, float scale = 1.0f)
+            : this(size, new Vector2(), scale)
         {
 
         }
 
-        public UIButton( Vector2 size, Vector2 position, float scale = 1.0f )
-            : base( size, position )
+        public UIButton(Vector2 size, Vector2 position, float scale = 1.0f)
+            : base(size, position)
         {
             Colour = Color4.White;
 
             PaddingLeft = PaddingTop = PaddingRight = PaddingBottom = 4.0f * scale;
 
-            myButtonSprite = new FrameSprite( Res.Get<BitmapTexture2D>( "images_gui_panels" ), scale )
-            {
-                SubrectSize = new Vector2( 16, 16 ),
-                SubrectOffset = new Vector2( 32, 16 ),
-                FrameTopLeftOffet = new Vector2( 4, 4 ),
-                FrameBottomRightOffet = new Vector2( 4, 4 ),
+            myButtonSprite = new FrameSprite(PanelsTexture, scale) {
+                SubrectSize = new Vector2(16, 16),
+                SubrectOffset = new Vector2(32, 16),
+                FrameTopLeftOffet = new Vector2(4, 4),
+                FrameBottomRightOffet = new Vector2(4, 4),
                 Size = size
             };
 
-            myLabel = new UILabel( Font.Large, scale );
-            
-            AddChild( myLabel );
+            myLabel = new UILabel(Font.Large, scale);
+
+            AddChild(myLabel);
         }
 
         private void RepositionText()
         {
-            myLabel.Top = ( InnerHeight - myLabel.Height ) / 2.0f;
+            myLabel.Top = (InnerHeight - myLabel.Height) / 2.0f;
 
-            if ( CentreText )
-                myLabel.Left = ( InnerWidth - myLabel.Width ) / 2.0f;
+            if (CentreText)
+                myLabel.Left = (InnerWidth - myLabel.Width) / 2.0f;
             else
                 myLabel.Left = 0.0f;
         }
 
-        protected override void OnMouseEnter( Vector2 mousePos )
+        protected override void OnMouseEnter(Vector2 mousePos)
         {
-            if ( IsVisible && IsEnabled )
+            if (IsVisible && IsEnabled)
                 myButtonSprite.SubrectLeft = 48.0f;
         }
 
-        protected override void OnMouseLeave( Vector2 mousePos )
+        protected override void OnMouseLeave(Vector2 mousePos)
         {
-            if ( IsVisible && IsEnabled )
+            if (IsVisible && IsEnabled)
                 myButtonSprite.SubrectLeft = 32.0f;
         }
 
@@ -103,11 +100,11 @@ namespace Zombles.UI
             myButtonSprite.SubrectLeft = 32.0f;
         }
 
-        protected override void OnRender( SpriteShader shader, Vector2 renderPosition = new Vector2() )
+        protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
             myButtonSprite.Position = renderPosition;
-            myButtonSprite.Colour = ( IsEnabled ? Colour : DisabledColour );
-            myButtonSprite.Render( shader );
+            myButtonSprite.Colour = (IsEnabled ? Colour : DisabledColour);
+            myButtonSprite.Render(shader);
         }
     }
 }

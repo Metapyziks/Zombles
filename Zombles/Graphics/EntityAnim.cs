@@ -2,34 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Newtonsoft.Json.Linq;
 using OpenTK;
-
-using ResourceLib;
+using ResourceLibrary;
 
 namespace Zombles.Graphics
 {
     public class EntityAnim
     {
-        private static Dictionary<String, EntityAnim> stFound;
+        private static Dictionary<String, EntityAnim> stFound = new Dictionary<string, EntityAnim>();
 
-        private static void FindAll()
+        public static EntityAnim GetAnim(params String[] nameLocator)
         {
-            stFound = new Dictionary<string, EntityAnim>();
+            var name = String.Join(",", nameLocator);
 
-            foreach ( InfoObject obj in Info.GetAll( "anim" ) )
-                stFound.Add( obj.Name, new EntityAnim( obj ) );
+            if (!stFound.ContainsKey(name)) {
+                stFound.Add(name, new EntityAnim(Archive.Get<JObject>(nameLocator)));
+            }
+
+            return stFound[name];
         }
 
-        public static EntityAnim GetAnim( String name )
-        {
-            if ( stFound == null )
-                FindAll();
-
-            return stFound[ name ];
-        }
-
-        public readonly String Name;
         public readonly double Frequency;
 
         public readonly Vector2 Size;
@@ -37,51 +30,44 @@ namespace Zombles.Graphics
         public readonly int FrameCount;
         public readonly bool IsDirectional;
 
-        public readonly String[,] FrameNames;
         public readonly ushort[,] FrameIndices;
 
-        private EntityAnim( InfoObject obj )
+        private EntityAnim(JObject obj)
         {
-            Name = obj.Name;
+            FrameCount = (int) obj["frame count"];
+            Frequency = (double) obj["frequency"];
 
-            FrameCount = (int) obj[ "frame count" ].AsInteger();
-            Frequency = obj[ "frequency" ].AsDouble();
-
-            InfoObject size = obj[ "size" ] as InfoObject;
+            var size = obj["size"];
             Size = new Vector2(
-                size[ "width" ].AsInteger() / 8.0f,
-                size[ "height" ].AsInteger() / 8.0f
+                (int) size["width"] / 8.0f,
+                (int) size["height"] / 8.0f
             );
 
-            IsDirectional = obj[ "directional" ].AsBoolean();
+            IsDirectional = (bool) obj["directional"];
 
-            if ( IsDirectional )
-            {
-                FrameNames = new string[ 4, FrameCount ];
-                FrameIndices = new ushort[ 4, FrameCount ];
+            var framePrefix = obj["frame prefix"].Select(x => (String) x).ToArray();
+            
+            if (IsDirectional) {
+                var frameNames = new string[4, FrameCount];
+                FrameIndices = new ushort[4, FrameCount];
 
-                InfoValue[] dirs = obj[ "frames" ].AsArray();
+                var dirs = (JArray) obj["frames"];
 
-                for ( int i = 0; i < 4; ++i )
-                {
-                    InfoValue[] frames = dirs[ i ].AsArray();
-                    for ( int f = 0; f < FrameCount; ++f )
-                    {
-                        FrameNames[ i, f ] = frames[ f ].AsString();
-                        FrameIndices[ i, f ] = TextureManager.Ents.GetIndex( FrameNames[ i, f ] );
+                for (int i = 0; i < 4; ++i) {
+                    var frames = (JArray) dirs[i];
+                    for (int f = 0; f < FrameCount; ++f) {
+                        frameNames[i, f] = (String) frames[f];
+                        FrameIndices[i, f] = TextureManager.Ents.GetIndex(framePrefix, frameNames[i, f]);
                     }
                 }
-            }
-            else
-            {
-                FrameNames = new string[ 1, FrameCount ];
-                FrameIndices = new ushort[ 1, FrameCount ];
+            } else {
+                var frameNames = new string[FrameCount];
+                FrameIndices = new ushort[1, FrameCount];
 
-                InfoValue[] frames = obj[ "frames" ].AsArray();
-                for ( int f = 0; f < FrameCount; ++f )
-                {
-                    FrameNames[ 0, f ] = frames[ f ].AsString();
-                    FrameIndices[ 0, f ] = TextureManager.Ents.GetIndex( FrameNames[ 0, f ] );
+                var frames = (JArray) obj["frames"];
+                for (int f = 0; f < FrameCount; ++f) {
+                    frameNames[f] = (String) frames[f];
+                    FrameIndices[0, f] = TextureManager.Ents.GetIndex(framePrefix, frameNames[f]);
                 }
             }
         }

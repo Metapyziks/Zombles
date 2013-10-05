@@ -2,7 +2,7 @@ using System;
 
 using OpenTK;
 
-using ResourceLib;
+using ResourceLibrary;
 
 using Zombles.Graphics;
 
@@ -46,20 +46,20 @@ namespace Zombles.UI
             }
         }
 
-        public UIWindow( float scale = 1.0f )
-            : this( new Vector2(), new Vector2(), scale )
+        public UIWindow(float scale = 1.0f)
+            : this(new Vector2(), new Vector2(), scale)
         {
 
         }
 
-        public UIWindow( Vector2 size, float scale = 1.0f )
-            : this( size, new Vector2(), scale )
+        public UIWindow(Vector2 size, float scale = 1.0f)
+            : this(size, new Vector2(), scale)
         {
 
         }
 
-        public UIWindow( Vector2 size, Vector2 position, float scale = 1.0f )
-            : base( size, position )
+        public UIWindow(Vector2 size, Vector2 position, float scale = 1.0f)
+            : base(size, position)
         {
             myScale = scale;
 
@@ -68,31 +68,28 @@ namespace Zombles.UI
             PaddingRight = 4.0f * scale;
             PaddingBottom = 4.0f * scale;
 
-            myFrameSprite = new FrameSprite( Res.Get<BitmapTexture2D>( "images_gui_panels" ), scale )
-            {
-                SubrectSize = new Vector2( 32, 32 ),
-                SubrectOffset = new Vector2( 0, 0 ),
-                FrameTopLeftOffet = new Vector2( 4, 20 ),
-                FrameBottomRightOffet = new Vector2( 4, 4 ),
+            myFrameSprite = new FrameSprite(PanelsTexture, scale) {
+                SubrectSize = new Vector2(32, 32),
+                SubrectOffset = new Vector2(0, 0),
+                FrameTopLeftOffet = new Vector2(4, 20),
+                FrameBottomRightOffet = new Vector2(4, 4),
                 Size = size
             };
 
-            myTitleText = new UILabel( Font.Large, scale )
-            {
-                Position = new Vector2( 6 * scale - PaddingLeft, 4 * scale - PaddingTop ),
+            myTitleText = new UILabel(Font.Large, scale) {
+                Position = new Vector2(6 * scale - PaddingLeft, 4 * scale - PaddingTop),
                 IsEnabled = false
             };
 
-            AddChild( myTitleText );
+            AddChild(myTitleText);
 
-            myCloseButton = new UIWindowCloseButton( new Vector2( size.X - 18.0f * scale - PaddingLeft, 2.0f * scale - PaddingTop ), scale );
+            myCloseButton = new UIWindowCloseButton(new Vector2(size.X - 18.0f * scale - PaddingLeft, 2.0f * scale - PaddingTop), scale);
 
-            myCloseButton.Click += delegate( object sender, OpenTK.Input.MouseButtonEventArgs e )
-            {
+            myCloseButton.Click += delegate(object sender, OpenTK.Input.MouseButtonEventArgs e) {
                 Close();
             };
 
-            AddChild( myCloseButton );
+            AddChild(myCloseButton);
 
             CanBringToFront = true;
             CanClose = true;
@@ -105,8 +102,8 @@ namespace Zombles.UI
             IsVisible = false;
 
             OnClose();
-            if ( Closed != null )
-                Closed( this, new EventArgs() );
+            if (Closed != null)
+                Closed(this, new EventArgs());
         }
 
         public event EventHandler Closed;
@@ -116,56 +113,53 @@ namespace Zombles.UI
 
         }
 
-        protected override Vector2 OnSetSize( Vector2 newSize )
+        protected override Vector2 OnSetSize(Vector2 newSize)
         {
             myFrameSprite.Size = newSize;
             myCloseButton.Left = newSize.X - 18.0f * myScale - PaddingLeft;
 
-            return base.OnSetSize( newSize );
+            return base.OnSetSize(newSize);
         }
 
-        protected override void OnMouseDown( Vector2 mousePos, OpenTK.Input.MouseButton mouseButton )
+        protected override void OnMouseDown(Vector2 mousePos, OpenTK.Input.MouseButton mouseButton)
         {
-            if ( CanDrag && mousePos.Y < 20 * myScale )
-            {
+            if (CanDrag && mousePos.Y < 20 * myScale) {
                 myDragging = true;
                 myDragPos = mousePos;
             }
         }
 
-        protected override void OnMouseUp( Vector2 mousePos, OpenTK.Input.MouseButton mouseButton )
+        protected override void OnMouseUp(Vector2 mousePos, OpenTK.Input.MouseButton mouseButton)
         {
             myDragging = false;
         }
 
-        protected override void OnMouseMove( Vector2 mousePos )
+        protected override void OnMouseMove(Vector2 mousePos)
         {
-            if ( myDragging )
-            {
-                if ( !CanDrag )
-                {
+            if (myDragging) {
+                if (!CanDrag) {
                     myDragging = false;
                     return;
                 }
 
                 Position += mousePos - myDragPos;
 
-                if ( Left < 0 )
+                if (Left < 0)
                     Left = 0;
-                if ( Top < 0 )
+                if (Top < 0)
                     Top = 0;
-                if ( Right > Parent.InnerWidth )
+                if (Right > Parent.InnerWidth)
                     Right = Parent.InnerWidth;
-                if ( Bottom > Parent.InnerHeight )
+                if (Bottom > Parent.InnerHeight)
                     Bottom = Parent.InnerHeight;
             }
         }
 
-        protected override void OnRender( SpriteShader shader, Vector2 renderPosition = new Vector2() )
+        protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
             myFrameSprite.Position = renderPosition;
-            myFrameSprite.Colour = ( IsEnabled ? OpenTK.Graphics.Color4.White : DisabledColour );
-            myFrameSprite.Render( shader );
+            myFrameSprite.Colour = (IsEnabled ? OpenTK.Graphics.Color4.White : DisabledColour);
+            myFrameSprite.Render(shader);
         }
     }
 }

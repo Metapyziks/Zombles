@@ -6,12 +6,35 @@ using System.Drawing;
 using OpenTK;
 
 using Zombles.Geometry;
+using ResourceLibrary;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Zombles
 {
     public static class Tools
     {
         public static readonly Random Random = new Random();
+        
+        [ResourceTypeRegistration]
+        public static void RegisterResourceTypes()
+        {
+            Archive.Register<JObject>(ResourceFormat.Compressed, SaveJObject, LoadJObject,
+                ".json");
+        }
+
+        public static void SaveJObject(Stream stream, JObject resource)
+        {
+            var writer = new JsonTextWriter(new StreamWriter(stream));
+            resource.WriteTo(writer);
+            writer.Flush();
+        }
+
+        public static JObject LoadJObject(Stream stream)
+        {
+            var reader = new JsonTextReader(new StreamReader(stream));
+            return JObject.Load(reader);
+        }
 
         public static bool DoesExtend( this Type self, Type type )
         {

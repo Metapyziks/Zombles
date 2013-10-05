@@ -1,0 +1,18 @@
+{
+    "frame count" : 4,
+    "frequency" : 0.5,
+    
+    "size" : { "width" : 4, "height" : 8 },
+    
+    "directional" : true,
+
+    "frame prefix" : [ "images", "ents", "zombie", "walk" ],
+    
+    "frames" :
+    [
+        [ "w0", "w1", "w2", "w3" ],
+        [ "n0", "n1", "n2", "n3" ],
+        [ "e0", "e1", "e2", "e3" ],
+        [ "s0", "s1", "s2", "s3" ]
+    ]
+}

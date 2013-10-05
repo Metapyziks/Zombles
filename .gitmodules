@@ -1,0 +1,3 @@
+[submodule "ResourceLibrary"]
+	path = ResourceLibrary
+	url = git@github.com:Metapyziks/ResourceLibrary.git

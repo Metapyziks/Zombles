@@ -1,0 +1,12 @@
+{
+    "frame count" : 1,
+    "frequency" : 1.0,
+    
+    "size" : { "width" : 8, "height" : 2 },
+    
+    "directional" : false,
+
+    "frame prefix" : [ "images", "ents", "zombie" ],
+    
+    "frames" : [ "dead" ]
+}

@@ -8,8 +8,6 @@ using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
 
-using ResourceLib;
-
 using Zombles.UI;
 using Zombles.Graphics;
 using Zombles.Entities;

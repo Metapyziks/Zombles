@@ -14,3 +14,4 @@ Content/RSABuilder.vshost.exe.manifest
 *Thumbs.db
 *.pdb
 pingme.txt
+packages/

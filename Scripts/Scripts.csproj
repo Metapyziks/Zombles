@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Zombles.Scripts</RootNamespace>
     <AssemblyName>Scripts</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -70,26 +73,31 @@
     <Compile Include="UI\UIInfectionDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ResourceLib\ResourceLib.csproj">
-      <Project>{E705181E-ECBC-45A8-BC6C-144C79ACA58A}</Project>
-      <Name>ResourceLib</Name>
+    <ProjectReference Include="..\ResourceLibrary\ResourceLibrary.csproj">
+      <Project>{23056aef-0a9a-478a-8581-3c4b452fd940}</Project>
+      <Name>ResourceLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Zombles\Zombles.csproj">
-      <Project>{4DDB57AE-D369-489D-B354-15B93902585D}</Project>
+      <Project>{4ddb57ae-d369-489d-b354-15b93902585d}</Project>
       <Name>Zombles</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
-md "$(SolutionDir)Content\scripts\scripts"
+    <PostBuildEvent>md "$(SolutionDir)Content\scripts\scripts"
 xcopy "$(ProjectDir)*.cs" "$(SolutionDir)Content\scripts\scripts\" /s /c /q /i /y
+
+rmdir "$(SolutionDir)Content\scripts\scripts\obj" /s /q
 rmdir "$(SolutionDir)Content\scripts\scripts\Properties" /s /q
+
 cd "$(SolutionDir)Content"
-RSABuilder "$(SolutionDir)Content\scripts"
-xcopy "sh_scripts.rsa" "$(SolutionDir)bin\$(ConfigurationName)\Data\" /s /c /q /i /y
-cd "$(TargetDir)"</PostBuildEvent>
+buildarchive "$(SolutionDir)Content\scripts"
+xcopy "sh_scripts.dat" "$(SolutionDir)bin\$(ConfigurationName)\Data\" /s /c /q /i /y
+cd "$(TargetDir)"
+
+rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

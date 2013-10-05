@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
-using ResourceLib;
+using ResourceLibrary;
 
 namespace Zombles.Graphics
 {
@@ -12,40 +13,55 @@ namespace Zombles.Graphics
 
         public static void Initialize()
         {
-            Tiles = new TextureManager( "images_tiles_" );
-            Ents = new TextureManager( "images_ents_" );
+            Tiles = new TextureManager("images", "tiles");
+            Ents = new TextureManager("images", "ents");
         }
 
-        public readonly String Prefix;
+        public readonly String[] Prefix;
 
         internal Texture2DArray TexArray { get; private set; }
 
-        private TextureManager( String filePrefix )
+        private static void DiscoverImages(IEnumerable<String> locator, List<String[]> tileNames)
+        {
+            var locatorArr = locator.ToArray();
+            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
+                tileNames.Add(locator.Concat(new String[] { name }).ToArray());
+            }
+
+            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
+                DiscoverImages(locator.Concat(new String[] { name }), tileNames);
+            }
+        }
+
+        private TextureManager(params String[] filePrefix)
         {
             Prefix = filePrefix;
-
-            KeyValuePair<String, BitmapTexture2D>[] textures = Res.GetAll<BitmapTexture2D>();
-
-            List<String> tileNames = new List<string>();
-
-            foreach ( KeyValuePair<String, BitmapTexture2D> keyVal in textures )
-                if ( keyVal.Key.StartsWith( Prefix ) && keyVal.Value.Width == 8 && keyVal.Value.Height == 8 )
-                    tileNames.Add( keyVal.Key );
+            
+            var tileNames = new List<String[]>();
+            DiscoverImages(filePrefix, tileNames);
 
             tileNames.Sort();
 
-            TexArray = new Texture2DArray( 8, 8, tileNames.ToArray() );
+            TexArray = new Texture2DArray(8, 8, tileNames.ToArray());
         }
 
-        public ushort GetIndex( String name )
+        public ushort GetIndex(String[] namePrefix, params String[] nameSuffix)
         {
-            if ( name == "" || name == null )
+            var joined = new String[namePrefix.Length + nameSuffix.Length];
+            Array.Copy(namePrefix, joined, namePrefix.Length);
+            Array.Copy(nameSuffix, 0, joined, namePrefix.Length, nameSuffix.Length);
+            return GetIndex(joined);
+        }
+
+        public ushort GetIndex(params String[] name)
+        {
+            if (name.Length == 0)
                 return 0xffff;
 
-            if ( !name.StartsWith( Prefix ) )
-                name = Prefix + name;
+            if (!name.Take(Prefix.Length).Zip(Prefix, (x, y) => x == y).All(x => x))
+                name = Prefix.Concat(name).ToArray();
 
-            return TexArray.GetTextureIndex( name );
+            return TexArray.GetTextureIndex(name);
         }
     }
 }

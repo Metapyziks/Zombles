@@ -7,12 +7,13 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-using ResourceLib;
+using ResourceLibrary;
 
 using Zombles.Graphics;
 using Zombles.UI;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
+using System.Reflection;
 
 namespace Zombles
 {
@@ -35,7 +36,7 @@ namespace Zombles
         }
 
         public ZomblesGame()
-            : base( 800, 600, new GraphicsMode( new ColorFormat( 8, 8, 8, 8 ), 16, 0 ), "Zombles" )
+            : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16, 0), "Zombles")
         {
             VSync = VSyncMode.Off;
             // Context.SwapInterval = 1;
@@ -45,26 +46,25 @@ namespace Zombles
             CurrentScene = null;
         }
 
-        protected override void OnLoad( EventArgs e )
+        protected override void OnLoad(EventArgs e)
         {
-            Res.RegisterManager<RScriptManager>();
-            Res.RegisterManager<RTexture2DManager>();
-
             String dataPath = "Data" + Path.DirectorySeparatorChar;
             String loadorderpath = dataPath + "loadorder.txt";
 
-            if ( !File.Exists( loadorderpath ) )
+            if (!File.Exists(loadorderpath))
                 return;
 
-            foreach ( String line in File.ReadAllLines( loadorderpath ) )
-                if ( line.Length > 0 && File.Exists( dataPath + line ) )
-                    Res.MountArchive( Res.LoadArchive( dataPath + line ) );
+            Archive.RegisterAll(Assembly.GetExecutingAssembly());
+
+            foreach (String line in File.ReadAllLines(loadorderpath))
+                if (line.Length > 0 && File.Exists(dataPath + line))
+                    Archive.FromFile(dataPath + line).Mount();
 
             TextureManager.Initialize();
-            ScriptManager.Compile();
+            ScriptManager.Initialize();
             Plugin.Initialize();
 
-            SpriteShader = new SpriteShader( Width, Height );
+            SpriteShader = new SpriteShader(Width, Height);
 
             Mouse.Move += OnMouseMove;
             Mouse.ButtonUp += OnMouseButtonUp;
@@ -79,100 +79,99 @@ namespace Zombles
 
             mySpareTime = 0.0;
 
-            SetScene( ScriptManager.CreateInstance<Scene>( "Zombles.Scripts.GameScene", this ) );
+            SetScene(ScriptManager.CreateInstance<Scene>("Zombles.Scripts.GameScene", this));
         }
 
-        protected override void OnResize( EventArgs e )
+        protected override void OnResize(EventArgs e)
         {
-            SpriteShader.SetScreenSize( Width, Height );
+            SpriteShader.SetScreenSize(Width, Height);
 
             CurrentScene.OnResize();
 
-            GL.Viewport( ClientRectangle );
+            GL.Viewport(ClientRectangle);
         }
 
-        public static void SetScene( Scene newScene )
+        public static void SetScene(Scene newScene)
         {
-            if ( CurrentScene != null )
+            if (CurrentScene != null)
                 CurrentScene.OnExit();
             CurrentScene = newScene;
-            if ( CurrentScene != null )
-            {
-                CurrentScene.OnEnter( CurrentScene.FirstTime );
+            if (CurrentScene != null) {
+                CurrentScene.OnEnter(CurrentScene.FirstTime);
                 CurrentScene.FirstTime = false;
             }
         }
 
-        protected override void OnUpdateFrame( FrameEventArgs e )
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            if ( myThinkTimer.Elapsed.TotalSeconds + mySpareTime < ThinkPeriod )
+            if (myThinkTimer.Elapsed.TotalSeconds + mySpareTime < ThinkPeriod)
                 return;
 
             mySpareTime += myThinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
 
             myThinkTimer.Restart();
 
-            if ( CurrentScene != null )
-                CurrentScene.OnUpdateFrame( new FrameEventArgs( ThinkPeriod ) );
+            if (CurrentScene != null)
+                CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
 
-            Plugin.Think( ThinkPeriod );
+            Plugin.Think(ThinkPeriod);
         }
 
-        protected override void OnRenderFrame( FrameEventArgs e )
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            if ( CurrentScene != null )
-                CurrentScene.OnRenderFrame( e );
+            if (CurrentScene != null)
+                CurrentScene.OnRenderFrame(e);
 
             SwapBuffers();
         }
 
-        private void OnMouseMove( object sender, MouseMoveEventArgs e )
+        private void OnMouseMove(object sender, MouseMoveEventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.TriggerMouseMove( e );
+            if (CurrentScene != null)
+                CurrentScene.TriggerMouseMove(e);
         }
 
-        private void OnMouseWheelChanged( object sender, MouseWheelEventArgs e )
+        private void OnMouseWheelChanged(object sender, MouseWheelEventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.OnMouseWheelChanged( e );
+            if (CurrentScene != null)
+                CurrentScene.OnMouseWheelChanged(e);
         }
 
-        private void OnMouseButtonUp( object sender, MouseButtonEventArgs e )
+        private void OnMouseButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.TriggerMouseButtonUp( e );
+            if (CurrentScene != null)
+                CurrentScene.TriggerMouseButtonUp(e);
         }
 
-        private void OnMouseButtonDown( object sender, MouseButtonEventArgs e )
+        private void OnMouseButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.TriggerMouseButtonDown( e );
+            if (CurrentScene != null)
+                CurrentScene.TriggerMouseButtonDown(e);
         }
 
-        protected override void OnKeyPress( KeyPressEventArgs e )
+        protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.OnKeyPress( e );
+            if (CurrentScene != null)
+                CurrentScene.OnKeyPress(e);
         }
 
-        protected override void OnMouseLeave( EventArgs e )
+        protected override void OnMouseLeave(EventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.OnMouseLeave( e );
+            if (CurrentScene != null)
+                CurrentScene.OnMouseLeave(e);
         }
 
-        protected override void OnMouseEnter( EventArgs e )
+        protected override void OnMouseEnter(EventArgs e)
         {
-            if ( CurrentScene != null )
-                CurrentScene.OnMouseEnter( e );
+            if (CurrentScene != null)
+                CurrentScene.OnMouseEnter(e);
         }
 
         public override void Dispose()
         {
-            if ( CurrentScene != null )
+            if (CurrentScene != null)
                 CurrentScene.Dispose();
 
             base.Dispose();

@@ -1,0 +1,18 @@
+{
+    "frame count" : 1,
+    "frequency" : 1.0,
+    
+    "size" : { "width" : 4, "height" : 8 },
+    
+    "directional" : true,
+
+    "frame prefix" : [ "images", "ents", "human", "stand" ],
+    
+    "frames" :
+    [
+        [ "w" ],
+        [ "n" ],
+        [ "e" ],
+        [ "s" ]
+    ]
+}

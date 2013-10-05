@@ -1,9 +1,7 @@
 using System;
-
+using System.Drawing;
 using OpenTK;
-
-using ResourceLib;
-
+using ResourceLibrary;
 using Zombles;
 
 namespace Zombles.Graphics
@@ -17,8 +15,8 @@ namespace Zombles.Graphics
         {
             get
             {
-                if ( stFontDefault == null )
-                    stFontDefault = new Font( "images_gui_fontdefault" );
+                if (stFontDefault == null)
+                    stFontDefault = new Font("images", "gui", "fontdefault");
                 return stFontDefault;
             }
         }
@@ -26,8 +24,8 @@ namespace Zombles.Graphics
         {
             get
             {
-                if ( stFontLarge == null )
-                    stFontLarge = new Font( "images_gui_fontlarge" );
+                if (stFontLarge == null)
+                    stFontLarge = new Font("images", "gui", "fontlarge");
                 return stFontLarge;
             }
         }
@@ -51,19 +49,19 @@ namespace Zombles.Graphics
                 return (int) CharSize.Y;
             }
         }
-        
-        public Font( String charMap )
-        {
-            Texture = Res.Get<BitmapTexture2D>( charMap );
 
-            CharSize = new Vector2( Texture.Width / 16, Texture.Height / 16 );
+        public Font(params String[] charMapLocator)
+        {
+            Texture = new BitmapTexture2D(Archive.Get<Bitmap>(charMapLocator));
+
+            CharSize = new Vector2(Texture.Width / 16, Texture.Height / 16);
         }
 
-        public Vector2 GetCharOffset( Char character )
+        public Vector2 GetCharOffset(Char character)
         {
             int id = (int) character;
 
-            return new Vector2( ( id % 16 ) * CharWidth, ( id / 16 ) * CharHeight );
+            return new Vector2((id % 16) * CharWidth, (id / 16) * CharHeight);
         }
     }
 
@@ -108,13 +106,13 @@ namespace Zombles.Graphics
         }
 
         public Text()
-            : this( Font.Default )
+            : this(Font.Default)
         {
 
         }
 
-        public Text( Font font, float scale = 1.0f )
-            : base( font.Texture, scale )
+        public Text(Font font, float scale = 1.0f)
+            : base(font.Texture, scale)
         {
             myText = "";
             myFont = font;
@@ -122,11 +120,11 @@ namespace Zombles.Graphics
 
         protected override float[] FindVerts()
         {
-            String text = myText.ApplyWordWrap( Font.CharWidth * Scale.X, WrapWidth );
+            String text = myText.ApplyWordWrap(Font.CharWidth * Scale.X, WrapWidth);
 
             int characters = text.Length;
 
-            float[,] mat = new float[ , ]
+            float[,] mat = new float[,]
             {
                 { (float) Math.Cos( Rotation ) * Scale.X, -(float) Math.Sin( Rotation ) * Scale.Y },
                 { (float) Math.Sin( Rotation ) * Scale.X,  (float) Math.Cos( Rotation ) * Scale.Y }
@@ -134,39 +132,36 @@ namespace Zombles.Graphics
 
             int quads = 0;
 
-            for ( int i = 0; i < characters; ++i )
-                if ( !char.IsWhiteSpace( text[ i ] ) )
+            for (int i = 0; i < characters; ++i)
+                if (!char.IsWhiteSpace(text[i]))
                     ++quads;
 
-            float[] verts = new float[ quads * 8 * 4 ];
+            float[] verts = new float[quads * 8 * 4];
 
-            for ( int i = 0, index = 0, x = 0, y = 0; i < characters; ++i )
-                GetCharVerts( text[ i ], verts, ref index, mat, ref x, ref y );
+            for (int i = 0, index = 0, x = 0, y = 0; i < characters; ++i)
+                GetCharVerts(text[i], verts, ref index, mat, ref x, ref y);
 
             return verts;
         }
 
-        private void GetCharVerts( char character, float[] verts, ref int index, float[ , ] rotationMat, ref int x, ref int y )
+        private void GetCharVerts(char character, float[] verts, ref int index, float[,] rotationMat, ref int x, ref int y)
         {
-            if ( char.IsWhiteSpace( character ) )
-            {
-                if ( character == '\t' )
+            if (char.IsWhiteSpace(character)) {
+                if (character == '\t')
                     x += 4;
-                else if ( character == '\n' )
-                {
+                else if (character == '\n') {
                     y += 1;
                     x = 0;
-                }
-                else
+                } else
                     x += 1;
 
                 return;
             }
 
-            Vector2 subMin = myFont.GetCharOffset( character );
+            Vector2 subMin = myFont.GetCharOffset(character);
 
-            Vector2 tMin = Texture.GetCoords( subMin.X, subMin.Y );
-            Vector2 tMax = Texture.GetCoords( subMin.X + myFont.CharWidth, subMin.Y + myFont.CharHeight );
+            Vector2 tMin = Texture.GetCoords(subMin.X, subMin.Y);
+            Vector2 tMax = Texture.GetCoords(subMin.X + myFont.CharWidth, subMin.Y + myFont.CharHeight);
             float xMin = tMin.X;
             float yMin = tMin.Y;
             float xMax = tMax.X;
@@ -175,7 +170,7 @@ namespace Zombles.Graphics
             float minX = x * myFont.CharWidth;
             float minY = y * myFont.CharHeight;
 
-            float[,] pos = new float[ , ]
+            float[,] pos = new float[,]
             {
                 { minX, minY },
                 { minX + myFont.CharWidth, minY },
@@ -183,21 +178,20 @@ namespace Zombles.Graphics
                 { minX, minY + myFont.CharHeight }
             };
 
-            for ( int i = 0; i < 4; ++i )
-            {
-                float xp = pos[ i, 0 ];
-                float yp = pos[ i, 1 ];
-                pos[ i, 0 ] = X + rotationMat[ 0, 0 ] * xp + rotationMat[ 0, 1 ] * yp;
-                pos[ i, 1 ] = Y + rotationMat[ 1, 0 ] * xp + rotationMat[ 1, 1 ] * yp;
+            for (int i = 0; i < 4; ++i) {
+                float xp = pos[i, 0];
+                float yp = pos[i, 1];
+                pos[i, 0] = X + rotationMat[0, 0] * xp + rotationMat[0, 1] * yp;
+                pos[i, 1] = Y + rotationMat[1, 0] * xp + rotationMat[1, 1] * yp;
             }
 
-            Array.Copy( new float[]
+            Array.Copy(new float[]
             {
                 pos[ 0, 0 ], pos[ 0, 1 ], xMin, yMin, Colour.R, Colour.G, Colour.B, Colour.A,
                 pos[ 1, 0 ], pos[ 1, 1 ], xMax, yMin, Colour.R, Colour.G, Colour.B, Colour.A,
                 pos[ 2, 0 ], pos[ 2, 1 ], xMax, yMax, Colour.R, Colour.G, Colour.B, Colour.A,
                 pos[ 3, 0 ], pos[ 3, 1 ], xMin, yMax, Colour.R, Colour.G, Colour.B, Colour.A,
-            }, 0, verts, index, 8 * 4 );
+            }, 0, verts, index, 8 * 4);
 
             index += 8 * 4;
             x += 1;
