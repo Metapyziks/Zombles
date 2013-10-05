@@ -28,8 +28,9 @@ namespace Zombles.Graphics
             _names = textureLocators;
             _textures = new BitmapTexture2D[textureLocators.Length];
 
-            for (int i = 0; i < textureLocators.Length; ++i)
+            for (int i = 0; i < textureLocators.Length; ++i) {
                 _textures[i] = new BitmapTexture2D(Archive.Get<Bitmap>(_names[i]));
+            }
 
             Count = 1;
             while (Count < textureLocators.Length)

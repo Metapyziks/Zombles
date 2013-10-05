@@ -22,26 +22,12 @@ namespace Zombles.Graphics
 
         internal Texture2DArray TexArray { get; private set; }
 
-        private static void DiscoverImages(IEnumerable<String> locator, List<ResourceLocator> tileNames)
-        {
-            var locatorArr = locator.ToArray();
-            foreach (var name in Archive.GetAllNames<Bitmap>(locator)) {
-                tileNames.Add(locator.Concat(new String[] { name }).ToArray());
-            }
-
-            foreach (var name in Archive.GetAllNames<Archive>(locator)) {
-                DiscoverImages(locator.Concat(new String[] { name }), tileNames);
-            }
-        }
-
         private TextureManager(params String[] filePrefix)
         {
             Prefix = filePrefix;
 
-            var tileNames = new List<ResourceLocator>();
-            DiscoverImages(filePrefix, tileNames);
-
-            TexArray = new Texture2DArray(8, 8, tileNames.OrderBy(x => String.Join("/", x.Parts)).ToArray());
+            var tileNames = Archive.FindAll<Bitmap>(filePrefix, true);
+            TexArray = new Texture2DArray(8, 8, tileNames.OrderBy(x => x.ToString()).ToArray());
         }
 
         public ushort GetIndex(ResourceLocator namePrefix, params String[] nameSuffix)

@@ -41,98 +41,92 @@ namespace Zombles.Entities
             get { return Entity.Position.Z + Offset.Y + Size.Y; }
         }
 
-        public Collision( Entity ent )
-            : base( ent )
+        public Collision(Entity ent)
+            : base(ent)
         {
             Model = CollisionModel.None;
         }
 
-        public Collision SetDimentions( float width, float height )
+        public Collision SetDimentions(float width, float height)
         {
-            Size = new Vector2( width, height );
-            Offset = new Vector2( -width / 2.0f, -height / 2.0f );
+            Size = new Vector2(width, height);
+            Offset = new Vector2(-width / 2.0f, -height / 2.0f);
             return this;
         }
 
-        public Collision SetDimentions( float width, float height, float offsx, float offsy )
+        public Collision SetDimentions(float width, float height, float offsx, float offsy)
         {
-            Size = new Vector2( width, height );
-            Offset = new Vector2( offsx, offsy );
+            Size = new Vector2(width, height);
+            Offset = new Vector2(offsx, offsy);
             return this;
         }
 
-        public Vector2 TryMove( Vector2 move )
+        public Vector2 TryMove(Vector2 move)
         {
-            if ( Model == CollisionModel.None )
+            if (Model == CollisionModel.None)
                 return move;
 
-            if ( ( Model & CollisionModel.Entity ) != 0 )
-            {
-                NearbyEntityEnumerator iter = new NearbyEntityEnumerator( Entity.City,
-                    new Vector2( Entity.Position.X, Entity.Position.Z ), 2.0f + move.Length );
+            if ((Model & CollisionModel.Entity) != 0) {
+                NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.City,
+                    new Vector2(Entity.Position.X, Entity.Position.Z), 2.0f + move.Length);
 
-                while ( iter.MoveNext() )
-                    move = TryMove( iter.Current, move );
+                while (iter.MoveNext())
+                    move = TryMove(iter.Current, move);
             }
 
             float xm = 1.0f, ym = 1.0f;
 
             float error = 1.0f / 32.0f;
 
-            if ( move.X != 0.0f )
-            {
+            if (move.X != 0.0f) {
                 float dydx = move.Y / move.X;
 
                 float startX = move.X > 0.0f ? Right : Left;
-                int startIX = (int) ( move.X > 0.0f ? Math.Ceiling( startX ) : Math.Floor( startX ) );
-                float y = Position.Z + ( startIX - startX ) * dydx;
+                int startIX = (int) (move.X > 0.0f ? Math.Ceiling(startX) : Math.Floor(startX));
+                float y = Position.Z + (startIX - startX) * dydx;
 
-                int xa = Math.Sign( move.X );
-                int wxa = ( move.X > 0.0f ? -1 : 0 );
-                int sxa = ( move.X > 0.0f ? 0 : -1 );
-                int xe = (int) ( move.X > 0.0f ? Math.Ceiling( startX + move.X ) : Math.Floor( startX + move.X ) );
+                int xa = Math.Sign(move.X);
+                int wxa = (move.X > 0.0f ? -1 : 0);
+                int sxa = (move.X > 0.0f ? 0 : -1);
+                int xe = (int) (move.X > 0.0f ? Math.Ceiling(startX + move.X) : Math.Floor(startX + move.X));
 
                 Face face = move.X > 0.0f ? Face.East : Face.West;
 
                 Block blk = null;
 
-                for ( int ix = startIX; ix != xe; ix += xa, y += xa * dydx )
-                {
-                    int wx = ( ix + wxa ) - (int) Math.Floor( (double) ( ix + wxa ) / City.Width ) * City.Width;
-                    int sx = ( ix + sxa ) - (int) Math.Floor( (double) ( ix + sxa ) / City.Width ) * City.Width;
+                for (int ix = startIX; ix != xe; ix += xa, y += xa * dydx) {
+                    int wx = (ix + wxa) - (int) Math.Floor((double) (ix + wxa) / City.Width) * City.Width;
+                    int sx = (ix + sxa) - (int) Math.Floor((double) (ix + sxa) / City.Width) * City.Width;
 
-                    int minY = (int) Math.Floor( y + Offset.Y + error );
-                    int maxY = (int) Math.Floor( y + Offset.Y + Size.Y - error );
+                    int minY = (int) Math.Floor(y + Offset.Y + error);
+                    int maxY = (int) Math.Floor(y + Offset.Y + Size.Y - error);
 
-                    for ( int iy = minY; iy <= maxY; ++iy )
-                    {
-                        int wy = iy - (int) Math.Floor( (double) iy / City.Height ) * City.Height;
+                    for (int iy = minY; iy <= maxY; ++iy) {
+                        int wy = iy - (int) Math.Floor((double) iy / City.Height) * City.Height;
 
-                        if ( blk == null || wx < blk.X || wy < blk.Y ||
-                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
-                            blk = City.GetBlock( wx, wy );
+                        if (blk == null || wx < blk.X || wy < blk.Y ||
+                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
+                            blk = City.GetBlock(wx, wy);
 
                         bool hit = false;
 
-                        Tile tw = blk[ wx, wy ];
+                        Tile tw = blk[wx, wy];
 
-                        hit = tw.IsWallSolid( face );
+                        hit = tw.IsWallSolid(face);
 
-                        if( !hit )
-                        {
-                            if ( sx < blk.X || wy < blk.Y ||
-                                    sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
-                                blk = City.GetBlock( sx, wy );
+                        if (!hit) {
+                            if (sx < blk.X || wy < blk.Y ||
+                                    sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
+                                blk = City.GetBlock(sx, wy);
 
-                            Tile ts = blk[ sx, wy ];
+                            Tile ts = blk[sx, wy];
 
-                            hit = ( iy > minY && ts.IsWallSolid( Face.North ) && !tw.IsWallSolid( Face.North ) ) ||
-                                ( iy < maxY && ts.IsWallSolid( Face.South ) && !tw.IsWallSolid( Face.South ) );
+                            hit = (iy > minY && ts.IsWallSolid(Face.North) && !tw.IsWallSolid(Face.North)) ||
+                                (iy < maxY && ts.IsWallSolid(Face.South) && !tw.IsWallSolid(Face.South));
                         }
 
-                        if ( hit )
-                        {
-                            xm = ( ix - startX ) / move.X;
+                        if (hit) {
+                            xm = (ix - startX) / move.X;
                             ix = xe - xa;
                             break;
                         }
@@ -140,60 +134,55 @@ namespace Zombles.Entities
                 }
             }
 
-            if ( move.Y != 0.0f )
-            {
+            if (move.Y != 0.0f) {
                 float dxdy = move.X / move.Y;
 
                 float startY = move.Y > 0.0f ? Bottom : Top;
-                int startIY = (int) ( move.Y > 0.0f ? Math.Ceiling( startY ) : Math.Floor( startY ) );
-                float x = Position.X + ( startIY - startY ) * dxdy;
+                int startIY = (int) (move.Y > 0.0f ? Math.Ceiling(startY) : Math.Floor(startY));
+                float x = Position.X + (startIY - startY) * dxdy;
 
-                int ya = Math.Sign( move.Y );
-                int wya = ( move.Y > 0.0f ? -1 : 0 );
-                int sya = ( move.Y > 0.0f ? 0 : -1 );
-                int ye = (int) ( move.Y > 0.0f ? Math.Ceiling( startY + move.Y ) : Math.Floor( startY + move.Y ) );
+                int ya = Math.Sign(move.Y);
+                int wya = (move.Y > 0.0f ? -1 : 0);
+                int sya = (move.Y > 0.0f ? 0 : -1);
+                int ye = (int) (move.Y > 0.0f ? Math.Ceiling(startY + move.Y) : Math.Floor(startY + move.Y));
 
                 Face face = move.Y > 0.0f ? Face.South : Face.North;
 
                 Block blk = null;
 
-                for ( int iy = startIY; iy != ye; iy += ya, x += ya * dxdy )
-                {
-                    int wy = ( iy + wya ) - (int) Math.Floor( (double) ( iy + wya ) / City.Height ) * City.Height;
-                    int sy = ( iy + sya ) - (int) Math.Floor( (double) ( iy + sya ) / City.Height ) * City.Height;
+                for (int iy = startIY; iy != ye; iy += ya, x += ya * dxdy) {
+                    int wy = (iy + wya) - (int) Math.Floor((double) (iy + wya) / City.Height) * City.Height;
+                    int sy = (iy + sya) - (int) Math.Floor((double) (iy + sya) / City.Height) * City.Height;
 
-                    int minX = (int) Math.Floor( x + Offset.X + error );
-                    int maxX = (int) Math.Floor( x + Offset.X + Size.X - error );
+                    int minX = (int) Math.Floor(x + Offset.X + error);
+                    int maxX = (int) Math.Floor(x + Offset.X + Size.X - error);
 
-                    for ( int ix = minX; ix <= maxX; ++ix )
-                    {
-                        int wx = ix - (int) Math.Floor( (double) ix / City.Width ) * City.Width;
+                    for (int ix = minX; ix <= maxX; ++ix) {
+                        int wx = ix - (int) Math.Floor((double) ix / City.Width) * City.Width;
 
-                        if ( blk == null || wx < blk.X || wy < blk.Y ||
-                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height )
-                            blk = City.GetBlock( wx, wy );
+                        if (blk == null || wx < blk.X || wy < blk.Y ||
+                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
+                            blk = City.GetBlock(wx, wy);
 
                         bool hit = false;
 
-                        Tile tw = blk[ wx, wy ];
+                        Tile tw = blk[wx, wy];
 
-                        hit = tw.IsWallSolid( face );
+                        hit = tw.IsWallSolid(face);
 
-                        if ( !hit )
-                        {
-                            if ( wx < blk.X || sy < blk.Y ||
-                                    wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height )
-                                blk = City.GetBlock( wx, sy );
+                        if (!hit) {
+                            if (wx < blk.X || sy < blk.Y ||
+                                    wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height)
+                                blk = City.GetBlock(wx, sy);
 
-                            Tile ts = blk[ wx, sy ];
+                            Tile ts = blk[wx, sy];
 
-                            hit = ( ix > minX && ts.IsWallSolid( Face.West ) && !tw.IsWallSolid( Face.West ) ) ||
-                                ( ix < maxX && ts.IsWallSolid( Face.East ) && !tw.IsWallSolid( Face.East ) );
+                            hit = (ix > minX && ts.IsWallSolid(Face.West) && !tw.IsWallSolid(Face.West)) ||
+                                (ix < maxX && ts.IsWallSolid(Face.East) && !tw.IsWallSolid(Face.East));
                         }
 
-                        if ( hit )
-                        {
-                            ym = ( iy - startY ) / move.Y;
+                        if (hit) {
+                            ym = (iy - startY) / move.Y;
                             iy = ye - ya;
                             break;
                         }
@@ -201,20 +190,20 @@ namespace Zombles.Entities
                 }
             }
 
-            return new Vector2( xm * move.X, ym * move.Y );
+            return new Vector2(xm * move.X, ym * move.Y);
         }
 
-        private Vector2 TryMove( Entity obstacle, Vector2 move )
+        private Vector2 TryMove(Entity obstacle, Vector2 move)
         {
-            if ( obstacle == Entity || !obstacle.HasComponent<Collision>() )
+            if (obstacle == Entity || !obstacle.HasComponent<Collision>())
                 return move;
 
             Collision that = obstacle.GetComponent<Collision>();
 
-            if ( that.Model == CollisionModel.None )
+            if (that.Model == CollisionModel.None)
                 return move;
 
-            Vector2 diff = City.Difference( Position2D, that.Position2D );
+            Vector2 diff = City.Difference(Position2D, that.Position2D);
 
             float al = Offset.X;
             float ar = al + Size.X;
@@ -230,83 +219,67 @@ namespace Zombles.Entities
 
             float ix = 0.0f, iy = 0.0f;
 
-            if ( intersecting )
-            {
+            if (intersecting) {
                 float il = br - al;
                 float ir = ar - bl;
-                ix = ( il < ir ) ? il : -ir;
+                ix = (il < ir) ? il : -ir;
 
                 float it = bb - at;
                 float ib = ab - bt;
-                iy = ( it < ib ) ? it : -ib;
+                iy = (it < ib) ? it : -ib;
             }
 
-            if ( ( this.Model & CollisionModel.Box ) != 0 || ( that.Model & CollisionModel.Box ) != 0 )
-            {
-                if ( intersecting )
-                {
-                    if ( Math.Abs( ix ) <= Math.Abs( iy ) )
-                        return new Vector2( ix, move.Y );
+            if ((this.Model & CollisionModel.Box) != 0 || (that.Model & CollisionModel.Box) != 0) {
+                if (intersecting) {
+                    if (Math.Abs(ix) <= Math.Abs(iy))
+                        return new Vector2(ix, move.Y);
                     else
-                        return new Vector2( move.X, iy );
+                        return new Vector2(move.X, iy);
                 }
 
-                if ( move.X > 0 )
-                {
-                    if ( ar < bl && ar + move.X > bl )
-                    {
+                if (move.X > 0) {
+                    if (ar < bl && ar + move.X > bl) {
                         float dx = bl - ar;
-                        float dy = ( dx / move.X ) * move.Y;
+                        float dy = (dx / move.X) * move.Y;
 
-                        if ( at + dy < bb && ab + dy > bt )
-                            return new Vector2( dx, move.Y );
+                        if (at + dy < bb && ab + dy > bt)
+                            return new Vector2(dx, move.Y);
                     }
-                }
-                else if ( move.X < 0 )
-                {
-                    if ( al > br && al + move.X < br )
-                    {
+                } else if (move.X < 0) {
+                    if (al > br && al + move.X < br) {
                         float dx = br - al;
-                        float dy = ( dx / move.X ) * move.Y;
+                        float dy = (dx / move.X) * move.Y;
 
-                        if ( at + dy < bb && ab + dy > bt )
-                            return new Vector2( dx, move.Y );
+                        if (at + dy < bb && ab + dy > bt)
+                            return new Vector2(dx, move.Y);
                     }
                 }
 
-                if ( move.Y > 0 )
-                {
-                    if ( at < bt && at + move.Y > bt )
-                    {
+                if (move.Y > 0) {
+                    if (at < bt && at + move.Y > bt) {
                         float dy = bt - ab;
-                        float dx = ( dy / move.Y ) * move.X;
+                        float dx = (dy / move.Y) * move.X;
 
-                        if ( al + dx < br && ar + dx > bl )
-                            return new Vector2( move.X, dy );
+                        if (al + dx < br && ar + dx > bl)
+                            return new Vector2(move.X, dy);
                     }
-                }
-                else if ( move.Y < 0 )
-                {
-                    if ( at > bb && at + move.Y < bb )
-                    {
+                } else if (move.Y < 0) {
+                    if (at > bb && at + move.Y < bb) {
                         float dy = bb - at;
-                        float dx = ( dy / move.Y ) * move.X;
+                        float dx = (dy / move.Y) * move.X;
 
-                        if ( al + dx < br && ar + dx > bl )
-                            return new Vector2( move.X, dy );
+                        if (al + dx < br && ar + dx > bl)
+                            return new Vector2(move.X, dy);
                     }
                 }
 
                 return move;
-            }
-            else
-            {
-                if ( intersecting )
-                {
-                    if ( Math.Abs( ix ) <= Math.Abs( iy ) )
-                        return new Vector2( ix / 2.0f + move.X, move.Y );
+            } else {
+                if (intersecting) {
+                    if (Math.Abs(ix) <= Math.Abs(iy))
+                        return new Vector2(ix / 2.0f + move.X, move.Y);
                     else
-                        return new Vector2( move.X, iy / 2.0f + move.Y );
+                        return new Vector2(move.X, iy / 2.0f + move.Y);
                 }
 
                 return move;

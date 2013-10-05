@@ -49,20 +49,19 @@ namespace Zombles
 
         private static void Compile()
         {
-            CompilerParameters compParams = new CompilerParameters();
+            var compParams = new CompilerParameters();
 
-            List<String> myAllowedAssemblies = new List<String>
-            {
-                Assembly.GetAssembly( typeof( Math ) ).Location,
-                Assembly.GetAssembly( typeof( Stopwatch ) ).Location,
-                Assembly.GetAssembly( typeof( System.Linq.Enumerable ) ).Location,
-                Assembly.GetAssembly( typeof( OpenTK.Vector2 ) ).Location,
-                Assembly.GetAssembly( typeof( System.Drawing.Rectangle ) ).Location,
-                Assembly.GetAssembly( typeof( Archive ) ).Location,
+            var allowedAssemblies = new String[] {
+                Assembly.GetAssembly(typeof(Math)).Location,
+                Assembly.GetAssembly(typeof(Stopwatch)).Location,
+                Assembly.GetAssembly(typeof(System.Linq.Enumerable)).Location,
+                Assembly.GetAssembly(typeof(OpenTK.Vector2)).Location,
+                Assembly.GetAssembly(typeof(System.Drawing.Rectangle)).Location,
+                Assembly.GetAssembly(typeof(Archive)).Location,
                 Assembly.GetExecutingAssembly().Location
             };
 
-            compParams.ReferencedAssemblies.AddRange(myAllowedAssemblies.ToArray());
+            compParams.ReferencedAssemblies.AddRange(allowedAssemblies);
 
             Dictionary<string,string> providerOptions = new Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v4.0");
@@ -96,21 +95,11 @@ namespace Zombles
             _sCompiledAssembly = results.CompiledAssembly;
         }
 
-        private static void DiscoverScripts(IEnumerable<String> locator)
-        {
-            var locatorArr = locator.ToArray();
-            foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
-                _sScripts.Add(Archive.Get<ScriptFile>(locatorArr, name));
-            }
-
-            foreach (var name in Archive.GetAllNames<Archive>(locator)) {
-                DiscoverScripts(locator.Concat(new String[] { name }));
-            }
-        }
-
         public static void Initialize()
         {
-            DiscoverScripts(new String[] { "scripts" });
+            foreach (var locator in Archive.FindAll<ScriptFile>("scripts", true)) {
+                _sScripts.Add(Archive.Get<ScriptFile>(locator));
+            }
 
             Compile();
 

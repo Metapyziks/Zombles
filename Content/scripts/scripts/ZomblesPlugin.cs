@@ -14,11 +14,6 @@ namespace Zombles.Scripts
     {
         protected override void OnInitialize()
         {
-            Entity.Register("waypoint", ent => {
-                ent.AddComponent<Waypoint>();
-                // ent.AddComponent<Render2D>().TextureIndex = TextureManager.Ents.GetIndex( "waypoint" );
-            });
-
             Entity.Register("human", ent => {
                 ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>().SetDimentions(0.5f, 0.5f).Model = CollisionModel.Repel | CollisionModel.Entity;
@@ -29,7 +24,6 @@ namespace Zombles.Scripts
 
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
-                //ent.AddComponent<RTSControl>();
                 ent.AddComponent<SurvivorAI>();
             });
 
@@ -45,8 +39,6 @@ namespace Zombles.Scripts
             City city = scene.City;
             Random rand = Tools.Random;
 
-            Waypoint.GenerateNetwork(city);
-
             int count = (city.Width * city.Height) / 64;
             int zoms = Math.Max(count / 32, 8);
 
@@ -54,8 +46,6 @@ namespace Zombles.Scripts
                 Entity surv = Entity.Create(city, "survivor");
                 surv.Position = new Vector3(rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height);
                 surv.Spawn();
-
-                //scene.SelectedEntities.Add( surv );
             }
 
             for (int i = 0; i < zoms; ++i) {

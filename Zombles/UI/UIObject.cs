@@ -68,11 +68,8 @@ namespace Zombles.UI
     }
 
     public delegate void EnabledChangedEventHandler(Object sender, EnabledChangedEventArgs e);
-
     public delegate void MouseButtonEventHandler(Object sender, OpenTK.Input.MouseButtonEventArgs e);
-
     public delegate void MouseMoveEventHandler(Object sender, OpenTK.Input.MouseMoveEventArgs e);
-
     public delegate void KeyPressEventHandler(Object sender, KeyPressEventArgs e);
 
     public class RenderEventArgs : EventArgs

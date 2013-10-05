@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiveTool", "ResourceLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLine", "ResourceLibrary\CommandLine\CommandLine.csproj", "{4E5B3B64-B541-4D36-99C2-FF791206F46F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "ResourceLibrary\UnitTests.csproj", "{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,8 +74,21 @@ Global
 		{4E5B3B64-B541-4D36-99C2-FF791206F46F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4E5B3B64-B541-4D36-99C2-FF791206F46F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4E5B3B64-B541-4D36-99C2-FF791206F46F}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FE0B5378-A9F3-4FF9-9ABE-BC20981DFAE9}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
