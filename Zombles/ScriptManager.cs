@@ -51,17 +51,14 @@ namespace Zombles
         {
             var compParams = new CompilerParameters();
 
-            var allowedAssemblies = new String[] {
-                Assembly.GetAssembly(typeof(Math)).Location,
-                Assembly.GetAssembly(typeof(Stopwatch)).Location,
-                Assembly.GetAssembly(typeof(System.Linq.Enumerable)).Location,
-                Assembly.GetAssembly(typeof(OpenTK.Vector2)).Location,
-                Assembly.GetAssembly(typeof(System.Drawing.Rectangle)).Location,
-                Assembly.GetAssembly(typeof(Archive)).Location,
-                Assembly.GetExecutingAssembly().Location
+            var requiredTypes = new[] {
+                typeof(Math), typeof(Stopwatch), typeof(System.Linq.Enumerable),
+                typeof(OpenTK.Vector2), typeof(System.Drawing.Rectangle), typeof(Archive),
+                typeof(OpenTKTK.Scene.Camera), typeof(ScriptManager)
             };
 
-            compParams.ReferencedAssemblies.AddRange(allowedAssemblies);
+            var allowedAssemblies = requiredTypes.Select(x => Assembly.GetAssembly(x).Location);
+            compParams.ReferencedAssemblies.AddRange(allowedAssemblies.ToArray());
 
             Dictionary<string,string> providerOptions = new Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v4.0");

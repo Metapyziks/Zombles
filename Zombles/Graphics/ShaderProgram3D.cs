@@ -17,7 +17,7 @@ namespace Zombles.Graphics
         public int ScreenWidth { get; private set; }
         public int ScreenHeight { get; private set; }
 
-        public Camera Camera
+        public OrthoCamera Camera
         {
             get;
             set;

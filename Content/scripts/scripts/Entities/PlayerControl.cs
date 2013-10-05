@@ -67,7 +67,7 @@ namespace Zombles.Scripts.Entities
             else if ( Human.Movement.IsMoving )
                 Human.StopMoving();
 
-            scene.Camera.Position = Position2D;
+            scene.Camera.Position2D = Position2D;
         }
     }
 }
