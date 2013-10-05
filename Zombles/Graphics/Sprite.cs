@@ -11,39 +11,38 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myVertices;
+                return _vertices;
             }
         }
 
-        private BitmapTexture2D myTexture;
-        private float[] myVertices;
+        private BitmapTexture2D _texture;
+        private float[] _vertices;
 
-        private Vector2 myPosition;
-        private Vector2 myScale;
+        private Vector2 _position;
+        private Vector2 _scale;
 
-        private Vector2 mySubrectOffset;
-        private Vector2 mySubrectSize;
+        private Vector2 _subrectOffset;
+        private Vector2 _subrectSize;
 
-        private bool myFlipHorz;
-        private bool myFlipVert;
-        
-        private float myRotation;
-        private bool myUseCentreAsOrigin;
-        private Color4 myColour;
+        private bool _flipHorz;
+        private bool _flipVert;
+
+        private float _rotation;
+        private bool _useCentreAsOrigin;
+        private Color4 _colour;
 
         protected bool VertsChanged;
-        
+
         public virtual Vector2 Position
         {
             get
             {
-                return myPosition;
+                return _position;
             }
             set
             {
-                if ( value != myPosition )
-                {
-                    myPosition = value;
+                if (value != _position) {
+                    _position = value;
                     VertsChanged = true;
                 }
             }
@@ -53,11 +52,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return new Vector2( mySubrectSize.X * Scale.X, mySubrectSize.Y * Scale.Y );
+                return new Vector2(_subrectSize.X * Scale.X, _subrectSize.Y * Scale.Y);
             }
             set
             {
-                Scale = new Vector2( value.X / mySubrectSize.X, value.Y / mySubrectSize.Y );
+                Scale = new Vector2(value.X / _subrectSize.X, value.Y / _subrectSize.Y);
             }
         }
 
@@ -65,13 +64,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myScale;
+                return _scale;
             }
             set
             {
-                if ( value != myScale )
-                {
-                    myScale = value;
+                if (value != _scale) {
+                    _scale = value;
                     VertsChanged = true;
                 }
             }
@@ -85,7 +83,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                Position = new Vector2( value, Y );
+                Position = new Vector2(value, Y);
             }
         }
         public float Y
@@ -96,7 +94,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                Position = new Vector2( X, value );
+                Position = new Vector2(X, value);
             }
         }
 
@@ -104,13 +102,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return mySubrectOffset;
+                return _subrectOffset;
             }
             set
             {
-                if ( value != mySubrectOffset )
-                {
-                    mySubrectOffset = value;
+                if (value != _subrectOffset) {
+                    _subrectOffset = value;
                     VertsChanged = true;
                 }
             }
@@ -120,13 +117,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return mySubrectSize;
+                return _subrectSize;
             }
             set
             {
-                if ( value != mySubrectSize )
-                {
-                    mySubrectSize = value;
+                if (value != _subrectSize) {
+                    _subrectSize = value;
                     VertsChanged = true;
                 }
             }
@@ -140,7 +136,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectOffset = new Vector2( value, SubrectTop );
+                SubrectOffset = new Vector2(value, SubrectTop);
             }
         }
 
@@ -152,7 +148,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectOffset = new Vector2( SubrectLeft, value );
+                SubrectOffset = new Vector2(SubrectLeft, value);
             }
         }
 
@@ -164,7 +160,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectSize = new Vector2( value - SubrectOffset.X, SubrectHeight );
+                SubrectSize = new Vector2(value - SubrectOffset.X, SubrectHeight);
             }
         }
 
@@ -176,7 +172,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectSize = new Vector2( SubrectWidth, value - SubrectOffset.Y );
+                SubrectSize = new Vector2(SubrectWidth, value - SubrectOffset.Y);
             }
         }
 
@@ -188,7 +184,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectSize = new Vector2( value, SubrectHeight );
+                SubrectSize = new Vector2(value, SubrectHeight);
             }
         }
 
@@ -200,7 +196,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                SubrectSize = new Vector2( SubrectWidth, value );
+                SubrectSize = new Vector2(SubrectWidth, value);
             }
         }
 
@@ -212,7 +208,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                Scale = new Vector2( value / SubrectSize.X, Scale.Y );
+                Scale = new Vector2(value / SubrectSize.X, Scale.Y);
             }
         }
         public float Height
@@ -223,7 +219,7 @@ namespace Zombles.Graphics
             }
             set
             {
-                Scale = new Vector2( Scale.X, value / SubrectSize.Y );
+                Scale = new Vector2(Scale.X, value / SubrectSize.Y);
             }
         }
 
@@ -231,13 +227,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFlipHorz;
+                return _flipHorz;
             }
             set
             {
-                if ( value != myFlipHorz )
-                {
-                    myFlipHorz = value;
+                if (value != _flipHorz) {
+                    _flipHorz = value;
                     VertsChanged = true;
                 }
             }
@@ -247,13 +242,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFlipVert;
+                return _flipVert;
             }
             set
             {
-                if ( value != myFlipVert )
-                {
-                    myFlipVert = value;
+                if (value != _flipVert) {
+                    _flipVert = value;
                     VertsChanged = true;
                 }
             }
@@ -263,13 +257,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myRotation;
+                return _rotation;
             }
             set
             {
-                if ( value != myRotation )
-                {
-                    myRotation = value;
+                if (value != _rotation) {
+                    _rotation = value;
                     VertsChanged = true;
                 }
             }
@@ -279,13 +272,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myUseCentreAsOrigin;
+                return _useCentreAsOrigin;
             }
             set
             {
-                if ( value != myUseCentreAsOrigin )
-                {
-                    myUseCentreAsOrigin = value;
+                if (value != _useCentreAsOrigin) {
+                    _useCentreAsOrigin = value;
                     VertsChanged = true;
                 }
             }
@@ -295,13 +287,12 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myColour;
+                return _colour;
             }
             set
             {
-                if ( value != myColour )
-                {
-                    myColour = value;
+                if (value != _colour) {
+                    _colour = value;
                     VertsChanged = true;
                 }
             }
@@ -311,18 +302,18 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myTexture;
+                return _texture;
             }
         }
 
-        public Sprite( float width, float height, Color4 colour )
+        public Sprite(float width, float height, Color4 colour)
         {
-            myTexture = BitmapTexture2D.Blank;
+            _texture = BitmapTexture2D.Blank;
 
             Position = new Vector2();
-            Scale = new Vector2( width, height );
-            SubrectOffset = new Vector2( 0, 0 );
-            SubrectSize = new Vector2( myTexture.Width, myTexture.Height );
+            Scale = new Vector2(width, height);
+            SubrectOffset = new Vector2(0, 0);
+            SubrectSize = new Vector2(_texture.Width, _texture.Height);
             FlipHorizontal = false;
             FlipVertical = false;
             Rotation = 0;
@@ -330,27 +321,27 @@ namespace Zombles.Graphics
             Colour = colour;
         }
 
-        public Sprite( BitmapTexture2D texture, float scale = 1.0f )
+        public Sprite(BitmapTexture2D texture, float scale = 1.0f)
         {
-            myTexture = texture;
+            _texture = texture;
 
             Position = new Vector2();
-            Scale = new Vector2( 1, 1 );
-            SubrectOffset = new Vector2( 0, 0 );
-            SubrectSize = new Vector2( myTexture.Width, myTexture.Height );
+            Scale = new Vector2(1, 1);
+            SubrectOffset = new Vector2(0, 0);
+            SubrectSize = new Vector2(_texture.Width, _texture.Height);
             FlipHorizontal = false;
             FlipVertical = false;
             Rotation = 0;
             UseCentreAsOrigin = false;
-            Colour = new Color4( 1.0f, 1.0f, 1.0f, 1.0f );
+            Colour = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
-            Scale = new Vector2( scale, scale );
+            Scale = new Vector2(scale, scale);
         }
 
         protected virtual float[] FindVerts()
         {
-            Vector2 tMin = myTexture.GetCoords( SubrectLeft, SubrectTop );
-            Vector2 tMax = myTexture.GetCoords( SubrectRight, SubrectBottom );
+            Vector2 tMin = _texture.GetCoords(SubrectLeft, SubrectTop);
+            Vector2 tMax = _texture.GetCoords(SubrectRight, SubrectBottom);
             float xMin = FlipHorizontal ? tMax.X : tMin.X;
             float yMin = FlipVertical ? tMax.Y : tMin.Y;
             float xMax = FlipHorizontal ? tMin.X : tMax.X;
@@ -359,13 +350,13 @@ namespace Zombles.Graphics
             float halfWid = Width / 2;
             float halfHei = Height / 2;
 
-            float[,] verts = UseCentreAsOrigin ? new float[ , ]
+            float[,] verts = UseCentreAsOrigin ? new float[,]
             {
                 { -halfWid, -halfHei },
                 { +halfWid, -halfHei },
                 { +halfWid, +halfHei },
                 { -halfWid, +halfHei }
-            } : new float[ , ]
+            } : new float[,]
             {
                 { 0, 0 },
                 { Width, 0 },
@@ -379,12 +370,11 @@ namespace Zombles.Graphics
                 { (float) Math.Sin( Rotation ),  (float) Math.Cos( Rotation ) }
             };
 
-            for ( int i = 0; i < 4; ++i )
-            {
-                float x = verts[ i, 0 ];
-                float y = verts[ i, 1 ];
-                verts[ i, 0 ] = X + mat[ 0, 0 ] * x + mat[ 0, 1 ] * y;
-                verts[ i, 1 ] = Y + mat[ 1, 0 ] * x + mat[ 1, 1 ] * y;
+            for (int i = 0; i < 4; ++i) {
+                float x = verts[i, 0];
+                float y = verts[i, 1];
+                verts[i, 0] = X + mat[0, 0] * x + mat[0, 1] * y;
+                verts[i, 1] = Y + mat[1, 0] * x + mat[1, 1] * y;
             }
 
             return new float[]
@@ -396,18 +386,17 @@ namespace Zombles.Graphics
             };
         }
 
-        public virtual void Render( SpriteShader shader )
+        public virtual void Render(SpriteShader shader)
         {
-            if ( VertsChanged )
-            {
-                myVertices = FindVerts();
+            if (VertsChanged) {
+                _vertices = FindVerts();
                 VertsChanged = false;
             }
 
-            if ( !Texture.Ready || shader.Texture.ID != Texture.ID )
+            if (!Texture.Ready || shader.Texture.ID != Texture.ID)
                 shader.Texture = Texture;
 
-            shader.Render( myVertices );
+            shader.Render(_vertices);
         }
     }
 }

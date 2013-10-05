@@ -37,13 +37,13 @@ namespace Zombles.Graphics
             }
         }
 
-        private bool myTwoDimensional;
+        private bool _twoDimensional;
 
-        private List<String> myExtensions;
+        private List<String> _extensions;
 
-        private List<ShaderVariable> myUniforms;
-        private List<ShaderVariable> myAttribs;
-        private List<ShaderVariable> myVaryings;
+        private List<ShaderVariable> _uniforms;
+        private List<ShaderVariable> _attribs;
+        private List<ShaderVariable> _varyings;
 
         public ShaderType Type { get; private set; }
 
@@ -53,13 +53,13 @@ namespace Zombles.Graphics
         public ShaderBuilder( ShaderType type, bool twoDimensional )
         {
             Type = type;
-            myTwoDimensional = twoDimensional;
+            _twoDimensional = twoDimensional;
 
-            myExtensions = new List<string>();
+            _extensions = new List<string>();
 
-            myUniforms = new List<ShaderVariable>();
-            myAttribs  = new List<ShaderVariable>();
-            myVaryings = new List<ShaderVariable>();
+            _uniforms = new List<ShaderVariable>();
+            _attribs  = new List<ShaderVariable>();
+            _varyings = new List<ShaderVariable>();
 
             Logic = "";
             FragOutIdentifier = "out_frag_colour";
@@ -70,21 +70,21 @@ namespace Zombles.Graphics
             if ( type == ShaderVarType.Sampler2DArray )
             {
                 String ext = "GL_EXT_texture_array";
-                if ( !myExtensions.Contains( ext ) )
-                    myExtensions.Add( ext );
+                if ( !_extensions.Contains( ext ) )
+                    _extensions.Add( ext );
             }
 
-            myUniforms.Add( new ShaderVariable { Type = type, Identifier = identifier } );
+            _uniforms.Add( new ShaderVariable { Type = type, Identifier = identifier } );
         }
 
         public void AddAttribute( ShaderVarType type, String identifier )
         {
-            myAttribs.Add( new ShaderVariable { Type = type, Identifier = identifier } );
+            _attribs.Add( new ShaderVariable { Type = type, Identifier = identifier } );
         }
 
         public void AddVarying( ShaderVarType type, String identifier )
         {
-            myVaryings.Add( new ShaderVariable { Type = type, Identifier = identifier } );
+            _varyings.Add( new ShaderVariable { Type = type, Identifier = identifier } );
         }
 
         public String Generate( bool gl3 )
@@ -94,36 +94,36 @@ namespace Zombles.Graphics
             String output = 
                 "#version 1" + ( gl3 ? "3" : "2" ) + "0" + nl + nl;
 
-            if ( myExtensions.Count != 0 )
+            if ( _extensions.Count != 0 )
             {
-                foreach ( String ext in myExtensions )
+                foreach ( String ext in _extensions )
                     output += "#extension " + ext + " : enable" + nl;
                 output += nl;
             }
 
             output +=
                   ( gl3 ? "precision highp float;" + nl + nl : "" )
-                + ( Type == ShaderType.VertexShader && myTwoDimensional
+                + ( Type == ShaderType.VertexShader && _twoDimensional
                     ? "uniform vec2 screen_resolution;" + nl + nl
                     : "" );
 
-            foreach ( ShaderVariable var in myUniforms )
+            foreach ( ShaderVariable var in _uniforms )
                 output += "uniform "
                     + var.TypeString
                     + " " + var.Identifier + ";" + nl;
 
-            if( myUniforms.Count != 0 )
+            if( _uniforms.Count != 0 )
                 output += nl;
 
-            foreach ( ShaderVariable var in myAttribs )
+            foreach ( ShaderVariable var in _attribs )
                 output += ( gl3 ? "in " : "attribute " )
                     + var.TypeString
                     + " " + var.Identifier + ";" + nl;
 
-            if( myAttribs.Count != 0 )
+            if( _attribs.Count != 0 )
                 output += nl;
 
-            foreach ( ShaderVariable var in myVaryings )
+            foreach ( ShaderVariable var in _varyings )
                 output += ( gl3 ? Type == ShaderType.VertexShader
                     ? "out " : "in " : "varying " )
                     + var.TypeString
@@ -149,7 +149,7 @@ namespace Zombles.Graphics
                 else
                     logic = logic.Replace( FragOutIdentifier, "gl_FragColor" );                        
             }
-            else if( myTwoDimensional )
+            else if( _twoDimensional )
             {
                 logic = logic.Replace( "gl_Position", "vec2 _pos_" );
                 index = logic.IndexOf( "_pos_" );

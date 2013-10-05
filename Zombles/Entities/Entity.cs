@@ -9,11 +9,11 @@ using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
-    public delegate void EntityBuilderDelegate( Entity ent );
+    public delegate void EntityBuilderDelegate(Entity ent);
 
     public sealed class Entity : IEnumerable<Component>
     {
-        private static uint stNextID = 0;
+        private static uint _sNextID = 0;
 
         private struct BuilderInfo
         {
@@ -21,14 +21,14 @@ namespace Zombles.Entities
             public readonly String Base;
             public readonly EntityBuilderDelegate Builder;
 
-            public BuilderInfo( String name, EntityBuilderDelegate builder )
+            public BuilderInfo(String name, EntityBuilderDelegate builder)
             {
                 Name = name;
                 Base = null;
                 Builder = builder;
             }
 
-            public BuilderInfo( String name, String baseName, EntityBuilderDelegate builder )
+            public BuilderInfo(String name, String baseName, EntityBuilderDelegate builder)
             {
                 Name = name;
                 Base = baseName;
@@ -36,42 +36,42 @@ namespace Zombles.Entities
             }
         }
 
-        private static Dictionary<String, BuilderInfo> stEntBuilders
+        private static Dictionary<String, BuilderInfo> _sEntBuilders
             = new Dictionary<string, BuilderInfo>();
 
-        public static void Register( String name, EntityBuilderDelegate builder )
+        public static void Register(String name, EntityBuilderDelegate builder)
         {
-            if ( !stEntBuilders.ContainsKey( name ) )
-                stEntBuilders.Add( name, new BuilderInfo( name, builder ) );
+            if (!_sEntBuilders.ContainsKey(name))
+                _sEntBuilders.Add(name, new BuilderInfo(name, builder));
             else
-                stEntBuilders[ name ] = new BuilderInfo( name, builder );
+                _sEntBuilders[name] = new BuilderInfo(name, builder);
         }
 
-        public static void Register( String name, String baseName, EntityBuilderDelegate builder )
+        public static void Register(String name, String baseName, EntityBuilderDelegate builder)
         {
-            if ( !stEntBuilders.ContainsKey( name ) )
-                stEntBuilders.Add( name, new BuilderInfo( name, baseName, builder ) );
+            if (!_sEntBuilders.ContainsKey(name))
+                _sEntBuilders.Add(name, new BuilderInfo(name, baseName, builder));
             else
-                stEntBuilders[ name ] = new BuilderInfo( name, baseName, builder );
+                _sEntBuilders[name] = new BuilderInfo(name, baseName, builder);
         }
 
-        public static Entity Create( City city )
+        public static Entity Create(City city)
         {
-            return new Entity( city );
+            return new Entity(city);
         }
 
-        public static Entity Create( City city, String type )
+        public static Entity Create(City city, String type)
         {
-            BuilderInfo info = stEntBuilders[ type ];
-            Entity ent = ( info.Base != null ? Create( city, info.Base ) : Create( city ) );
-            info.Builder( ent );
+            BuilderInfo info = _sEntBuilders[type];
+            Entity ent = (info.Base != null ? Create(city, info.Base) : Create(city));
+            info.Builder(ent);
             return ent;
         }
 
-        private List<Component> myComps;
-        private Dictionary<Type, Component> myCompDict;
-        private Vector3 myPosition;
-        private bool myPosChanged;
+        private List<Component> _comps;
+        private Dictionary<Type, Component> _compDict;
+        private Vector3 _position;
+        private bool _posChanged;
 
         public readonly uint ID;
 
@@ -89,42 +89,42 @@ namespace Zombles.Entities
 
         public Vector3 Position
         {
-            get { return myPosition; }
+            get { return _position; }
             set
             {
-                myPosition = value;
-                if( myPosition.X < 0 || myPosition.X >= City.Width )
-                    myPosition.X -= (int) Math.Floor( myPosition.X / City.Width ) * City.Width;
-                if ( myPosition.Z < 0 || myPosition.Z >= City.Height )
-                    myPosition.Z -= (int) Math.Floor( myPosition.Z / City.Height ) * City.Height;
-                myPosChanged = true;
+                _position = value;
+                if (_position.X < 0 || _position.X >= City.Width)
+                    _position.X -= (int) Math.Floor(_position.X / City.Width) * City.Width;
+                if (_position.Z < 0 || _position.Z >= City.Height)
+                    _position.Z -= (int) Math.Floor(_position.Z / City.Height) * City.Height;
+                _posChanged = true;
             }
         }
 
         public Vector2 Position2D
         {
-            get { return new Vector2( myPosition.X, myPosition.Z ); }
+            get { return new Vector2(_position.X, _position.Z); }
             set
             {
-                myPosition.X = value.X;
-                myPosition.Z = value.Y;
-                if ( myPosition.X < 0 || myPosition.X >= City.Width )
-                    myPosition.X -= (int) Math.Floor( myPosition.X / City.Width ) * City.Width;
-                if ( myPosition.Z < 0 || myPosition.Z >= City.Height )
-                    myPosition.Z -= (int) Math.Floor( myPosition.Z / City.Height ) * City.Height;
-                myPosChanged = true;
+                _position.X = value.X;
+                _position.Z = value.Y;
+                if (_position.X < 0 || _position.X >= City.Width)
+                    _position.X -= (int) Math.Floor(_position.X / City.Width) * City.Width;
+                if (_position.Z < 0 || _position.Z >= City.Height)
+                    _position.Z -= (int) Math.Floor(_position.Z / City.Height) * City.Height;
+                _posChanged = true;
             }
         }
 
-        private Entity( City city )
+        private Entity(City city)
         {
-            ID = stNextID++;
+            ID = _sNextID++;
             City = city;
 
-            myComps = new List<Component>();
-            myCompDict = new Dictionary<Type, Component>();
-            myPosition = new Vector3();
-            myPosChanged = true;
+            _comps = new List<Component>();
+            _compDict = new Dictionary<Type, Component>();
+            _position = new Vector3();
+            _posChanged = true;
 
             IsValid = false;
         }
@@ -132,14 +132,14 @@ namespace Zombles.Entities
         public T AddComponent<T>()
             where T : Component
         {
-            T comp = Component.Create<T>( this );
-            Type type = typeof( T );
+            T comp = Component.Create<T>(this);
+            Type type = typeof(T);
 
             do
-                myCompDict.Add( type, comp );
-            while ( ( type = type.BaseType ) != typeof( Component ) );
+                _compDict.Add(type, comp);
+            while ((type = type.BaseType) != typeof(Component));
 
-            myComps.Add( comp );
+            _comps.Add(comp);
 
             return comp;
         }
@@ -148,13 +148,13 @@ namespace Zombles.Entities
             where T : Component
         {
             T comp = GetComponent<T>();
-            Type type = typeof( T );
+            Type type = typeof(T);
 
             do
-                myCompDict.Remove( type );
-            while ( ( type = type.BaseType ) != typeof( Component ) );
+                _compDict.Remove(type);
+            while ((type = type.BaseType) != typeof(Component));
 
-            myComps.Remove( comp );
+            _comps.Remove(comp);
         }
 
         public TNew SwapComponent<TOld, TNew>()
@@ -163,23 +163,23 @@ namespace Zombles.Entities
         {
             TOld old = GetComponent<TOld>();
 
-            if( IsValid )
+            if (IsValid)
                 old.OnRemove();
 
             Type type = old.GetType();
 
             do
-                myCompDict.Remove( type );
-            while ( ( type = type.BaseType ) != typeof( Component ) );
+                _compDict.Remove(type);
+            while ((type = type.BaseType) != typeof(Component));
 
-            TNew comp = Component.Create<TNew>( this );
-            type = typeof( TNew );
+            TNew comp = Component.Create<TNew>(this);
+            type = typeof(TNew);
 
             do
-                myCompDict.Add( type, comp );
-            while ( ( type = type.BaseType ) != typeof( Component ) );
+                _compDict.Add(type, comp);
+            while ((type = type.BaseType) != typeof(Component));
 
-            myComps[ myComps.IndexOf( old ) ] = comp;
+            _comps[_comps.IndexOf(old)] = comp;
 
             return comp;
         }
@@ -187,84 +187,78 @@ namespace Zombles.Entities
         public bool HasComponent<T>()
             where T : Component
         {
-            return myCompDict.ContainsKey( typeof( T ) );
+            return _compDict.ContainsKey(typeof(T));
         }
 
-        public bool HasComponent( Type t )
+        public bool HasComponent(Type t)
         {
-            return myCompDict.ContainsKey( t );
+            return _compDict.ContainsKey(t);
         }
 
         public T GetComponent<T>()
             where T : Component
         {
-            return (T) myCompDict[ typeof( T ) ];
+            return (T) _compDict[typeof(T)];
         }
 
-        public Component GetComponent( Type t )
+        public Component GetComponent(Type t)
         {
-            return myCompDict[ t ];
+            return _compDict[t];
         }
 
         public void Spawn()
         {
-            if ( !IsValid )
-            {
+            if (!IsValid) {
                 IsValid = true;
                 UpdateBlock();
 
-                foreach ( Component comp in this )
+                foreach (Component comp in this)
                     comp.OnSpawn();
             }
         }
 
         public void UpdateComponents()
         {
-            foreach ( Component comp in this )
+            foreach (Component comp in this)
                 comp.OnSpawn();
         }
 
         public void Remove()
         {
-            if ( IsValid )
-            {
-                foreach ( Component comp in this )
+            if (IsValid) {
+                foreach (Component comp in this)
                     comp.OnRemove();
 
                 IsValid = false;
             }
         }
 
-        public void Think( double dt )
+        public void Think(double dt)
         {
-            for( int i = myComps.Count - 1; i >= 0; -- i )
-                myComps[ i ].OnThink( dt );
+            for (int i = _comps.Count - 1; i >= 0; --i)
+                _comps[i].OnThink(dt);
         }
 
         public void UpdateBlock()
         {
-            if ( IsValid && myPosChanged )
-            {
-                Block newBlock = City.GetBlock( myPosition.X, myPosition.Z );
-                if ( newBlock != Block )
-                {
-                    if ( Block != null )
-                        Block.RemoveEntity( this );
+            if (IsValid && _posChanged) {
+                Block newBlock = City.GetBlock(_position.X, _position.Z);
+                if (newBlock != Block) {
+                    if (Block != null)
+                        Block.RemoveEntity(this);
                     Block = newBlock;
-                    Block.AddEntity( this );
+                    Block.AddEntity(this);
                 }
-                myPosChanged = false;
-            }
-            else if ( !IsValid && Block != null )
-            {
-                Block.RemoveEntity( this );
+                _posChanged = false;
+            } else if (!IsValid && Block != null) {
+                Block.RemoveEntity(this);
                 Block = null;
             }
         }
 
         public IEnumerator<Component> GetEnumerator()
         {
-            return myComps.GetEnumerator();
+            return _comps.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

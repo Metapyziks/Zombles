@@ -6,25 +6,25 @@ namespace Zombles.Graphics
 {
     public class Texture
     {
-        protected static int GetNextPOTS( int wid, int hei )
+        protected static int GetNextPOTS(int wid, int hei)
         {
             int max = wid > hei ? wid : hei;
 
-            return (int) Math.Pow( 2.0, Math.Ceiling( Math.Log( max, 2.0 ) ) );
+            return (int) Math.Pow(2.0, Math.Ceiling(Math.Log(max, 2.0)));
         }
 
-        private static Texture stCurrentLoadedTexture;
+        private static Texture _sCurrentLoadedTexture;
 
         public static Texture Current
         {
             get
             {
-                return stCurrentLoadedTexture;
+                return _sCurrentLoadedTexture;
             }
         }
 
-        private int myID;
-        private bool myLoaded;
+        private int _id;
+        private bool _loaded;
 
         public TextureTarget TextureTarget { get; private set; }
 
@@ -32,7 +32,7 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myID > -1;
+                return _id > -1;
             }
         }
 
@@ -40,24 +40,24 @@ namespace Zombles.Graphics
         {
             get
             {
-                if ( !Ready )
-                    GL.GenTextures( 1, out myID );
+                if (!Ready)
+                    GL.GenTextures(1, out _id);
 
-                return myID;
+                return _id;
             }
         }
 
-        public Texture( TextureTarget target )
+        public Texture(TextureTarget target)
         {
             TextureTarget = target;
 
-            myID = -1;
-            myLoaded = false;
+            _id = -1;
+            _loaded = false;
         }
 
         public void Update()
         {
-            myLoaded = false;
+            _loaded = false;
         }
 
         protected virtual void Load()
@@ -67,16 +67,14 @@ namespace Zombles.Graphics
 
         public void Bind()
         {
-            if ( stCurrentLoadedTexture != this )
-            {
-                GL.BindTexture( TextureTarget, ID );
-                stCurrentLoadedTexture = this;
+            if (_sCurrentLoadedTexture != this) {
+                GL.BindTexture(TextureTarget, ID);
+                _sCurrentLoadedTexture = this;
             }
 
-            if ( !myLoaded )
-            {
+            if (!_loaded) {
                 Load();
-                myLoaded = true;
+                _loaded = true;
             }
         }
     }

@@ -9,16 +9,16 @@ namespace Zombles.Entities
 {
     public class Movement : Component
     {
-        private Collision myCollision;
-        private Vector2 myVelocity;
+        private Collision _collision;
+        private Vector2 _velocity;
 
         public Vector2 Velocity
         {
-            get { return myVelocity; }
+            get { return _velocity; }
             set
             {
-                myVelocity = value;
-                IsMoving = myVelocity.X != 0.0f || myVelocity.Y != 0.0f;
+                _velocity = value;
+                IsMoving = _velocity.X != 0.0f || _velocity.Y != 0.0f;
             }
         }
         public bool IsMoving { get; private set; }
@@ -31,10 +31,10 @@ namespace Zombles.Entities
 
         public override void OnSpawn()
         {
-            myCollision = null;
+            _collision = null;
 
             if ( Entity.HasComponent<Collision>() )
-                myCollision = Entity.GetComponent<Collision>();
+                _collision = Entity.GetComponent<Collision>();
         }
 
         public void Stop()
@@ -50,8 +50,8 @@ namespace Zombles.Entities
 
         public void Move( Vector2 move )
         {
-            if ( myCollision != null )
-                move = myCollision.TryMove( move );
+            if ( _collision != null )
+                move = _collision.TryMove( move );
 
             Vector3 pos = Entity.Position;
             pos.X += move.X;

@@ -19,7 +19,7 @@ namespace Zombles.Graphics
             Blank = new BitmapTexture2D(blankBmp);
         }
 
-        private readonly int myActualSize;
+        private readonly int _actualSize;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -31,12 +31,12 @@ namespace Zombles.Graphics
             Width = bitmap.Width;
             Height = bitmap.Height;
 
-            myActualSize = GetNextPOTS(bitmap.Width, bitmap.Height);
+            _actualSize = GetNextPOTS(bitmap.Width, bitmap.Height);
 
-            if (myActualSize == bitmap.Width && myActualSize == bitmap.Height)
+            if (_actualSize == bitmap.Width && _actualSize == bitmap.Height)
                 Bitmap = bitmap;
             else {
-                Bitmap = new Bitmap(myActualSize, myActualSize);
+                Bitmap = new Bitmap(_actualSize, _actualSize);
 
                 for (int x = 0; x < Width; ++x)
                     for (int y = 0; y < Height; ++y)
@@ -52,8 +52,8 @@ namespace Zombles.Graphics
         public Vector2 GetCoords(float x, float y)
         {
             return new Vector2 {
-                X = x / myActualSize,
-                Y = y / myActualSize
+                X = x / _actualSize,
+                Y = y / _actualSize
             };
         }
 

@@ -13,7 +13,7 @@ namespace Zombles.Entities
     {
         private class AStarNode
         {
-            private float myHeuristic;
+            private float _heuristic;
 
             public readonly Waypoint Waypoint;
             public readonly AStarNode Previous;
@@ -22,10 +22,10 @@ namespace Zombles.Entities
 
             public float Heuristic
             {
-                get { return myHeuristic; }
+                get { return _heuristic; }
                 set
                 {
-                    myHeuristic = value;
+                    _heuristic = value;
                     Total = Cost + value;
                 }
             }

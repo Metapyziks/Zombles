@@ -22,8 +22,8 @@ namespace Zombles
 
     public abstract class Plugin
     {
-        private static List<Type> stPluginTypeList = new List<Type>();
-        private static Dictionary<String, Plugin> stRegistered;
+        private static List<Type> _sPluginTypeList = new List<Type>();
+        private static Dictionary<String, Plugin> _sRegistered;
 
         protected static ZomblesGame Game { get; private set; }
 
@@ -44,21 +44,21 @@ namespace Zombles
 
             if ( c != null )
             {
-                for ( int i = 0; i < stPluginTypeList.Count + 1; ++i )
+                for ( int i = 0; i < _sPluginTypeList.Count + 1; ++i )
                 {
-                    if ( i == stPluginTypeList.Count )
+                    if ( i == _sPluginTypeList.Count )
                     {
-                        stPluginTypeList.Add( t );
+                        _sPluginTypeList.Add( t );
                         break;
                     }
 
-                    Type reg = stPluginTypeList[ i ];
+                    Type reg = _sPluginTypeList[ i ];
                     if ( reg.HasAttribute<PluginRequirementsAttribute>( false ) )
                     {
                         String[] reqs = reg.GetAttribute<PluginRequirementsAttribute>( false ).Requirements;
                         if ( reqs.Contains( t.FullName ) )
                         {
-                            stPluginTypeList.Insert( i, t );
+                            _sPluginTypeList.Insert( i, t );
                             break;
                         }
                     }
@@ -71,26 +71,26 @@ namespace Zombles
             foreach ( Type t in ScriptManager.GetTypes( typeof( Plugin ) ) )
                 Register( t );
 
-            stRegistered = new Dictionary<string, Plugin>();
+            _sRegistered = new Dictionary<string, Plugin>();
 
-            foreach ( Type t in stPluginTypeList )
+            foreach ( Type t in _sPluginTypeList )
             {
                 ConstructorInfo cons = t.GetConstructor( new Type[ 0 ] );
                 Plugin plg = (Plugin) cons.Invoke( new object[ 0 ] );
-                stRegistered.Add( t.FullName, plg );
+                _sRegistered.Add( t.FullName, plg );
                 plg.OnInitialize();
             }
         }
 
         public static void CityGenerated()
         {
-            foreach ( Plugin plg in stRegistered.Values )
+            foreach ( Plugin plg in _sRegistered.Values )
                 plg.OnCityGenerated();
         }
 
         public static void Think( double dt )
         {
-            foreach ( Plugin plg in stRegistered.Values )
+            foreach ( Plugin plg in _sRegistered.Values )
                 plg.OnThink( dt );
         }
 

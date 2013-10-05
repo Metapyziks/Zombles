@@ -13,7 +13,7 @@ namespace Zombles.Geometry
 {
     public class District : IEnumerable<Block>
     {
-        private List<Entity> myUnspawnedEnts;
+        private List<Entity> _unspawnedEnts;
 
         public readonly City City;
 
@@ -63,12 +63,12 @@ namespace Zombles.Geometry
 
             Parent = parent;
 
-            myUnspawnedEnts = new List<Entity>();
+            _unspawnedEnts = new List<Entity>();
         }
 
         public void PlaceEntity( Entity ent )
         {
-            myUnspawnedEnts.Add( ent );
+            _unspawnedEnts.Add( ent );
         }
 
         public Block GetBlock( float x, float y )
@@ -140,10 +140,10 @@ namespace Zombles.Geometry
             IsLeaf = true;
             Block = block;
 
-            foreach ( Entity ent in myUnspawnedEnts )
+            foreach ( Entity ent in _unspawnedEnts )
                 ent.Spawn();
 
-            myUnspawnedEnts.Clear();
+            _unspawnedEnts.Clear();
         }
 
         public int GetGeometryVertexCount()

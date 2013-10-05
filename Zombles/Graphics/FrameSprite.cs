@@ -6,19 +6,19 @@ namespace Zombles.Graphics
 {
     public class FrameSprite : Sprite
     {
-        private Vector2 myFrameSize;
-        private Vector2 myFrameTopLeft;
-        private Vector2 myFrameBottomRight;
+        private Vector2 _frameSize;
+        private Vector2 _frameTopLeft;
+        private Vector2 _frameBottomRight;
 
         public override Vector2 Size
         {
             get
             {
-                return myFrameSize;
+                return _frameSize;
             }
             set
             {
-                myFrameSize = value;
+                _frameSize = value;
             }
         }
 
@@ -26,11 +26,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameTopLeft;
+                return _frameTopLeft;
             }
             set
             {
-                myFrameTopLeft = value;
+                _frameTopLeft = value;
             }
         }
 
@@ -38,11 +38,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameTopLeft.X;
+                return _frameTopLeft.X;
             }
             set
             {
-                myFrameTopLeft.X = value;
+                _frameTopLeft.X = value;
             }
         }
 
@@ -50,11 +50,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameTopLeft.Y;
+                return _frameTopLeft.Y;
             }
             set
             {
-                myFrameTopLeft.Y = value;
+                _frameTopLeft.Y = value;
             }
         }
 
@@ -62,11 +62,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameBottomRight;
+                return _frameBottomRight;
             }
             set
             {
-                myFrameBottomRight = value;
+                _frameBottomRight = value;
             }
         }
 
@@ -74,11 +74,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameBottomRight.X;
+                return _frameBottomRight.X;
             }
             set
             {
-                myFrameBottomRight.X = value;
+                _frameBottomRight.X = value;
             }
         }
 
@@ -86,19 +86,19 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myFrameBottomRight.Y;
+                return _frameBottomRight.Y;
             }
             set
             {
-                myFrameBottomRight.Y = value;
+                _frameBottomRight.Y = value;
             }
         }
 
         public FrameSprite( BitmapTexture2D texture, float scale = 1.0f )
             : base( texture, scale )
         {
-            myFrameTopLeft = new Vector2();
-            myFrameBottomRight = new Vector2();
+            _frameTopLeft = new Vector2();
+            _frameBottomRight = new Vector2();
         }
 
         protected override float[] FindVerts()

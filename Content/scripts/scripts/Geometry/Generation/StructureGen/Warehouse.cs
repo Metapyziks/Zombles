@@ -12,14 +12,14 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
 {
     public class Warehouse : StructureGenerator
     {
-        private CratePile myCrateGen;
+        private CratePile _crateGen;
 
         public Face EntranceFaces { get; set; }
 
         public Warehouse(Face entranceFaces = Face.All)
         {
-            myCrateGen = new CratePile();
-            myCrateGen.MaxHeight = 2;
+            _crateGen = new CratePile();
+            _crateGen.MaxHeight = 2;
 
             EntranceFaces = entranceFaces;
         }

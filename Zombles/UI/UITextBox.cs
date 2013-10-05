@@ -10,12 +10,12 @@ namespace Zombles.UI
 {
     public class UITextBox : UIObject
     {
-        private Font myFont;
-        private FrameSprite mySprite;
-        private UILabel myText;
-        private Sprite myUnderlineChar;
+        private Font _font;
+        private FrameSprite _sprite;
+        private UILabel _text;
+        private Sprite _underlineChar;
 
-        private DateTime myLastFlashTime;
+        private DateTime _lastFlashTime;
 
         public int CharacterLimit;
 
@@ -23,14 +23,14 @@ namespace Zombles.UI
         {
             get
             {
-                return myText.Text;
+                return _text.Text;
             }
             set
             {
                 if (value.Length <= CharacterLimit)
-                    myText.Text = value;
+                    _text.Text = value;
                 else
-                    myText.Text = value.Substring(0, CharacterLimit);
+                    _text.Text = value.Substring(0, CharacterLimit);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Zombles.UI
         {
             PaddingLeft = PaddingTop = PaddingRight = PaddingBottom = 4.0f * scale;
 
-            mySprite = new FrameSprite(PanelsTexture, scale) {
+            _sprite = new FrameSprite(PanelsTexture, scale) {
                 SubrectSize = new Vector2(16, 16),
                 SubrectOffset = new Vector2(0, 32),
                 FrameTopLeftOffet = new Vector2(4, 4),
@@ -59,18 +59,18 @@ namespace Zombles.UI
                 Size = size
             };
 
-            myFont = Font.Large;
-            myText = new UILabel(myFont, scale);
-            AddChild(myText);
+            _font = Font.Large;
+            _text = new UILabel(_font, scale);
+            AddChild(_text);
 
-            CharacterLimit = (int) (InnerWidth / (myFont.CharWidth * scale));
+            CharacterLimit = (int) (InnerWidth / (_font.CharWidth * scale));
 
-            myUnderlineChar = new Sprite(scale * myFont.CharWidth, scale * 2.0f, OpenTK.Graphics.Color4.Black);
+            _underlineChar = new Sprite(scale * _font.CharWidth, scale * 2.0f, OpenTK.Graphics.Color4.Black);
         }
 
         protected override void OnFocus()
         {
-            myLastFlashTime = DateTime.Now;
+            _lastFlashTime = DateTime.Now;
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -88,17 +88,17 @@ namespace Zombles.UI
 
         protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
-            mySprite.Position = renderPosition;
-            mySprite.Colour = (IsEnabled ? OpenTK.Graphics.Color4.White : DisabledColour);
-            mySprite.Render(shader);
+            _sprite.Position = renderPosition;
+            _sprite.Colour = (IsEnabled ? OpenTK.Graphics.Color4.White : DisabledColour);
+            _sprite.Render(shader);
 
-            double timeSinceFlash = (DateTime.Now - myLastFlashTime).TotalSeconds;
+            double timeSinceFlash = (DateTime.Now - _lastFlashTime).TotalSeconds;
 
             if (timeSinceFlash < 0.5 && IsFocused && IsEnabled && Text.Length < CharacterLimit) {
-                myUnderlineChar.Position = renderPosition + new Vector2(PaddingLeft + myText.Width, PaddingTop + Math.Max(myText.Height, myFont.CharHeight) - myUnderlineChar.Height);
-                myUnderlineChar.Render(shader);
+                _underlineChar.Position = renderPosition + new Vector2(PaddingLeft + _text.Width, PaddingTop + Math.Max(_text.Height, _font.CharHeight) - _underlineChar.Height);
+                _underlineChar.Render(shader);
             } else if (timeSinceFlash >= 1.0)
-                myLastFlashTime = DateTime.Now;
+                _lastFlashTime = DateTime.Now;
         }
     }
 }

@@ -8,25 +8,25 @@ namespace Zombles.Graphics
 {
     public class Font
     {
-        private static Font stFontDefault;
-        private static Font stFontLarge;
+        private static Font _sFontDefault;
+        private static Font _sFontLarge;
 
         public static Font Default
         {
             get
             {
-                if (stFontDefault == null)
-                    stFontDefault = new Font("images", "gui", "fontdefault");
-                return stFontDefault;
+                if (_sFontDefault == null)
+                    _sFontDefault = new Font("images", "gui", "fontdefault");
+                return _sFontDefault;
             }
         }
         public static Font Large
         {
             get
             {
-                if (stFontLarge == null)
-                    stFontLarge = new Font("images", "gui", "fontlarge");
-                return stFontLarge;
+                if (_sFontLarge == null)
+                    _sFontLarge = new Font("images", "gui", "fontlarge");
+                return _sFontLarge;
             }
         }
 
@@ -67,15 +67,15 @@ namespace Zombles.Graphics
 
     public class Text : Sprite
     {
-        private String myText;
-        private Font myFont;
-        private float myWrapWidth;
+        private String _text;
+        private Font _font;
+        private float _wrapWidth;
 
         public Font Font
         {
             get
             {
-                return myFont;
+                return _font;
             }
         }
 
@@ -83,11 +83,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myText;
+                return _text;
             }
             set
             {
-                myText = value;
+                _text = value;
                 VertsChanged = true;
             }
         }
@@ -96,11 +96,11 @@ namespace Zombles.Graphics
         {
             get
             {
-                return myWrapWidth;
+                return _wrapWidth;
             }
             set
             {
-                myWrapWidth = value;
+                _wrapWidth = value;
                 VertsChanged = true;
             }
         }
@@ -114,13 +114,13 @@ namespace Zombles.Graphics
         public Text(Font font, float scale = 1.0f)
             : base(font.Texture, scale)
         {
-            myText = "";
-            myFont = font;
+            _text = "";
+            _font = font;
         }
 
         protected override float[] FindVerts()
         {
-            String text = myText.ApplyWordWrap(Font.CharWidth * Scale.X, WrapWidth);
+            String text = _text.ApplyWordWrap(Font.CharWidth * Scale.X, WrapWidth);
 
             int characters = text.Length;
 
@@ -158,24 +158,24 @@ namespace Zombles.Graphics
                 return;
             }
 
-            Vector2 subMin = myFont.GetCharOffset(character);
+            Vector2 subMin = _font.GetCharOffset(character);
 
             Vector2 tMin = Texture.GetCoords(subMin.X, subMin.Y);
-            Vector2 tMax = Texture.GetCoords(subMin.X + myFont.CharWidth, subMin.Y + myFont.CharHeight);
+            Vector2 tMax = Texture.GetCoords(subMin.X + _font.CharWidth, subMin.Y + _font.CharHeight);
             float xMin = tMin.X;
             float yMin = tMin.Y;
             float xMax = tMax.X;
             float yMax = tMax.Y;
 
-            float minX = x * myFont.CharWidth;
-            float minY = y * myFont.CharHeight;
+            float minX = x * _font.CharWidth;
+            float minY = y * _font.CharHeight;
 
             float[,] pos = new float[,]
             {
                 { minX, minY },
-                { minX + myFont.CharWidth, minY },
-                { minX + myFont.CharWidth, minY + myFont.CharHeight },
-                { minX, minY + myFont.CharHeight }
+                { minX + _font.CharWidth, minY },
+                { minX + _font.CharWidth, minY + _font.CharHeight },
+                { minX, minY + _font.CharHeight }
             };
 
             for (int i = 0; i < 4; ++i) {

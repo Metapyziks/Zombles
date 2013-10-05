@@ -7,7 +7,7 @@ namespace Zombles.Geometry
 {
     public class TileBuilder
     {
-        private List<ushort>[] myWallTileIndices;
+        private List<ushort>[] _wallTileIndices;
 
         public byte WallHeight { get; private set; }
         public byte FloorHeight { get; private set; }
@@ -29,9 +29,9 @@ namespace Zombles.Geometry
 
             RoofSlant = Face.None;
 
-            myWallTileIndices = new List<ushort>[4];
+            _wallTileIndices = new List<ushort>[4];
             for (int i = 0; i < 4; ++i)
-                myWallTileIndices[i] = new List<ushort>();
+                _wallTileIndices[i] = new List<ushort>();
         }
 
         public void SetFloor()
@@ -83,7 +83,7 @@ namespace Zombles.Geometry
 
         public ushort GetWall(int faceIndex, int level)
         {
-            List<ushort> wall = myWallTileIndices[faceIndex];
+            List<ushort> wall = _wallTileIndices[faceIndex];
 
             if (wall.Count <= level)
                 return 0xffff;
@@ -148,7 +148,7 @@ namespace Zombles.Geometry
 
         public void SetWallRange(int faceIndex, int level, int height, ushort tileIndex)
         {
-            List<ushort> wall = myWallTileIndices[faceIndex];
+            List<ushort> wall = _wallTileIndices[faceIndex];
 
             while (wall.Count < level + height)
                 wall.Add(0xffff);
@@ -164,8 +164,8 @@ namespace Zombles.Geometry
             ushort[ , ] indices = new ushort[4, WallHeight];
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < WallHeight; ++j) {
-                    if (j < myWallTileIndices[i].Count)
-                        indices[i, j] = myWallTileIndices[i][j];
+                    if (j < _wallTileIndices[i].Count)
+                        indices[i, j] = _wallTileIndices[i][j];
                     else
                         indices[i, j] = 0xffff;
                 }

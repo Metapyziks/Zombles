@@ -43,9 +43,9 @@ namespace Zombles
 
     public static class ScriptManager
     {
-        private static List<ScriptFile> stScripts = new List<ScriptFile>();
+        private static List<ScriptFile> _sScripts = new List<ScriptFile>();
 
-        private static Assembly stCompiledAssembly;
+        private static Assembly _sCompiledAssembly;
 
         private static void Compile()
         {
@@ -75,10 +75,10 @@ namespace Zombles
             compParams.TempFiles.KeepFiles = true;
             compParams.IncludeDebugInformation = true;
 
-            String[] sources = new String[stScripts.Count];
+            String[] sources = new String[_sScripts.Count];
 
-            for (int i = 0; i < stScripts.Count; ++i)
-                sources[i] = stScripts[i].Contents;
+            for (int i = 0; i < _sScripts.Count; ++i)
+                sources[i] = _sScripts[i].Contents;
 
             CompilerResults results = compiler.CompileAssemblyFromSource(compParams, sources);
 
@@ -93,14 +93,14 @@ namespace Zombles
                 return;
             }
 
-            stCompiledAssembly = results.CompiledAssembly;
+            _sCompiledAssembly = results.CompiledAssembly;
         }
 
         private static void DiscoverScripts(IEnumerable<String> locator)
         {
             var locatorArr = locator.ToArray();
             foreach (var name in Archive.GetAllNames<ScriptFile>(locator)) {
-                stScripts.Add(Archive.Get<ScriptFile>(locatorArr, name));
+                _sScripts.Add(Archive.Get<ScriptFile>(locatorArr, name));
             }
 
             foreach (var name in Archive.GetAllNames<Archive>(locator)) {
@@ -115,20 +115,20 @@ namespace Zombles
             Compile();
 
             MethodInfo info;
-            foreach (Type t in stCompiledAssembly.GetTypes())
+            foreach (Type t in _sCompiledAssembly.GetTypes())
                 if ((info = t.GetMethod("Initialize", BindingFlags.Static | BindingFlags.NonPublic)) != null)
                     info.Invoke(null, new object[0]);
         }
 
         public static Type GetType(String typeName)
         {
-            return stCompiledAssembly.GetType(typeName) ??
+            return _sCompiledAssembly.GetType(typeName) ??
                 Assembly.GetExecutingAssembly().GetType(typeName);
         }
 
         public static Type[] GetTypes(Type baseType)
         {
-            Type[] types = stCompiledAssembly.GetTypes();
+            Type[] types = _sCompiledAssembly.GetTypes();
 
             List<Type> matchingTypes = new List<Type>();
 

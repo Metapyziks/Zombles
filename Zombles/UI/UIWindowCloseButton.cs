@@ -9,7 +9,7 @@ namespace Zombles.UI
 {
     public class UIWindowCloseButton : UIObject
     {
-        private Sprite mySprite;
+        private Sprite _sprite;
 
         public UIWindowCloseButton(float scale = 1.0f)
             : this(new Vector2(), scale)
@@ -20,7 +20,7 @@ namespace Zombles.UI
         public UIWindowCloseButton(Vector2 position, float scale = 1.0f)
             : base(new Vector2(), position)
         {
-            mySprite = new Sprite(PanelsTexture, scale) {
+            _sprite = new Sprite(PanelsTexture, scale) {
                 SubrectOffset = new Vector2(32, 0),
                 SubrectSize = new Vector2(16, 16)
             };
@@ -32,19 +32,19 @@ namespace Zombles.UI
 
         protected override void OnMouseEnter(Vector2 mousePos)
         {
-            mySprite.SubrectLeft = 48.0f;
+            _sprite.SubrectLeft = 48.0f;
         }
 
         protected override void OnMouseLeave(Vector2 mousePos)
         {
-            mySprite.SubrectLeft = 32.0f;
+            _sprite.SubrectLeft = 32.0f;
         }
 
         protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
-            mySprite.Position = renderPosition;
+            _sprite.Position = renderPosition;
 
-            mySprite.Render(shader);
+            _sprite.Render(shader);
         }
     }
 }

@@ -22,17 +22,17 @@ namespace Zombles
         public const double ThinkFrequency = 60.0;
         public const double ThinkPeriod = 1.0 / ThinkFrequency;
 
-        private static Stopwatch myTimer;
-        private static Stopwatch myThinkTimer;
+        private static Stopwatch _timer;
+        private static Stopwatch _thinkTimer;
 
-        private static double mySpareTime;
+        private static double _spareTime;
 
         public static Scene CurrentScene { get; private set; }
         public static SpriteShader SpriteShader { get; private set; }
 
         public static double Time
         {
-            get { return myTimer.Elapsed.TotalSeconds; }
+            get { return _timer.Elapsed.TotalSeconds; }
         }
 
         public ZomblesGame()
@@ -71,13 +71,13 @@ namespace Zombles
             Mouse.ButtonDown += OnMouseButtonDown;
             Mouse.WheelChanged += OnMouseWheelChanged;
 
-            myTimer = new Stopwatch();
-            myTimer.Start();
+            _timer = new Stopwatch();
+            _timer.Start();
 
-            myThinkTimer = new Stopwatch();
-            myThinkTimer.Start();
+            _thinkTimer = new Stopwatch();
+            _thinkTimer.Start();
 
-            mySpareTime = 0.0;
+            _spareTime = 0.0;
 
             SetScene(ScriptManager.CreateInstance<Scene>("Zombles.Scripts.GameScene", this));
         }
@@ -95,7 +95,9 @@ namespace Zombles
         {
             if (CurrentScene != null)
                 CurrentScene.OnExit();
+
             CurrentScene = newScene;
+            
             if (CurrentScene != null) {
                 CurrentScene.OnEnter(CurrentScene.FirstTime);
                 CurrentScene.FirstTime = false;
@@ -104,12 +106,12 @@ namespace Zombles
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            if (myThinkTimer.Elapsed.TotalSeconds + mySpareTime < ThinkPeriod)
+            if (_thinkTimer.Elapsed.TotalSeconds + _spareTime < ThinkPeriod)
                 return;
 
-            mySpareTime += myThinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
+            _spareTime += _thinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
 
-            myThinkTimer.Restart();
+            _thinkTimer.Restart();
 
             if (CurrentScene != null)
                 CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));

@@ -8,17 +8,17 @@ namespace Zombles.Geometry
 {
     public class Block : IEnumerable<Entity>
     {
-        private Tile[,] myTiles;
-        private List<Entity> myEnts;
+        private Tile[,] _tiles;
+        private List<Entity> _ents;
 
-        private int myBaseGeomVertCount;
-        private int myTopGeomVertCount;
-        private int myGeomVertOffset;
+        private int _baseGeomVertCount;
+        private int _topGeomVertCount;
+        private int _geomVertOffset;
 
-        private int myPathVertCount;
-        private int myPathVertOffset;
+        private int _pathVertCount;
+        private int _pathVertOffset;
 
-        private List<PathEdge> myPaths;
+        private List<PathEdge> _paths;
 
         public readonly City City;
         public readonly District District;
@@ -40,79 +40,79 @@ namespace Zombles.Geometry
             Width = district.Width;
             Height = district.Height;
 
-            myTiles = new Tile[ Width, Height ];
-            myEnts = new List<Entity>();
+            _tiles = new Tile[ Width, Height ];
+            _ents = new List<Entity>();
         }
 
         public Tile this[ int x, int y ]
         {
             get
             {
-                return myTiles[ x - X, y - Y ];
+                return _tiles[ x - X, y - Y ];
             }
         }
 
         public void BuildTiles( TileBuilder[,] tiles )
         {
-            lock ( myTiles )
+            lock ( _tiles )
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                        myTiles[ x, y ] = tiles[ x, y ].Create( X + x, Y + y );
+                        _tiles[ x, y ] = tiles[ x, y ].Create( X + x, Y + y );
         }
 
         internal void AddEntity( Entity ent )
         {
-            myEnts.Add( ent );
+            _ents.Add( ent );
         }
 
         internal void RemoveEntity( Entity ent )
         {
-            myEnts.Remove( ent );
+            _ents.Remove( ent );
         }
 
         public void Think( double dt )
         {
-            for ( int i = myEnts.Count - 1; i >= 0; --i )
-                myEnts[ i ].Think( dt );
+            for ( int i = _ents.Count - 1; i >= 0; --i )
+                _ents[ i ].Think( dt );
         }
 
         public void PostThink()
         {
-            for( int i = myEnts.Count - 1; i >= 0; --i )
-                myEnts[ i ].UpdateBlock();
+            for( int i = _ents.Count - 1; i >= 0; --i )
+                _ents[ i ].UpdateBlock();
         }
 
         public int GetGeometryVertexCount()
         {
-            myBaseGeomVertCount = 0;
-            myTopGeomVertCount = 0;
+            _baseGeomVertCount = 0;
+            _topGeomVertCount = 0;
 
             for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
             {
-                myBaseGeomVertCount += myTiles[ x, y ].GetBaseVertexCount();
-                myTopGeomVertCount += myTiles[ x, y ].GetTopVertexCount();
+                _baseGeomVertCount += _tiles[ x, y ].GetBaseVertexCount();
+                _topGeomVertCount += _tiles[ x, y ].GetTopVertexCount();
             }
 
-            return myBaseGeomVertCount + myTopGeomVertCount;
+            return _baseGeomVertCount + _topGeomVertCount;
         }
 
         public void GetGeometryVertices( float[] verts, ref int i )
         {
-            myGeomVertOffset = i / 3;
+            _geomVertOffset = i / 3;
 
-            lock ( myTiles )
+            lock ( _tiles )
             {
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                    myTiles[ x, y ].GetBaseVertices( verts, ref i );
+                    _tiles[ x, y ].GetBaseVertices( verts, ref i );
 
                 for ( int x = 0; x < Width; ++x ) for ( int y = 0; y < Height; ++y )
-                     myTiles[ x, y ].GetTopVertices( verts, ref i );
+                     _tiles[ x, y ].GetTopVertices( verts, ref i );
             }
         }
 
         public int GetPathVertexCount()
         {
-            myPathVertCount = 0;
-            myPaths = new List<PathEdge>();
+            _pathVertCount = 0;
+            _paths = new List<PathEdge>();
 
             foreach ( Entity ent in this )
             {
@@ -123,21 +123,21 @@ namespace Zombles.Geometry
                     {
                         if ( edge.EndWaypoint.Entity.ID < waypoint.Entity.ID || !edge.EndWaypoint.IsConnected( waypoint ) )
                         {
-                            myPathVertCount += 2;
-                            myPaths.Add( edge );
+                            _pathVertCount += 2;
+                            _paths.Add( edge );
                         }
                     }
                 }
             }
 
-            return myPathVertCount;
+            return _pathVertCount;
         }
 
         public void GetPathVertices( float[] verts, ref int i )
         {
-            myPathVertOffset = i / 2;
+            _pathVertOffset = i / 2;
 
-            foreach ( PathEdge edge in myPaths )
+            foreach ( PathEdge edge in _paths )
             {
                 verts[ i++ ] = edge.Origin.X;
                 verts[ i++ ] = edge.Origin.Y;
@@ -148,29 +148,29 @@ namespace Zombles.Geometry
 
         public void RenderGeometry( VertexBuffer vb, GeometryShader shader, bool baseOnly = false )
         {
-            vb.Render( shader, myGeomVertOffset, ( baseOnly ? myBaseGeomVertCount : myBaseGeomVertCount + myTopGeomVertCount ) );
+            vb.Render( shader, _geomVertOffset, ( baseOnly ? _baseGeomVertCount : _baseGeomVertCount + _topGeomVertCount ) );
         }
 
         public void RenderEntities( FlatEntityShader shader )
         {
-            foreach ( Entity ent in myEnts )
+            foreach ( Entity ent in _ents )
                 if ( ent.HasComponent<Render2D>() )
                     ent.GetComponent<Render2D>().OnRender( shader );
         }
 
         public void RenderPaths( VertexBuffer vb, DebugTraceShader shader )
         {
-            vb.Render( shader, myPathVertOffset, myPathVertCount );
+            vb.Render( shader, _pathVertOffset, _pathVertCount );
         }
 
         public IEnumerator<Entity> GetEnumerator()
         {
-            return myEnts.GetEnumerator();
+            return _ents.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return myEnts.GetEnumerator();
+            return _ents.GetEnumerator();
         }
     }
 }

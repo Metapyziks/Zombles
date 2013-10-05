@@ -11,7 +11,7 @@ namespace Zombles.Entities
 {
     public class RenderAnim : Render2D
     {
-        private double myStartTime;
+        private double _startTime;
 
         public EntityAnim CurAnim { get; private set; }
         public EntityAnim NextAnim { get; private set; }
@@ -24,7 +24,7 @@ namespace Zombles.Entities
         public RenderAnim( Entity ent )
             : base( ent )
         {
-            myStartTime = 0.0;
+            _startTime = 0.0;
 
             CurAnim = null;
             NextAnim = null;
@@ -39,7 +39,7 @@ namespace Zombles.Entities
 
         public void Start( EntityAnim anim, EntityAnim nextAnim )
         {
-            myStartTime = ZomblesGame.Time;
+            _startTime = ZomblesGame.Time;
             CurAnim = anim;
             NextAnim = nextAnim;
             Playing = true;
@@ -60,12 +60,12 @@ namespace Zombles.Entities
             int frame = 0;
             if ( Playing )
             {
-                frame = (int) ( ( ZomblesGame.Time - myStartTime ) *
+                frame = (int) ( ( ZomblesGame.Time - _startTime ) *
                     Speed * CurAnim.Frequency * CurAnim.FrameCount );
 
                 if ( frame >= CurAnim.FrameCount )
                 {
-                    myStartTime += 1.0 / ( CurAnim.Frequency * Speed );
+                    _startTime += 1.0 / ( CurAnim.Frequency * Speed );
                     CurAnim = NextAnim;
 
                     if ( CurAnim == null )
@@ -74,7 +74,7 @@ namespace Zombles.Entities
                         return;
                     }
                     
-                    frame = (int) ( ( ZomblesGame.Time - myStartTime ) *
+                    frame = (int) ( ( ZomblesGame.Time - _startTime ) *
                         Speed * CurAnim.Frequency * CurAnim.FrameCount ) % CurAnim.FrameCount;
                 }
             }

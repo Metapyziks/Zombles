@@ -110,20 +110,20 @@ namespace Zombles.Graphics
             }
         }
 
-        private static bool stVersionChecked;
-        private static bool stGL3;
-        private static bool stNVidiaCard = false;
+        private static bool _sVersionChecked;
+        private static bool _sGL3;
+        private static bool _sNVidiaCard = false;
 
-        private static ShaderProgram stCurProgram;
+        private static ShaderProgram _sCurProgram;
 
         public static bool GL3
         {
             get
             {
-                if ( !stVersionChecked )
+                if ( !_sVersionChecked )
                     CheckGLVersion();
 
-                return stGL3;
+                return _sGL3;
             }
         }
 
@@ -131,34 +131,34 @@ namespace Zombles.Graphics
         {
             get
             {
-                if ( !stVersionChecked )
+                if ( !_sVersionChecked )
                     CheckGLVersion();
 
-                return stNVidiaCard;
+                return _sNVidiaCard;
             }
         }
 
         private static void CheckGLVersion()
         {
             String str = GL.GetString( StringName.Version );
-            stGL3 = str.StartsWith( "3." ) || str.StartsWith( "4." );
+            _sGL3 = str.StartsWith( "3." ) || str.StartsWith( "4." );
 
             str = GL.GetString( StringName.Vendor );
-            stNVidiaCard = str.ToUpper().StartsWith( "NVIDIA" );
+            _sNVidiaCard = str.ToUpper().StartsWith( "NVIDIA" );
 
-            stVersionChecked = true;
+            _sVersionChecked = true;
         }
 
         public int VertexDataStride;
         public int VertexDataSize;
-        private List<AttributeInfo> myAttributes;
-        private Dictionary<String, TextureInfo> myTextures;
+        private List<AttributeInfo> _attributes;
+        private Dictionary<String, TextureInfo> _textures;
 
         public int Program { get; private set; }
 
         public AttributeInfo[] Attributes
         {
-            get { return myAttributes.ToArray(); }
+            get { return _attributes.ToArray(); }
         }
 
         public BeginMode BeginMode;
@@ -167,7 +167,7 @@ namespace Zombles.Graphics
 
         public bool Active
         {
-            get { return stCurProgram == this; }
+            get { return _sCurProgram == this; }
         }
 
         public bool Started;
@@ -175,8 +175,8 @@ namespace Zombles.Graphics
         public ShaderProgram()
         {
             BeginMode = BeginMode.Triangles;
-            myAttributes = new List<AttributeInfo>();
-            myTextures = new Dictionary<string, TextureInfo>();
+            _attributes = new List<AttributeInfo>();
+            _textures = new Dictionary<string, TextureInfo>();
             VertexDataStride = 0;
             VertexDataSize = 0;
             Started = false;
@@ -237,7 +237,7 @@ namespace Zombles.Graphics
         {
             if ( !Active )
             {
-                stCurProgram = this;
+                _sCurProgram = this;
                 GL.UseProgram( Program );
             }
         }
@@ -254,14 +254,14 @@ namespace Zombles.Graphics
 
             VertexDataStride += info.Length;
             VertexDataSize += info.Size;
-            myAttributes.Add( info );
+            _attributes.Add( info );
 
             ErrorCheck( "addattrib:" + identifier );
         }
 
         public void AddTexture( string identifier, TextureUnit unit )
         {
-            myTextures.Add( identifier, new TextureInfo( this, identifier,
+            _textures.Add( identifier, new TextureInfo( this, identifier,
                 unit ) );
 
             ErrorCheck( "addtexture" );
@@ -275,7 +275,7 @@ namespace Zombles.Graphics
                 ErrorCheck( "end" );
             }
 
-            myTextures[ identifier ].SetCurrentTexture( texture );
+            _textures[ identifier ].SetCurrentTexture( texture );
 
             ErrorCheck( "settexture" );
 
@@ -287,7 +287,7 @@ namespace Zombles.Graphics
         {
             StartBatch();
 
-            foreach ( AttributeInfo info in myAttributes )
+            foreach ( AttributeInfo info in _attributes )
                 GL.VertexAttribPointer( info.Location, info.Size,
                     info.PointerType, info.Normalize, VertexDataStride, info.Offset );
 
@@ -337,7 +337,7 @@ namespace Zombles.Graphics
             int i = 0;
             while( i < data.Length )
             {
-                foreach( AttributeInfo attr in myAttributes )
+                foreach( AttributeInfo attr in _attributes )
                 {
                     int offset = attr.InputOffset;
 

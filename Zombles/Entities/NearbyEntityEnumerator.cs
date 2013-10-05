@@ -11,12 +11,12 @@ namespace Zombles.Entities
 {
     public class NearbyEntityEnumerator : IEnumerator<Entity>
     {
-        private District myCurDistrict;
-        private IEnumerator<Entity> myEntEnumerator;
-        private float myRange2;
+        private District _curDistrict;
+        private IEnumerator<Entity> _entEnumerator;
+        private float _range2;
 
-        private float myHWidth;
-        private float myHHeight;
+        private float _hWidth;
+        private float _hHeight;
 
         public readonly City City;
         public readonly Vector2 Center;
@@ -28,23 +28,23 @@ namespace Zombles.Entities
             Center = center;
             Range = range;
 
-            myCurDistrict = null;
-            myEntEnumerator = null;
-            myRange2 = range * range;
+            _curDistrict = null;
+            _entEnumerator = null;
+            _range2 = range * range;
 
-            myHWidth = City.Width / 2.0f;
-            myHHeight = City.Height / 2.0f;
+            _hWidth = City.Width / 2.0f;
+            _hHeight = City.Height / 2.0f;
         }
 
         public Entity Current
         {
-            get { return myEntEnumerator.Current; }
+            get { return _entEnumerator.Current; }
         }
 
         public void Dispose()
         {
-            myCurDistrict = null;
-            myEntEnumerator = null;
+            _curDistrict = null;
+            _entEnumerator = null;
         }
 
         object System.Collections.IEnumerator.Current
@@ -56,36 +56,36 @@ namespace Zombles.Entities
         {
             while( true )
             {
-                if ( myCurDistrict == null )
-                    myCurDistrict = City.RootDistrict;
-                else if ( myCurDistrict.IsLeaf )
+                if ( _curDistrict == null )
+                    _curDistrict = City.RootDistrict;
+                else if ( _curDistrict.IsLeaf )
                 {
-                    while ( myEntEnumerator.MoveNext() )
-                        if ( InRange( myEntEnumerator.Current ) )
+                    while ( _entEnumerator.MoveNext() )
+                        if ( InRange( _entEnumerator.Current ) )
                             return true;
 
                     do
                     {
-                        while ( !myCurDistrict.IsRoot && myCurDistrict == myCurDistrict.Parent.ChildB )
-                            myCurDistrict = myCurDistrict.Parent;
+                        while ( !_curDistrict.IsRoot && _curDistrict == _curDistrict.Parent.ChildB )
+                            _curDistrict = _curDistrict.Parent;
 
-                        if ( myCurDistrict.IsRoot )
+                        if ( _curDistrict.IsRoot )
                             return false;
 
-                        myCurDistrict = myCurDistrict.Parent.ChildB;
+                        _curDistrict = _curDistrict.Parent.ChildB;
                     }
-                    while ( !InRange( myCurDistrict ) );
+                    while ( !InRange( _curDistrict ) );
                 }
 
-                while ( myCurDistrict.IsBranch )
+                while ( _curDistrict.IsBranch )
                 {
-                    if ( InRange( myCurDistrict.ChildA ) )
-                        myCurDistrict = myCurDistrict.ChildA;
+                    if ( InRange( _curDistrict.ChildA ) )
+                        _curDistrict = _curDistrict.ChildA;
                     else
-                        myCurDistrict = myCurDistrict.ChildB;
+                        _curDistrict = _curDistrict.ChildB;
                 }
 
-                myEntEnumerator = myCurDistrict.Block.GetEnumerator();
+                _entEnumerator = _curDistrict.Block.GetEnumerator();
             }
         }
 
@@ -102,18 +102,18 @@ namespace Zombles.Entities
             else if ( Center.Y > district.Bounds.Bottom )
                 ydiff = Math.Min( Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + City.Height );
 
-            return xdiff * xdiff + ydiff * ydiff <= myRange2;
+            return xdiff * xdiff + ydiff * ydiff <= _range2;
         }
 
         private bool InRange( Entity ent )
         {
-            return City.Difference( Center, ent.Position2D ).LengthSquared <= myRange2;
+            return City.Difference( Center, ent.Position2D ).LengthSquared <= _range2;
         }
 
         public void Reset()
         {
-            myCurDistrict = null;
-            myEntEnumerator = null;
+            _curDistrict = null;
+            _entEnumerator = null;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Zombles
 {
     public class Scene : IDisposable
     {
-        private UIObject myUIRoot;
+        private UIObject _uiRoot;
         
         internal bool FirstTime;
 
@@ -70,18 +70,18 @@ namespace Zombles
         public Scene( ZomblesGame gameWindow )
         {
             GameWindow = gameWindow;
-            myUIRoot = new UIObject( new Vector2( Width, Height ) );
+            _uiRoot = new UIObject( new Vector2( Width, Height ) );
             FirstTime = true;
         }
 
         public void AddChild( UIObject child )
         {
-            myUIRoot.AddChild( child );
+            _uiRoot.AddChild( child );
         }
 
         public void RemoveChild( UIObject child )
         {
-            myUIRoot.RemoveChild( child );
+            _uiRoot.RemoveChild( child );
         }
 
         public virtual void OnEnter( bool firstTime )
@@ -105,7 +105,7 @@ namespace Zombles
 
         public virtual void OnMouseButtonDown( MouseButtonEventArgs e )
         {
-            myUIRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
         }
 
         public event MouseButtonEventHandler MouseButtonUp;
@@ -119,7 +119,7 @@ namespace Zombles
 
         public virtual void OnMouseButtonUp( MouseButtonEventArgs e )
         {
-            myUIRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
         }
 
         public event MouseMoveEventHandler MouseMove;
@@ -133,7 +133,7 @@ namespace Zombles
 
         public virtual void OnMouseMove( MouseMoveEventArgs e )
         {
-            myUIRoot.SendMouseMoveEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseMoveEvent( new Vector2( Mouse.X, Mouse.Y ), e );
         }
 
         public virtual void OnMouseLeave( EventArgs e )
@@ -153,7 +153,7 @@ namespace Zombles
 
         public virtual void OnKeyPress( KeyPressEventArgs e )
         {
-            myUIRoot.SendKeyPressEvent( e );
+            _uiRoot.SendKeyPressEvent( e );
         }
 
         public virtual void OnUpdateFrame( FrameEventArgs e )
@@ -170,7 +170,7 @@ namespace Zombles
 
         public virtual void OnRenderSprites( FrameEventArgs e )
         {
-            myUIRoot.Render( SpriteShader );
+            _uiRoot.Render( SpriteShader );
         }
 
         public virtual void OnResize()

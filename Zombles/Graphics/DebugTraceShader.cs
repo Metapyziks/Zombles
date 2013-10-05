@@ -14,29 +14,29 @@ namespace Zombles.Graphics
 {
     public class DebugTraceShader : ShaderProgram3D
     {
-        private int myColourLoc;
-        private Color4 myColour;
+        private int _colourLoc;
+        private Color4 _colour;
 
         public Color4 Colour
         {
-            get { return myColour; }
+            get { return _colour; }
             set
             {
-                myColour = value;
-                if ( Started )
+                _colour = value;
+                if (Started)
                     GL.End();
-                GL.Uniform4( myColourLoc, myColour );
-                if ( Started )
-                    GL.Begin( BeginMode );
+                GL.Uniform4(_colourLoc, _colour);
+                if (Started)
+                    GL.Begin(BeginMode);
             }
         }
 
         public DebugTraceShader()
         {
-            ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
-            vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
-            vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
-            vert.AddAttribute( ShaderVarType.Vec2, "in_vertex" );
+            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
+            vert.AddUniform(ShaderVarType.Mat4, "view_matrix");
+            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
+            vert.AddAttribute(ShaderVarType.Vec2, "in_vertex");
             vert.Logic = @"
                 void main( void )
                 {
@@ -51,8 +51,8 @@ namespace Zombles.Graphics
                 }
             ";
 
-            ShaderBuilder frag = new ShaderBuilder( ShaderType.FragmentShader, false );
-            frag.AddUniform( ShaderVarType.Vec4, "colour" );
+            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false);
+            frag.AddUniform(ShaderVarType.Vec4, "colour");
             frag.Logic = @"
                 void main( void )
                 {
@@ -60,8 +60,8 @@ namespace Zombles.Graphics
                 }
             ";
 
-            VertexSource = vert.Generate( GL3 );
-            FragmentSource = frag.Generate( GL3 );
+            VertexSource = vert.Generate(GL3);
+            FragmentSource = frag.Generate(GL3);
 
             BeginMode = BeginMode.Lines;
 
@@ -72,53 +72,52 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute( "in_vertex", 2 );
+            AddAttribute("in_vertex", 2);
 
-            myColourLoc = GL.GetUniformLocation( Program, "colour" );
-            Colour = new Color4( 255, 255, 255, 127 );
+            _colourLoc = GL.GetUniformLocation(Program, "colour");
+            Colour = new Color4(255, 255, 255, 127);
         }
 
         protected override void OnStartBatch()
         {
             base.OnStartBatch();
 
-            GL.Enable( EnableCap.DepthTest );
-            GL.Enable( EnableCap.Blend );
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
 
-            GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
 
-        public void Render( TraceResult trace )
+        public void Render(TraceResult trace)
         {
-            GL.VertexAttrib2( Attributes[ 0 ].Location, trace.Origin );
-            GL.VertexAttrib2( Attributes[ 0 ].Location, trace.Origin + trace.Vector );
+            GL.VertexAttrib2(Attributes[0].Location, trace.Origin);
+            GL.VertexAttrib2(Attributes[0].Location, trace.Origin + trace.Vector);
         }
 
-        public void Render( PathEdge path )
+        public void Render(PathEdge path)
         {
-            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin );
-            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin + path.Vector );
+            GL.VertexAttrib2(Attributes[0].Location, path.Origin);
+            GL.VertexAttrib2(Attributes[0].Location, path.Origin + path.Vector);
         }
 
-        public void Render( Path path )
+        public void Render(Path path)
         {
-            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Origin );
+            GL.VertexAttrib2(Attributes[0].Location, path.Origin);
             Vector2 prev = path.Origin;
-            for ( int i = 0; i < path.Waypoints.Length; ++i )
-            {
-                GL.VertexAttrib2( Attributes[ 0 ].Location, prev + path.City.Difference( prev, path.Waypoints[ i ].Entity.Position2D ) );
-                GL.VertexAttrib2( Attributes[ 0 ].Location, path.Waypoints[ i ].Entity.Position2D );
-                prev = path.Waypoints[ i ].Entity.Position2D;
+            for (int i = 0; i < path.Waypoints.Length; ++i) {
+                GL.VertexAttrib2(Attributes[0].Location, prev + path.City.Difference(prev, path.Waypoints[i].Entity.Position2D));
+                GL.VertexAttrib2(Attributes[0].Location, path.Waypoints[i].Entity.Position2D);
+                prev = path.Waypoints[i].Entity.Position2D;
             }
-            GL.VertexAttrib2( Attributes[ 0 ].Location, path.Desination );
+            GL.VertexAttrib2(Attributes[0].Location, path.Desination);
         }
 
         protected override void OnEndBatch()
         {
             base.OnEndBatch();
 
-            GL.Disable( EnableCap.DepthTest );
-            GL.Disable( EnableCap.Blend );
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
         }
     }
 }

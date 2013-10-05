@@ -10,18 +10,18 @@ namespace Zombles.UI
 {
     public class UILabel : UIObject
     {
-        private Font myFont;
-        private Text myText;
+        private Font _font;
+        private Text _text;
 
         public String Text
         {
             get
             {
-                return myText.String;
+                return _text.String;
             }
             set
             {
-                myText.String = value;
+                _text.String = value;
                 FindSize();
             }
         }
@@ -30,7 +30,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myFont;
+                return _font;
             }
         }
 
@@ -38,11 +38,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myText.Colour;
+                return _text.Colour;
             }
             set
             {
-                myText.Colour = value;
+                _text.Colour = value;
             }
         }
 
@@ -50,11 +50,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myText.WrapWidth;
+                return _text.WrapWidth;
             }
             set
             {
-                myText.WrapWidth = value;
+                _text.WrapWidth = value;
                 FindSize();
             }
         }
@@ -68,8 +68,8 @@ namespace Zombles.UI
         public UILabel( Font font, Vector2 position, float scale = 1.0f )
             : base( new Vector2(), position )
         {
-            myFont = font;
-            myText = new Text( font, scale );
+            _font = font;
+            _text = new Text( font, scale );
             Colour = Color4.Black;
             CanResize = false;
             IsEnabled = false;
@@ -77,14 +77,14 @@ namespace Zombles.UI
 
         protected override void OnRender( SpriteShader shader, Vector2 renderPosition = new Vector2() )
         {
-            myText.Position = renderPosition;
+            _text.Position = renderPosition;
 
-            myText.Render( shader );
+            _text.Render( shader );
         }
 
         private void FindSize()
         {
-            String[] lines = myText.String.ApplyWordWrap( Font.CharWidth * myText.Scale.X, myText.WrapWidth ).Split( '\n' );
+            String[] lines = _text.String.ApplyWordWrap( Font.CharWidth * _text.Scale.X, _text.WrapWidth ).Split( '\n' );
 
             int maxLength = 0;
 
@@ -92,8 +92,8 @@ namespace Zombles.UI
                 if ( line.Length > maxLength )
                     maxLength = line.Length;
 
-            float width = myFont.CharWidth * myText.Scale.X * maxLength;
-            float height = myFont.CharHeight * myText.Scale.Y * lines.Length;
+            float width = _font.CharWidth * _text.Scale.X * maxLength;
+            float height = _font.CharHeight * _text.Scale.Y * lines.Length;
 
             CanResize = true;
             SetSize( width, height );

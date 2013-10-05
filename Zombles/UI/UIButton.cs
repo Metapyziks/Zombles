@@ -9,9 +9,9 @@ namespace Zombles.UI
 {
     public class UIButton : UIObject
     {
-        private FrameSprite myButtonSprite;
-        private UILabel myLabel;
-        private bool myCentreText;
+        private FrameSprite _buttonSprite;
+        private UILabel _label;
+        private bool _centreText;
 
         public Color4 Colour;
 
@@ -19,11 +19,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myLabel.Text;
+                return _label.Text;
             }
             set
             {
-                myLabel.Text = value;
+                _label.Text = value;
                 RepositionText();
             }
         }
@@ -32,11 +32,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myCentreText;
+                return _centreText;
             }
             set
             {
-                myCentreText = value;
+                _centreText = value;
                 RepositionText();
             }
         }
@@ -60,7 +60,7 @@ namespace Zombles.UI
 
             PaddingLeft = PaddingTop = PaddingRight = PaddingBottom = 4.0f * scale;
 
-            myButtonSprite = new FrameSprite(PanelsTexture, scale) {
+            _buttonSprite = new FrameSprite(PanelsTexture, scale) {
                 SubrectSize = new Vector2(16, 16),
                 SubrectOffset = new Vector2(32, 16),
                 FrameTopLeftOffet = new Vector2(4, 4),
@@ -68,43 +68,43 @@ namespace Zombles.UI
                 Size = size
             };
 
-            myLabel = new UILabel(Font.Large, scale);
+            _label = new UILabel(Font.Large, scale);
 
-            AddChild(myLabel);
+            AddChild(_label);
         }
 
         private void RepositionText()
         {
-            myLabel.Top = (InnerHeight - myLabel.Height) / 2.0f;
+            _label.Top = (InnerHeight - _label.Height) / 2.0f;
 
             if (CentreText)
-                myLabel.Left = (InnerWidth - myLabel.Width) / 2.0f;
+                _label.Left = (InnerWidth - _label.Width) / 2.0f;
             else
-                myLabel.Left = 0.0f;
+                _label.Left = 0.0f;
         }
 
         protected override void OnMouseEnter(Vector2 mousePos)
         {
             if (IsVisible && IsEnabled)
-                myButtonSprite.SubrectLeft = 48.0f;
+                _buttonSprite.SubrectLeft = 48.0f;
         }
 
         protected override void OnMouseLeave(Vector2 mousePos)
         {
             if (IsVisible && IsEnabled)
-                myButtonSprite.SubrectLeft = 32.0f;
+                _buttonSprite.SubrectLeft = 32.0f;
         }
 
         protected override void OnDisable()
         {
-            myButtonSprite.SubrectLeft = 32.0f;
+            _buttonSprite.SubrectLeft = 32.0f;
         }
 
         protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
-            myButtonSprite.Position = renderPosition;
-            myButtonSprite.Colour = (IsEnabled ? Colour : DisabledColour);
-            myButtonSprite.Render(shader);
+            _buttonSprite.Position = renderPosition;
+            _buttonSprite.Colour = (IsEnabled ? Colour : DisabledColour);
+            _buttonSprite.Render(shader);
         }
     }
 }

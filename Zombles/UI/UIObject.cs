@@ -91,32 +91,32 @@ namespace Zombles.UI
 
     public class UIObject
     {
-        private static BitmapTexture2D stPanelsTexture;
+        private static BitmapTexture2D _sPanelsTexture;
 
         protected static BitmapTexture2D PanelsTexture
         {
             get
             {
-                if (stPanelsTexture == null) {
-                    stPanelsTexture = new BitmapTexture2D(Archive.Get<Bitmap>("images", "gui", "panels"));
+                if (_sPanelsTexture == null) {
+                    _sPanelsTexture = new BitmapTexture2D(Archive.Get<Bitmap>("images", "gui", "panels"));
                 }
 
-                return stPanelsTexture;
+                return _sPanelsTexture;
             }
         }
 
-        private Vector2 mySize;
-        private Vector2 myPosition;
-        private Vector2 myPaddingTopLeft;
-        private Vector2 myPaddingBottomRight;
-        private bool myVisible;
-        private bool myEnabled;
-        private bool myFocused;
-        private List<UIObject> myChildren;
-        private Vector2 myMousePos;
-        private bool myMouseOver;
-        private bool myMouseDown;
-        private UIObject myParent;
+        private Vector2 _size;
+        private Vector2 _position;
+        private Vector2 _paddingTopLeft;
+        private Vector2 _paddingBottomRight;
+        private bool _visible;
+        private bool _enabled;
+        private bool _focused;
+        private List<UIObject> _children;
+        private Vector2 _mousePos;
+        private bool _mouseOver;
+        private bool _mouseDown;
+        private UIObject _parent;
 
         protected bool CanReposition;
         protected bool CanResize;
@@ -128,7 +128,7 @@ namespace Zombles.UI
         {
             get
             {
-                return mySize;
+                return _size;
             }
             set
             {
@@ -140,7 +140,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myPosition;
+                return _position;
             }
             set
             {
@@ -152,11 +152,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPosition.X;
+                return _position.X;
             }
             set
             {
-                SetPosition(value, myPosition.Y);
+                SetPosition(value, _position.Y);
             }
         }
 
@@ -164,11 +164,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPosition.Y;
+                return _position.Y;
             }
             set
             {
-                SetPosition(myPosition.X, value);
+                SetPosition(_position.X, value);
             }
         }
 
@@ -176,11 +176,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPosition.X + mySize.X;
+                return _position.X + _size.X;
             }
             set
             {
-                SetPosition(value - mySize.X, myPosition.Y);
+                SetPosition(value - _size.X, _position.Y);
             }
         }
 
@@ -188,11 +188,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPosition.Y + mySize.Y;
+                return _position.Y + _size.Y;
             }
             set
             {
-                SetPosition(myPosition.X, value - mySize.Y);
+                SetPosition(_position.X, value - _size.Y);
             }
         }
 
@@ -200,11 +200,11 @@ namespace Zombles.UI
         {
             get
             {
-                return mySize.X;
+                return _size.X;
             }
             set
             {
-                SetSize(value, mySize.Y);
+                SetSize(value, _size.Y);
             }
         }
 
@@ -212,11 +212,11 @@ namespace Zombles.UI
         {
             get
             {
-                return mySize.Y;
+                return _size.Y;
             }
             set
             {
-                SetSize(mySize.X, value);
+                SetSize(_size.X, value);
             }
         }
 
@@ -224,11 +224,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPaddingTopLeft.X;
+                return _paddingTopLeft.X;
             }
             set
             {
-                myPaddingTopLeft.X = value;
+                _paddingTopLeft.X = value;
             }
         }
 
@@ -236,11 +236,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPaddingTopLeft.Y;
+                return _paddingTopLeft.Y;
             }
             set
             {
-                myPaddingTopLeft.Y = value;
+                _paddingTopLeft.Y = value;
             }
         }
 
@@ -248,11 +248,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPaddingBottomRight.X;
+                return _paddingBottomRight.X;
             }
             set
             {
-                myPaddingBottomRight.X = value;
+                _paddingBottomRight.X = value;
             }
         }
 
@@ -260,11 +260,11 @@ namespace Zombles.UI
         {
             get
             {
-                return myPaddingBottomRight.Y;
+                return _paddingBottomRight.Y;
             }
             set
             {
-                myPaddingBottomRight.Y = value;
+                _paddingBottomRight.Y = value;
             }
         }
 
@@ -272,7 +272,7 @@ namespace Zombles.UI
         {
             get
             {
-                return mySize.X - myPaddingTopLeft.X - myPaddingBottomRight.X;
+                return _size.X - _paddingTopLeft.X - _paddingBottomRight.X;
             }
         }
 
@@ -280,7 +280,7 @@ namespace Zombles.UI
         {
             get
             {
-                return mySize.Y - myPaddingTopLeft.Y - myPaddingBottomRight.Y;
+                return _size.Y - _paddingTopLeft.Y - _paddingBottomRight.Y;
             }
         }
 
@@ -288,7 +288,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myVisible && (Parent == null || Parent.IsVisible);
+                return _visible && (Parent == null || Parent.IsVisible);
             }
             set
             {
@@ -303,7 +303,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myEnabled && (Parent == null || Parent.IsEnabled);
+                return _enabled && (Parent == null || Parent.IsEnabled);
             }
             set
             {
@@ -318,7 +318,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myFocused;
+                return _focused;
             }
         }
 
@@ -326,7 +326,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myMousePos;
+                return _mousePos;
             }
         }
 
@@ -334,7 +334,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myMouseOver;
+                return _mouseOver;
             }
         }
 
@@ -342,7 +342,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myMouseDown;
+                return _mouseDown;
             }
         }
 
@@ -350,7 +350,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myParent;
+                return _parent;
             }
         }
 
@@ -358,7 +358,7 @@ namespace Zombles.UI
         {
             get
             {
-                return myChildren.ToArray();
+                return _children.ToArray();
             }
         }
 
@@ -376,15 +376,15 @@ namespace Zombles.UI
 
         public UIObject(Vector2 size, Vector2 position)
         {
-            mySize = size;
-            myPosition = position;
-            myVisible = true;
-            myEnabled = true;
-            myFocused = false;
-            myMouseOver = false;
-            myMouseDown = false;
+            _size = size;
+            _position = position;
+            _visible = true;
+            _enabled = true;
+            _focused = false;
+            _mouseOver = false;
+            _mouseDown = false;
 
-            myChildren = new List<UIObject>();
+            _children = new List<UIObject>();
 
             CanReposition = true;
             CanResize = true;
@@ -522,7 +522,7 @@ namespace Zombles.UI
         public void SetSize(Vector2 size)
         {
             if (CanResize) {
-                mySize = OnSetSize(size);
+                _size = OnSetSize(size);
                 if (Resize != null)
                     Resize(this, new ResizeEventArgs(size));
             }
@@ -536,7 +536,7 @@ namespace Zombles.UI
         public void SetPosition(Vector2 position)
         {
             if (CanReposition) {
-                myPosition = OnSetPosition(position);
+                _position = OnSetPosition(position);
                 if (Reposition != null)
                     Reposition(this, new RepositionEventArgs(position));
             }
@@ -562,10 +562,10 @@ namespace Zombles.UI
 
         public void Focus()
         {
-            myFocused = true;
+            _focused = true;
 
             if (Parent != null) {
-                foreach (UIObject child in Parent.myChildren)
+                foreach (UIObject child in Parent._children)
                     if (child.IsFocused && child != this)
                         child.UnFocus();
             }
@@ -577,9 +577,9 @@ namespace Zombles.UI
 
         public void UnFocus()
         {
-            myFocused = false;
+            _focused = false;
 
-            foreach (UIObject child in myChildren)
+            foreach (UIObject child in _children)
                 if (child.IsFocused)
                     child.UnFocus();
 
@@ -590,48 +590,48 @@ namespace Zombles.UI
 
         public void Show()
         {
-            if (!myVisible) {
+            if (!_visible) {
                 OnShow();
                 if (VisibilityChanged != null)
                     VisibilityChanged(this, new VisibilityChangedEventArgs(true));
                 if (Shown != null)
                     Shown(this, new EventArgs());
             }
-            myVisible = true;
+            _visible = true;
         }
 
         public void Hide()
         {
-            if (myFocused)
+            if (_focused)
                 UnFocus();
 
-            if (myVisible) {
+            if (_visible) {
                 OnHide();
                 if (VisibilityChanged != null)
                     VisibilityChanged(this, new VisibilityChangedEventArgs(false));
                 if (Hidden != null)
                     Hidden(this, new EventArgs());
             }
-            myVisible = false;
+            _visible = false;
         }
 
         public void Enable()
         {
-            if (!myEnabled) {
+            if (!_enabled) {
                 OnEnable();
                 if (EnabledChanged != null)
                     EnabledChanged(this, new EnabledChangedEventArgs(true));
                 if (Enabled != null)
                     Enabled(this, new EventArgs());
             }
-            myEnabled = true;
+            _enabled = true;
         }
 
         public void Disable()
         {
-            if (myEnabled) {
-                myMouseDown = false;
-                myMouseOver = false;
+            if (_enabled) {
+                _mouseDown = false;
+                _mouseOver = false;
 
                 OnDisable();
                 if (EnabledChanged != null)
@@ -639,18 +639,18 @@ namespace Zombles.UI
                 if (Disabled != null)
                     Disabled(this, new EventArgs());
             }
-            myEnabled = false;
+            _enabled = false;
         }
 
         public UIObject GetFirstIntersector(Vector2 pos)
         {
-            if (myChildren.Count > 0) {
+            if (_children.Count > 0) {
                 UIObject intersector = null;
 
-                for (int i = myChildren.Count - 1; i >= 0; --i) {
-                    UIObject child = myChildren[i];
+                for (int i = _children.Count - 1; i >= 0; --i) {
+                    UIObject child = _children[i];
 
-                    if (child.IsVisible && (intersector = child.GetFirstIntersector(pos - myPaddingTopLeft - child.Position)) != null)
+                    if (child.IsVisible && (intersector = child.GetFirstIntersector(pos - _paddingTopLeft - child.Position)) != null)
                         return intersector;
                 }
             }
@@ -664,19 +664,19 @@ namespace Zombles.UI
         public void SendMouseButtonEvent(Vector2 mousePos, OpenTK.Input.MouseButtonEventArgs e)
         {
             if (e.IsPressed) {
-                if (myChildren.Count > 0) {
+                if (_children.Count > 0) {
                     UIObject intersector = null;
 
-                    for (int i = myChildren.Count - 1; i >= 0; --i) {
-                        UIObject child = myChildren[i];
+                    for (int i = _children.Count - 1; i >= 0; --i) {
+                        UIObject child = _children[i];
 
-                        Vector2 relativePos = mousePos - myPaddingTopLeft - child.Position;
+                        Vector2 relativePos = mousePos - _paddingTopLeft - child.Position;
 
                         if (child.IsVisible && (intersector = child.GetFirstIntersector(relativePos)) != null) {
                             if (child.IsEnabled) {
                                 if (child.CanBringToFront) {
-                                    myChildren.Remove(child);
-                                    myChildren.Add(child);
+                                    _children.Remove(child);
+                                    _children.Add(child);
                                 }
 
                                 child.SendMouseButtonEvent(relativePos, e);
@@ -686,11 +686,11 @@ namespace Zombles.UI
                                 Focus();
 
                                 if (!child.IsEnabled) {
-                                    foreach (UIObject ch in myChildren)
+                                    foreach (UIObject ch in _children)
                                         if (ch.IsFocused)
                                             ch.UnFocus();
 
-                                    myMouseDown = true;
+                                    _mouseDown = true;
                                     OnMouseDown(mousePos, e.Button);
                                     if (MouseDown != null)
                                         MouseDown(this, e);
@@ -705,11 +705,11 @@ namespace Zombles.UI
                     if (IsEnabled) {
                         Focus();
 
-                        foreach (UIObject ch in myChildren)
+                        foreach (UIObject ch in _children)
                             if (ch.IsFocused)
                                 ch.UnFocus();
 
-                        myMouseDown = true;
+                        _mouseDown = true;
                         OnMouseDown(mousePos, e.Button);
                         if (MouseDown != null)
                             MouseDown(this, e);
@@ -724,8 +724,8 @@ namespace Zombles.UI
                         MouseUp(this, e);
                 }
 
-                if (myMouseDown) {
-                    myMouseDown = false;
+                if (_mouseDown) {
+                    _mouseDown = false;
 
                     if (IsVisible && intersector != null) {
                         OnClick(mousePos, e.Button);
@@ -734,11 +734,11 @@ namespace Zombles.UI
                             Click(this, e);
                     }
                 } else {
-                    if (myChildren.Count > 0) {
-                        for (int i = myChildren.Count - 1; i >= 0 && i < myChildren.Count; --i) {
-                            UIObject child = myChildren[i];
+                    if (_children.Count > 0) {
+                        for (int i = _children.Count - 1; i >= 0 && i < _children.Count; --i) {
+                            UIObject child = _children[i];
 
-                            Vector2 relativePos = mousePos - myPaddingTopLeft - child.Position;
+                            Vector2 relativePos = mousePos - _paddingTopLeft - child.Position;
 
                             if (child.IsEnabled)
                                 child.SendMouseButtonEvent(relativePos, e);
@@ -750,31 +750,31 @@ namespace Zombles.UI
 
         public void SendMouseMoveEvent(Vector2 newPos, OpenTK.Input.MouseMoveEventArgs e)
         {
-            if (IsEnabled && IsVisible && newPos != myMousePos) {
+            if (IsEnabled && IsVisible && newPos != _mousePos) {
                 OnMouseMove(newPos);
                 if (MouseMove != null)
                     MouseMove(this, e);
             }
 
-            myMousePos = newPos;
+            _mousePos = newPos;
 
             bool mouseNowOver = CheckPositionWithinBounds(newPos);
-            if (IsEnabled && IsVisible && mouseNowOver != myMouseOver) {
-                myMouseOver = mouseNowOver;
+            if (IsEnabled && IsVisible && mouseNowOver != _mouseOver) {
+                _mouseOver = mouseNowOver;
 
-                if (myMouseOver) {
-                    OnMouseEnter(myMousePos);
+                if (_mouseOver) {
+                    OnMouseEnter(_mousePos);
                     if (MouseEnter != null)
                         MouseEnter(this, e);
                 } else {
-                    OnMouseLeave(myMousePos);
+                    OnMouseLeave(_mousePos);
                     if (MouseLeave != null)
                         MouseLeave(this, e);
                 }
             }
 
-            for (int i = myChildren.Count - 1; i >= 0; --i)
-                myChildren[i].SendMouseMoveEvent(newPos - myPaddingTopLeft - myChildren[i].Position, e);
+            for (int i = _children.Count - 1; i >= 0; --i)
+                _children[i].SendMouseMoveEvent(newPos - _paddingTopLeft - _children[i].Position, e);
         }
 
         public void SendKeyPressEvent(KeyPressEventArgs e)
@@ -784,7 +784,7 @@ namespace Zombles.UI
                 if (KeyPress != null)
                     KeyPress(this, e);
 
-                foreach (UIObject child in myChildren)
+                foreach (UIObject child in _children)
                     if (child.IsFocused && IsEnabled) {
                         child.SendKeyPressEvent(e);
                         break;
@@ -794,11 +794,11 @@ namespace Zombles.UI
 
         public void AddChild(UIObject child)
         {
-            if (child.myParent != null)
-                child.myParent.RemoveChild(child);
+            if (child._parent != null)
+                child._parent.RemoveChild(child);
 
-            myChildren.Add(child);
-            child.myParent = this;
+            _children.Add(child);
+            child._parent = this;
 
             if (child is UIWindow) {
                 (child as UIWindow).Closed += delegate(object sender, EventArgs e) {
@@ -809,9 +809,9 @@ namespace Zombles.UI
 
         public void RemoveChild(UIObject child)
         {
-            if (myChildren.Contains(child)) {
-                myChildren.Remove(child);
-                child.myParent = null;
+            if (_children.Contains(child)) {
+                _children.Remove(child);
+                child._parent = null;
             }
         }
 
@@ -824,8 +824,8 @@ namespace Zombles.UI
                 if (RenderObject != null)
                     RenderObject(this, new RenderEventArgs(shader, parentPosition));
 
-                foreach (UIObject child in myChildren)
-                    child.Render(shader, parentPosition + myPaddingTopLeft);
+                foreach (UIObject child in _children)
+                    child.Render(shader, parentPosition + _paddingTopLeft);
             }
         }
     }

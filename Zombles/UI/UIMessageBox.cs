@@ -6,22 +6,22 @@ namespace Zombles.UI
 {
     public class UIMessageBox : UIWindow
     {
-        private UILabel myText;
-        private bool myCentreText;
+        private UILabel _text;
+        private bool _centreText;
 
         public bool CentreText
         {
             get
             {
-                return myCentreText;
+                return _centreText;
             }
             set
             {
-                myCentreText = value;
-                if ( myCentreText )
-                    myText.Centre();
+                _centreText = value;
+                if ( _centreText )
+                    _text.Centre();
                 else
-                    myText.Position = new Vector2( 4, 4 );
+                    _text.Position = new Vector2( 4, 4 );
             }
         }
 
@@ -29,13 +29,13 @@ namespace Zombles.UI
         {
             get
             {
-                return myText.Text;
+                return _text.Text;
             }
             set
             {
-                myText.Text = value;
+                _text.Text = value;
                 if( CentreText )
-                    myText.Centre();
+                    _text.Centre();
             }
         }
 
@@ -43,16 +43,16 @@ namespace Zombles.UI
             : base( new Vector2( 480, 64 ) )
         {
             CanClose = closeButton;
-            myCentreText = false;
+            _centreText = false;
 
             Title = title;
 
-            myText = new UILabel( Zombles.Graphics.Font.Large )
+            _text = new UILabel( Zombles.Graphics.Font.Large )
             {
                 Text = message,
                 Position = new Vector2( 4, 4 )
             };
-            AddChild( myText );
+            AddChild( _text );
         }
     }
 }

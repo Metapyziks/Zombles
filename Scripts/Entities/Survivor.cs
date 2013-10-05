@@ -13,11 +13,11 @@ namespace Zombles.Scripts.Entities
     {
         public static int Count { get; private set; }
 
-        private bool myCounted;
+        private bool _counted;
 
-        private static EntityAnim stWalkAnim;
-        private static EntityAnim stStandAnim;
-        private static EntityAnim stDeadAnim;
+        private static EntityAnim _sWalkAnim;
+        private static EntityAnim _sStandAnim;
+        private static EntityAnim _sDeadAnim;
 
         public bool IsInfected { get; private set; }
 
@@ -50,10 +50,10 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if (stWalkAnim == null)
-                    stWalkAnim = EntityAnim.GetAnim("anims", "human", "walk");
+                if (_sWalkAnim == null)
+                    _sWalkAnim = EntityAnim.GetAnim("anims", "human", "walk");
 
-                return stWalkAnim;
+                return _sWalkAnim;
             }
         }
 
@@ -61,10 +61,10 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if (stStandAnim == null)
-                    stStandAnim = EntityAnim.GetAnim("anims", "human", "stand");
+                if (_sStandAnim == null)
+                    _sStandAnim = EntityAnim.GetAnim("anims", "human", "stand");
 
-                return stStandAnim;
+                return _sStandAnim;
             }
         }
 
@@ -72,10 +72,10 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if (stDeadAnim == null)
-                    stDeadAnim = EntityAnim.GetAnim("anims", "human", "dead");
+                if (_sDeadAnim == null)
+                    _sDeadAnim = EntityAnim.GetAnim("anims", "human", "dead");
 
-                return stDeadAnim;
+                return _sDeadAnim;
             }
         }
 
@@ -137,9 +137,9 @@ namespace Zombles.Scripts.Entities
 
         protected override void OnKilled(object sender, KilledEventArgs e)
         {
-            if (myCounted) {
+            if (_counted) {
                 --Count;
-                myCounted = false;
+                _counted = false;
             }
 
             if (IsInfected && Tools.Random.NextDouble() < 0.74)
@@ -193,9 +193,9 @@ namespace Zombles.Scripts.Entities
                 Health.Revive();
             }
 
-            if (!myCounted) {
+            if (!_counted) {
                 ++Count;
-                myCounted = true;
+                _counted = true;
             }
         }
     }

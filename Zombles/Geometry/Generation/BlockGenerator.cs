@@ -11,22 +11,22 @@ namespace Zombles.Geometry.Generation
 {
     public abstract class BlockGenerator
     {
-        private static BlockGenerator[] stGenerators;
+        private static BlockGenerator[] _sGenerators;
 
         public static BlockGenerator[] GetAll()
         {
-            if ( stGenerators == null )
+            if ( _sGenerators == null )
                 FindGenerators();
 
-            return stGenerators;
+            return _sGenerators;
         }
         
         public static bool WillAnyFit( int width, int height, bool acceptLarger = false )
         {
-            if ( stGenerators == null )
+            if ( _sGenerators == null )
                 FindGenerators();
 
-            foreach ( BlockGenerator gen in stGenerators )
+            foreach ( BlockGenerator gen in _sGenerators )
                 if ( gen.Frequency > 0.0 && gen.WillFit( width, height, acceptLarger ) )
                     return true;
 
@@ -35,13 +35,13 @@ namespace Zombles.Geometry.Generation
 
         public static double FitnessScore( int width, int height )
         {
-            if ( stGenerators == null )
+            if ( _sGenerators == null )
                 FindGenerators();
 
             double total = 0.0;
             double score = 0.0;
 
-            foreach ( BlockGenerator gen in stGenerators )
+            foreach ( BlockGenerator gen in _sGenerators )
             {
                 total += gen.Frequency;
                 if ( gen.WillFit( width, height, false ) )
@@ -55,12 +55,12 @@ namespace Zombles.Geometry.Generation
 
         public static BlockGenerator GetRandom( int width, int height, Random rand, bool acceptLarger = false )
         {
-            if ( stGenerators == null )
+            if ( _sGenerators == null )
                 FindGenerators();
 
             BlockGenerator cur = null;
             double freq = double.MaxValue;
-            foreach ( BlockGenerator gen in stGenerators )
+            foreach ( BlockGenerator gen in _sGenerators )
             {
                 if ( gen.WillFit( width, height, acceptLarger ) )
                 {
@@ -83,11 +83,11 @@ namespace Zombles.Geometry.Generation
 
         public static BlockGenerator[] GetAllRandom( int width, int height, Random rand )
         {
-            if ( stGenerators == null )
+            if ( _sGenerators == null )
                 FindGenerators();
 
             List<BlockGenerator> gens = new List<BlockGenerator>();
-            foreach ( BlockGenerator gen in stGenerators )
+            foreach ( BlockGenerator gen in _sGenerators )
                 if ( gen.WillFit( width, height ) )
                     gens.Add( gen );
 
@@ -107,7 +107,7 @@ namespace Zombles.Geometry.Generation
                     valid.Add( cns.Invoke( new object[ 0 ] ) as BlockGenerator );
             }
 
-            stGenerators = valid.ToArray();
+            _sGenerators = valid.ToArray();
         }
 
         public readonly double Frequency;

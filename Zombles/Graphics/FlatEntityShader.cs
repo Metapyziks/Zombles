@@ -8,19 +8,19 @@ namespace Zombles.Graphics
 {
     public class FlatEntityShader : ShaderProgram3D
     {
-        private static VertexBuffer stVB;
+        private static VertexBuffer _sVB;
 
-        private int myScaleLoc;
-        private int myPositionLoc;
-        private int mySizeLoc;
-        private int myTextureLoc;
+        private int _scaleLoc;
+        private int _positionLoc;
+        private int _sizeLoc;
+        private int _textureLoc;
 
         public FlatEntityShader()
         {
-            if ( stVB == null )
+            if ( _sVB == null )
             {
-                stVB = new VertexBuffer( 3 );
-                stVB.SetData( new float[]
+                _sVB = new VertexBuffer( 3 );
+                _sVB.SetData( new float[]
                 {
                     -0.5f, 1.0f, 0.0f,
                     0.5f, 1.0f, 1.0f,
@@ -93,34 +93,34 @@ namespace Zombles.Graphics
             AddTexture( "ents", TextureUnit.Texture1 );
             SetTexture( "ents", TextureManager.Ents.TexArray );
 
-            myScaleLoc = GL.GetUniformLocation( Program, "scale" );
-            myPositionLoc = GL.GetUniformLocation( Program, "position" );
-            mySizeLoc = GL.GetUniformLocation( Program, "size" );
-            myTextureLoc = GL.GetUniformLocation( Program, "texture" );
+            _scaleLoc = GL.GetUniformLocation( Program, "scale" );
+            _positionLoc = GL.GetUniformLocation( Program, "position" );
+            _sizeLoc = GL.GetUniformLocation( Program, "size" );
+            _textureLoc = GL.GetUniformLocation( Program, "texture" );
         }
 
         protected override void OnStartBatch()
         {
             base.OnStartBatch();
 
-            GL.Uniform2( myScaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale );
+            GL.Uniform2( _scaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale );
 
             GL.Enable( EnableCap.DepthTest );
 
-            stVB.StartBatch( this );
+            _sVB.StartBatch( this );
         }
 
         public void Render( Vector3 pos, Vector2 size, ushort texIndex )
         {
-            GL.Uniform3( myPositionLoc, ref pos );
-            GL.Uniform2( mySizeLoc, ref size );
-            GL.Uniform1( myTextureLoc, (float) texIndex );
-            stVB.Render( this );
+            GL.Uniform3( _positionLoc, ref pos );
+            GL.Uniform2( _sizeLoc, ref size );
+            GL.Uniform1( _textureLoc, (float) texIndex );
+            _sVB.Render( this );
         }
 
         protected override void OnEndBatch()
         {
-            stVB.EndBatch( this );
+            _sVB.EndBatch( this );
 
             GL.Disable( EnableCap.DepthTest );
         }

@@ -24,21 +24,21 @@ namespace Zombles.Geometry
             }.GetResult();
         }
 
-        private Vector2 myNormal; 
+        private Vector2 _normal; 
 
         public readonly City City;
 
         public Vector2 Origin { get; set; }
         public Vector2 Normal
         {
-            get { return myNormal; }
+            get { return _normal; }
             set
             {
-                myNormal = value;
-                if ( myNormal.LengthSquared == 0.0f )
-                    myNormal = new Vector2( 1.0f, 0.0f );
+                _normal = value;
+                if ( _normal.LengthSquared == 0.0f )
+                    _normal = new Vector2( 1.0f, 0.0f );
                 else
-                    myNormal.Normalize();
+                    _normal.Normalize();
             }
         }
 

@@ -10,8 +10,8 @@ namespace Zombles.Graphics
 {
     public class LumTexture2D : Texture
     {
-        private readonly int myActualSize;
-        private byte[,] myData;
+        private readonly int _actualSize;
+        private byte[,] _data;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -22,9 +22,9 @@ namespace Zombles.Graphics
             Width = width;
             Height = height;
 
-            myActualSize = GetNextPOTS( Width, Height );
+            _actualSize = GetNextPOTS( Width, Height );
 
-            myData = new byte[ Width, Height ];
+            _data = new byte[ Width, Height ];
         }
 
         public Vector2 GetCoords( Vector2 pos )
@@ -36,17 +36,17 @@ namespace Zombles.Graphics
         {
             return new Vector2
             {
-                X = x / myActualSize,
-                Y = y / myActualSize
+                X = x / _actualSize,
+                Y = y / _actualSize
             };
         }
 
         public byte this[ int x, int y ]
         {
-            get { return myData[ x, y ]; }
+            get { return _data[ x, y ]; }
             set
             {
-                myData[ x, y ] = value;
+                _data[ x, y ] = value;
                 Update();
             }
         }
@@ -56,10 +56,10 @@ namespace Zombles.Graphics
             x -= (int) Math.Floor( (float) x / Width ) * Width;
             y -= (int) Math.Floor( (float) y / Height ) * Height;
 
-            if ( value > 255 - myData[ x, y ] )
-                myData[ x, y ] = 255;
+            if ( value > 255 - _data[ x, y ] )
+                _data[ x, y ] = 255;
             else
-                myData[ x, y ] += value;
+                _data[ x, y ] += value;
 
             Update();
         }
@@ -68,7 +68,7 @@ namespace Zombles.Graphics
         {
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (int) TextureEnvMode.Modulate );
 
-            GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Alpha8, myActualSize, myActualSize, 0, OpenTK.Graphics.OpenGL.PixelFormat.Alpha, PixelType.UnsignedByte, myData );
+            GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Alpha8, _actualSize, _actualSize, 0, OpenTK.Graphics.OpenGL.PixelFormat.Alpha, PixelType.UnsignedByte, _data );
 
             GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) TextureMinFilter.Linear );
             GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Linear );

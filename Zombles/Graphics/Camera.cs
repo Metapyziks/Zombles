@@ -10,18 +10,18 @@ namespace Zombles.Graphics
 {
     public class Camera
     {
-        private bool myPerspectiveChanged;
-        private bool myViewChanged;
-        private bool myOffsetChanged;
+        private bool _perspectiveChanged;
+        private bool _viewChanged;
+        private bool _offsetChanged;
 
-        private Matrix4 myPerspectiveMatrix;
-        private Matrix4 myViewMatrix;
-        private Vector2 myWorldOffset;
-        private Vector3 myPosition;
-        private Vector2 myRotation;
-        private float myScale;
-        private RectangleF myViewBounds;
-        private Rectangle myOffsetViewBounds;
+        private Matrix4 _perspectiveMatrix;
+        private Matrix4 _viewMatrix;
+        private Vector2 _worldOffset;
+        private Vector3 _position;
+        private Vector2 _rotation;
+        private float _scale;
+        private RectangleF _viewBounds;
+        private Rectangle _offsetViewBounds;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -31,27 +31,27 @@ namespace Zombles.Graphics
 
         public Matrix4 PerspectiveMatrix
         {
-            get { return myPerspectiveMatrix; }
+            get { return _perspectiveMatrix; }
             set
             {
-                myPerspectiveMatrix = value;
-                myPerspectiveChanged = false;
+                _perspectiveMatrix = value;
+                _perspectiveChanged = false;
             }
         }
 
         public Matrix4 ViewMatrix
         {
-            get { return myViewMatrix; }
+            get { return _viewMatrix; }
             set
             {
-                myViewMatrix = value;
-                myViewChanged = false;
+                _viewMatrix = value;
+                _viewChanged = false;
             }
         }
 
         public Vector2 Position
         {
-            get { return new Vector2( myPosition.X, myPosition.Z ); }
+            get { return new Vector2( _position.X, _position.Z ); }
             set
             {
                 if ( WrapWidth > 0 )
@@ -60,93 +60,93 @@ namespace Zombles.Graphics
                 if ( WrapHeight > 0 )
                     value.Y -= (int) Math.Floor( value.Y / WrapHeight ) * WrapHeight;
 
-                myPosition.X = value.X;
-                myPosition.Z = value.Y;
-                myViewChanged = true;
+                _position.X = value.X;
+                _position.Z = value.Y;
+                _viewChanged = true;
             }
         }
 
         public float Elevation
         {
-            get { return myPosition.Y; }
+            get { return _position.Y; }
             private set
             {
-                myPosition.Y = value;
-                myPerspectiveChanged = true;
+                _position.Y = value;
+                _perspectiveChanged = true;
             }
         }
 
         public Vector2 Rotation
         {
-            get { return myRotation; }
+            get { return _rotation; }
             set
             {
-                myRotation = value;
-                myViewChanged = true;
+                _rotation = value;
+                _viewChanged = true;
             }
         }
 
         public float Pitch
         {
-            get { return myRotation.X; }
+            get { return _rotation.X; }
             set
             {
-                myRotation.X = value;
-                myPerspectiveChanged = true;
+                _rotation.X = value;
+                _perspectiveChanged = true;
             }
         }
 
         public float Yaw
         {
-            get { return myRotation.Y; }
+            get { return _rotation.Y; }
             set
             {
-                myRotation.Y = value;
-                myViewChanged = true;
+                _rotation.Y = value;
+                _viewChanged = true;
             }
         }
 
         public Vector2 WorldOffset
         {
-            get { return myWorldOffset; }
+            get { return _worldOffset; }
             set
             {
-                myWorldOffset = value;
-                myOffsetChanged = true;
+                _worldOffset = value;
+                _offsetChanged = true;
             }
         }
 
         public float WorldHorizontalOffset
         {
-            get { return myWorldOffset.X; }
+            get { return _worldOffset.X; }
             set
             {
-                myWorldOffset.X = value;
-                myOffsetChanged = true;
+                _worldOffset.X = value;
+                _offsetChanged = true;
             }
         }
 
         public float WorldVerticalOffset
         {
-            get { return myWorldOffset.Y; }
+            get { return _worldOffset.Y; }
             set
             {
-                myWorldOffset.Y = value;
-                myOffsetChanged = true;
+                _worldOffset.Y = value;
+                _offsetChanged = true;
             }
         }
 
         public float Scale
         {
-            get { return myScale; }
+            get { return _scale; }
             set
             {
-                myScale = value;
-                myPerspectiveChanged = true;
+                _scale = value;
+                _perspectiveChanged = true;
             }
         }
 
-        public Rectangle ViewBounds { get { return myOffsetViewBounds; } }
+        public Rectangle ViewBounds { get { return _offsetViewBounds; } }
 
         public Camera( int width, int height, float scale = 1.0f )
         {
@@ -178,16 +178,16 @@ namespace Zombles.Graphics
         public Vector2 ScreenToWorld( Vector2 pos, float height = 0.0f )
         {
             pos -= new Vector2( Width * 0.5f, Height * 0.5f );
-            pos /= 8.0f * myScale;
-            pos.Y /= (float) Math.Sin( myRotation.X );
-            pos.Y += height * 4.0f * (float) ( Math.Cos( myRotation.X ) / Math.Sqrt( 3.0 ) );
+            pos /= 8.0f * _scale;
+            pos.Y /= (float) Math.Sin( _rotation.X );
+            pos.Y += height * 4.0f * (float) ( Math.Cos( _rotation.X ) / Math.Sqrt( 3.0 ) );
 
-            float sin = (float) Math.Sin( myRotation.Y );
-            float cos = (float) Math.Cos( myRotation.Y );
+            float sin = (float) Math.Sin( _rotation.Y );
+            float cos = (float) Math.Cos( _rotation.Y );
 
             pos = new Vector2(
-                myPosition.X + cos * pos.X - sin * pos.Y,
-                myPosition.Z + sin * pos.X + cos * pos.Y
+                _position.X + cos * pos.X - sin * pos.Y,
+                _position.Z + sin * pos.X + cos * pos.Y
             );
 
             pos.X -= (int) Math.Floor( pos.X / WrapWidth  ) * WrapWidth;
@@ -198,17 +198,17 @@ namespace Zombles.Graphics
 
         public void UpdatePerspectiveMatrix()
         {
-            if ( myPerspectiveChanged )
+            if ( _perspectiveChanged )
             {
-                float width = Width / ( 8.0f * myScale );
-                float height = Height / ( 8.0f * myScale );
+                float width = Width / ( 8.0f * _scale );
+                float height = Height / ( 8.0f * _scale );
 
-                double hoff = height * Math.Cos( myRotation.X );
-                myPosition.Y = (float) ( hoff / 2.0 ) + 16.0f;
+                double hoff = height * Math.Cos( _rotation.X );
+                _position.Y = (float) ( hoff / 2.0 ) + 16.0f;
                 float znear = 0.0f;
-                float zfar = (float) ( ( hoff + 16.0f ) / Math.Sin( myRotation.X ) ) + 1.0f;
+                float zfar = (float) ( ( hoff + 16.0f ) / Math.Sin( _rotation.X ) ) + 1.0f;
 
-                myPerspectiveMatrix = Matrix4.CreateOrthographic(
+                _perspectiveMatrix = Matrix4.CreateOrthographic(
                     width,
                     height,
                     znear, zfar
@@ -220,28 +220,28 @@ namespace Zombles.Graphics
 
         public void UpdateViewMatrix()
         {
-            if ( myViewChanged )
+            if ( _viewChanged )
             {
                 UpdateViewBounds();
 
-                float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - myRotation.X ) * myPosition.Y );
+                float rotOffset = (float) ( Math.Tan( Math.PI / 2.0 - _rotation.X ) * _position.Y );
 
-                Matrix4 yRot = Matrix4.CreateRotationY( myRotation.Y );
-                Matrix4 xRot = Matrix4.CreateRotationX( myRotation.X );
-                Matrix4 trns = Matrix4.CreateTranslation( -myPosition );
+                Matrix4 yRot = Matrix4.CreateRotationY( _rotation.Y );
+                Matrix4 xRot = Matrix4.CreateRotationX( _rotation.X );
+                Matrix4 trns = Matrix4.CreateTranslation( -_position );
                 Matrix4 offs = Matrix4.CreateTranslation( 0.0f, 0.0f, -rotOffset );
 
-                myViewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), offs ), xRot ), myPerspectiveMatrix );
+                _viewMatrix = Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( Matrix4.Mult( trns, yRot ), offs ), xRot ), _perspectiveMatrix );
             }
         }
 
         private void UpdateViewBounds()
         {
-            float width = Width / ( 8.0f * myScale );
-            float height = Height / ( 8.0f * myScale );
+            float width = Width / ( 8.0f * _scale );
+            float height = Height / ( 8.0f * _scale );
 
             float xoff = width * 0.5f;
-            float zoff = (float) ( height / Math.Sin( myRotation.X ) * 0.5 );
+            float zoff = (float) ( height / Math.Sin( _rotation.X ) * 0.5 );
 
             Vector2[] vs = new Vector2[]
             {
@@ -249,8 +249,8 @@ namespace Zombles.Graphics
                 new Vector2( -xoff, -zoff ), new Vector2( +xoff, -zoff )
             };
 
-            float sin = (float) Math.Sin( myRotation.Y );
-            float cos = (float) Math.Cos( myRotation.Y );
+            float sin = (float) Math.Sin( _rotation.Y );
+            float cos = (float) Math.Cos( _rotation.Y );
 
             float minx = float.MaxValue;
             float miny = float.MaxValue;
@@ -260,8 +260,8 @@ namespace Zombles.Graphics
             for ( int i = 0; i < 4; ++i )
             {
                 Vector2 v = vs[ i ];
-                v = new Vector2( myPosition.X + cos * v.X - sin * v.Y,
-                    myPosition.Z + sin * v.X + cos * v.Y );
+                v = new Vector2( _position.X + cos * v.X - sin * v.Y,
+                    _position.Z + sin * v.X + cos * v.Y );
 
                 if ( v.X < minx )
                     minx = v.X;
@@ -276,27 +276,27 @@ namespace Zombles.Graphics
             float hwid = (float) ( WrapWidth >> 1 );
             float hhei = (float) ( WrapHeight >> 1 );
 
-            minx = Math.Max( myPosition.X - hwid, minx );
-            miny = Math.Max( myPosition.Z - hhei, miny );
-            maxx = Math.Min( myPosition.X + hwid, maxx );
-            maxy = Math.Min( myPosition.Z + hhei, maxy );
+            minx = Math.Max( _position.X - hwid, minx );
+            miny = Math.Max( _position.Z - hhei, miny );
+            maxx = Math.Min( _position.X + hwid, maxx );
+            maxy = Math.Min( _position.Z + hhei, maxy );
 
-            myViewBounds = new RectangleF( minx, miny, maxx - minx, maxy - miny );
-            myOffsetChanged = true;
+            _viewBounds = new RectangleF( minx, miny, maxx - minx, maxy - miny );
+            _offsetChanged = true;
             UpdateViewBoundsOffset();
         }
 
         public void UpdateViewBoundsOffset()
         {
-            if ( myOffsetChanged )
+            if ( _offsetChanged )
             {
-                int l = (int) Math.Floor( myViewBounds.Left - myWorldOffset.X );
-                int t = (int) Math.Floor( myViewBounds.Top - myWorldOffset.Y );
-                int r = (int) Math.Ceiling( myViewBounds.Right - myWorldOffset.X );
-                int b = (int) Math.Ceiling( myViewBounds.Bottom - myWorldOffset.Y );
+                int l = (int) Math.Floor( _viewBounds.Left - _worldOffset.X );
+                int t = (int) Math.Floor( _viewBounds.Top - _worldOffset.Y );
+                int r = (int) Math.Ceiling( _viewBounds.Right - _worldOffset.X );
+                int b = (int) Math.Ceiling( _viewBounds.Bottom - _worldOffset.Y );
 
-                myOffsetViewBounds = new Rectangle( l, t, r - l, b - t );
-                myOffsetChanged = false;
+                _offsetViewBounds = new Rectangle( l, t, r - l, b - t );
+                _offsetChanged = false;
             }
         }
     }

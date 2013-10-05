@@ -10,27 +10,27 @@ namespace Zombles.Entities
 {
     public class PathNavigation : Component
     {
-        private Path myCurrentPath;
-        private int myPathProgress;
+        private Path _currentPath;
+        private int _pathProgress;
 
-        private double myLastScanTime;
+        private double _lastScanTime;
 
         public bool HasPath
         {
-            get { return myCurrentPath != null; }
+            get { return _currentPath != null; }
         }
 
         public Path CurrentPath
         {
             get
             {
-                return myCurrentPath;
+                return _currentPath;
             }
             set
             {
-                myCurrentPath = value;
-                myPathProgress = 0;
-                myLastScanTime = ZomblesGame.Time - 1.0;
+                _currentPath = value;
+                _pathProgress = 0;
+                _lastScanTime = ZomblesGame.Time - 1.0;
             }
         }
 
@@ -52,8 +52,8 @@ namespace Zombles.Entities
                 if ( CurrentPath == null )
                     return Entity.Position2D;
 
-                if ( myPathProgress < CurrentPath.Waypoints.Length )
-                    return CurrentPath.Waypoints[ myPathProgress ].Entity.Position2D;
+                if ( _pathProgress < CurrentPath.Waypoints.Length )
+                    return CurrentPath.Waypoints[ _pathProgress ].Entity.Position2D;
 
                 return CurrentPath.Desination;
             }
@@ -76,20 +76,20 @@ namespace Zombles.Entities
             {
                 if ( ( NextWaypoint - Position2D ).LengthSquared <= 0.25f )
                 {
-                    myPathProgress++;
-                    if ( myPathProgress > CurrentPath.Waypoints.Length )
+                    _pathProgress++;
+                    if ( _pathProgress > CurrentPath.Waypoints.Length )
                         CurrentPath = null;
                     else
                         ScanAhead();
                 }
-                else if ( ( ZomblesGame.Time - myLastScanTime ) >= 1.0 )
+                else if ( ( ZomblesGame.Time - _lastScanTime ) >= 1.0 )
                     ScanAhead();
             }
         }
 
         private void ScanAhead()
         {
-            myLastScanTime = ZomblesGame.Time;
+            _lastScanTime = ZomblesGame.Time;
 
             Trace trace = new Trace( City )
             {
@@ -99,15 +99,15 @@ namespace Zombles.Entities
                 HullSize = new Vector2( 0.5f, 0.5f )
             };
 
-            int best = myPathProgress;
-            for ( ; myPathProgress <= CurrentPath.Waypoints.Length; ++myPathProgress )
+            int best = _pathProgress;
+            for ( ; _pathProgress <= CurrentPath.Waypoints.Length; ++_pathProgress )
             {
                 trace.Target = NextWaypoint;
                 if ( !trace.GetResult().Hit )
-                    best = myPathProgress;
+                    best = _pathProgress;
             }
 
-            myPathProgress = best;
+            _pathProgress = best;
         }
     }
 }

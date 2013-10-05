@@ -14,26 +14,26 @@ namespace Zombles.Scripts.Entities
     {
         public static int Count { get; private set; }
 
-        private bool myCounted;
+        private bool _counted;
 
-        private static EntityAnim stWalkAnim;
-        private static EntityAnim stStandAnim;
-        private static EntityAnim stDeadAnim;
+        private static EntityAnim _sWalkAnim;
+        private static EntityAnim _sStandAnim;
+        private static EntityAnim _sDeadAnim;
 
-        private float myMoveSpeed;
+        private float _moveSpeed;
 
-        private double myTurnTime;
-        private double myNextBleed;
-        private double myBleedTime;
+        private double _turnTime;
+        private double _nextBleed;
+        private double _bleedTime;
 
         public override EntityAnim WalkAnim
         {
             get
             {
-                if (stWalkAnim == null)
-                    stWalkAnim = EntityAnim.GetAnim("anims", "zombie", "walk");
+                if (_sWalkAnim == null)
+                    _sWalkAnim = EntityAnim.GetAnim("anims", "zombie", "walk");
 
-                return stWalkAnim;
+                return _sWalkAnim;
             }
         }
 
@@ -41,10 +41,10 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if (stStandAnim == null)
-                    stStandAnim = EntityAnim.GetAnim("anims", "zombie", "stand");
+                if (_sStandAnim == null)
+                    _sStandAnim = EntityAnim.GetAnim("anims", "zombie", "stand");
 
-                return stStandAnim;
+                return _sStandAnim;
             }
         }
 
@@ -52,27 +52,27 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                if (stDeadAnim == null)
-                    stDeadAnim = EntityAnim.GetAnim("anims", "zombie", "dead");
+                if (_sDeadAnim == null)
+                    _sDeadAnim = EntityAnim.GetAnim("anims", "zombie", "dead");
 
-                return stDeadAnim;
+                return _sDeadAnim;
             }
         }
 
         public override float MoveSpeed
         {
-            get { return myMoveSpeed; }
+            get { return _moveSpeed; }
         }
 
         public Zombie(Entity ent)
             : base(ent)
         {
-            myMoveSpeed = Tools.Random.NextSingle() * 0.5f + 0.5f;
+            _moveSpeed = Tools.Random.NextSingle() * 0.5f + 0.5f;
 
             if (Tools.Random.NextSingle() < 0.05)
-                myMoveSpeed += 2.0f;
+                _moveSpeed += 2.0f;
 
-            myBleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
+            _bleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
         }
 
         public override void OnSpawn()
@@ -84,22 +84,22 @@ namespace Zombles.Scripts.Entities
                 Health.Revive();
             }
 
-            if (!myCounted) {
+            if (!_counted) {
                 ++Count;
-                myCounted = true;
+                _counted = true;
             }
 
-            myTurnTime = ZomblesGame.Time;
-            myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
+            _turnTime = ZomblesGame.Time;
+            _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
         }
 
         public override void OnThink(double dt)
         {
             base.OnThink(dt);
 
-            if (ZomblesGame.Time - myTurnTime < myBleedTime && ZomblesGame.Time >= myNextBleed) {
+            if (ZomblesGame.Time - _turnTime < _bleedTime && ZomblesGame.Time >= _nextBleed) {
                 City.SplashBlood(Position2D, 0.5f);
-                myNextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
+                _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
             }
         }
 
@@ -107,9 +107,9 @@ namespace Zombles.Scripts.Entities
         {
             base.OnRemove();
 
-            if (myCounted) {
+            if (_counted) {
                 --Count;
-                myCounted = false;
+                _counted = false;
             }
         }
     }

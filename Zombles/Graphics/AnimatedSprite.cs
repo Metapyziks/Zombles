@@ -11,16 +11,16 @@ namespace Zombles.Graphics
             return DateTime.Now.Ticks / 10000;
         }
 
-        private int myFrameWidth;
-        private int myFrameHeight;
+        private int _frameWidth;
+        private int _frameHeight;
 
-        private long myStartTime;
-        private long myStopTime;
+        private long _startTime;
+        private long _stopTime;
 
-        private Vector2[] myFrameLocations;
-        private int myLastFrame;
+        private Vector2[] _frameLocations;
+        private int _lastFrame;
 
-        private bool myPlaying;
+        private bool _playing;
 
         public int StartFrame;
         public int FrameCount;
@@ -30,73 +30,73 @@ namespace Zombles.Graphics
         public AnimatedSprite( BitmapTexture2D texture, int frameWidth, int frameHeight, double frameRate, float scale = 1.0f )
             : base( texture, scale )
         {
-            myFrameWidth = frameWidth;
-            myFrameHeight = frameHeight;
+            _frameWidth = frameWidth;
+            _frameHeight = frameHeight;
 
             FrameRate = frameRate;
 
-            myStartTime = 0;
-            myStopTime = 0;
+            _startTime = 0;
+            _stopTime = 0;
 
             SubrectSize = new Vector2( frameWidth, frameHeight );
 
             FindFrameLocations();
 
             StartFrame = 0;
-            FrameCount = myFrameLocations.Length;
+            FrameCount = _frameLocations.Length;
 
-            myLastFrame = -1;
+            _lastFrame = -1;
         }
 
         private void FindFrameLocations()
         {
-            int xMax = Texture.Width / myFrameWidth;
-            int yMax = Texture.Height / myFrameHeight;
+            int xMax = Texture.Width / _frameWidth;
+            int yMax = Texture.Height / _frameHeight;
 
             int frameCount = xMax * yMax;
 
-            myFrameLocations = new Vector2[ frameCount ];
+            _frameLocations = new Vector2[ frameCount ];
 
             int i = 0;
 
             for ( int y = 0; y < yMax; ++y )
                 for ( int x = 0; x < xMax; ++x, ++ i )
-                    myFrameLocations[ i ] = new Vector2( x * myFrameWidth, y * myFrameHeight );
+                    _frameLocations[ i ] = new Vector2( x * _frameWidth, y * _frameHeight );
         }
 
         public void Start()
         {
-            if( !myPlaying )
+            if( !_playing )
             {
-                myStartTime = CurrentMilliseconds();
-                myPlaying = true;
+                _startTime = CurrentMilliseconds();
+                _playing = true;
             }
         }
 
         public void Stop()
         {
-            if( myPlaying )
+            if( _playing )
             {
-                myStopTime = CurrentMilliseconds() - myStartTime;
-                myPlaying = false;
+                _stopTime = CurrentMilliseconds() - _startTime;
+                _playing = false;
             }
         }
 
         public void Reset()
         {
-            myStopTime = 0;
+            _stopTime = 0;
 
-            if( myPlaying )
-                myStartTime = CurrentMilliseconds();
+            if( _playing )
+                _startTime = CurrentMilliseconds();
         }
 
         public override void Render( SpriteShader shader )
         {
-            double secs = ( CurrentMilliseconds() - myStartTime + myStopTime ) / 1000.0;
+            double secs = ( CurrentMilliseconds() - _startTime + _stopTime ) / 1000.0;
             int frame = StartFrame + (int) ( (long) ( secs * FrameRate ) % (long) FrameCount );
 
-            if ( frame != myLastFrame )
-                SubrectOffset = myFrameLocations[ frame ];
+            if ( frame != _lastFrame )
+                SubrectOffset = _frameLocations[ frame ];
 
             base.Render( shader );
         }

@@ -18,7 +18,7 @@ namespace Zombles.Entities
         public readonly Vector2 Vector;
         public readonly float Length;
 
-        public PathEdge( Waypoint startWaypoint, Waypoint endWaypoint, Vector2 vector )
+        public PathEdge(Waypoint startWaypoint, Waypoint endWaypoint, Vector2 vector)
         {
             StartWaypoint = startWaypoint;
             EndWaypoint = endWaypoint;
@@ -32,7 +32,7 @@ namespace Zombles.Entities
 
     public class PathGroup : IEnumerable<Waypoint>
     {
-        private static int stNextGroupID = 0;
+        private static int _sNextGroupID = 0;
 
         public int GroupID { get; private set; }
         public List<Waypoint> Waypoints { get; private set; }
@@ -49,30 +49,29 @@ namespace Zombles.Entities
 
         public PathGroup()
         {
-            GroupID = stNextGroupID++;
+            GroupID = _sNextGroupID++;
             Waypoints = new List<Waypoint>();
         }
 
-        public void Merge( PathGroup other )
+        public void Merge(PathGroup other)
         {
-            if ( other.GroupID == GroupID )
+            if (other.GroupID == GroupID)
                 return;
 
-            if ( other.GroupID < GroupID )
-            {
-                other.Merge( this );
+            if (other.GroupID < GroupID) {
+                other.Merge(this);
                 return;
             }
 
-            foreach ( Waypoint waypoint in other )
-                Add( waypoint );
+            foreach (Waypoint waypoint in other)
+                Add(waypoint);
 
             other.Waypoints.Clear();
         }
 
-        public void Add( Waypoint waypoint )
+        public void Add(Waypoint waypoint)
         {
-            Waypoints.Add( waypoint );
+            Waypoints.Add(waypoint);
             waypoint.Group = this;
         }
     }
@@ -81,45 +80,42 @@ namespace Zombles.Entities
     {
         public const int NetworkQuality = 65536;
         public const float ConnectionRadius = 4.0f;
-        public static readonly Vector2 ConnectionHullSize = new Vector2( 0.5f, 0.5f );
+        public static readonly Vector2 ConnectionHullSize = new Vector2(0.5f, 0.5f);
 
-        private static List<Vector2> stHints = new List<Vector2>();
+        private static List<Vector2> _sHints = new List<Vector2>();
 
-        public static void AddHint( Vector2 pos )
+        public static void AddHint(Vector2 pos)
         {
-            stHints.Add( pos );
+            _sHints.Add(pos);
         }
 
-        public static bool ShouldPlace( City city, Vector2 pos, bool hint )
+        public static bool ShouldPlace(City city, Vector2 pos, bool hint)
         {
             PathGroup group = null;
             int found = 0;
             bool close = false;
 
-            NearbyEntityEnumerator near = new NearbyEntityEnumerator( city, pos, ConnectionRadius );
-            while ( near.MoveNext() )
-            {
-                if ( near.Current.HasComponent<Waypoint>() )
-                {
-                    Waypoint waypoint = near.Current.GetComponent<Waypoint>();
+            var near = new NearbyEntityEnumerator(city, pos, ConnectionRadius);
+            while (near.MoveNext()) {
+                if (near.Current.HasComponent<Waypoint>()) {
+                    var waypoint = near.Current.GetComponent<Waypoint>();
 
-                    if ( waypoint.Position2D.Equals( pos ) )
+                    if (waypoint.Position2D.Equals(pos))
                         return false;
 
-                    TraceResult res = Trace.Quick( city, pos, waypoint.Position2D, false, true, ConnectionHullSize );
-                    
-                    if( res.Hit )
-                        res = Trace.Quick( city, waypoint.Position2D, pos, false, true, ConnectionHullSize );
+                    var res = Trace.Quick(city, pos, waypoint.Position2D, false, true, ConnectionHullSize);
 
-                    if( !res.Hit )
-                    {
-                        if ( res.Vector.LengthSquared < 1.0f ||
-                            !hint && res.Vector.LengthSquared < 4.0f )
+                    if (res.Hit)
+                        res = Trace.Quick(city, waypoint.Position2D, pos, false, true, ConnectionHullSize);
+
+                    if (!res.Hit) {
+                        if (res.Vector.LengthSquared < 1.0f ||
+                            !hint && res.Vector.LengthSquared < 4.0f)
                             close = true;
 
-                        if ( group == null )
+                        if (group == null)
                             group = waypoint.Group;
-                        else if( group.GroupID != waypoint.Group.GroupID )
+                        else if (group.GroupID != waypoint.Group.GroupID)
                             return true;
 
                         ++found;
@@ -127,39 +123,34 @@ namespace Zombles.Entities
                 }
             }
 
-            if ( close )
+            if (close)
                 return false;
 
             return true;
         }
 
-        public static void GenerateNetwork( City city, int seed = 0 )
+        public static void GenerateNetwork(City city, int seed = 0)
         {
-            Random rand = seed == 0 ? new Random() : new Random( seed );
+            var rand = seed == 0 ? new Random() : new Random(seed);
 
             int count = 0;
 
             int tries = 0;
-            while ( tries++ < NetworkQuality )
-            {
+            while (tries++ < NetworkQuality) {
                 Vector2 pos;
                 bool hint = false;
 
-                if ( stHints.Count > 0 )
-                {
-                    pos = stHints.Last();
-                    stHints.RemoveAt( stHints.Count - 1 );
+                if (_sHints.Count > 0) {
+                    pos = _sHints.Last();
+                    _sHints.RemoveAt(_sHints.Count - 1);
                     hint = true;
-                }
-                else
-                {
-                    pos = new Vector2( (int) ( rand.NextSingle() * city.Width ) + 0.5f,
-                        (int) ( rand.NextSingle() * city.Height ) + 0.5f );
+                } else {
+                    pos = new Vector2((int) (rand.NextSingle() * city.Width) + 0.5f,
+                        (int) (rand.NextSingle() * city.Height) + 0.5f);
                 }
 
-                if ( ShouldPlace( city, pos, hint ) )
-                {
-                    Entity waypoint = Entity.Create( city, "waypoint" );
+                if (ShouldPlace(city, pos, hint)) {
+                    var waypoint = Entity.Create(city, "waypoint");
                     waypoint.Position2D = pos;
                     waypoint.Spawn();
 
@@ -172,53 +163,49 @@ namespace Zombles.Entities
         public PathGroup Group { get; set; }
         public List<PathEdge> Connections { get; private set; }
 
-        public Waypoint( Entity ent )
-            : base( ent )
+        public Waypoint(Entity ent)
+            : base(ent)
         {
             Group = null;
             Connections = null;
         }
 
-        public bool IsConnected( Waypoint waypoint )
+        public bool IsConnected(Waypoint waypoint)
         {
-            return Connections.Exists( x => x.EndWaypoint == waypoint );
+            return Connections.Exists(x => x.EndWaypoint == waypoint);
         }
 
         public override void OnSpawn()
         {
             Connections = new List<PathEdge>();
 
-            NearbyEntityEnumerator near = new NearbyEntityEnumerator( City, Position2D, ConnectionRadius );
-            while ( near.MoveNext() )
-            {
-                if ( near.Current == Entity )
+            var near = new NearbyEntityEnumerator(City, Position2D, ConnectionRadius);
+            while (near.MoveNext()) {
+                if (near.Current == Entity)
                     continue;
 
-                if ( near.Current.HasComponent<Waypoint>() )
-                {
-                    Waypoint other = near.Current.GetComponent<Waypoint>();
+                if (near.Current.HasComponent<Waypoint>()) {
+                    var other = near.Current.GetComponent<Waypoint>();
 
-                    TraceResult res = Trace.Quick( City, Position2D, other.Position2D, false, true, ConnectionHullSize );
-                    if ( res.Hit )
-                        res = Trace.Quick( City, other.Position2D, Position2D, false, true, ConnectionHullSize );
+                    var res = Trace.Quick(City, Position2D, other.Position2D, false, true, ConnectionHullSize);
+                    if (res.Hit)
+                        res = Trace.Quick(City, other.Position2D, Position2D, false, true, ConnectionHullSize);
 
-                    if ( !res.Hit )
-                    {
-                        Connections.Add( new PathEdge( this, other, res.Vector ) );
-                        other.Connections.Add( new PathEdge( other, this, res.Vector ) );
+                    if (!res.Hit) {
+                        Connections.Add(new PathEdge(this, other, res.Vector));
+                        other.Connections.Add(new PathEdge(other, this, res.Vector));
 
-                        if ( Group == null )
-                            other.Group.Add( this );
-                        else if ( Group != other.Group )
-                            other.Group.Merge( Group );
+                        if (Group == null)
+                            other.Group.Add(this);
+                        else if (Group != other.Group)
+                            other.Group.Merge(Group);
                     }
                 }
             }
 
-            if ( Group == null )
-            {
+            if (Group == null) {
                 Group = new PathGroup();
-                Group.Add( this );
+                Group.Add(this);
             }
         }
     }

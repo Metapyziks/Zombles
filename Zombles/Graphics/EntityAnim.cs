@@ -10,17 +10,17 @@ namespace Zombles.Graphics
 {
     public class EntityAnim
     {
-        private static Dictionary<String, EntityAnim> stFound = new Dictionary<string, EntityAnim>();
+        private static Dictionary<String, EntityAnim> _sFound = new Dictionary<string, EntityAnim>();
 
         public static EntityAnim GetAnim(params String[] nameLocator)
         {
             var name = String.Join("/", nameLocator);
 
-            if (!stFound.ContainsKey(name)) {
-                stFound.Add(name, new EntityAnim(Archive.Get<JObject>(nameLocator)));
+            if (!_sFound.ContainsKey(name)) {
+                _sFound.Add(name, new EntityAnim(Archive.Get<JObject>(nameLocator)));
             }
 
-            return stFound[name];
+            return _sFound[name];
         }
 
         public readonly double Frequency;

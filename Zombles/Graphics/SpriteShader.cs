@@ -4,20 +4,20 @@ namespace Zombles.Graphics
 {
     public class SpriteShader : ShaderProgram2D
     {
-        private BitmapTexture2D myTexture;
+        private BitmapTexture2D _texture;
 
         public BitmapTexture2D Texture
         {
             get
             {
-                return myTexture;
+                return _texture;
             }
             set
             {
-                if ( myTexture != value )
+                if ( _texture != value )
                 {
                     SetTexture( "texture0", value );
-                    myTexture = value;
+                    _texture = value;
                 }
             }
         }

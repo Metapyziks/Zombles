@@ -10,10 +10,10 @@ namespace Zombles.Graphics
 {
     public class Texture2DArray : Texture
     {
-        private ResourceLocator[] myNames;
-        private BitmapTexture2D[] myTextures;
+        private ResourceLocator[] _names;
+        private BitmapTexture2D[] _textures;
 
-        private UInt32[] myData;
+        private UInt32[] _data;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -25,11 +25,11 @@ namespace Zombles.Graphics
             Width = width;
             Height = height;
 
-            myNames = textureLocators;
-            myTextures = new BitmapTexture2D[textureLocators.Length];
+            _names = textureLocators;
+            _textures = new BitmapTexture2D[textureLocators.Length];
 
             for (int i = 0; i < textureLocators.Length; ++i)
-                myTextures[i] = new BitmapTexture2D(Archive.Get<Bitmap>(myNames[i]));
+                _textures[i] = new BitmapTexture2D(Archive.Get<Bitmap>(_names[i]));
 
             Count = 1;
             while (Count < textureLocators.Length)
@@ -37,10 +37,10 @@ namespace Zombles.Graphics
 
             int tileLength = width * height;
 
-            myData = new uint[tileLength * Count];
+            _data = new uint[tileLength * Count];
 
-            for (int i = 0; i < myTextures.Length; ++i) {
-                Bitmap tile = myTextures[i].Bitmap;
+            for (int i = 0; i < _textures.Length; ++i) {
+                Bitmap tile = _textures[i].Bitmap;
 
                 int xScale = tile.Width / width;
                 int yScale = tile.Height / height;
@@ -52,7 +52,7 @@ namespace Zombles.Graphics
 
                         Color clr = tile.GetPixel(tx, ty);
 
-                        myData[i * tileLength + x + y * width]
+                        _data[i * tileLength + x + y * width]
                             = (UInt32) (clr.R << 24 | clr.G << 16 | clr.B << 08 | clr.A << 00);
                     }
                 }
@@ -61,9 +61,9 @@ namespace Zombles.Graphics
 
         public ushort GetTextureIndex(params String[] locator)
         {
-            for (int i = 0; i < myNames.Length; ++i) {
-                if (myNames[i].Length == locator.Length
-                    && myNames[i].Zip(locator, (x, y) => x == y).All(x => x)) {
+            for (int i = 0; i < _names.Length; ++i) {
+                if (_names[i].Length == locator.Length
+                    && _names[i].Zip(locator, (x, y) => x == y).All(x => x)) {
                     return (ushort) i;
                 }
             }
@@ -82,10 +82,10 @@ namespace Zombles.Graphics
             GL.TexParameter(TextureTarget.Texture2DArray,
                 TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp);
             GL.TexImage3D(TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
-                Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, myData);
+                Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, _data);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
 
-            myData = null;
+            _data = null;
         }
     }
 }

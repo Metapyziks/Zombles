@@ -15,136 +15,123 @@ namespace Zombles.Scripts.Entities
         private const double TargetSearchInterval = 1.0;
         private const double AttackInterval = 1.0;
 
-        private float myViewRadius;
+        private float _viewRadius;
 
-        private double myLastSearch;
-        private double myLastAttack;
-        private double myLastSeen;
-        private Entity myCurTarget;
-        private Vector2 myLastSeenPos;
+        private double _lastSearch;
+        private double _lastAttack;
+        private double _lastSeen;
+        private Entity _curTarget;
+        private Vector2 _lastSeenPos;
 
-        public ZombieAI( Entity ent )
-            : base( ent )
+        public ZombieAI(Entity ent)
+            : base(ent)
         {
-            myViewRadius = 12.0f;
+            _viewRadius = 12.0f;
         }
 
         public override void OnSpawn()
         {
             base.OnSpawn();
 
-            myLastSearch = ZomblesGame.Time - Tools.Random.NextDouble() * TargetSearchInterval;
-            myCurTarget = null;
+            _lastSearch = ZomblesGame.Time - Tools.Random.NextDouble() * TargetSearchInterval;
+            _curTarget = null;
         }
 
-        public override void OnThink( double dt )
+        public override void OnThink(double dt)
         {
-            if ( !Human.Health.IsAlive )
+            if (!Human.Health.IsAlive)
                 return;
 
-            if ( ZomblesGame.Time - myLastSearch > TargetSearchInterval )
+            if (ZomblesGame.Time - _lastSearch > TargetSearchInterval)
                 FindTarget();
 
-            if ( myCurTarget != null )
-            {
-                Vector2 diff = City.Difference( Position2D, myCurTarget.Position2D );
+            if (_curTarget != null) {
+                Vector2 diff = City.Difference(Position2D, _curTarget.Position2D);
 
-                Health targHealth = myCurTarget.GetComponent<Health>();
+                Health targHealth = _curTarget.GetComponent<Health>();
 
-                if ( !myCurTarget.HasComponent<Survivor>() || !targHealth.IsAlive || diff.LengthSquared > myViewRadius * myViewRadius )
-                    myCurTarget = null;
-                else
-                {
-                    myLastSeenPos = myCurTarget.Position2D;
-                    myLastSeen = ZomblesGame.Time;
+                if (!_curTarget.HasComponent<Survivor>() || !targHealth.IsAlive || diff.LengthSquared > _viewRadius * _viewRadius)
+                    _curTarget = null;
+                else {
+                    _lastSeenPos = _curTarget.Position2D;
+                    _lastSeen = ZomblesGame.Time;
 
-                    if ( ZomblesGame.Time - myLastAttack > AttackInterval )
-                    {
-                        if ( diff.LengthSquared < 0.75f )
-                        {
-                            Human.Attack( diff );
-                            myLastAttack = ZomblesGame.Time;
+                    if (ZomblesGame.Time - _lastAttack > AttackInterval) {
+                        if (diff.LengthSquared < 0.75f) {
+                            Human.Attack(diff);
+                            _lastAttack = ZomblesGame.Time;
                             Human.StopMoving();
-                        }
-                        else
-                        {
-                            Human.StartMoving( diff );
+                        } else {
+                            Human.StartMoving(diff);
                         }
                     }
                 }
-            }
-            else
-            {
-                if ( ( ZomblesGame.Time - myLastSeen ) > 10.0 ||
-                    City.Difference( Position2D, myLastSeenPos ).LengthSquared <= 1.0f )
-                {
+            } else {
+                if ((ZomblesGame.Time - _lastSeen) > 10.0 ||
+                    City.Difference(Position2D, _lastSeenPos).LengthSquared <= 1.0f) {
                     int attempts = 0;
-                    while ( attempts++ < 16 )
-                    {
+                    while (attempts++ < 16) {
                         float rad = 2.0f + Tools.Random.NextSingle() * 6.0f;
                         double ang = Tools.Random.NextDouble() * Math.PI * 2.0;
 
-                        myLastSeenPos = new Vector2(
-                            Position2D.X + (float) Math.Cos( ang ) * rad,
-                            Position2D.Y + (float) Math.Sin( ang ) * rad
+                        _lastSeenPos = new Vector2(
+                            Position2D.X + (float) Math.Cos(ang) * rad,
+                            Position2D.Y + (float) Math.Sin(ang) * rad
                         );
 
-                        Trace trace = new Trace( City );
+                        Trace trace = new Trace(City);
                         trace.Origin = Position2D;
-                        trace.Target = myLastSeenPos;
+                        trace.Target = _lastSeenPos;
                         trace.HitGeometry = true;
                         trace.HitEntities = false;
 
-                        if ( !trace.GetResult().Hit )
+                        if (!trace.GetResult().Hit)
                             break;
                     }
 
-                    if ( attempts == 16 )
-                        myLastSeen = ZomblesGame.Time + Tools.Random.NextDouble() * 1.0 + 9.0;
+                    if (attempts == 16)
+                        _lastSeen = ZomblesGame.Time + Tools.Random.NextDouble() * 1.0 + 9.0;
                     else
-                        myLastSeen = ZomblesGame.Time;
+                        _lastSeen = ZomblesGame.Time;
                 }
 
-                Human.StartMoving( City.Difference( Position2D, myLastSeenPos ) );
+                Human.StartMoving(City.Difference(Position2D, _lastSeenPos));
             }
         }
 
         private void FindTarget()
         {
-            Trace trace = new Trace( City );
+            Trace trace = new Trace(City);
             trace.Origin = Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;
 
             Entity closest = null;
-            float bestDist2 = myViewRadius * myViewRadius;
+            float bestDist2 = _viewRadius * _viewRadius;
 
-            NearbyEntityEnumerator it = SearchNearbyEnts( myViewRadius );
-            while ( it.MoveNext() )
-            {
-                if ( !it.Current.HasComponent<Survivor>() )
+            NearbyEntityEnumerator it = SearchNearbyEnts(_viewRadius);
+            while (it.MoveNext()) {
+                if (!it.Current.HasComponent<Survivor>())
                     continue;
 
-                if ( !it.Current.GetComponent<Health>().IsAlive )
+                if (!it.Current.GetComponent<Health>().IsAlive)
                     continue;
 
-                Vector2 diff = City.Difference( Position2D, it.Current.Position2D );
+                Vector2 diff = City.Difference(Position2D, it.Current.Position2D);
 
                 float dist2 = diff.LengthSquared;
-                if ( dist2 < bestDist2 )
-                {
+                if (dist2 < bestDist2) {
                     trace.Target = it.Current.Position2D;
 
-                    if ( !trace.GetResult().Hit )
-                    {
+                    if (!trace.GetResult().Hit) {
                         closest = it.Current;
                         bestDist2 = dist2;
                     }
                 }
             }
 
-            myCurTarget = closest;
-            myLastSearch = ZomblesGame.Time;
+            _curTarget = closest;
+            _lastSearch = ZomblesGame.Time;
         }
     }
 }

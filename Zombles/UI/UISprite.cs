@@ -7,17 +7,17 @@ namespace Zombles.UI
 {
     public class UISprite : UIObject
     {
-        private Sprite mySprite;
+        private Sprite _sprite;
 
         public Color4 Colour
         {
             get
             {
-                return mySprite.Colour;
+                return _sprite.Colour;
             }
             set
             {
-                mySprite.Colour = value;
+                _sprite.Colour = value;
             }
         }
 
@@ -30,12 +30,12 @@ namespace Zombles.UI
         public UISprite( Sprite sprite, Vector2 position )
             : base( sprite.Size, position )
         {
-            mySprite = sprite;
+            _sprite = sprite;
         }
 
         protected override Vector2 OnSetSize( Vector2 newSize )
         {
-            mySprite.Size = newSize;
+            _sprite.Size = newSize;
 
             return base.OnSetSize( newSize );
         }
@@ -47,9 +47,9 @@ namespace Zombles.UI
 
         protected override void OnRender( SpriteShader shader, Vector2 renderPosition = new Vector2() )
         {
-            mySprite.Position = renderPosition;
+            _sprite.Position = renderPosition;
 
-            mySprite.Render( shader );
+            _sprite.Render( shader );
         }
     }
 }

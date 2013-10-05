@@ -15,22 +15,22 @@ namespace Zombles.Scripts.UI
 {
     public class UIInfectionDisplay : UIObject
     {
-        private UISprite mySurvivorBar;
-        private UISprite myZombieBar;
+        private UISprite _survivorBar;
+        private UISprite _zombieBar;
 
         public UIInfectionDisplay()
         {
-            mySurvivorBar = new UISprite( new Sprite( 0.5f, 1.0f, Color4.Pink ) );
-            myZombieBar = new UISprite( new Sprite( 0.5f, 1.0f, Color4.LightGreen ) );
-            myZombieBar.Left = 0.5f;
+            _survivorBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.Pink));
+            _zombieBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.LightGreen));
+            _zombieBar.Left = 0.5f;
 
-            AddChild( mySurvivorBar );
-            AddChild( myZombieBar );
+            AddChild(_survivorBar);
+            AddChild(_zombieBar);
 
             UpdateBars();
         }
 
-        protected override Vector2 OnSetSize( Vector2 newSize )
+        protected override Vector2 OnSetSize(Vector2 newSize)
         {
             UpdateBars();
 
@@ -39,12 +39,12 @@ namespace Zombles.Scripts.UI
 
         public void UpdateBars()
         {
-            mySurvivorBar.Height = myZombieBar.Height = InnerHeight;
+            _survivorBar.Height = _zombieBar.Height = InnerHeight;
 
-            float ratio = (float) Survivor.Count / ( Zombie.Count + Survivor.Count );
+            float ratio = (float) Survivor.Count / (Zombie.Count + Survivor.Count);
 
-            mySurvivorBar.Width = myZombieBar.Left = (int) Math.Round( InnerWidth * ratio );
-            myZombieBar.Width = InnerWidth - mySurvivorBar.Width;
+            _survivorBar.Width = _zombieBar.Left = (int) Math.Round(InnerWidth * ratio);
+            _zombieBar.Width = InnerWidth - _survivorBar.Width;
         }
     }
 }

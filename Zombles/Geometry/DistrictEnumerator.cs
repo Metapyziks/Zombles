@@ -7,12 +7,12 @@ namespace Zombles.Geometry
 {
     public class DistrictEnumerator : IEnumerator<Block>
     {
-        private District myRootDistrict;
-        private District myCurDistrict;
+        private District _rootDistrict;
+        private District _curDistrict;
 
         public Block Current
         {
-            get { return myCurDistrict.Block; }
+            get { return _curDistrict.Block; }
         }
 
         object System.Collections.IEnumerator.Current
@@ -20,42 +20,41 @@ namespace Zombles.Geometry
             get { return Current; }
         }
 
-        public DistrictEnumerator( District root )
+        public DistrictEnumerator(District root)
         {
-            myRootDistrict = root;
-            myCurDistrict = null;
+            _rootDistrict = root;
+            _curDistrict = null;
         }
 
         public void Dispose()
         {
-            myCurDistrict = null;
-            myRootDistrict = null;
+            _curDistrict = null;
+            _rootDistrict = null;
         }
 
         public bool MoveNext()
         {
-            if ( myCurDistrict == null )
-                myCurDistrict = myRootDistrict;
-            else if ( myCurDistrict.IsLeaf )
-            {
-                while ( !myCurDistrict.IsRoot && myCurDistrict == myCurDistrict.Parent.ChildB )
-                    myCurDistrict = myCurDistrict.Parent;
+            if (_curDistrict == null) {
+                _curDistrict = _rootDistrict;
+            } else if (_curDistrict.IsLeaf) {
+                while (!_curDistrict.IsRoot && _curDistrict == _curDistrict.Parent.ChildB)
+                    _curDistrict = _curDistrict.Parent;
 
-                if ( myCurDistrict.IsRoot )
+                if (_curDistrict.IsRoot)
                     return false;
 
-                myCurDistrict = myCurDistrict.Parent.ChildB;
+                _curDistrict = _curDistrict.Parent.ChildB;
             }
 
-            while ( myCurDistrict.IsBranch )
-                myCurDistrict = myCurDistrict.ChildA;
+            while (_curDistrict.IsBranch)
+                _curDistrict = _curDistrict.ChildA;
 
             return true;
         }
 
         public void Reset()
         {
-            myCurDistrict = null;
+            _curDistrict = null;
         }
     }
 }
