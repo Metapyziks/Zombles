@@ -32,7 +32,7 @@ namespace Zombles.Graphics
             }
 
             ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "view_matrix");
+            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
             vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddUniform(ShaderVarType.Vec2, "scale");
             vert.AddUniform(ShaderVarType.Vec3, "position");
@@ -57,7 +57,7 @@ namespace Zombles.Graphics
 
                     const float yscale = 2.0 / sqrt(3.0);
 
-                    gl_Position = view_matrix * vec4(
+                    gl_Position = vp_matrix * vec4(
                         position.x + world_offset.x,
                         (position.y + in_vertex.y * size.y) * yscale,
                         position.z + world_offset.y,
@@ -94,7 +94,6 @@ namespace Zombles.Graphics
             AddAttribute("in_vertex", 3);
 
             AddTexture("ents");
-            SetTexture("ents", TextureManager.Ents.TexArray);
 
             _scaleLoc = GL.GetUniformLocation(Program, "scale");
             _positionLoc = GL.GetUniformLocation(Program, "position");
@@ -115,6 +114,8 @@ namespace Zombles.Graphics
         protected override void OnBegin()
         {
             base.OnBegin();
+
+            SetTexture("ents", TextureManager.Ents.TexArray);
 
             GL.Uniform2(_scaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale);
 
