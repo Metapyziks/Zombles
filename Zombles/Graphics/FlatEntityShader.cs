@@ -41,28 +41,28 @@ namespace Zombles.Graphics
             vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
             vert.AddVarying(ShaderVarType.Vec3, "var_tex");
             vert.Logic = @"
-                void main( void )
+                void main(void)
                 {
-                    switch( int( in_vertex.z ) )
+                    switch(int(in_vertex.z))
                     {
                         case 0:
-                            var_tex = vec3( 0.0, 0.0, texture ); break;
+                            var_tex = vec3(0.0, 0.0, texture); break;
                         case 1:
-                            var_tex = vec3( size.x, 0.0, texture ); break;
+                            var_tex = vec3(size.x, 0.0, texture); break;
                         case 2:
-                            var_tex = vec3( 0.0, size.y, texture ); break;
+                            var_tex = vec3(0.0, size.y, texture); break;
                         case 3:
-                            var_tex = vec3( size.x, size.y, texture ); break;
+                            var_tex = vec3(size.x, size.y, texture); break;
                     }
 
-                    const float yscale = 2.0 / sqrt( 3.0 );
+                    const float yscale = 2.0 / sqrt(3.0);
 
                     gl_Position = view_matrix * vec4(
                         position.x + world_offset.x,
-                        ( position.y + in_vertex.y * size.y ) * yscale,
+                        (position.y + in_vertex.y * size.y) * yscale,
                         position.z + world_offset.y,
                         1.0
-                    ) + vec4( in_vertex.x * scale.x * size.x, 0.0, 0.0, 0.0 );
+                    ) + vec4(in_vertex.x * scale.x * size.x, 0.0, 0.0, 0.0);
                 }
             ";
 
@@ -71,10 +71,10 @@ namespace Zombles.Graphics
             frag.AddVarying(ShaderVarType.Vec3, "var_tex");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
-                void main( void )
+                void main(void)
                 {
-                    out_frag_colour = texture2DArray( ents, var_tex );
-                    if( out_frag_colour.a < 0.5 )
+                    out_frag_colour = texture2DArray(ents, var_tex);
+                    if(out_frag_colour.a < 0.5)
                         discard;
                 }
             ";

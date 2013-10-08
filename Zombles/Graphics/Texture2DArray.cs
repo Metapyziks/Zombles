@@ -73,17 +73,16 @@ namespace Zombles.Graphics
 
         protected override void Load()
         {
-            GL.TexParameter(TextureTarget.Texture2DArray,
-                TextureParameterName.TextureMinFilter, (int) TextureMinFilter.NearestMipmapNearest);
-            GL.TexParameter(TextureTarget.Texture2DArray,
-                TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Nearest);
-            GL.TexParameter(TextureTarget.Texture2DArray,
-                TextureParameterName.TextureWrapS, (int) TextureWrapMode.Clamp);
-            GL.TexParameter(TextureTarget.Texture2DArray,
-                TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp);
-            GL.TexImage3D(TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
-                Width, Height, Depth, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, _data);
+            GL.TexImage3D(TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba, Width, Height, Depth, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, _data);
+
+            GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureMinFilter, (int) TextureMinFilter.LinearMipmapNearest);
+            GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureWrapS, (int) TextureWrapMode.Clamp);
+            GL.TexParameter(TextureTarget.Texture2DArray, TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp);
+            
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
+
+            OpenTKTK.Utils.Tools.ErrorCheck("loadtexture");
 
             _data = null;
         }
