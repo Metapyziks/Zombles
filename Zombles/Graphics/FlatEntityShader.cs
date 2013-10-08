@@ -9,7 +9,7 @@ using OpenTKTK.Utils;
 
 namespace Zombles.Graphics
 {
-    public class FlatEntityShader : ShaderProgram3D<OrthoCamera>
+    public class FlatEntityShader : WorldShader
     {
         private static VertexBuffer _sVB;
 

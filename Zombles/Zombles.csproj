@@ -88,6 +88,7 @@
     <Compile Include="Graphics\FlatEntityShader.cs" />
     <Compile Include="Graphics\FrameSprite.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
+    <Compile Include="Graphics\WorldShader.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Graphics\Sprite.cs" />

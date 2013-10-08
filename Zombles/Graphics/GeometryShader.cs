@@ -9,7 +9,7 @@ using OpenTKTK.Utils;
 
 namespace Zombles.Graphics
 {
-    public class GeometryShader : ShaderProgram3D<OrthoCamera>
+    public class GeometryShader : WorldShader
     {
         public GeometryShader()
         {
@@ -51,13 +51,12 @@ namespace Zombles.Graphics
                     float y = float((dat >> 4) & 0xf);
                     vec2 bloodadd;
 
-                    if( y > 0.0f )
-                    {
+                    if (y > 0.0f) {
                         int normalno = ((ix >> 12) & 0x1) | ((iz >> 11) & 0x2);
                         bloodadd = normals[normalno];
-                    }
-                    else
+                    } else {
                         bloodadd = vec2(0.0, 0.0);
+                    }
 
                     var_shade = 1.0 - 0.125 * float((dat >> 3) & 0x1);
                     var_blood = max(1.0 - y / 2.0, 0.0);
@@ -81,16 +80,16 @@ namespace Zombles.Graphics
             frag.AddUniform(ShaderVarType.Sampler2D, "bloodmap");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
-                void main( void )
+                void main(void)
                 {
-                    vec4 clr = texture2DArray( tiles, var_tex );
-                    if( clr.a < 1.0 )
+                    vec4 clr = texture2DArray(tiles, var_tex);
+                    if (clr.a < 1.0)
                         discard;
 
-                    if( var_blood > 0.0 && texture2D( bloodmap, var_blood_tex ).a * var_blood >= 0.25 )
-                        clr = clr * 0.5 + vec4( 0.3, 0.0, 0.0, 0.0 );
+                    if (var_blood > 0.0 && texture2D(bloodmap, var_blood_tex).a * var_blood >= 0.25)
+                        clr = clr * 0.5 + vec4(0.3, 0.0, 0.0, 0.0);
    
-                    out_frag_colour = vec4( clr.rgb * var_shade, 1.0 );
+                    out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
             ";
 
