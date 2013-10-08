@@ -1,7 +1,0 @@
-"name"				"Zombles Scripts"
-"author"			"Metapyziks"
-"author email"		"metapyziks@gmail.com"
-"author website"	"https://github.com/Metapyziks/Zombles"
-"version"			"0.0.0.1"
-"description"		"Core scripts for Zombles"
-"destination"		"shared"

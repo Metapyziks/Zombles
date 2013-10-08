@@ -10,7 +10,7 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
         private StructureGen.Warehouse _buildingGen;
 
         public Warehouse()
-            : base(1.0, 8, 12, 24, 32)
+            : base(1.0, 8, 12, 16, 24)
         {
             _buildingGen = new StructureGen.Warehouse();
         }

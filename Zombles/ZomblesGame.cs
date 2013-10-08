@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Diagnostics;
 
@@ -38,8 +39,8 @@ namespace Zombles
         public ZomblesGame()
             : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16, 0), "Zombles")
         {
-            VSync = VSyncMode.Off;
-            // Context.SwapInterval = 1;
+            VSync = VSyncMode.On;
+            Context.SwapInterval = 1;
 
             WindowBorder = WindowBorder.Fixed;
 
@@ -56,9 +57,14 @@ namespace Zombles
 
             Archive.RegisterAll(Assembly.GetExecutingAssembly());
 
-            foreach (String line in File.ReadAllLines(loadorderpath))
-                if (line.Length > 0 && File.Exists(dataPath + line))
-                    Archive.FromFile(dataPath + line).Mount();
+            var archives = File.ReadAllLines(loadorderpath).Where(x => x.Length > 0);
+            foreach (String line in archives.Select(x => dataPath + x + ".dat"))
+                if (File.Exists(line))
+                    Archive.FromFile(line).Mount();
+
+            foreach (String line in archives.Select(x => dataPath + x))
+                if (line.Length > 0 && Directory.Exists(line))
+                    Archive.FromDirectory(line).Mount();
 
             Mouse.Move += OnMouseMove;
             Mouse.ButtonUp += OnMouseButtonUp;

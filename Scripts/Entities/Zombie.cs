@@ -72,7 +72,7 @@ namespace Zombles.Scripts.Entities
             if (Tools.Random.NextSingle() < 0.05)
                 _moveSpeed += 2.0f;
 
-            _bleedTime = Tools.Random.NextDouble() * 3.0 + 2.0;
+            _bleedTime = Tools.Random.NextDouble() * 15.0 + 5.0;
         }
 
         public override void OnSpawn()

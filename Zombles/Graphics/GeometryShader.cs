@@ -87,7 +87,7 @@ namespace Zombles.Graphics
                         discard;
 
                     if (var_blood > 0.0 && texture2D(bloodmap, var_blood_tex).a * var_blood >= 0.25)
-                        clr = clr * 0.5 + vec4(0.3, 0.0, 0.0, 0.0);
+                        clr = clr * 0.5 + vec4(0.2, 0.0, 0.0, 0.0);
    
                     out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
                 }

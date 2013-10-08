@@ -67,7 +67,6 @@
     <Compile Include="Geometry\Generation\StructureGen\CratePile.cs" />
     <Compile Include="Geometry\Generation\StructureGen\Park.cs" />
     <Compile Include="Geometry\Generation\StructureGen\Warehouse.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UIInfectionDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,20 +83,13 @@
       <Name>Zombles</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rmdir "$(SolutionDir)Content\scripts\scripts" /s /q
-md "$(SolutionDir)Content\scripts\scripts"
-xcopy "$(ProjectDir)*.cs" "$(SolutionDir)Content\scripts\scripts\" /s /c /i /y
-
-rmdir "$(SolutionDir)Content\scripts\scripts\obj" /s /q
-rmdir "$(SolutionDir)Content\scripts\scripts\Properties" /s /q
-
-cd "$(SolutionDir)Content"
-"buildarchive" scripts
-xcopy "scripts.dat" "$(TargetDir)Data\"  /c /y
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
