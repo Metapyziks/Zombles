@@ -35,7 +35,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                 return "wall/fence/0";
             };
             Func <int, int, ResourceLocator> floorFunc = (horzPos, vertPos) => {
-                return rand.NextTexture("floor/grass/", 4);
+                return rand.NextTexture("floor/grass", 4);
             };
             GenHelper.BuildFloor(tiles, x, y, width, height, 0, floorFunc);
 

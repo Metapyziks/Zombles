@@ -19,11 +19,6 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
             int borderLeft, int borderTop,
             int borderRight, int borderBottom, Random rand)
         {
-            GenHelper.BuildFloor(tiles, borderLeft, borderTop,
-                district.Width - borderLeft - borderRight,
-                district.Height - borderTop - borderBottom,
-                0, "floor/concrete/0");
-
             _buildingGen.EntranceFaces =
                 (borderLeft > 1 ? Face.West : Face.None) |
                 (borderTop > 1 ? Face.North : Face.None) |

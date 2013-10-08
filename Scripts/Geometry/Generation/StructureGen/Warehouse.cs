@@ -29,7 +29,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
             if (EntranceFaces != Face.None) {
                 int rheight = rand.Next(3) + 4;
 
-                string wallGroup = "wall/brick" + rand.Next(2) + "/";
+                ResourceLocator wallGroup = "wall/brick" + rand.Next(2);
 
                 GenHelper.BuildRoof(tiles, x, y, width, height, rheight, "floor/roof/0");
 
@@ -37,8 +37,13 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     if (level < rheight)
                         return rand.NextTexture(wallGroup, 4);
 
-                    return wallGroup + "7";
+                    return wallGroup["7"];
                 };
+
+                if (Tools.Random.NextDouble() < 0.5) {
+                    GenHelper.BuildFloor(tiles, x, y, width, height, 0,
+                        (horz, vert) => Tools.Random.NextTexture("floor/planks", 4));
+                }
 
                 GenHelper.BuildWall(tiles, x, y, Face.North, width, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, x, y, Face.West, height, rheight + 1, texFunc);
@@ -54,7 +59,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     int entranceX = entrance == Face.West ? x : x + width;
                     int entranceY = y + entranceOffset;
                     GenHelper.BuildWall(tiles, entranceX, entranceY - 1, Face.West, 1, 3,
-                        wallGroup + "9", wallGroup + "8");
+                        wallGroup["9"], wallGroup["8"]);
                     for (int i = 0; i < entranceCount; ++i) {
                         int doorOffset = (!open && i == entranceCount - 1 ? 1 : rand.Next(0, 2)) * 2;
                         int doorHeight = 3 - doorOffset;
@@ -66,7 +71,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         GenHelper.BuildWall(tiles, entranceX, entranceY + i * (entranceSize + 1),
                             Face.West, entranceSize, doorOffset, doorHeight, "wall/garage/0", "wall/garage/0");
                         GenHelper.BuildWall(tiles, entranceX, entranceY + i * (entranceSize + 1) + entranceSize,
-                            Face.West, 1, 3, wallGroup + "a", wallGroup + "a");
+                            Face.West, 1, 3, wallGroup["a"], wallGroup["a"]);
 
                         if (doorOffset >= 2)
                             Waypoint.AddHint(new Vector2(district.X + entranceX,
@@ -74,14 +79,14 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     }
                     GenHelper.BuildWall(tiles, entranceX,
                         entranceY + entranceCount * (entranceSize + 1) - 1, Face.West, 1, 3,
-                        wallGroup + "8", wallGroup + "9");
+                        wallGroup["8"], wallGroup["9"]);
                 } else {
                     int entranceCount = Math.Min((width - 1) / (entranceSize + 1), 3);
                     int entranceOffset = rand.Next(1, width - (entranceSize + 1) * entranceCount);
                     int entranceX = x + entranceOffset;
                     int entranceY = entrance == Face.North ? y : y + height;
                     GenHelper.BuildWall(tiles, entranceX - 1, entranceY, Face.North, 1, 3,
-                        wallGroup + "8", wallGroup + "9");
+                        wallGroup["8"], wallGroup["9"]);
                     for (int i = 0; i < entranceCount; ++i) {
                         int doorOffset = (!open && i == entranceCount - 1 ? 1 : rand.Next(0, 2)) * 2;
                         int doorHeight = 3 - doorOffset;
@@ -93,7 +98,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         GenHelper.BuildWall(tiles, entranceX + i * (entranceSize + 1), entranceY,
                             Face.North, entranceSize, doorOffset, doorHeight, "wall/garage/0", "wall/garage/0");
                         GenHelper.BuildWall(tiles, entranceX + i * (entranceSize + 1) + entranceSize, entranceY,
-                            Face.North, 1, 3, wallGroup + "a", wallGroup + "a");
+                            Face.North, 1, 3, wallGroup["a"], wallGroup["a"]);
 
                         if (doorOffset >= 2)
                             Waypoint.AddHint(new Vector2(district.X + entranceX
@@ -102,7 +107,7 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     }
                     GenHelper.BuildWall(tiles, entranceX + entranceCount * (entranceSize + 1) - 1,
                         entranceY, Face.North, 1, 3,
-                        wallGroup + "9", wallGroup + "8");
+                        wallGroup["9"], wallGroup["8"]);
                 }
             }
         }
