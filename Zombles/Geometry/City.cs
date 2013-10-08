@@ -8,13 +8,16 @@ using OpenTK;
 using Zombles.Graphics;
 using Zombles.Entities;
 
+using OpenTKTK.Utils;
+using OpenTKTK.Textures;
+
 namespace Zombles.Geometry
 {
     public class City : IEnumerable<Block>, IDisposable
     {
         private VertexBuffer _geomVertexBuffer;
         private VertexBuffer _pathVertexBuffer;
-        private LumTexture2D _bloodMap;
+        private AlphaTexture2D _bloodMap;
 
         private bool _setPathVB;
 
@@ -30,7 +33,7 @@ namespace Zombles.Geometry
             RootDistrict = new District(this, 0, 0, width, height);
             _geomVertexBuffer = new VertexBuffer(3);
             _pathVertexBuffer = new VertexBuffer(2);
-            _bloodMap = new LumTexture2D(width * 2, height * 2);
+            _bloodMap = new AlphaTexture2D(width * 2, height * 2);
 
             _setPathVB = false;
         }
@@ -75,11 +78,11 @@ namespace Zombles.Geometry
 
                 TraceResult res = Trace.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
 
-                _bloodMap.Add(
-                    (int) (res.End.X * 2.0f),
-                    (int) (res.End.Y * 2.0f),
-                    (byte) Tools.Random.Next(8, 64)
-                );
+                int ix = (int) (res.End.X * 2.0f);
+                int iy = (int) (res.End.Y * 2.0f);
+
+                _bloodMap[ix, iy] = Math.Min(1f, _bloodMap[ix, iy]
+                    + 1f / 32f + Tools.Random.NextSingle() * 1f / 6f);
             }
         }
 
@@ -120,26 +123,14 @@ namespace Zombles.Geometry
         public void RenderGeometry(GeometryShader shader, bool baseOnly = false)
         {
             shader.SetTexture("bloodmap", _bloodMap);
-            _geomVertexBuffer.StartBatch(shader);
+            _geomVertexBuffer.Begin(shader);
             RootDistrict.RenderGeometry(_geomVertexBuffer, shader, baseOnly);
-            _geomVertexBuffer.EndBatch(shader);
+            _geomVertexBuffer.End();
         }
 
         public void RenderEntities(FlatEntityShader shader)
         {
             RootDistrict.RenderEntities(shader);
-        }
-
-        public void RenderPaths(DebugTraceShader shader)
-        {
-            if (!_setPathVB) {
-                UpdatePathVertexBuffer();
-                _setPathVB = true;
-            }
-
-            _pathVertexBuffer.StartBatch(shader);
-            RootDistrict.RenderPaths(_pathVertexBuffer, shader);
-            _pathVertexBuffer.EndBatch(shader);
         }
 
         public IEnumerator<Block> GetEnumerator()

@@ -2,6 +2,8 @@ using System;
 
 using OpenTK;
 
+using OpenTKTK.Textures;
+
 namespace Zombles.Graphics
 {
     public class AnimatedSprite : Sprite
@@ -27,8 +29,8 @@ namespace Zombles.Graphics
 
         public double FrameRate;
 
-        public AnimatedSprite( BitmapTexture2D texture, int frameWidth, int frameHeight, double frameRate, float scale = 1.0f )
-            : base( texture, scale )
+        public AnimatedSprite(BitmapTexture2D texture, int frameWidth, int frameHeight, double frameRate, float scale = 1.0f)
+            : base(texture, scale)
         {
             _frameWidth = frameWidth;
             _frameHeight = frameHeight;
@@ -38,7 +40,7 @@ namespace Zombles.Graphics
             _startTime = 0;
             _stopTime = 0;
 
-            SubrectSize = new Vector2( frameWidth, frameHeight );
+            SubrectSize = new Vector2(frameWidth, frameHeight);
 
             FindFrameLocations();
 
@@ -55,19 +57,18 @@ namespace Zombles.Graphics
 
             int frameCount = xMax * yMax;
 
-            _frameLocations = new Vector2[ frameCount ];
+            _frameLocations = new Vector2[frameCount];
 
             int i = 0;
 
-            for ( int y = 0; y < yMax; ++y )
-                for ( int x = 0; x < xMax; ++x, ++ i )
-                    _frameLocations[ i ] = new Vector2( x * _frameWidth, y * _frameHeight );
+            for (int y = 0; y < yMax; ++y)
+                for (int x = 0; x < xMax; ++x, ++i)
+                    _frameLocations[i] = new Vector2(x * _frameWidth, y * _frameHeight);
         }
 
         public void Start()
         {
-            if( !_playing )
-            {
+            if (!_playing) {
                 _startTime = CurrentMilliseconds();
                 _playing = true;
             }
@@ -75,8 +76,7 @@ namespace Zombles.Graphics
 
         public void Stop()
         {
-            if( _playing )
-            {
+            if (_playing) {
                 _stopTime = CurrentMilliseconds() - _startTime;
                 _playing = false;
             }
@@ -86,19 +86,19 @@ namespace Zombles.Graphics
         {
             _stopTime = 0;
 
-            if( _playing )
+            if (_playing)
                 _startTime = CurrentMilliseconds();
         }
 
-        public override void Render( SpriteShader shader )
+        public override void Render(SpriteShader shader)
         {
-            double secs = ( CurrentMilliseconds() - _startTime + _stopTime ) / 1000.0;
-            int frame = StartFrame + (int) ( (long) ( secs * FrameRate ) % (long) FrameCount );
+            double secs = (CurrentMilliseconds() - _startTime + _stopTime) / 1000.0;
+            int frame = StartFrame + (int) ((long) (secs * FrameRate) % (long) FrameCount);
 
-            if ( frame != _lastFrame )
-                SubrectOffset = _frameLocations[ frame ];
+            if (frame != _lastFrame)
+                SubrectOffset = _frameLocations[frame];
 
-            base.Render( shader );
+            base.Render(shader);
         }
     }
 }

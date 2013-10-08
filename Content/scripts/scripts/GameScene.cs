@@ -241,13 +241,13 @@ namespace Zombles.Scripts
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
                 Camera.WorldOffsetY = (i & 0x2) == 0x0 ? y0 : y1;
 
-                GeoShader.StartBatch();
+                GeoShader.Begin(false);
                 City.RenderGeometry(GeoShader, _hideTop);
-                GeoShader.EndBatch();
+                GeoShader.End();
 
-                FlatEntShader.StartBatch();
+                FlatEntShader.Begin();
                 City.RenderEntities(FlatEntShader);
-                FlatEntShader.EndBatch();
+                FlatEntShader.End();
             }
 
             base.OnRenderFrame(e);

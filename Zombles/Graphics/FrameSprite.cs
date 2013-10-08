@@ -2,6 +2,8 @@ using System;
 
 using OpenTK;
 
+using OpenTKTK.Textures;
+
 namespace Zombles.Graphics
 {
     public class FrameSprite : Sprite
@@ -94,8 +96,8 @@ namespace Zombles.Graphics
             }
         }
 
-        public FrameSprite( BitmapTexture2D texture, float scale = 1.0f )
-            : base( texture, scale )
+        public FrameSprite(BitmapTexture2D texture, float scale = 1.0f)
+            : base(texture, scale)
         {
             _frameTopLeft = new Vector2();
             _frameBottomRight = new Vector2();
@@ -103,10 +105,10 @@ namespace Zombles.Graphics
 
         protected override float[] FindVerts()
         {
-            Vector2 tMin = Texture.GetCoords( SubrectLeft, SubrectTop );
-            Vector2 tMax = Texture.GetCoords( SubrectRight, SubrectBottom );
-            Vector2 fMin = Texture.GetCoords( SubrectLeft + FrameLeftOffet, SubrectTop + FrameTopOffet );
-            Vector2 fMax = Texture.GetCoords( SubrectRight - FrameRightOffet, SubrectBottom - FrameBottomOffet );
+            Vector2 tMin = Texture.GetCoords(SubrectLeft, SubrectTop);
+            Vector2 tMax = Texture.GetCoords(SubrectRight, SubrectBottom);
+            Vector2 fMin = Texture.GetCoords(SubrectLeft + FrameLeftOffet, SubrectTop + FrameTopOffet);
+            Vector2 fMax = Texture.GetCoords(SubrectRight - FrameRightOffet, SubrectBottom - FrameBottomOffet);
 
             float xtMin = FlipHorizontal ? tMax.X : tMin.X;
             float ytMin = FlipVertical ? tMax.Y : tMin.Y;
@@ -117,7 +119,7 @@ namespace Zombles.Graphics
             float xfMax = FlipHorizontal ? fMin.X : fMax.X;
             float yfMax = FlipVertical ? fMin.Y : fMax.Y;
 
-            float[,] verts = new float[ , ]
+            float[,] verts = new float[,]
             {
                 { 0, 0 },
                 { FrameLeftOffet * Scale.X, 0 },
@@ -169,18 +171,17 @@ namespace Zombles.Graphics
                 { Width - FrameRightOffet * Scale.X, Height }
             };
 
-            float[,] mat = new float[ , ]
+            float[,] mat = new float[,]
             {
                 { (float) Math.Cos( Rotation ), -(float) Math.Sin( Rotation ) },
                 { (float) Math.Sin( Rotation ),  (float) Math.Cos( Rotation ) }
             };
 
-            for ( int i = 0; i < 4 * 9; ++i )
-            {
-                float x = verts[ i, 0 ];
-                float y = verts[ i, 1 ];
-                verts[ i, 0 ] = X + mat[ 0, 0 ] * x + mat[ 0, 1 ] * y;
-                verts[ i, 1 ] = Y + mat[ 1, 0 ] * x + mat[ 1, 1 ] * y;
+            for (int i = 0; i < 4 * 9; ++i) {
+                float x = verts[i, 0];
+                float y = verts[i, 1];
+                verts[i, 0] = X + mat[0, 0] * x + mat[0, 1] * y;
+                verts[i, 1] = Y + mat[1, 0] * x + mat[1, 1] * y;
             }
 
             int v = 0;

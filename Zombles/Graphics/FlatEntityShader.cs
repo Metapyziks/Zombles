@@ -4,9 +4,12 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
+using OpenTKTK.Shaders;
+using OpenTKTK.Utils;
+
 namespace Zombles.Graphics
 {
-    public class FlatEntityShader : ShaderProgram3D
+    public class FlatEntityShader : ShaderProgram3D<OrthoCamera>
     {
         private static VertexBuffer _sVB;
 
@@ -17,27 +20,26 @@ namespace Zombles.Graphics
 
         public FlatEntityShader()
         {
-            if ( _sVB == null )
-            {
-                _sVB = new VertexBuffer( 3 );
-                _sVB.SetData( new float[]
+            if (_sVB == null) {
+                _sVB = new VertexBuffer(3);
+                _sVB.SetData(new float[]
                 {
                     -0.5f, 1.0f, 0.0f,
                     0.5f, 1.0f, 1.0f,
                     0.5f, 0.0f, 3.0f,
                     -0.5f, 0.0f, 2.0f
-                } );
+                });
             }
 
-            ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
-            vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
-            vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
-            vert.AddUniform( ShaderVarType.Vec2, "scale" );
-            vert.AddUniform( ShaderVarType.Vec3, "position" );
-            vert.AddUniform( ShaderVarType.Vec2, "size" );
-            vert.AddUniform( ShaderVarType.Float, "texture" );
-            vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
-            vert.AddVarying( ShaderVarType.Vec3, "var_tex" );
+            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
+            vert.AddUniform(ShaderVarType.Mat4, "view_matrix");
+            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
+            vert.AddUniform(ShaderVarType.Vec2, "scale");
+            vert.AddUniform(ShaderVarType.Vec3, "position");
+            vert.AddUniform(ShaderVarType.Vec2, "size");
+            vert.AddUniform(ShaderVarType.Float, "texture");
+            vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
+            vert.AddVarying(ShaderVarType.Vec3, "var_tex");
             vert.Logic = @"
                 void main( void )
                 {
@@ -64,9 +66,10 @@ namespace Zombles.Graphics
                 }
             ";
 
-            ShaderBuilder frag = new ShaderBuilder( ShaderType.FragmentShader, false );
-            frag.AddUniform( ShaderVarType.Sampler2DArray, "ents" );
-            frag.AddVarying( ShaderVarType.Vec3, "var_tex" );
+            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false);
+            frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
+            frag.AddVarying(ShaderVarType.Vec3, "var_tex");
+            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main( void )
                 {
@@ -76,8 +79,8 @@ namespace Zombles.Graphics
                 }
             ";
 
-            VertexSource = vert.Generate( GL3 );
-            FragmentSource = frag.Generate( GL3 );
+            VertexSource = vert.Generate(GL3);
+            FragmentSource = frag.Generate(GL3);
 
             BeginMode = BeginMode.Quads;
 
@@ -88,41 +91,48 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute( "in_vertex", 3 );
+            AddAttribute("in_vertex", 3);
 
-            AddTexture( "ents", TextureUnit.Texture1 );
-            SetTexture( "ents", TextureManager.Ents.TexArray );
+            AddTexture("ents");
+            SetTexture("ents", TextureManager.Ents.TexArray);
 
-            _scaleLoc = GL.GetUniformLocation( Program, "scale" );
-            _positionLoc = GL.GetUniformLocation( Program, "position" );
-            _sizeLoc = GL.GetUniformLocation( Program, "size" );
-            _textureLoc = GL.GetUniformLocation( Program, "texture" );
+            _scaleLoc = GL.GetUniformLocation(Program, "scale");
+            _positionLoc = GL.GetUniformLocation(Program, "position");
+            _sizeLoc = GL.GetUniformLocation(Program, "size");
+            _textureLoc = GL.GetUniformLocation(Program, "texture");
         }
 
-        protected override void OnStartBatch()
+        public void Begin()
         {
-            base.OnStartBatch();
-
-            GL.Uniform2( _scaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale );
-
-            GL.Enable( EnableCap.DepthTest );
-
-            _sVB.StartBatch( this );
+            _sVB.Begin(this);
         }
 
-        public void Render( Vector3 pos, Vector2 size, ushort texIndex )
+        public new void End()
         {
-            GL.Uniform3( _positionLoc, ref pos );
-            GL.Uniform2( _sizeLoc, ref size );
-            GL.Uniform1( _textureLoc, (float) texIndex );
-            _sVB.Render( this );
+            _sVB.End();
         }
 
-        protected override void OnEndBatch()
+        protected override void OnBegin()
         {
-            _sVB.EndBatch( this );
+            base.OnBegin();
 
-            GL.Disable( EnableCap.DepthTest );
+            GL.Uniform2(_scaleLoc, 16.0f / Camera.Width * Camera.Scale, 16.0f / Camera.Height * Camera.Scale);
+
+            GL.Enable(EnableCap.DepthTest);
+        }
+
+        public void Render(Vector3 pos, Vector2 size, ushort texIndex)
+        {
+            GL.Uniform3(_positionLoc, ref pos);
+            GL.Uniform2(_sizeLoc, ref size);
+            GL.Uniform1(_textureLoc, (float) texIndex);
+
+            _sVB.Render();
+        }
+
+        protected override void OnEnd()
+        {
+            GL.Disable(EnableCap.DepthTest);
         }
     }
 }

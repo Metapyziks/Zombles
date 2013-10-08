@@ -7,12 +7,15 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
+using OpenTKTK.Shaders;
+using OpenTKTK.Utils;
+
 using Zombles.Geometry;
 using Zombles.Entities;
 
 namespace Zombles.Graphics
 {
-    public class DebugTraceShader : ShaderProgram3D
+    public class DebugTraceShader : ShaderProgram3D<OrthoCamera>
     {
         private int _colourLoc;
         private Color4 _colour;
@@ -53,6 +56,7 @@ namespace Zombles.Graphics
 
             ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false);
             frag.AddUniform(ShaderVarType.Vec4, "colour");
+            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main( void )
                 {
@@ -78,9 +82,9 @@ namespace Zombles.Graphics
             Colour = new Color4(255, 255, 255, 127);
         }
 
-        protected override void OnStartBatch()
+        protected override void OnBegin()
         {
-            base.OnStartBatch();
+            base.OnBegin();
 
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
@@ -112,9 +116,9 @@ namespace Zombles.Graphics
             GL.VertexAttrib2(Attributes[0].Location, path.Desination);
         }
 
-        protected override void OnEndBatch()
+        protected override void OnEnd()
         {
-            base.OnEndBatch();
+            base.OnEnd();
 
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Blend);

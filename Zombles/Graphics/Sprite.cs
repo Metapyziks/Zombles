@@ -3,6 +3,8 @@ using System;
 using OpenTK;
 using OpenTK.Graphics;
 
+using OpenTKTK.Textures;
+
 namespace Zombles.Graphics
 {
     public class Sprite
@@ -393,8 +395,7 @@ namespace Zombles.Graphics
                 VertsChanged = false;
             }
 
-            if (!Texture.Ready || shader.Texture.ID != Texture.ID)
-                shader.Texture = Texture;
+            shader.Texture = Texture;
 
             shader.Render(_vertices);
         }

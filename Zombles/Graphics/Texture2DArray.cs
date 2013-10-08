@@ -6,25 +6,28 @@ using ResourceLibrary;
 
 using OpenTK.Graphics.OpenGL;
 
+using OpenTKTK.Textures;
+
 namespace Zombles.Graphics
 {
     public class Texture2DArray : Texture
     {
+        private static int GetNextPowerOfTwo(int depth)
+        {
+            int val = 1;
+            while (val < depth)
+                val <<= 1;
+            return val;
+        }
+
         private ResourceLocator[] _names;
         private BitmapTexture2D[] _textures;
 
         private UInt32[] _data;
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int Count { get; private set; }
-
         public Texture2DArray(int width, int height, params ResourceLocator[] textureLocators)
-            : base(TextureTarget.Texture2DArray)
+            : base(TextureTarget.Texture2DArray, width, height, GetNextPowerOfTwo(textureLocators.Length))
         {
-            Width = width;
-            Height = height;
-
             _names = textureLocators;
             _textures = new BitmapTexture2D[textureLocators.Length];
 
@@ -32,13 +35,9 @@ namespace Zombles.Graphics
                 _textures[i] = new BitmapTexture2D(Archive.Get<Bitmap>(_names[i]));
             }
 
-            Count = 1;
-            while (Count < textureLocators.Length)
-                Count <<= 1;
-
             int tileLength = width * height;
 
-            _data = new uint[tileLength * Count];
+            _data = new uint[tileLength * Depth];
 
             for (int i = 0; i < _textures.Length; ++i) {
                 Bitmap tile = _textures[i].Bitmap;
@@ -83,7 +82,7 @@ namespace Zombles.Graphics
             GL.TexParameter(TextureTarget.Texture2DArray,
                 TextureParameterName.TextureWrapT, (int) TextureWrapMode.Clamp);
             GL.TexImage3D(TextureTarget.Texture2DArray, 0, PixelInternalFormat.Rgba,
-                Width, Height, Count, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, _data);
+                Width, Height, Depth, 0, PixelFormat.Rgba, PixelType.UnsignedInt8888, _data);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2DArray);
 
             _data = null;

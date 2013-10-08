@@ -4,21 +4,24 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
+using OpenTKTK.Shaders;
+using OpenTKTK.Utils;
+
 namespace Zombles.Graphics
 {
-    public class GeometryShader : ShaderProgram3D
+    public class GeometryShader : ShaderProgram3D<OrthoCamera>
     {
         public GeometryShader()
         {
-            ShaderBuilder vert = new ShaderBuilder( ShaderType.VertexShader, false );
-            vert.AddUniform( ShaderVarType.Mat4, "view_matrix" );
-            vert.AddUniform( ShaderVarType.Vec2, "world_offset" );
-            vert.AddUniform( ShaderVarType.Vec2, "world_size" );
-            vert.AddAttribute( ShaderVarType.Vec3, "in_vertex" );
-            vert.AddVarying( ShaderVarType.Vec3, "var_tex" );
-            vert.AddVarying( ShaderVarType.Float, "var_shade" );
-            vert.AddVarying( ShaderVarType.Vec2, "var_blood_tex" );
-            vert.AddVarying( ShaderVarType.Float, "var_blood" );
+            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
+            vert.AddUniform(ShaderVarType.Mat4, "view_matrix");
+            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
+            vert.AddUniform(ShaderVarType.Vec2, "world_size");
+            vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
+            vert.AddVarying(ShaderVarType.Vec3, "var_tex");
+            vert.AddVarying(ShaderVarType.Float, "var_shade");
+            vert.AddVarying(ShaderVarType.Vec2, "var_blood_tex");
+            vert.AddVarying(ShaderVarType.Float, "var_blood");
             vert.Logic = @"
                 void main( void )
                 {
@@ -73,13 +76,10 @@ namespace Zombles.Graphics
                 }
             ";
 
-            ShaderBuilder frag = new ShaderBuilder( ShaderType.FragmentShader, false );
-            frag.AddUniform( ShaderVarType.Sampler2DArray, "tiles" );
-            frag.AddUniform( ShaderVarType.Sampler2D, "bloodmap" );
-            frag.AddVarying( ShaderVarType.Vec3, "var_tex" );
-            frag.AddVarying( ShaderVarType.Float, "var_shade" );
-            frag.AddVarying( ShaderVarType.Vec2, "var_blood_tex" );
-            frag.AddVarying( ShaderVarType.Float, "var_blood" );
+            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
+            frag.AddUniform(ShaderVarType.Sampler2DArray, "tiles");
+            frag.AddUniform(ShaderVarType.Sampler2D, "bloodmap");
+            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main( void )
                 {
@@ -94,8 +94,8 @@ namespace Zombles.Graphics
                 }
             ";
 
-            VertexSource = vert.Generate( GL3 );
-            FragmentSource = frag.Generate( GL3 );
+            VertexSource = vert.Generate(GL3);
+            FragmentSource = frag.Generate(GL3);
 
             BeginMode = BeginMode.Quads;
 
@@ -106,28 +106,28 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute( "in_vertex", 3 );
+            AddAttribute("in_vertex", 3);
 
-            AddTexture( "tiles", TextureUnit.Texture0 );
-            AddTexture( "bloodmap", TextureUnit.Texture2 );
+            AddTexture("tiles");
+            AddTexture("bloodmap");
 
-            SetTexture( "tiles", TextureManager.Tiles.TexArray );
+            SetTexture("tiles", TextureManager.Tiles.TexArray);
         }
 
-        protected override void OnStartBatch()
+        protected override void OnBegin()
         {
-            base.OnStartBatch();
+            base.OnBegin();
 
-            GL.Enable( EnableCap.DepthTest );
-            GL.Enable( EnableCap.CullFace );
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
 
-            GL.CullFace( CullFaceMode.Front );
+            GL.CullFace(CullFaceMode.Front);
         }
 
-        protected override void OnEndBatch()
+        protected override void OnEnd()
         {
-            GL.Disable( EnableCap.DepthTest );
-            GL.Disable( EnableCap.CullFace );
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
         }
     }
 }

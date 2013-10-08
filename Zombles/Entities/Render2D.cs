@@ -14,16 +14,16 @@ namespace Zombles.Entities
         public Vector2 Size { get; set; }
         public ushort TextureIndex { get; set; }
 
-        public Render2D( Entity ent )
-            : base( ent )
+        public Render2D(Entity ent)
+            : base(ent)
         {
-            Size = new Vector2( 1.0f, 1.0f );
+            Size = new Vector2(1.0f, 1.0f);
             TextureIndex = 0;
         }
 
-        public virtual void OnRender( FlatEntityShader shader )
+        public virtual void OnRender(FlatEntityShader shader)
         {
-            shader.Render( Entity.Position, Size, TextureIndex );
+            shader.Render(Entity.Position, Size, TextureIndex);
         }
     }
 }

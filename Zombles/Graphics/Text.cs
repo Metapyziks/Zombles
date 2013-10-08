@@ -1,7 +1,12 @@
 using System;
 using System.Drawing;
+
 using OpenTK;
+
+using OpenTKTK.Textures;
+
 using ResourceLibrary;
+
 using Zombles;
 
 namespace Zombles.Graphics

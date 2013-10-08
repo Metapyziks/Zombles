@@ -14,7 +14,7 @@ namespace Zombles
     public class Scene : IDisposable
     {
         private UIObject _uiRoot;
-        
+
         internal bool FirstTime;
 
         public ZomblesGame GameWindow { get; private set; }
@@ -57,7 +57,7 @@ namespace Zombles
         {
             get
             {
-                return new Vector2( Mouse.X, Mouse.Y );
+                return new Vector2(Mouse.X, Mouse.Y);
             }
         }
 
@@ -67,24 +67,24 @@ namespace Zombles
             set { GameWindow.CursorVisible = value; }
         }
 
-        public Scene( ZomblesGame gameWindow )
+        public Scene(ZomblesGame gameWindow)
         {
             GameWindow = gameWindow;
-            _uiRoot = new UIObject( new Vector2( Width, Height ) );
+            _uiRoot = new UIObject(new Vector2(Width, Height));
             FirstTime = true;
         }
 
-        public void AddChild( UIObject child )
+        public void AddChild(UIObject child)
         {
-            _uiRoot.AddChild( child );
+            _uiRoot.AddChild(child);
         }
 
-        public void RemoveChild( UIObject child )
+        public void RemoveChild(UIObject child)
         {
-            _uiRoot.RemoveChild( child );
+            _uiRoot.RemoveChild(child);
         }
 
-        public virtual void OnEnter( bool firstTime )
+        public virtual void OnEnter(bool firstTime)
         {
 
         }
@@ -95,82 +95,82 @@ namespace Zombles
         }
 
         public event MouseButtonEventHandler MouseButtonDown;
-        internal void TriggerMouseButtonDown( MouseButtonEventArgs e )
+        internal void TriggerMouseButtonDown(MouseButtonEventArgs e)
         {
-            if ( MouseButtonDown != null )
-                MouseButtonDown( this, e );
+            if (MouseButtonDown != null)
+                MouseButtonDown(this, e);
 
-            OnMouseButtonDown( e );
+            OnMouseButtonDown(e);
         }
 
-        public virtual void OnMouseButtonDown( MouseButtonEventArgs e )
+        public virtual void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            _uiRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseButtonEvent(new Vector2(Mouse.X, Mouse.Y), e);
         }
 
         public event MouseButtonEventHandler MouseButtonUp;
-        internal void TriggerMouseButtonUp( MouseButtonEventArgs e )
+        internal void TriggerMouseButtonUp(MouseButtonEventArgs e)
         {
-            if ( MouseButtonUp != null )
-                MouseButtonUp( this, e );
+            if (MouseButtonUp != null)
+                MouseButtonUp(this, e);
 
-            OnMouseButtonUp( e );
+            OnMouseButtonUp(e);
         }
 
-        public virtual void OnMouseButtonUp( MouseButtonEventArgs e )
+        public virtual void OnMouseButtonUp(MouseButtonEventArgs e)
         {
-            _uiRoot.SendMouseButtonEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseButtonEvent(new Vector2(Mouse.X, Mouse.Y), e);
         }
 
         public event MouseMoveEventHandler MouseMove;
-        internal void TriggerMouseMove( MouseMoveEventArgs e )
+        internal void TriggerMouseMove(MouseMoveEventArgs e)
         {
-            if ( MouseMove != null )
-                MouseMove( this, e );
+            if (MouseMove != null)
+                MouseMove(this, e);
 
-            OnMouseMove( e );
+            OnMouseMove(e);
         }
 
-        public virtual void OnMouseMove( MouseMoveEventArgs e )
+        public virtual void OnMouseMove(MouseMoveEventArgs e)
         {
-            _uiRoot.SendMouseMoveEvent( new Vector2( Mouse.X, Mouse.Y ), e );
+            _uiRoot.SendMouseMoveEvent(new Vector2(Mouse.X, Mouse.Y), e);
         }
 
-        public virtual void OnMouseLeave( EventArgs e )
-        {
-
-        }
-
-        public virtual void OnMouseEnter( EventArgs e )
+        public virtual void OnMouseLeave(EventArgs e)
         {
 
         }
 
-        public virtual void OnMouseWheelChanged( MouseWheelEventArgs e )
+        public virtual void OnMouseEnter(EventArgs e)
         {
 
         }
 
-        public virtual void OnKeyPress( KeyPressEventArgs e )
-        {
-            _uiRoot.SendKeyPressEvent( e );
-        }
-
-        public virtual void OnUpdateFrame( FrameEventArgs e )
+        public virtual void OnMouseWheelChanged(MouseWheelEventArgs e)
         {
 
         }
 
-        public virtual void OnRenderFrame( FrameEventArgs e )
+        public virtual void OnKeyPress(KeyPressEventArgs e)
         {
-            SpriteShader.Begin();
-            OnRenderSprites( e );
+            _uiRoot.SendKeyPressEvent(e);
+        }
+
+        public virtual void OnUpdateFrame(FrameEventArgs e)
+        {
+
+        }
+
+        public virtual void OnRenderFrame(FrameEventArgs e)
+        {
+            SpriteShader.Begin(true);
+            OnRenderSprites(e);
             SpriteShader.End();
         }
 
-        public virtual void OnRenderSprites( FrameEventArgs e )
+        public virtual void OnRenderSprites(FrameEventArgs e)
         {
-            _uiRoot.Render( SpriteShader );
+            _uiRoot.Render(SpriteShader);
         }
 
         public virtual void OnResize()

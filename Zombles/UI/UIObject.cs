@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+
 using OpenTK;
+
+using OpenTKTK.Textures;
+
 using ResourceLibrary;
+
 using Zombles.Graphics;
 
 namespace Zombles.UI
