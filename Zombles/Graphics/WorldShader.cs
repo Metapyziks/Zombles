@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTKTK.Shaders;
 
@@ -17,18 +18,20 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            _worldOffsetLoc = GL.GetUniformLocation(Program, "world_offset");
-            _worldSizeLoc = GL.GetUniformLocation(Program, "world_size");
+            _worldOffsetLoc = GetUniformLocation("world_offset");
+            _worldSizeLoc = GetUniformLocation("world_size");
         }
 
         protected override void OnBegin()
         {
             base.OnBegin();
 
-            GL.Uniform2(_worldOffsetLoc, Camera.WorldOffset);
+            var offset = Camera.WorldOffset;
+
+            GL.Uniform2(_worldOffsetLoc, ref offset);
 
             if (_worldSizeLoc != -1) {
-                GL.Uniform2(_worldSizeLoc, Camera.WrapWidth, Camera.WrapHeight);
+                GL.Uniform2(_worldSizeLoc, (float) Camera.WrapWidth, (float) Camera.WrapHeight);
             }
         }
     }
