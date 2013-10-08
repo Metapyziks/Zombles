@@ -158,7 +158,7 @@ namespace Zombles.Graphics
             Matrix4 trns = Matrix4.CreateTranslation(-Position);
             Matrix4 offs = Matrix4.CreateTranslation(0.0f, 0.0f, -rotOffset);
 
-            matrix = Matrix4.Mult(Matrix4.Mult(Matrix4.Mult(Matrix4.Mult(trns, yRot), offs), xRot), PerspectiveMatrix);
+            matrix = Matrix4.Mult(Matrix4.Mult(Matrix4.Mult(trns, yRot), offs), xRot);
         }
 
         private void UpdateLocalViewBounds()
