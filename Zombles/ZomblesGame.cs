@@ -60,12 +60,6 @@ namespace Zombles
                 if (line.Length > 0 && File.Exists(dataPath + line))
                     Archive.FromFile(dataPath + line).Mount();
 
-            TextureManager.Initialize();
-            ScriptManager.Initialize();
-            Plugin.Initialize();
-
-            SpriteShader = new SpriteShader(Width, Height);
-
             Mouse.Move += OnMouseMove;
             Mouse.ButtonUp += OnMouseButtonUp;
             Mouse.ButtonDown += OnMouseButtonDown;
@@ -79,7 +73,11 @@ namespace Zombles
 
             _spareTime = 0.0;
 
-            SetScene(ScriptManager.CreateInstance<Scene>("Zombles.Scripts.GameScene", this));
+            TextureManager.Initialize();
+            ScriptManager.Initialize();
+            Plugin.Initialize();
+
+            SpriteShader = new SpriteShader(Width, Height);
         }
 
         protected override void OnResize(EventArgs e)

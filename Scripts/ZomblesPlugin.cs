@@ -33,6 +33,8 @@ namespace Zombles.Scripts
                 ent.AddComponent<Zombie>();
                 ent.AddComponent<ZombieAI>();
             });
+
+            ZomblesGame.SetScene(new GameScene(Game));
         }
 
         protected override void OnCityGenerated()
