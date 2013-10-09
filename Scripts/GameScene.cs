@@ -66,8 +66,6 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public City City { get; private set; }
 
-        public List<Entity> SelectedEntities { get; private set; }
-
         public GameScene(ZomblesGame gameWindow)
             : base(gameWindow)
         {
@@ -88,6 +86,10 @@ namespace Zombles.Scripts
             base.OnEnter(firstTime);
 
             if (firstTime) {
+                Generator = new CityGenerator();
+
+                City = Generator.Generate(WorldSize, WorldSize);
+
                 _fpsText = new UILabel(Font.Large);
                 _fpsText.Colour = Color4.White;
                 AddChild(_fpsText);
@@ -96,16 +98,11 @@ namespace Zombles.Scripts
                 _posText.Colour = Color4.White;
                 AddChild(_posText);
 
-                _infDisplay = new UIInfectionDisplay();
+                _infDisplay = new UIInfectionDisplay(City);
                 AddChild(_infDisplay);
 
                 PositionUI();
-
-                Generator = new CityGenerator();
-                City = Generator.Generate(WorldSize, WorldSize);
-
-                SelectedEntities = new List<Entity>();
-
+                
                 Camera = new OrthoCamera(Width, Height, 4.0f);
                 Camera.SetWrapSize(WorldSize, WorldSize);
                 Camera.Position2D = new Vector2(WorldSize, WorldSize) / 2.0f;

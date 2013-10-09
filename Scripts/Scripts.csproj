@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\RTSControl.cs" />
     <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />

@@ -18,11 +18,11 @@ namespace Zombles.Entities
         private float _hWidth;
         private float _hHeight;
 
-        public readonly City City;
-        public readonly Vector2 Center;
-        public readonly float Range;
+        public City City { get; private set; }
+        public Vector2 Center { get; private set; }
+        public float Range { get; private set; }
 
-        public NearbyEntityEnumerator( City city, Vector2 center, float range )
+        public NearbyEntityEnumerator(City city, Vector2 center, float range)
         {
             City = city;
             Center = center;
@@ -54,32 +54,28 @@ namespace Zombles.Entities
 
         public bool MoveNext()
         {
-            while( true )
-            {
-                if ( _curDistrict == null )
+            while (true) {
+                if (_curDistrict == null)
                     _curDistrict = City.RootDistrict;
-                else if ( _curDistrict.IsLeaf )
-                {
-                    while ( _entEnumerator.MoveNext() )
-                        if ( InRange( _entEnumerator.Current ) )
+                else if (_curDistrict.IsLeaf) {
+                    while (_entEnumerator.MoveNext())
+                        if (InRange(_entEnumerator.Current))
                             return true;
 
-                    do
-                    {
-                        while ( !_curDistrict.IsRoot && _curDistrict == _curDistrict.Parent.ChildB )
+                    do {
+                        while (!_curDistrict.IsRoot && _curDistrict == _curDistrict.Parent.ChildB)
                             _curDistrict = _curDistrict.Parent;
 
-                        if ( _curDistrict.IsRoot )
+                        if (_curDistrict.IsRoot)
                             return false;
 
                         _curDistrict = _curDistrict.Parent.ChildB;
                     }
-                    while ( !InRange( _curDistrict ) );
+                    while (!InRange(_curDistrict));
                 }
 
-                while ( _curDistrict.IsBranch )
-                {
-                    if ( InRange( _curDistrict.ChildA ) )
+                while (_curDistrict.IsBranch) {
+                    if (InRange(_curDistrict.ChildA))
                         _curDistrict = _curDistrict.ChildA;
                     else
                         _curDistrict = _curDistrict.ChildB;
@@ -89,25 +85,25 @@ namespace Zombles.Entities
             }
         }
 
-        private bool InRange( District district )
+        private bool InRange(District district)
         {
             float xdiff = 0.0f, ydiff = 0.0f;
-            if ( Center.X < district.Bounds.Left )
-                xdiff = Math.Min( district.Bounds.Left - Center.X, Center.X - district.Bounds.Right + City.Width );
-            else if ( Center.X > district.Bounds.Right )
-                xdiff = Math.Min( Center.X - district.Bounds.Right, district.Bounds.Left - Center.X + City.Width );
+            if (Center.X < district.Bounds.Left)
+                xdiff = Math.Min(district.Bounds.Left - Center.X, Center.X - district.Bounds.Right + City.Width);
+            else if (Center.X > district.Bounds.Right)
+                xdiff = Math.Min(Center.X - district.Bounds.Right, district.Bounds.Left - Center.X + City.Width);
 
-            if ( Center.Y < district.Bounds.Top )
-                ydiff = Math.Min( district.Bounds.Top - Center.Y, Center.Y - district.Bounds.Bottom + City.Height );
-            else if ( Center.Y > district.Bounds.Bottom )
-                ydiff = Math.Min( Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + City.Height );
+            if (Center.Y < district.Bounds.Top)
+                ydiff = Math.Min(district.Bounds.Top - Center.Y, Center.Y - district.Bounds.Bottom + City.Height);
+            else if (Center.Y > district.Bounds.Bottom)
+                ydiff = Math.Min(Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + City.Height);
 
             return xdiff * xdiff + ydiff * ydiff <= _range2;
         }
 
-        private bool InRange( Entity ent )
+        private bool InRange(Entity ent)
         {
-            return City.Difference( Center, ent.Position2D ).LengthSquared <= _range2;
+            return City.Difference(Center, ent.Position2D).LengthSquared <= _range2;
         }
 
         public void Reset()

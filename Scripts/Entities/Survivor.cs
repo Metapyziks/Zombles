@@ -11,10 +11,6 @@ namespace Zombles.Scripts.Entities
 {
     public class Survivor : Human
     {
-        public static int Count { get; private set; }
-
-        private bool _counted;
-
         private static EntityAnim _sWalkAnim;
         private static EntityAnim _sStandAnim;
         private static EntityAnim _sDeadAnim;
@@ -137,11 +133,6 @@ namespace Zombles.Scripts.Entities
 
         protected override void OnKilled(object sender, KilledEventArgs e)
         {
-            if (_counted) {
-                --Count;
-                _counted = false;
-            }
-
             if (IsInfected && Tools.Random.NextDouble() < 0.74)
                 Zombify();
             else
@@ -191,11 +182,6 @@ namespace Zombles.Scripts.Entities
             if (Health.IsAlive && Health.MaxHealth == 1) {
                 Health.SetMaximum(100);
                 Health.Revive();
-            }
-
-            if (!_counted) {
-                ++Count;
-                _counted = true;
             }
         }
     }

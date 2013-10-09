@@ -17,11 +17,11 @@ namespace Zombles.Geometry
     {
         private List<Entity> _unspawnedEnts;
 
-        public readonly City City;
+        public City City { get; private set; }
 
-        public readonly Rectangle Bounds;
-        public readonly int LongSide;
-        public readonly int ShortSide;
+        public Rectangle Bounds { get; private set; }
+        public int LongSide { get; private set; }
+        public int ShortSide { get; private set; }
 
         public int X { get { return Bounds.X; } }
         public int Y { get { return Bounds.Y; } }

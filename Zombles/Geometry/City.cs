@@ -19,8 +19,6 @@ namespace Zombles.Geometry
         private VertexBuffer _pathVertexBuffer;
         private AlphaTexture2D _bloodMap;
 
-        private bool _setPathVB;
-
         public District RootDistrict { get; private set; }
 
         public int Width { get { return RootDistrict.Width; } }
@@ -28,14 +26,16 @@ namespace Zombles.Geometry
 
         public int Depth { get { return RootDistrict.Depth; } }
 
+        public IEnumerable<Entity> Entities { get { return this.SelectMany(x => x); } }
+
         public City(int width, int height)
         {
             RootDistrict = new District(this, 0, 0, width, height);
+
             _geomVertexBuffer = new VertexBuffer(3);
             _pathVertexBuffer = new VertexBuffer(2);
-            _bloodMap = new AlphaTexture2D(width * 2, height * 2);
 
-            _setPathVB = false;
+            _bloodMap = new AlphaTexture2D(width * 2, height * 2);
         }
 
         public Vector2 Difference(Vector2 a, Vector2 b)

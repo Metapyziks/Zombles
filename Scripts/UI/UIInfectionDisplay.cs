@@ -9,17 +9,23 @@ using OpenTK.Graphics;
 using Zombles.Graphics;
 using Zombles.UI;
 
+using Zombles.Entities;
 using Zombles.Scripts.Entities;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.UI
 {
     public class UIInfectionDisplay : UIObject
     {
+        private City _city;
+
         private UISprite _survivorBar;
         private UISprite _zombieBar;
 
-        public UIInfectionDisplay()
+        public UIInfectionDisplay(City city)
         {
+            _city = city;
+
             _survivorBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.Pink));
             _zombieBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.LightGreen));
             _zombieBar.Left = 0.5f;
@@ -41,7 +47,13 @@ namespace Zombles.Scripts.UI
         {
             _survivorBar.Height = _zombieBar.Height = InnerHeight;
 
-            float ratio = (float) Survivor.Count / (Zombie.Count + Survivor.Count);
+            int survivors = _city.Entities.Where(x => x.HasComponent<Survivor>())
+                .Count(x => x.GetComponent<Health>().IsAlive);
+            
+            int zombies = _city.Entities.Where(x => x.HasComponent<Zombie>())
+                .Count(x => x.GetComponent<Health>().IsAlive);
+
+            float ratio = (float) survivors / (zombies + survivors);
 
             _survivorBar.Width = _zombieBar.Left = (int) Math.Round(InnerWidth * ratio);
             _zombieBar.Width = InnerWidth - _survivorBar.Width;

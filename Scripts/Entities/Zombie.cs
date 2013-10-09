@@ -12,10 +12,6 @@ namespace Zombles.Scripts.Entities
 {
     public class Zombie : Human
     {
-        public static int Count { get; private set; }
-
-        private bool _counted;
-
         private static EntityAnim _sWalkAnim;
         private static EntityAnim _sStandAnim;
         private static EntityAnim _sDeadAnim;
@@ -84,11 +80,6 @@ namespace Zombles.Scripts.Entities
                 Health.Revive();
             }
 
-            if (!_counted) {
-                ++Count;
-                _counted = true;
-            }
-
             _turnTime = ZomblesGame.Time;
             _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
         }
@@ -100,16 +91,6 @@ namespace Zombles.Scripts.Entities
             if (ZomblesGame.Time - _turnTime < _bleedTime && ZomblesGame.Time >= _nextBleed) {
                 City.SplashBlood(Position2D, 0.5f);
                 _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
-            }
-        }
-
-        public override void OnRemove()
-        {
-            base.OnRemove();
-
-            if (_counted) {
-                --Count;
-                _counted = false;
             }
         }
     }
