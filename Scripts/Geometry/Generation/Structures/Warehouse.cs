@@ -8,7 +8,7 @@ using Zombles.Geometry.Generation;
 using Zombles.Entities;
 using ResourceLibrary;
 
-namespace Zombles.Scripts.Geometry.Generation.StructureGen
+namespace Zombles.Scripts.Geometry.Generation.Structures
 {
     public class Warehouse : StructureGenerator
     {
@@ -24,14 +24,14 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
             EntranceFaces = entranceFaces;
         }
 
-        public override void Generate(District district, TileBuilder[,] tiles, int x, int y, int width, int height, Random rand)
+        public override void Generate(District district, TileBuilder[,] tiles, Random rand)
         {
             if (EntranceFaces != Face.None) {
                 int rheight = rand.Next(3) + 4;
 
                 ResourceLocator wallGroup = "wall/brick" + rand.Next(2);
 
-                GenHelper.BuildRoof(tiles, x, y, width, height, rheight, "floor/roof/0");
+                GenHelper.BuildRoof(tiles, X, Y, SizeX, SizeY, rheight, "floor/roof/0");
 
                 Func<int,int,Face,bool,ResourceLocator> texFunc = (horzpos, level, face, isInterior) => {
                     if (level < rheight)
@@ -40,24 +40,29 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                     return wallGroup["7"];
                 };
 
-                if (Tools.Random.NextDouble() < 0.5) {
-                    GenHelper.BuildFloor(tiles, x, y, width, height, 0,
-                        (horz, vert) => Tools.Random.NextTexture("floor/planks", 4));
+                if (rand.NextDouble() < 0.5) {
+                    GenHelper.BuildFloor(tiles, X, Y, SizeX, SizeY, 0,
+                        (horz, vert) => rand.NextTexture("floor/planks", 4));
                 }
 
-                GenHelper.BuildWall(tiles, x, y, Face.North, width, rheight + 1, texFunc);
-                GenHelper.BuildWall(tiles, x, y, Face.West, height, rheight + 1, texFunc);
-                GenHelper.BuildWall(tiles, x, y + height - 1, Face.South, width, rheight + 1, texFunc);
-                GenHelper.BuildWall(tiles, x + width - 1, y, Face.East, height, rheight + 1, texFunc);
+                new CratePile {
+                    X = X + 1, Y = Y + 1, SizeX = SizeX - 2, SizeY = SizeY - 2,
+                    CrateFrequency = rand.NextDouble() * 0.5
+                }.Generate(district, tiles, rand);
+
+                GenHelper.BuildWall(tiles, X, Y, Face.North, SizeX, rheight + 1, texFunc);
+                GenHelper.BuildWall(tiles, X, Y, Face.West, SizeY, rheight + 1, texFunc);
+                GenHelper.BuildWall(tiles, X, Y + SizeY - 1, Face.South, SizeX, rheight + 1, texFunc);
+                GenHelper.BuildWall(tiles, X + SizeX - 1, Y, Face.East, SizeY, rheight + 1, texFunc);
 
                 Face entrance = rand.NextFace(EntranceFaces);
                 int entranceSize = rand.Next(2, 4);
                 bool open = false;
                 if (((int) entrance & 0x5) != 0) {
-                    int entranceCount = Math.Min((height - 1) / (entranceSize + 1), 3);
-                    int entranceOffset = rand.Next(1, height - (entranceSize + 1) * entranceCount);
-                    int entranceX = entrance == Face.West ? x : x + width;
-                    int entranceY = y + entranceOffset;
+                    int entranceCount = Math.Min((SizeY - 1) / (entranceSize + 1), 3);
+                    int entranceOffset = rand.Next(1, SizeY - (entranceSize + 1) * entranceCount);
+                    int entranceX = entrance == Face.West ? X : X + SizeX;
+                    int entranceY = Y + entranceOffset;
                     GenHelper.BuildWall(tiles, entranceX, entranceY - 1, Face.West, 1, 3,
                         wallGroup["9"], wallGroup["8"]);
                     for (int i = 0; i < entranceCount; ++i) {
@@ -81,10 +86,10 @@ namespace Zombles.Scripts.Geometry.Generation.StructureGen
                         entranceY + entranceCount * (entranceSize + 1) - 1, Face.West, 1, 3,
                         wallGroup["8"], wallGroup["9"]);
                 } else {
-                    int entranceCount = Math.Min((width - 1) / (entranceSize + 1), 3);
-                    int entranceOffset = rand.Next(1, width - (entranceSize + 1) * entranceCount);
-                    int entranceX = x + entranceOffset;
-                    int entranceY = entrance == Face.North ? y : y + height;
+                    int entranceCount = Math.Min((SizeX - 1) / (entranceSize + 1), 3);
+                    int entranceOffset = rand.Next(1, SizeX - (entranceSize + 1) * entranceCount);
+                    int entranceX = X + entranceOffset;
+                    int entranceY = entrance == Face.North ? Y : Y + SizeY;
                     GenHelper.BuildWall(tiles, entranceX - 1, entranceY, Face.North, 1, 3,
                         wallGroup["8"], wallGroup["9"]);
                     for (int i = 0; i < entranceCount; ++i) {

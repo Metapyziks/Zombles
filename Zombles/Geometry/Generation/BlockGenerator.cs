@@ -105,12 +105,12 @@ namespace Zombles.Geometry.Generation
             _sGenerators = valid.ToArray();
         }
 
-        public readonly double Frequency;
+        public double Frequency { get; private set; }
 
-        public readonly int MinShortSide;
-        public readonly int MinLongSide;
-        public readonly int MaxShortSide;
-        public readonly int MaxLongSide;
+        public int MinShortSide { get; private set; }
+        public int MinLongSide { get; private set; }
+        public int MaxShortSide { get; private set; }
+        public int MaxLongSide { get; private set; }
 
         protected BlockGenerator(double frequency, int minSide, int maxSide)
         {
@@ -139,13 +139,6 @@ namespace Zombles.Geometry.Generation
 
             return sh >= MinShortSide && ln >= MinLongSide &&
                 (acceptLarger || (ln <= MaxLongSide && sh <= MaxShortSide));
-        }
-
-        public Block Generate(District district, int borderLeft, int borderTop,
-            int borderRight, int borderBottom, int seed = 0)
-        {
-            Random rand = (seed == 0 ? new Random() : new Random(seed));
-            return Generate(district, borderLeft, borderTop, borderRight, borderBottom, rand);
         }
 
         public Block Generate(District district, int borderLeft, int borderTop,

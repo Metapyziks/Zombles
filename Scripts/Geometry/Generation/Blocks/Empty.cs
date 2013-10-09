@@ -3,7 +3,7 @@
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
-namespace Zombles.Scripts.Geometry.Generation.BlockGen
+namespace Zombles.Scripts.Geometry.Generation.Blocks
 {
     public class Empty : BlockGenerator
     {
@@ -16,7 +16,7 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
             GenHelper.BuildFloor(tiles, borderLeft, borderTop,
                 district.Width - borderLeft - borderRight,
                 district.Height - borderTop - borderBottom,
-                0, (x, y) => Tools.Random.NextTexture("floor/concrete", 4));
+                0, (x, y) => rand.NextTexture("floor/concrete", 4));
         }
     }
 }

@@ -63,12 +63,12 @@
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="Entities\ZombieAI.cs" />
     <Compile Include="GameScene.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Empty.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Park.cs" />
-    <Compile Include="Geometry\Generation\BlockGen\Warehouse.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\CratePile.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\Park.cs" />
-    <Compile Include="Geometry\Generation\StructureGen\Warehouse.cs" />
+    <Compile Include="Geometry\Generation\Blocks\Empty.cs" />
+    <Compile Include="Geometry\Generation\Blocks\Park.cs" />
+    <Compile Include="Geometry\Generation\Blocks\Warehouse.cs" />
+    <Compile Include="Geometry\Generation\Structures\CratePile.cs" />
+    <Compile Include="Geometry\Generation\Structures\Park.cs" />
+    <Compile Include="Geometry\Generation\Structures\Warehouse.cs" />
     <Compile Include="UI\UIInfectionDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +86,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Geometry\Generation\Rooms\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

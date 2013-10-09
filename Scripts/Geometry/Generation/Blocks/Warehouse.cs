@@ -3,16 +3,16 @@
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
-namespace Zombles.Scripts.Geometry.Generation.BlockGen
+namespace Zombles.Scripts.Geometry.Generation.Blocks
 {
     public class Warehouse : BlockGenerator
     {
-        private StructureGen.Warehouse _buildingGen;
+        private Structures.Warehouse _buildingGen;
 
         public Warehouse()
             : base(1.0, 8, 12, 16, 24)
         {
-            _buildingGen = new StructureGen.Warehouse();
+            _buildingGen = new Structures.Warehouse();
         }
 
         protected override void Generate(District district, TileBuilder[,] tiles,
@@ -25,9 +25,12 @@ namespace Zombles.Scripts.Geometry.Generation.BlockGen
                 (borderRight > 1 ? Face.East : Face.None) |
                 (borderBottom > 1 ? Face.South : Face.None);
 
-            _buildingGen.Generate(district, tiles, borderLeft, borderTop,
-                district.Width - borderLeft - borderRight,
-                district.Height - borderTop - borderBottom, rand);
+            _buildingGen.X = borderLeft;
+            _buildingGen.Y = borderTop;
+            _buildingGen.SizeX = district.Width - borderLeft - borderRight;
+            _buildingGen.SizeY = district.Height - borderTop - borderBottom;
+
+            _buildingGen.Generate(district, tiles, rand);
         }
     }
 }

@@ -7,12 +7,12 @@ namespace Zombles.Geometry.Generation
 {
     public abstract class StructureGenerator
     {
-        public void Generate( District district, TileBuilder[ , ] tiles, int x, int y, int width, int height, int seed = 0 )
-        {
-            Random rand = ( seed == 0 ? new Random() : new Random( seed ) );
-            Generate( district, tiles, x, y, width, height, rand );
-        }
+        public int X { get; set; }
+        public int Y { get; set; }
 
-        public abstract void Generate( District district, TileBuilder[ , ] tiles, int x, int y, int width, int height, Random rand );
+        public int SizeX { get; set; }
+        public int SizeY { get; set; }
+
+        public abstract void Generate(District district, TileBuilder[,] tiles, Random rand);
     }
 }
