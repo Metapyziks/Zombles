@@ -15,6 +15,8 @@ namespace Zombles.Geometry
 {
     public class City : IEnumerable<Block>, IDisposable
     {
+        private const int BloodResolution = 2;
+
         private VertexBuffer _geomVertexBuffer;
         private VertexBuffer _pathVertexBuffer;
         private AlphaTexture2D _bloodMap;
@@ -35,7 +37,7 @@ namespace Zombles.Geometry
             _geomVertexBuffer = new VertexBuffer(3);
             _pathVertexBuffer = new VertexBuffer(2);
 
-            _bloodMap = new AlphaTexture2D(width * 2, height * 2);
+            _bloodMap = new AlphaTexture2D(width * BloodResolution, height * BloodResolution);
         }
 
         public Vector2 Difference(Vector2 a, Vector2 b)
@@ -78,8 +80,8 @@ namespace Zombles.Geometry
 
                 TraceResult res = Trace.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
 
-                int ix = (int) (res.End.X * 2.0f);
-                int iy = (int) (res.End.Y * 2.0f);
+                int ix = (int) (res.End.X * BloodResolution);
+                int iy = (int) (res.End.Y * BloodResolution);
 
                 _bloodMap[ix, iy] = Math.Min(1f, _bloodMap[ix, iy]
                     + 1f / 32f + Tools.Random.NextSingle() * 1f / 6f);
