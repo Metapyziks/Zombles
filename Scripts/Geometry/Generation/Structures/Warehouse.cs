@@ -39,17 +39,7 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
 
                     return wallGroup["7"];
                 };
-
-                if (rand.NextDouble() < 0.5) {
-                    GenHelper.BuildFloor(tiles, X, Y, SizeX, SizeY, 0,
-                        (horz, vert) => rand.NextTexture("floor/planks", 4));
-                }
-
-                new CratePile {
-                    X = X + 1, Y = Y + 1, SizeX = SizeX - 2, SizeY = SizeY - 2,
-                    CrateFrequency = rand.NextDouble() * 0.5
-                }.Generate(district, tiles, rand);
-
+                
                 GenHelper.BuildWall(tiles, X, Y, Face.North, SizeX, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X, Y, Face.West, SizeY, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X, Y + SizeY - 1, Face.South, SizeX, rheight + 1, texFunc);
@@ -114,6 +104,10 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                         entranceY, Face.North, 1, 3,
                         wallGroup["9"], wallGroup["8"]);
                 }
+
+                new Rooms.Warehouse {
+                    X = X, Y = Y, SizeX = SizeX, SizeY = SizeY, Height = rheight
+                }.Generate(district, tiles, rand);
             }
         }
     }

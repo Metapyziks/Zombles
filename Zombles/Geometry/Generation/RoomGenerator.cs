@@ -10,6 +10,8 @@ namespace Zombles.Geometry.Generation
     {
         private Dictionary<Face, List<bool>> _entries;
 
+        public int Height { get; set; }
+
         public RoomGenerator()
         {
             _entries = new Dictionary<Face, List<bool>>();

@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />
+    <Compile Include="Geometry\Generation\Structures\Doorway.cs" />
     <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />
@@ -86,7 +88,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Geometry\Generation\Rooms\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
