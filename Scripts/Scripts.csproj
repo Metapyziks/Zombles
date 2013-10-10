@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />
     <Compile Include="Geometry\Generation\Structures\Doorway.cs" />
+    <Compile Include="Geometry\Generation\Structures\GarageDoor.cs" />
     <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />

@@ -62,8 +62,7 @@ namespace Zombles.Graphics
         public ushort GetTextureIndex(params String[] locator)
         {
             for (int i = 0; i < _names.Length; ++i) {
-                if (_names[i].Length == locator.Length
-                    && _names[i].Zip(locator, (x, y) => x == y).All(x => x)) {
+                if (_names[i].Equals(locator)) {
                     return (ushort) i;
                 }
             }

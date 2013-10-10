@@ -45,65 +45,39 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                 GenHelper.BuildWall(tiles, X, Y + SizeY - 1, Face.South, SizeX, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X + SizeX - 1, Y, Face.East, SizeY, rheight + 1, texFunc);
 
-                Face entrance = rand.NextFace(EntranceFaces);
-                int entranceSize = rand.Next(2, 4);
-                bool open = false;
-                if (((int) entrance & 0x5) != 0) {
-                    int entranceCount = Math.Min((SizeY - 1) / (entranceSize + 1), 3);
-                    int entranceOffset = rand.Next(1, SizeY - (entranceSize + 1) * entranceCount);
-                    int entranceX = entrance == Face.West ? X : X + SizeX;
-                    int entranceY = Y + entranceOffset;
-                    GenHelper.BuildWall(tiles, entranceX, entranceY - 1, Face.West, 1, 3,
-                        wallGroup["9"], wallGroup["8"]);
-                    for (int i = 0; i < entranceCount; ++i) {
-                        int doorOffset = (!open && i == entranceCount - 1 ? 1 : rand.Next(0, 2)) * 2;
-                        int doorHeight = 3 - doorOffset;
+                var entrFace = rand.NextFace(EntranceFaces);
+                var doorway = new GarageDoor {
+                    Direction = entrFace,
+                    LeftBorderTile = wallGroup["8"],
+                    RightBorderTile = wallGroup["9"],
+                    BothBorderTile = wallGroup["a"],
+                    Width = rand.Next(2, 4),
+                    Height = 3,
+                    DoorTile = "wall/garage/0",
+                    DoorPosition = 2
+                };
 
-                        open |= doorOffset >= 2;
-
-                        GenHelper.BuildWall(tiles, entranceX, entranceY + i * (entranceSize + 1),
-                            Face.West, entranceSize, doorOffset, null, null);
-                        GenHelper.BuildWall(tiles, entranceX, entranceY + i * (entranceSize + 1),
-                            Face.West, entranceSize, doorOffset, doorHeight, "wall/garage/0", "wall/garage/0");
-                        GenHelper.BuildWall(tiles, entranceX, entranceY + i * (entranceSize + 1) + entranceSize,
-                            Face.West, 1, 3, wallGroup["a"], wallGroup["a"]);
-
-                        if (doorOffset >= 2)
-                            Waypoint.AddHint(new Vector2(district.X + entranceX,
-                                district.Y + entranceY + i * (entranceSize + 1) + entranceSize / 2.0f));
-                    }
-                    GenHelper.BuildWall(tiles, entranceX,
-                        entranceY + entranceCount * (entranceSize + 1) - 1, Face.West, 1, 3,
-                        wallGroup["8"], wallGroup["9"]);
-                } else {
-                    int entranceCount = Math.Min((SizeX - 1) / (entranceSize + 1), 3);
-                    int entranceOffset = rand.Next(1, SizeX - (entranceSize + 1) * entranceCount);
-                    int entranceX = X + entranceOffset;
-                    int entranceY = entrance == Face.North ? Y : Y + SizeY;
-                    GenHelper.BuildWall(tiles, entranceX - 1, entranceY, Face.North, 1, 3,
-                        wallGroup["8"], wallGroup["9"]);
-                    for (int i = 0; i < entranceCount; ++i) {
-                        int doorOffset = (!open && i == entranceCount - 1 ? 1 : rand.Next(0, 2)) * 2;
-                        int doorHeight = 3 - doorOffset;
-
-                        open |= doorOffset >= 2;
-
-                        GenHelper.BuildWall(tiles, entranceX + i * (entranceSize + 1), entranceY,
-                            Face.North, entranceSize, doorOffset, null, null);
-                        GenHelper.BuildWall(tiles, entranceX + i * (entranceSize + 1), entranceY,
-                            Face.North, entranceSize, doorOffset, doorHeight, "wall/garage/0", "wall/garage/0");
-                        GenHelper.BuildWall(tiles, entranceX + i * (entranceSize + 1) + entranceSize, entranceY,
-                            Face.North, 1, 3, wallGroup["a"], wallGroup["a"]);
-
-                        if (doorOffset >= 2)
-                            Waypoint.AddHint(new Vector2(district.X + entranceX
-                                + i * (entranceSize + 1) + entranceSize / 2.0f,
-                                district.Y + entranceY));
-                    }
-                    GenHelper.BuildWall(tiles, entranceX + entranceCount * (entranceSize + 1) - 1,
-                        entranceY, Face.North, 1, 3,
-                        wallGroup["9"], wallGroup["8"]);
+                switch (entrFace) {
+                    case Face.North:
+                        doorway.X = X + 1;
+                        doorway.Y = Y + SizeY;
+                        break;
+                    case Face.South:
+                        doorway.X = X + 1;
+                        doorway.Y = Y - 1;
+                        break;
+                    case Face.East:
+                        doorway.X = X - 1;
+                        doorway.Y = Y + 1;
+                        break;
+                    case Face.West:
+                        doorway.X = X + SizeX;
+                        doorway.Y = Y + 1;
+                        break;
                 }
+
+                doorway.Generate(district, tiles, rand);
+                doorway.GenerateOpposite(district, tiles, rand);
 
                 new Rooms.Warehouse {
                     X = X, Y = Y, SizeX = SizeX, SizeY = SizeY, Height = rheight
