@@ -1,36 +1,33 @@
 using System;
 using System.Drawing;
-
 using OpenTK;
-
+using OpenTKTK.Scene;
 using OpenTKTK.Textures;
-
 using ResourceLibrary;
-
 using Zombles;
 
 namespace Zombles.Graphics
 {
-    public class Font
+    public class PixelFont
     {
-        private static Font _sFontDefault;
-        private static Font _sFontLarge;
+        private static PixelFont _sFontDefault;
+        private static PixelFont _sFontLarge;
 
-        public static Font Default
+        public static PixelFont Default
         {
             get
             {
                 if (_sFontDefault == null)
-                    _sFontDefault = new Font("images", "gui", "fontdefault");
+                    _sFontDefault = new PixelFont("images", "gui", "fontdefault");
                 return _sFontDefault;
             }
         }
-        public static Font Large
+        public static PixelFont Large
         {
             get
             {
                 if (_sFontLarge == null)
-                    _sFontLarge = new Font("images", "gui", "fontlarge");
+                    _sFontLarge = new PixelFont("images", "gui", "fontlarge");
                 return _sFontLarge;
             }
         }
@@ -55,7 +52,7 @@ namespace Zombles.Graphics
             }
         }
 
-        public Font(params String[] charMapLocator)
+        public PixelFont(params String[] charMapLocator)
         {
             Texture = new BitmapTexture2D(Archive.Get<Bitmap>(charMapLocator));
 
@@ -70,13 +67,13 @@ namespace Zombles.Graphics
         }
     }
 
-    public class Text : Sprite
+    public class PixelText : Sprite
     {
         private String _text;
-        private Font _font;
+        private PixelFont _font;
         private float _wrapWidth;
 
-        public Font Font
+        public PixelFont Font
         {
             get
             {
@@ -110,13 +107,13 @@ namespace Zombles.Graphics
             }
         }
 
-        public Text()
-            : this(Font.Default)
+        public PixelText()
+            : this(PixelFont.Default)
         {
 
         }
 
-        public Text(Font font, float scale = 1.0f)
+        public PixelText(PixelFont font, float scale = 1.0f)
             : base(font.Texture, scale)
         {
             _text = "";

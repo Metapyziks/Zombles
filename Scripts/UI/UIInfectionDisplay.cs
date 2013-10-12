@@ -12,6 +12,7 @@ using Zombles.UI;
 using Zombles.Entities;
 using Zombles.Scripts.Entities;
 using Zombles.Geometry;
+using OpenTKTK.Scene;
 
 namespace Zombles.Scripts.UI
 {

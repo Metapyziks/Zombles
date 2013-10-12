@@ -4,6 +4,8 @@ using OpenTK;
 
 using Zombles.Graphics;
 using System.Drawing;
+using OpenTKTK.Shaders;
+using OpenTKTK.Scene;
 
 namespace Zombles.UI
 {

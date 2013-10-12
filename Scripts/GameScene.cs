@@ -90,11 +90,11 @@ namespace Zombles.Scripts
 
                 City = Generator.Generate(WorldSize, WorldSize);
 
-                _fpsText = new UILabel(Font.Large);
+                _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
                 AddChild(_fpsText);
 
-                _posText = new UILabel(Font.Large);
+                _posText = new UILabel(PixelFont.Large);
                 _posText.Colour = Color4.White;
                 AddChild(_posText);
 
@@ -137,7 +137,7 @@ namespace Zombles.Scripts
             _fpsText.Top = 4.0f;
 
             _posText.Left = 4.0f;
-            _posText.Top = 8.0f + Font.Large.CharHeight;
+            _posText.Top = 8.0f + PixelFont.Large.CharHeight;
 
             _infDisplay.Width = Width - 8.0f;
             _infDisplay.Height = 8.0f;

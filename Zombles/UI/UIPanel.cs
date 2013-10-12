@@ -1,5 +1,5 @@
 using OpenTK;
-
+using OpenTKTK.Scene;
 using Zombles.Graphics;
 
 namespace Zombles.UI
@@ -21,29 +21,29 @@ namespace Zombles.UI
         }
 
         public UIPanel()
-            : this( new Vector2(), new Vector2() )
+            : this(new Vector2(), new Vector2())
         {
 
         }
 
-        public UIPanel( Vector2 size )
-            : this( size, new Vector2() )
+        public UIPanel(Vector2 size)
+            : this(size, new Vector2())
         {
 
         }
 
-        public UIPanel( Vector2 size, Vector2 position )
-            : base( size, position )
+        public UIPanel(Vector2 size, Vector2 position)
+            : base(size, position)
         {
-            _backSprite = new UISprite( new Sprite( size.X, size.Y, OpenTK.Graphics.Color4.White ) );
-            AddChild( _backSprite );
+            _backSprite = new UISprite(new Sprite(size.X, size.Y, OpenTK.Graphics.Color4.White));
+            AddChild(_backSprite);
         }
 
-        protected override Vector2 OnSetSize( Vector2 newSize )
+        protected override Vector2 OnSetSize(Vector2 newSize)
         {
-            _backSprite.SetSize( newSize );
+            _backSprite.SetSize(newSize);
 
-            return base.OnSetSize( newSize );
+            return base.OnSetSize(newSize);
         }
     }
 }

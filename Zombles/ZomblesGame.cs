@@ -15,6 +15,7 @@ using Zombles.UI;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 using System.Reflection;
+using OpenTKTK.Shaders;
 
 namespace Zombles
 {

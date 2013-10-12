@@ -8,6 +8,7 @@ using OpenTK.Input;
 
 using Zombles.UI;
 using Zombles.Graphics;
+using OpenTKTK.Shaders;
 
 namespace Zombles
 {

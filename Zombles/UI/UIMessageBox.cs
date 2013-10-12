@@ -47,7 +47,7 @@ namespace Zombles.UI
 
             Title = title;
 
-            _text = new UILabel( Zombles.Graphics.Font.Large )
+            _text = new UILabel( Zombles.Graphics.PixelFont.Large )
             {
                 Text = message,
                 Position = new Vector2( 4, 4 )

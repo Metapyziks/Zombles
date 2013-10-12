@@ -1,16 +1,15 @@
 using System;
-
 using OpenTK;
-
+using OpenTKTK.Scene;
+using OpenTKTK.Shaders;
 using ResourceLibrary;
-
 using Zombles.Graphics;
 
 namespace Zombles.UI
 {
     public class UITextBox : UIObject
     {
-        private Font _font;
+        private PixelFont _font;
         private FrameSprite _sprite;
         private UILabel _text;
         private Sprite _underlineChar;
@@ -59,7 +58,7 @@ namespace Zombles.UI
                 Size = size
             };
 
-            _font = Font.Large;
+            _font = PixelFont.Large;
             _text = new UILabel(_font, scale);
             AddChild(_text);
 

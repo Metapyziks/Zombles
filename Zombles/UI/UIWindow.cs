@@ -1,9 +1,7 @@
 using System;
-
 using OpenTK;
-
+using OpenTKTK.Shaders;
 using ResourceLibrary;
-
 using Zombles.Graphics;
 
 namespace Zombles.UI
@@ -76,7 +74,7 @@ namespace Zombles.UI
                 Size = size
             };
 
-            _titleText = new UILabel(Font.Large, scale) {
+            _titleText = new UILabel(PixelFont.Large, scale) {
                 Position = new Vector2(6 * scale - PaddingLeft, 4 * scale - PaddingTop),
                 IsEnabled = false
             };

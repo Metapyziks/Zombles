@@ -1,8 +1,7 @@
 using System;
-
 using OpenTK;
 using OpenTK.Graphics;
-
+using OpenTKTK.Shaders;
 using Zombles;
 using Zombles.Graphics;
 
@@ -10,8 +9,8 @@ namespace Zombles.UI
 {
     public class UILabel : UIObject
     {
-        private Font _font;
-        private Text _text;
+        private PixelFont _font;
+        private PixelText _text;
 
         public String Text
         {
@@ -26,7 +25,7 @@ namespace Zombles.UI
             }
         }
 
-        public Font Font
+        public PixelFont Font
         {
             get
             {
@@ -59,44 +58,44 @@ namespace Zombles.UI
             }
         }
 
-        public UILabel( Font font, float scale = 1.0f )
-            : this( font, new Vector2(), scale )
+        public UILabel(PixelFont font, float scale = 1.0f)
+            : this(font, new Vector2(), scale)
         {
-            
+
         }
 
-        public UILabel( Font font, Vector2 position, float scale = 1.0f )
-            : base( new Vector2(), position )
+        public UILabel(PixelFont font, Vector2 position, float scale = 1.0f)
+            : base(new Vector2(), position)
         {
             _font = font;
-            _text = new Text( font, scale );
+            _text = new PixelText(font, scale);
             Colour = Color4.Black;
             CanResize = false;
             IsEnabled = false;
         }
 
-        protected override void OnRender( SpriteShader shader, Vector2 renderPosition = new Vector2() )
+        protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())
         {
             _text.Position = renderPosition;
 
-            _text.Render( shader );
+            _text.Render(shader);
         }
 
         private void FindSize()
         {
-            String[] lines = _text.String.ApplyWordWrap( Font.CharWidth * _text.Scale.X, _text.WrapWidth ).Split( '\n' );
+            String[] lines = _text.String.ApplyWordWrap(Font.CharWidth * _text.Scale.X, _text.WrapWidth).Split('\n');
 
             int maxLength = 0;
 
-            foreach ( String line in lines )
-                if ( line.Length > maxLength )
+            foreach (String line in lines)
+                if (line.Length > maxLength)
                     maxLength = line.Length;
 
             float width = _font.CharWidth * _text.Scale.X * maxLength;
             float height = _font.CharHeight * _text.Scale.Y * lines.Length;
 
             CanResize = true;
-            SetSize( width, height );
+            SetSize(width, height);
             CanResize = false;
         }
     }

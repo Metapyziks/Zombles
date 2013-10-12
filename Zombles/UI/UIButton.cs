@@ -4,6 +4,7 @@ using OpenTK;
 
 using Zombles.Graphics;
 using OpenTK.Graphics;
+using OpenTKTK.Shaders;
 
 namespace Zombles.UI
 {
@@ -68,7 +69,7 @@ namespace Zombles.UI
                 Size = size
             };
 
-            _label = new UILabel(Font.Large, scale);
+            _label = new UILabel(PixelFont.Large, scale);
 
             AddChild(_label);
         }

@@ -1,7 +1,7 @@
 using System;
-
 using OpenTK;
-
+using OpenTKTK.Scene;
+using OpenTKTK.Shaders;
 using OpenTKTK.Textures;
 
 namespace Zombles.Graphics
