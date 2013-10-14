@@ -60,18 +60,18 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                 switch (entrFace) {
                     case Face.North:
                         doorway.X = X + 1;
-                        doorway.Y = Y + SizeY;
+                        doorway.Y = Y;
                         break;
                     case Face.South:
                         doorway.X = X + 1;
-                        doorway.Y = Y - 1;
+                        doorway.Y = Y + SizeY - 1;
                         break;
                     case Face.East:
-                        doorway.X = X - 1;
+                        doorway.X = X + SizeX - 1;
                         doorway.Y = Y + 1;
                         break;
                     case Face.West:
-                        doorway.X = X + SizeX;
+                        doorway.X = X;
                         doorway.Y = Y + 1;
                         break;
                 }
