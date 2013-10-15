@@ -224,7 +224,7 @@ namespace Zombles.Scripts
 
                 if (Camera.Pitch != TargetCameraPitch)
                     Camera.Pitch = Tools.WrapAngle(PreviousCameraPitch + pdiff * time);
-            }
+            }            
         }
 
         public override void OnRenderFrame(FrameEventArgs e)
@@ -233,6 +233,15 @@ namespace Zombles.Scripts
             float x1 = (Camera.X < WorldSize / 2) ? -WorldSize : WorldSize;
             float y0 = 0.0f;
             float y1 = (Camera.Z < WorldSize / 2) ? -WorldSize : WorldSize;
+
+            var trace = new Zombles.Geometry.Trace(City) {
+                Origin = Camera.Position2D,
+                HitGeometry = true,
+                HitEntities = true,
+                Length = 32f,
+                Normal = City.Difference(Camera.Position2D,
+                    Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
+            }.GetResult();
 
             for (int i = 0; i < 4; ++i) {
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
@@ -243,6 +252,10 @@ namespace Zombles.Scripts
                 FlatEntShader.Begin();
                 City.RenderEntities(FlatEntShader);
                 FlatEntShader.End();
+
+                _traceShader.Begin(true);
+                _traceShader.Render(trace);
+                _traceShader.End();
             }
 
             base.OnRenderFrame(e);

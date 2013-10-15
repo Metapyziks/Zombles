@@ -7,6 +7,8 @@ using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 using Zombles.Entities;
 using ResourceLibrary;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Zombles.Scripts.Geometry.Generation.Structures
 {
@@ -39,7 +41,7 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
 
                     return wallGroup["7"];
                 };
-                
+
                 GenHelper.BuildWall(tiles, X, Y, Face.North, SizeX, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X, Y, Face.West, SizeY, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X, Y + SizeY - 1, Face.South, SizeX, rheight + 1, texFunc);
@@ -53,8 +55,7 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                     BothBorderTile = wallGroup["a"],
                     Width = rand.Next(2, 4),
                     Height = 3,
-                    DoorTile = "wall/garage/0",
-                    DoorPosition = 2
+                    DoorTile = "wall/garage/0"
                 };
 
                 switch (entrFace) {
@@ -76,8 +77,33 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                         break;
                 }
 
-                doorway.Generate(district, tiles, rand);
-                doorway.GenerateOpposite(district, tiles, rand);
+                var dx = 1 - Math.Abs(entrFace.GetNormalX());
+                var dy = 1 - dx;
+
+                int count = 1;
+                if (dx == 1) {
+                    count = (SizeX - 1) / (doorway.Width + 1);
+                } else {
+                    count = (SizeY - 1) / (doorway.Width + 1);
+                }
+
+                int closed = rand.Next(0, count);
+                var indices = Enumerable.Range(0, count).ToList();
+
+                while (closed-- > 0) indices.RemoveAt(rand.Next(indices.Count));
+
+                for (int i = 0; i < count; ++i) {
+                    if (indices.Contains(i)) {
+                        doorway.DoorPosition = 2;
+                    } else {
+                        doorway.DoorPosition = 0;
+                    }
+
+                    doorway.Generate(district, tiles, rand);
+                    doorway.GenerateOpposite(district, tiles, rand);
+                    doorway.X += dx * (doorway.Width + 1);
+                    doorway.Y += dy * (doorway.Width + 1);
+                }
 
                 new Rooms.Warehouse {
                     X = X, Y = Y, SizeX = SizeX, SizeY = SizeY, Height = rheight

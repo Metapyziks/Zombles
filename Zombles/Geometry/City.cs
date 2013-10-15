@@ -73,13 +73,13 @@ namespace Zombles.Geometry
             int count = (int) (force * 4.0f);
 
             for (int i = 0; i < count; ++i) {
-                float dist = i * 0.125f;
+                float dist = (i + 1) * 0.125f;
 
                 float x = pos.X + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
                 float y = pos.Y + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
 
                 TraceResult res = Trace.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
-
+                
                 int ix = (int) (res.End.X * BloodResolution);
                 int iy = (int) (res.End.Y * BloodResolution);
 

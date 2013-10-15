@@ -15,7 +15,7 @@ using Zombles.Entities;
 
 namespace Zombles.Graphics
 {
-    public class DebugTraceShader : ShaderProgram3D<OrthoCamera>
+    public class DebugTraceShader : WorldShader
     {
         private int _colourLoc;
         private Color4 _colour;
@@ -37,7 +37,7 @@ namespace Zombles.Graphics
         public DebugTraceShader()
         {
             ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "view_matrix");
+            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
             vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddAttribute(ShaderVarType.Vec2, "in_vertex");
             vert.Logic = @"
@@ -45,7 +45,7 @@ namespace Zombles.Graphics
                 {
                     const float yscale = 2.0 / sqrt( 3.0 );
 
-                    gl_Position = view_matrix * vec4(
+                    gl_Position = vp_matrix * vec4(
                         in_vertex.x + world_offset.x,
                         0.5 * yscale,
                         in_vertex.y + world_offset.y,
