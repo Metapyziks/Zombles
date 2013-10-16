@@ -11,105 +11,112 @@
 
 \begin{document}
 \section{Minimum Deliverables}
-\subsection{Prepare existing codebase to be expanded upon and fix existing issues}
+\subsection{Prepare existing codebase to be expanded upon and fix existing
+    issues}
     \begin{itemize}
-    \item Convert source files to adhere to current coding conventions
-    \item Make use of .NET 4.5 features where applicable
-    \item Overhaul world generation system to require less repetition of code
-    \item Test and fix ray tracing of a moving collision hull
+    \item (18 October) Convert source files to adhere to current coding
+        conventions
+    \item (18 October) Make use of .NET 4.5 features where applicable
+    \item (18 October) Overhaul world generation system to require less
+        repetition of code        
+    \item (25 October) Test and fix ray tracing of a moving collision hull
     \end{itemize}
 \subsection{Implement new pathfinding system and threat avoidance}
     \begin{itemize}
-    \item Place path vertices at significant positions within each block of
-        the city for use when pathing between two nearby positions
-    \item Implement an abstracted higher level path finding system for finding
-        general paths between two remote locations, using the intersections of
-        roads in the city as vertices
-    \item Allocate a limited amount of time for each agent to calculate paths
-        per frame, and store the partial result to be continued next frame if
-        required
-    \item Add geometry \emph{hint} nodes to mark features of the world that can
-        be exploited when agents are avoiding threats, for example hints for
-        doorways and room corners
-    \item Rewrite agent threat avoidance to take into account geometry hints
-    \item Test the new path finding system by instructing agents to path to
-        randomly selected locations in the world
+    \item (25 October) Place path vertices at significant positions within each
+        block of the city for use when pathing between two nearby positions
+    \item (8 November) Implement an abstracted higher level path finding system 
+        for finding general paths between two remote locations, using the
+        intersections of roads in the city as vertices
+    \item (8 November) Allocate a limited amount of time for each agent to
+        calculate paths per frame, and store the partial result to be continued
+        next frame if required 
+    \item (15 November) Add geometry \emph{hint} nodes to mark features of the
+        world that can be exploited when agents are avoiding threats, for
+        example hints for doorways and room corners
+    \item (15 November) Rewrite agent threat avoidance to take into account
+        geometry hints        
+    \item (22 November) Test the new path finding system by instructing agents
+        to path to randomly selected locations in the world
     \end{itemize}
 \subsection{Analyse system scalability}
     \begin{itemize}
-    \item Evaluate frame time and memory allocated for a range of world
-        sizes, from trivial to the largest possible
-    \item For each world size, record the above metrics for varying numbers
-        of agents, from none to the limit that increases frame time to be
-        larger than some target, with path finding disabled
-    \item With some configuration of the above two parameters, experiment
-        with the amount of time allocated for agents to find paths to
-        analyse frame times
-    \item Experiment with limiting the range of agents path finding node
-        exploration to currently or previously visible tiles, and then
-        for currently occupied or previously occupied blocks, and compare
+    \item (22 November) Evaluate frame time and memory allocated for a range of
+        world sizes, from trivial to the largest possible
+    \item (22 November) For each world size, record the above metrics for
+        varying numbers of agents, from none to the limit that increases frame
+        time to be larger than some target, with path finding disabled 
+    \item (29 November) With some configuration of the above two parameters,
+        experiment with the amount of time allocated for agents to find paths
+        to analyse frame times
+    \item (13 December) Experiment with limiting the range of agents path
+        finding node exploration to currently or previously visible tiles, and
+        then for currently occupied or previously occupied blocks, and compare
         performance and memory used
     \end{itemize}
 
 \section{Intermediate Objectives}
 \subsection{Improve and extend simulation environment}
     \begin{itemize}
-    \item Add mesh entity rendering component for entities with 3D models
-    \item Implement barricade entities that block off a tile that may be
-        destroyed if attacked enough
-    \item Add at least one decorative entity that will produce a resource
-        (barricade material) when destroyed
-    \item Improve world generation to produce several building types with
-        different layouts and that contain varying amounts of resource
-        dropping decorative entities
+    \item (29 November) Add mesh entity rendering component for entities with
+        3D models
+    \item (6 December) Implement barricade entities that block off a tile that
+        may be destroyed if attacked enough
+    \item (6 December) Add at least one decorative entity that will produce a
+        resource (barricade material) when destroyed
+    \item (13 December) Improve world generation to produce several building
+        types with different layouts and that contain varying amounts of
+        resource dropping decorative entities
     \end{itemize}
 \subsection{Implement subsumptive agent AI architecture}
     \begin{itemize}
-    \item Build a wide variety of AI components to achieve different tasks
-        or promote certain behaviours such as threat avoidance or
-        exploration
-    \item Organise the AI components into layers of abstraction, where
-        more abstracted layers may choose between the decisions made by
+    \item (31 January) Build a wide variety of AI components to achieve
+        different tasks or promote certain behaviours such as threat avoidance
+        or exploration
+    \item (31 January) Organise the AI components into layers of abstraction,
+        where more abstracted layers may choose between the decisions made by
         the preceding less abstracted one, or override them
-    \item Compare survival rates and realism of different weightings
+    \item (21 March) Compare survival rates and realism of different weightings
         for the subsumptive behaviour system, for example a configuration
         designed for flocking, and another where agents are solitary
     \end{itemize}
 \subsection{Improve performance of path finding}
     \begin{itemize}
-    \item Implement path caching to improve path finding performance
-    \item Limit the capacity of the path cache, and remove infrequently
-        used paths if this is exceeded
-    \item Investigate the resulting cache hit and fault rates for cached
-        path discarding methods
+    \item (7 February) Implement path caching to improve path finding
+        performance
+    \item (7 February) Limit the capacity of the path cache, and remove
+        infrequently used paths if this is exceeded
+    \item (21 March) Investigate the resulting cache hit and fault rates for
+        cached path discarding methods
     \end{itemize}
 
 \section{Advanced Objectives}
 \subsection{Expand user interaction with the simulation}
     \begin{itemize}
-    \item Add barricade material storage designations, and the ability
-        for a player to place them
-    \item Include method for a player to order a specified group of agents
-        to travel to a given location
-    \item Allow players to mark decorative entities that produce barricade
-        material to be dismantled and scavenged from
-    \item Implement barricade building designations that may be placed by
-        a player
-    \item Produce a method for players to toggle individual or groups of
-        agents from being offensive or defensive
-    \item Create new AI components to complete the new user designated tasks
+    \item (14 February) Add barricade material storage designations, and the
+        ability for a player to place them
+    \item (14 February) Include method for a player to order a specified group
+        of agents to travel to a given location
+    \item (21 February) Allow players to mark decorative entities that produce
+        barricade material to be dismantled and scavenged from
+    \item (21 February) Implement barricade building designations that may be
+        placed by a player
+    \item (21 February) Produce a method for players to toggle individual or
+        groups of agents from being offensive or defensive
+    \item (28 February) Create new AI components to complete the new user
+        designated tasks
     \end{itemize}
 \subsection{Implement a BDI architecture for comparison}
     \begin{itemize}
-    \item Construct an alternative agent AI architecture using a beliefs-
-        desires-intentions model to perform the same tasks as the existing
-        subsumptive one
-    \item Attempt to build a rudimentary planning system on top of the new
-        BDI oriented architecture to improve agent performance
-    \item Compare the two architectures in terms of memory usage, frame
-        times, behaviour and survival rates for a variety of different
+    \item (7 March) Construct an alternative agent AI architecture using a
+        beliefs-desires-intentions model to perform the same tasks as the
+        existing subsumptive one
+    \item (14 March) Attempt to build a rudimentary planning system on top of
+        the new BDI oriented architecture to improve agent performance
+    \item (21 March) Compare the two architectures in terms of memory usage,
+        frame times, behaviour and survival rates for a variety of different
         initial simulation states
-    \item Assess the efficiency at which each architecture completes user
-        assigned tasks in similar circumstances
+    \item (21 March) Assess the efficiency at which each architecture completes 
+        user assigned tasks in similar circumstances
     \end{itemize}
 \end{document}
