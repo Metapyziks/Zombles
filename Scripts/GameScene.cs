@@ -236,8 +236,9 @@ namespace Zombles.Scripts
 
             var trace = new Zombles.Geometry.Trace(City) {
                 Origin = Camera.Position2D,
+                HullSize = new Vector2(1f, 1f),
                 HitGeometry = true,
-                HitEntities = true,
+                HitEntities = false,
                 Length = 32f,
                 Normal = City.Difference(Camera.Position2D,
                     Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
@@ -255,6 +256,10 @@ namespace Zombles.Scripts
 
                 _traceShader.Begin(true);
                 _traceShader.Render(trace);
+                _traceShader.Render(trace.End.X - 0.5f, trace.End.Y - 0.5f, trace.End.X + 0.5f, trace.End.Y - 0.5f);
+                _traceShader.Render(trace.End.X + 0.5f, trace.End.Y - 0.5f, trace.End.X + 0.5f, trace.End.Y + 0.5f);
+                _traceShader.Render(trace.End.X + 0.5f, trace.End.Y + 0.5f, trace.End.X - 0.5f, trace.End.Y + 0.5f);
+                _traceShader.Render(trace.End.X - 0.5f, trace.End.Y + 0.5f, trace.End.X - 0.5f, trace.End.Y - 0.5f);
                 _traceShader.End();
             }
 

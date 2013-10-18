@@ -104,6 +104,12 @@ namespace Zombles.Graphics
             GL.VertexAttrib2(Attributes[0].Location, path.Origin + path.Vector);
         }
 
+        public void Render(float x0, float y0, float x1, float y1)
+        {
+            GL.VertexAttrib2(Attributes[0].Location, x0, y0);
+            GL.VertexAttrib2(Attributes[0].Location, x1, y1);
+        }
+
         public void Render(Path path)
         {
             GL.VertexAttrib2(Attributes[0].Location, path.Origin);
