@@ -20,8 +20,6 @@ namespace Zombles.Geometry
         private int _pathVertCount;
         private int _pathVertOffset;
 
-        private List<PathEdge> _paths;
-
         public readonly City City;
         public readonly District District;
 
@@ -106,38 +104,6 @@ namespace Zombles.Geometry
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y)
                         _tiles[x, y].GetTopVertices(verts, ref i);
-            }
-        }
-
-        public int GetPathVertexCount()
-        {
-            _pathVertCount = 0;
-            _paths = new List<PathEdge>();
-
-            foreach (Entity ent in this) {
-                if (ent.HasComponent<Waypoint>()) {
-                    Waypoint waypoint = ent.GetComponent<Waypoint>();
-                    foreach (PathEdge edge in waypoint.Connections) {
-                        if (edge.EndWaypoint.Entity.ID < waypoint.Entity.ID || !edge.EndWaypoint.IsConnected(waypoint)) {
-                            _pathVertCount += 2;
-                            _paths.Add(edge);
-                        }
-                    }
-                }
-            }
-
-            return _pathVertCount;
-        }
-
-        public void GetPathVertices(float[] verts, ref int i)
-        {
-            _pathVertOffset = i / 2;
-
-            foreach (PathEdge edge in _paths) {
-                verts[i++] = edge.Origin.X;
-                verts[i++] = edge.Origin.Y;
-                verts[i++] = edge.Origin.X + edge.Vector.X;
-                verts[i++] = edge.Origin.Y + edge.Vector.Y;
             }
         }
 

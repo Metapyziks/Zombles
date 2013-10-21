@@ -209,11 +209,6 @@ namespace Zombles.Geometry.Generation
 
             Generate(district, tiles, borderLeft, borderTop, borderRight, borderBottom, rand);
 
-            Waypoint.AddHint(new Vector2(district.X + borderLeft - 1, district.Y + borderTop - 1));
-            Waypoint.AddHint(new Vector2(district.X + district.Width - borderRight + 1, district.Y + borderTop - 1));
-            Waypoint.AddHint(new Vector2(district.X + district.Width - borderRight + 1, district.Y + district.Height - borderBottom + 1));
-            Waypoint.AddHint(new Vector2(district.X + borderLeft - 1, district.Y + district.Height - borderBottom + 1));
-
             Block block = new Block(district);
             block.BuildTiles(tiles);
             return block;

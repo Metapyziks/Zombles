@@ -20,7 +20,6 @@ namespace Zombles.Scripts
                     .SetDimentions(0.5f, 0.5f)
                     .Model = CollisionModel.Repel | CollisionModel.Entity;
                 ent.AddComponent<Movement>();
-                ent.AddComponent<PathNavigation>();
                 ent.AddComponent<Health>();
             });
 

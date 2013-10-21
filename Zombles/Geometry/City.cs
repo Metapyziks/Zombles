@@ -18,7 +18,6 @@ namespace Zombles.Geometry
         private const int BloodResolution = 2;
 
         private VertexBuffer _geomVertexBuffer;
-        private VertexBuffer _pathVertexBuffer;
         private AlphaTexture2D _bloodMap;
 
         public District RootDistrict { get; private set; }
@@ -35,7 +34,6 @@ namespace Zombles.Geometry
             RootDistrict = new District(this, 0, 0, width, height);
 
             _geomVertexBuffer = new VertexBuffer(3);
-            _pathVertexBuffer = new VertexBuffer(2);
 
             _bloodMap = new AlphaTexture2D(width * BloodResolution, height * BloodResolution);
         }
@@ -98,6 +96,16 @@ namespace Zombles.Geometry
             return RootDistrict.GetBlock(x, y);
         }
 
+        public Tile GetTile(Vector2 pos)
+        {
+            pos = Wrap(pos);
+
+            int ix = (int) pos.X;
+            int iy = (int) pos.Y;
+
+            return GetBlock(pos)[ix, iy];
+        }
+
         public void UpdateGeometryVertexBuffer()
         {
             int count = RootDistrict.GetGeometryVertexCount();
@@ -105,15 +113,6 @@ namespace Zombles.Geometry
             int i = 0;
             RootDistrict.GetGeometryVertices(verts, ref i);
             _geomVertexBuffer.SetData(verts);
-        }
-
-        public void UpdatePathVertexBuffer()
-        {
-            int count = RootDistrict.GetPathVertexCount();
-            float[] verts = new float[count * _pathVertexBuffer.Stride];
-            int i = 0;
-            RootDistrict.GetPathVertices(verts, ref i);
-            _pathVertexBuffer.SetData(verts);
         }
 
         public void Think(double dt)

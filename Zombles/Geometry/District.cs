@@ -159,25 +159,6 @@ namespace Zombles.Geometry
                 Block.GetGeometryVertices(verts, ref i);
         }
 
-        public int GetPathVertexCount()
-        {
-            if (IsBranch)
-                return ChildA.GetPathVertexCount() + ChildB.GetPathVertexCount();
-            else if (IsLeaf)
-                return Block.GetPathVertexCount();
-
-            return 0;
-        }
-
-        public void GetPathVertices(float[] verts, ref int i)
-        {
-            if (IsBranch) {
-                ChildA.GetPathVertices(verts, ref i);
-                ChildB.GetPathVertices(verts, ref i);
-            } else if (IsLeaf)
-                Block.GetPathVertices(verts, ref i);
-        }
-
         public void Think(double dt)
         {
             if (IsBranch) {

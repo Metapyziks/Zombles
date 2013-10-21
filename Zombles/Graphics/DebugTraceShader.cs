@@ -98,28 +98,10 @@ namespace Zombles.Graphics
             GL.VertexAttrib2(Attributes[0].Location, trace.Origin + trace.Vector);
         }
 
-        public void Render(PathEdge path)
-        {
-            GL.VertexAttrib2(Attributes[0].Location, path.Origin);
-            GL.VertexAttrib2(Attributes[0].Location, path.Origin + path.Vector);
-        }
-
         public void Render(float x0, float y0, float x1, float y1)
         {
             GL.VertexAttrib2(Attributes[0].Location, x0, y0);
             GL.VertexAttrib2(Attributes[0].Location, x1, y1);
-        }
-
-        public void Render(Path path)
-        {
-            GL.VertexAttrib2(Attributes[0].Location, path.Origin);
-            Vector2 prev = path.Origin;
-            for (int i = 0; i < path.Waypoints.Length; ++i) {
-                GL.VertexAttrib2(Attributes[0].Location, prev + path.City.Difference(prev, path.Waypoints[i].Entity.Position2D));
-                GL.VertexAttrib2(Attributes[0].Location, path.Waypoints[i].Entity.Position2D);
-                prev = path.Waypoints[i].Entity.Position2D;
-            }
-            GL.VertexAttrib2(Attributes[0].Location, path.Desination);
         }
 
         protected override void OnEnd()
