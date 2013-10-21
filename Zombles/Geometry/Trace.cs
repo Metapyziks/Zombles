@@ -155,45 +155,16 @@ namespace Zombles.Geometry
 
         private Face GeometryTraceHull(ref Vector2 vec)
         {
-            var xo = new Vector2(vec.X > 0 ? 1 : -1, vec.Y / Math.Abs(vec.X)) * HullSize.X * .5f;
-            var yo = new Vector2(vec.X / Math.Abs(vec.Y), vec.Y > 0 ? 1 : -1) * HullSize.Y * .5f;
-
-            var xf = vec.X != 0 ? GeometryTraceHull(ref xo, -xo) & (Face.West | Face.West) : Face.None;
-            var yf = vec.Y != 0 ? GeometryTraceHull(ref yo, -yo) & (Face.North | Face.South) : Face.None;
-
-            var xyf = GeometryTraceHull(ref vec, Vector2.Zero);
-
-            if (xf == Face.None && yf == Face.None) {
-                return xyf;
-            } else if (xf != Face.None && (yf == Face.None || xo.LengthSquared < yo.LengthSquared)) {
-                if (xo.LengthSquared < vec.LengthSquared) {
-                    vec = xo; return xf;
-                } else {
-                    return xyf;
-                }
-            } else {
-                if (yo.LengthSquared < vec.LengthSquared) {
-                    vec = yo; return yf;
-                } else {
-                    return xyf;
-                }
-            }
-        }
-
-        private Face GeometryTraceHull(ref Vector2 vec, Vector2 offset)
-        {
             Face xf = (vec.X > 0.0f ? Face.East : Face.West);
             Face yf = (vec.Y > 0.0f ? Face.South : Face.North);
 
             float xm = 1.0f, ym = 1.0f;
 
-            var origin = Origin + offset;
+            Vector2 offset = -HullSize / 2.0f;
 
-            Vector2 co = -HullSize / 2.0f;
-
-            float left = origin.X + co.X;
+            float left = Origin.X + offset.X;
             float right = left + HullSize.X;
-            float top = origin.Y + co.Y;
+            float top = Origin.Y + offset.Y;
             float bottom = top + HullSize.Y;
 
             if (vec.X != 0.0f) {
@@ -201,7 +172,7 @@ namespace Zombles.Geometry
 
                 float startX = vec.X > 0.0f ? right : left;
                 int startIX = (int) (vec.X > 0.0f ? Math.Ceiling(startX) : Math.Floor(startX));
-                float y = origin.Y + (startIX - startX) * dydx;
+                float y = Origin.Y + (startIX - startX) * dydx;
 
                 int xa = Math.Sign(vec.X);
                 int wxa = (vec.X > 0.0f ? -1 : 0);
@@ -214,8 +185,8 @@ namespace Zombles.Geometry
                     int wx = (ix + wxa) - (int) Math.Floor((double) (ix + wxa) / City.Width) * City.Width;
                     int sx = (ix + sxa) - (int) Math.Floor((double) (ix + sxa) / City.Width) * City.Width;
 
-                    int minY = (int) Math.Floor(y + co.Y);
-                    int maxY = (int) Math.Floor(y + co.Y + HullSize.Y);
+                    int minY = (int) Math.Floor(y + offset.Y);
+                    int maxY = (int) Math.Floor(y + offset.Y + HullSize.Y);
 
                     for (int iy = minY; iy <= maxY; ++iy) {
                         int wy = iy - (int) Math.Floor((double) iy / City.Height) * City.Height;
@@ -255,7 +226,7 @@ namespace Zombles.Geometry
 
                 float startY = vec.Y > 0.0f ? bottom : top;
                 int startIY = (int) (vec.Y > 0.0f ? Math.Ceiling(startY) : Math.Floor(startY));
-                float x = origin.X + (startIY - startY) * dxdy;
+                float x = Origin.X + (startIY - startY) * dxdy;
 
                 int ya = Math.Sign(vec.Y);
                 int wya = (vec.Y > 0.0f ? -1 : 0);
@@ -268,8 +239,8 @@ namespace Zombles.Geometry
                     int wy = (iy + wya) - (int) Math.Floor((double) (iy + wya) / City.Height) * City.Height;
                     int sy = (iy + sya) - (int) Math.Floor((double) (iy + sya) / City.Height) * City.Height;
 
-                    int minX = (int) Math.Floor(x + co.X);
-                    int maxX = (int) Math.Floor(x + co.X + HullSize.X);
+                    int minX = (int) Math.Floor(x + offset.X);
+                    int maxX = (int) Math.Floor(x + offset.X + HullSize.X);
 
                     for (int ix = minX; ix <= maxX; ++ix) {
                         int wx = ix - (int) Math.Floor((double) ix / City.Width) * City.Width;
@@ -397,24 +368,19 @@ namespace Zombles.Geometry
             Vector2 vec = (Length == 0.0f ? Math.Max(City.Width, City.Height) : Length) * Normal;
 
             Face hitFace = Face.None;
-            if (HitGeometry) {
-                hitFace = HullSize.LengthSquared == 0
-                    ? GeometryTrace(ref vec)
-                    : GeometryTraceHull(ref vec);
-            }
+            if (HitGeometry)
+                hitFace = HullSize.LengthSquared == 0 ? GeometryTrace(ref vec) : GeometryTraceHull(ref vec);
 
             Entity hitEnt = null;
-            if (HitEntities) {
+            if (HitEntities)
                 hitEnt = EntityTrace(ref vec);
-            }
 
-            if (hitEnt != null) {
+            if (hitEnt != null)
                 return new TraceResult(this, vec, hitEnt);
-            } else if (hitFace != Face.None) {
+            else if (hitFace != Face.None)
                 return new TraceResult(this, vec, hitFace);
-            } else {
+            else
                 return new TraceResult(this, vec);
-            }
         }
     }
 
