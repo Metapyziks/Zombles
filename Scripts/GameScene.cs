@@ -234,15 +234,19 @@ namespace Zombles.Scripts
             float y0 = 0.0f;
             float y1 = (Camera.Z < WorldSize / 2) ? -WorldSize : WorldSize;
 
+            float hullSize = .5f;
+
             var trace = new Zombles.Geometry.Trace(City) {
                 Origin = Camera.Position2D,
-                HullSize = new Vector2(1f, 1f),
+                HullSize = new Vector2(hullSize, hullSize),
                 HitGeometry = true,
                 HitEntities = false,
                 Length = 32f,
                 Normal = City.Difference(Camera.Position2D,
                     Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
             }.GetResult();
+
+            var hs = hullSize / 2f;
 
             for (int i = 0; i < 4; ++i) {
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
@@ -256,10 +260,10 @@ namespace Zombles.Scripts
 
                 _traceShader.Begin(true);
                 _traceShader.Render(trace);
-                _traceShader.Render(trace.End.X - 0.5f, trace.End.Y - 0.5f, trace.End.X + 0.5f, trace.End.Y - 0.5f);
-                _traceShader.Render(trace.End.X + 0.5f, trace.End.Y - 0.5f, trace.End.X + 0.5f, trace.End.Y + 0.5f);
-                _traceShader.Render(trace.End.X + 0.5f, trace.End.Y + 0.5f, trace.End.X - 0.5f, trace.End.Y + 0.5f);
-                _traceShader.Render(trace.End.X - 0.5f, trace.End.Y + 0.5f, trace.End.X - 0.5f, trace.End.Y - 0.5f);
+                _traceShader.Render(trace.End.X - hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y - hs);
+                _traceShader.Render(trace.End.X + hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y + hs);
+                _traceShader.Render(trace.End.X + hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y + hs);
+                _traceShader.Render(trace.End.X - hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y - hs);
                 _traceShader.End();
             }
 

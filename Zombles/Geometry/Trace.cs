@@ -192,7 +192,7 @@ namespace Zombles.Geometry
                         int wy = iy - (int) Math.Floor((double) iy / City.Height) * City.Height;
 
                         if (blk == null || wx < blk.X || wy < blk.Y ||
-                                wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
+                            wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
                             blk = City.GetBlock(wx, wy);
 
                         bool hit = false;
@@ -202,14 +202,14 @@ namespace Zombles.Geometry
                         hit = tw.IsWallSolid(xf);
 
                         if (!hit) {
-                            if (sx < blk.X || wy < blk.Y ||
-                                    sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
+                            if (sx < blk.X || wy < blk.Y || sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
                                 blk = City.GetBlock(sx, wy);
 
                             Tile ts = blk[sx, wy];
-
-                            hit = (iy >= minY && ts.IsWallSolid(Face.North) && !tw.IsWallSolid(Face.North)) ||
-                                (iy <= maxY && ts.IsWallSolid(Face.South) && !tw.IsWallSolid(Face.South));
+                            
+                            hit =
+                                (iy > minY && ts.IsWallSolid(Face.North)) ||
+                                (iy < maxY && ts.IsWallSolid(Face.South));
                         }
 
                         if (hit) {
@@ -256,14 +256,14 @@ namespace Zombles.Geometry
                         hit = tw.IsWallSolid(yf);
 
                         if (!hit) {
-                            if (wx < blk.X || sy < blk.Y ||
-                                    wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height)
+                            if (wx < blk.X || sy < blk.Y || wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height)
                                 blk = City.GetBlock(wx, sy);
 
                             Tile ts = blk[wx, sy];
 
-                            hit = (ix >= minX && ts.IsWallSolid(Face.West) && !tw.IsWallSolid(Face.West)) ||
-                                (ix <= maxX && ts.IsWallSolid(Face.East) && !tw.IsWallSolid(Face.East));
+                            hit =
+                                (ix > minX && ts.IsWallSolid(Face.West)) ||
+                                (ix < maxX && ts.IsWallSolid(Face.East));
                         }
 
                         if (hit) {
