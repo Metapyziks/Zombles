@@ -12,13 +12,10 @@ namespace Zombles.Geometry
     {
         private Tile[,] _tiles;
         private List<Entity> _ents;
-
+        
         private int _baseGeomVertCount;
         private int _topGeomVertCount;
         private int _geomVertOffset;
-
-        private int _pathVertCount;
-        private int _pathVertOffset;
 
         public readonly City City;
         public readonly District District;

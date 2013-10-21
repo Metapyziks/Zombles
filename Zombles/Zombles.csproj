@@ -76,6 +76,7 @@
     <Compile Include="Geometry\Generation\StructureGenerator.cs" />
     <Compile Include="Geometry\Generation\CityGenerator.cs" />
     <Compile Include="Geometry\Generation\GenHelper.cs" />
+    <Compile Include="Geometry\Path.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Geometry\Trace.cs" />

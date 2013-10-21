@@ -15,10 +15,37 @@ namespace Zombles.Geometry
 {
     public class City : IEnumerable<Block>, IDisposable
     {
+        private class Intersection
+        {
+            private Dictionary<Intersection, float> _edges;
+
+            public Vector2 Position { get; private set; }
+
+            public float X { get { return Position.X; } }
+            public float Y { get { return Position.Y; } }
+
+            public IEnumerable<KeyValuePair<Intersection, float>> Edges
+            {
+                get { return _edges; }
+            }
+
+            public Intersection(Vector2 pos)
+            {
+                Position = pos;
+            }
+
+            public void Connect(Intersection other)
+            {
+                _edges.Add(other, (other.Position - Position).Length);
+            }
+        }
+
         private const int BloodResolution = 2;
 
         private VertexBuffer _geomVertexBuffer;
         private AlphaTexture2D _bloodMap;
+
+        private Dictionary<Block, List<Intersection>> _intersections;
 
         public District RootDistrict { get; private set; }
 
@@ -104,6 +131,35 @@ namespace Zombles.Geometry
             int iy = (int) pos.Y;
 
             return GetBlock(pos)[ix, iy];
+        }
+
+        public void FindBlockIntersections()
+        {
+            _intersections = new Dictionary<Block, List<Intersection>>();
+
+            foreach (var block in RootDistrict) {
+                var positions = new Vector2[] {
+                    new Vector2(block.District.X, block.District.Y),
+                    new Vector2(block.District.X + block.District.Width, block.District.Y),
+                    new Vector2(block.District.X + block.District.Width, block.District.Y + block.District.Height),
+                    new Vector2(block.District.X, block.District.Y + block.District.Height)
+                };
+
+                var ints = positions.Select(x =>
+                    _intersections.SelectMany(y => y.Value)
+                        .FirstOrDefault(y => y.Position.Equals(x))
+                    ?? new Intersection(x)
+                ).ToList();
+
+                for (int i = 0; i < 4; ++i) {
+                    ints[i].Connect(ints[(i + 1) & 3]);
+                    ints[(i + 1) & 3].Connect(ints[i]);
+                }
+
+                _intersections.Add(block, ints);
+            }
+
+            // TODO: connections
         }
 
         public void UpdateGeometryVertexBuffer()
