@@ -234,7 +234,7 @@ namespace Zombles.Scripts
             float y0 = 0.0f;
             float y1 = (Camera.Z < WorldSize / 2) ? -WorldSize : WorldSize;
 
-            float hullSize = .5f;
+            float hullSize = 1f;
 
             var trace = new Zombles.Geometry.Trace(City) {
                 Origin = Camera.Position2D,
