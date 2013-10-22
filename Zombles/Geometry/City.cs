@@ -18,8 +18,9 @@ namespace Zombles.Geometry
         private class Intersection
         {
             private Dictionary<Intersection, float> _edges;
-
+            
             public Vector2 Position { get; private set; }
+            public int ID { get; private set; }
 
             public float X { get { return Position.X; } }
             public float Y { get { return Position.Y; } }
@@ -29,14 +30,34 @@ namespace Zombles.Geometry
                 get { return _edges; }
             }
 
-            public Intersection(Vector2 pos)
+            public Intersection(Vector2 pos, int id)
             {
                 Position = pos;
+                ID = id;
+
+                _edges = new Dictionary<Intersection, float>();
             }
 
             public void Connect(Intersection other)
             {
-                _edges.Add(other, (other.Position - Position).Length);
+                if (!_edges.ContainsKey(other)) {
+                    _edges.Add(other, (other.Position - Position).Length);
+                }
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Intersection && ((Intersection) obj).Position.Equals(Position);
+            }
+
+            public override int GetHashCode()
+            {
+                return Position.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return Position.ToString();
             }
         }
 
@@ -45,7 +66,7 @@ namespace Zombles.Geometry
         private VertexBuffer _geomVertexBuffer;
         private AlphaTexture2D _bloodMap;
 
-        private Dictionary<Block, List<Intersection>> _intersections;
+        private Dictionary<Block, Intersection[]> _intersections;
 
         public District RootDistrict { get; private set; }
 
@@ -61,7 +82,6 @@ namespace Zombles.Geometry
             RootDistrict = new District(this, 0, 0, width, height);
 
             _geomVertexBuffer = new VertexBuffer(3);
-
             _bloodMap = new AlphaTexture2D(width * BloodResolution, height * BloodResolution);
         }
 
@@ -135,31 +155,38 @@ namespace Zombles.Geometry
 
         public void FindBlockIntersections()
         {
-            _intersections = new Dictionary<Block, List<Intersection>>();
+            _intersections = new Dictionary<Block, Intersection[]>();
 
-            foreach (var block in RootDistrict) {
-                var positions = new Vector2[] {
+            var all = RootDistrict.SelectMany(block =>
+                new Vector2[] {
                     new Vector2(block.District.X, block.District.Y),
                     new Vector2(block.District.X + block.District.Width, block.District.Y),
                     new Vector2(block.District.X + block.District.Width, block.District.Y + block.District.Height),
                     new Vector2(block.District.X, block.District.Y + block.District.Height)
-                };
+                }
+            ).Distinct().Select((x, i) => new Intersection(x, i));
 
-                var ints = positions.Select(x =>
-                    _intersections.SelectMany(y => y.Value)
-                        .FirstOrDefault(y => y.Position.Equals(x))
-                    ?? new Intersection(x)
-                ).ToList();
+            foreach (var block in RootDistrict) {
+                var l = block.District.X;
+                var r = l + block.District.Width;
+                var t = block.District.Y;
+                var b = t + block.District.Height;
 
-                for (int i = 0; i < 4; ++i) {
-                    ints[i].Connect(ints[(i + 1) & 3]);
-                    ints[(i + 1) & 3].Connect(ints[i]);
+                var ints = all.Where(y => y.X >= l && y.X <= r && y.Y >= t && y.Y <= b).ToArray();
+
+                foreach (var first in ints) {
+                    foreach (var secnd in ints) {
+                        if (first.Equals(secnd)) continue;
+
+                        if (first.X == secnd.X || first.Y == secnd.Y) {
+                            first.Connect(secnd);
+                            secnd.Connect(first);
+                        }
+                    }
                 }
 
                 _intersections.Add(block, ints);
             }
-
-            // TODO: connections
         }
 
         public void UpdateGeometryVertexBuffer()
@@ -188,6 +215,15 @@ namespace Zombles.Geometry
         public void RenderEntities(FlatEntityShader shader)
         {
             RootDistrict.RenderEntities(shader);
+        }
+
+        public void RenderIntersectionNetwork(DebugTraceShader shader)
+        {
+            foreach (var inter in _intersections.Values.SelectMany(x => x)) {
+                foreach (var other in inter.Edges.Where(x => x.Key.ID < inter.ID).Select(x => x.Key)) {
+                    shader.Render(inter.X, inter.Y, other.X, other.Y);
+                }
+            }
         }
 
         public IEnumerator<Block> GetEnumerator()

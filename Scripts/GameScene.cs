@@ -259,6 +259,7 @@ namespace Zombles.Scripts
                 FlatEntShader.End();
 
                 _traceShader.Begin(true);
+                City.RenderIntersectionNetwork(_traceShader);
                 _traceShader.Render(trace);
                 _traceShader.Render(trace.End.X - hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y - hs);
                 _traceShader.Render(trace.End.X + hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y + hs);

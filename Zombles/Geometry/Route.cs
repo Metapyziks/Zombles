@@ -7,11 +7,11 @@ using OpenTK;
 
 namespace Zombles.Geometry
 {
-    public class Path
+    public class Route
     {
-        public static Path Find(City city, Vector2 origin, Vector2 dest)
+        public static Route Find(City city, Vector2 origin, Vector2 dest)
         {
-
+            throw new NotImplementedException();
         }
     }
 }
