@@ -39,16 +39,16 @@ namespace Zombles.Graphics
             ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
             vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
             vert.AddUniform(ShaderVarType.Vec2, "world_offset");
-            vert.AddAttribute(ShaderVarType.Vec2, "in_vertex");
+            vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
             vert.Logic = @"
-                void main( void )
+                void main(void)
                 {
-                    const float yscale = 2.0 / sqrt( 3.0 );
+                    const float yscale = 2.0 / sqrt(3.0);
 
                     gl_Position = vp_matrix * vec4(
                         in_vertex.x + world_offset.x,
-                        0.5 * yscale,
-                        in_vertex.y + world_offset.y,
+                        in_vertex.y * yscale,
+                        in_vertex.z + world_offset.y,
                         1.0
                     );
                 }
@@ -58,7 +58,7 @@ namespace Zombles.Graphics
             frag.AddUniform(ShaderVarType.Vec4, "colour");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
-                void main( void )
+                void main(void)
                 {
                     out_frag_colour = colour;
                 }
@@ -76,7 +76,7 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute("in_vertex", 2);
+            AddAttribute("in_vertex", 3);
 
             _colourLoc = GL.GetUniformLocation(Program, "colour");
             Colour = new Color4(255, 255, 255, 127);
@@ -94,14 +94,31 @@ namespace Zombles.Graphics
 
         public void Render(TraceResult trace)
         {
-            GL.VertexAttrib2(Attributes[0].Location, trace.Origin);
-            GL.VertexAttrib2(Attributes[0].Location, trace.Origin + trace.Vector);
+            Render(trace.Origin, trace.Origin + trace.Vector);
         }
 
         public void Render(float x0, float y0, float x1, float y1)
         {
-            GL.VertexAttrib2(Attributes[0].Location, x0, y0);
-            GL.VertexAttrib2(Attributes[0].Location, x1, y1);
+            GL.VertexAttrib3(Attributes[0].Location, x0, .5f, y0);
+            GL.VertexAttrib3(Attributes[0].Location, x1, .5f, y1);
+        }
+
+        public void Render(Vector2 v0, Vector2 v1)
+        {
+            GL.VertexAttrib3(Attributes[0].Location, v0.X, .5f, v0.Y);
+            GL.VertexAttrib3(Attributes[0].Location, v1.X, .5f, v1.Y);
+        }
+
+        public void Render(float x0, float y0, float z0, float x1, float y1, float z1)
+        {
+            GL.VertexAttrib3(Attributes[0].Location, x0, y0, z0);
+            GL.VertexAttrib3(Attributes[0].Location, x1, y1, z1);
+        }
+
+        public void Render(Vector3 v0, Vector3 v1)
+        {
+            GL.VertexAttrib3(Attributes[0].Location, v0.X, v0.Y, v0.Z);
+            GL.VertexAttrib3(Attributes[0].Location, v1.X, v1.Y, v1.Z);
         }
 
         protected override void OnEnd()

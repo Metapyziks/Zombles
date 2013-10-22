@@ -178,7 +178,8 @@ namespace Zombles.Geometry
                     foreach (var secnd in ints) {
                         if (first.Equals(secnd)) continue;
 
-                        if (first.X == secnd.X || first.Y == secnd.Y) {
+                        if ((first.X == secnd.X && (first.X == l || first.X == r)) || 
+                            (first.Y == secnd.Y && (first.Y == t || first.Y == b))) {
                             first.Connect(secnd);
                             secnd.Connect(first);
                         }
@@ -221,7 +222,7 @@ namespace Zombles.Geometry
         {
             foreach (var inter in _intersections.Values.SelectMany(x => x)) {
                 foreach (var other in inter.Edges.Where(x => x.Key.ID < inter.ID).Select(x => x.Key)) {
-                    shader.Render(inter.X, inter.Y, other.X, other.Y);
+                    shader.Render(inter.X, 1f, inter.Y, other.X, 0f, other.Y);
                 }
             }
         }
