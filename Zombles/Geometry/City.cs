@@ -17,7 +17,7 @@ namespace Zombles.Geometry
     {
         private class Intersection
         {
-            private Dictionary<Intersection, float> _edges;
+            private Dictionary<Intersection, Vector2> _edges;
             
             public Vector2 Position { get; private set; }
             public int ID { get; private set; }
@@ -25,7 +25,7 @@ namespace Zombles.Geometry
             public float X { get { return Position.X; } }
             public float Y { get { return Position.Y; } }
 
-            public IEnumerable<KeyValuePair<Intersection, float>> Edges
+            public IEnumerable<KeyValuePair<Intersection, Vector2>> Edges
             {
                 get { return _edges; }
             }
@@ -35,13 +35,13 @@ namespace Zombles.Geometry
                 Position = pos;
                 ID = id;
 
-                _edges = new Dictionary<Intersection, float>();
+                _edges = new Dictionary<Intersection, Vector2>();
             }
 
-            public void Connect(Intersection other)
+            public void Connect(City city, Intersection other)
             {
                 if (!_edges.ContainsKey(other)) {
-                    _edges.Add(other, (other.Position - Position).Length);
+                    _edges.Add(other, city.Difference(Position, other.Position));
                 }
             }
 
@@ -159,29 +159,29 @@ namespace Zombles.Geometry
 
             var all = RootDistrict.SelectMany(block =>
                 new Vector2[] {
-                    new Vector2(block.District.X, block.District.Y),
-                    new Vector2(block.District.X + block.District.Width, block.District.Y),
-                    new Vector2(block.District.X + block.District.Width, block.District.Y + block.District.Height),
-                    new Vector2(block.District.X, block.District.Y + block.District.Height)
+                    Wrap(new Vector2(block.District.X, block.District.Y)),
+                    Wrap(new Vector2(block.District.X + block.District.Width, block.District.Y)),
+                    Wrap(new Vector2(block.District.X + block.District.Width, block.District.Y + block.District.Height)),
+                    Wrap(new Vector2(block.District.X, block.District.Y + block.District.Height))
                 }
             ).Distinct().Select((x, i) => new Intersection(x, i));
 
             foreach (var block in RootDistrict) {
-                var l = block.District.X;
-                var r = l + block.District.Width;
-                var t = block.District.Y;
-                var b = t + block.District.Height;
+                var tl = new Vector2(block.District.X, block.District.Y);
+                var br = tl + new Vector2(block.District.Width, block.District.Height);
+                var brw = Wrap(br);
 
-                var ints = all.Where(y => y.X >= l && y.X <= r && y.Y >= t && y.Y <= b).ToArray();
+                var ints = all.Where(y => ((y.X >= tl.X && y.X <= br.X) || y.X == brw.X)
+                    && ((y.Y >= tl.Y && y.Y <= br.Y) || y.Y == brw.Y)).ToArray();
 
                 foreach (var first in ints) {
                     foreach (var secnd in ints) {
                         if (first.Equals(secnd)) continue;
 
-                        if ((first.X == secnd.X && (first.X == l || first.X == r)) || 
-                            (first.Y == secnd.Y && (first.Y == t || first.Y == b))) {
-                            first.Connect(secnd);
-                            secnd.Connect(first);
+                        if ((first.X == secnd.X && (first.X == tl.X || first.X == brw.X)) || 
+                            (first.Y == secnd.Y && (first.Y == tl.Y || first.Y == brw.Y))) {
+                            first.Connect(this, secnd);
+                            secnd.Connect(this, first);
                         }
                     }
                 }
@@ -220,9 +220,11 @@ namespace Zombles.Geometry
 
         public void RenderIntersectionNetwork(DebugTraceShader shader)
         {
+            var denom = _intersections.Count / 4f;
             foreach (var inter in _intersections.Values.SelectMany(x => x)) {
-                foreach (var other in inter.Edges.Where(x => x.Key.ID < inter.ID).Select(x => x.Key)) {
-                    shader.Render(inter.X, 1f, inter.Y, other.X, 0f, other.Y);
+                foreach (var edge in inter.Edges.Where(x => x.Key.ID < inter.ID)) {
+                    shader.Render(inter.X, inter.ID / denom, inter.Y,
+                        inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
                 }
             }
         }

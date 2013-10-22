@@ -277,10 +277,11 @@ namespace Zombles.Scripts
 
         public override void OnMouseWheelChanged(MouseWheelEventArgs e)
         {
-            if (e.DeltaPrecise >= 0.0f)
+            if (e.DeltaPrecise >= 0.0f) {
                 Camera.Scale *= 1.0f + (e.DeltaPrecise / 4.0f);
-            else
+            } else {
                 Camera.Scale /= 1.0f - (e.DeltaPrecise / 4.0f);
+            }
 
             _camMoveSpeed = 64.0f / Camera.Scale;
         }
