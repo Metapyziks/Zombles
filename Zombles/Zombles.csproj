@@ -76,6 +76,7 @@
     <Compile Include="Geometry\Generation\StructureGenerator.cs" />
     <Compile Include="Geometry\Generation\CityGenerator.cs" />
     <Compile Include="Geometry\Generation\GenHelper.cs" />
+    <Compile Include="Geometry\Intersection.cs" />
     <Compile Include="Geometry\Route.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
@@ -106,7 +107,7 @@
     <Compile Include="UI\UITextBox.cs" />
     <Compile Include="UI\UIWindow.cs" />
     <Compile Include="UI\UIWindowCloseButton.cs" />
-    <Compile Include="ZomblesGame.cs" />
+    <Compile Include="MainWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenTKTK\OpenTKTK.csproj">

@@ -33,7 +33,7 @@ namespace Zombles.Scripts.Entities
         {
             base.OnSpawn();
 
-            _lastSearch = ZomblesGame.Time - Tools.Random.NextDouble() * TargetSearchInterval;
+            _lastSearch = MainWindow.Time - Tools.Random.NextDouble() * TargetSearchInterval;
             _curTarget = null;
         }
 
@@ -42,7 +42,7 @@ namespace Zombles.Scripts.Entities
             if (!Human.Health.IsAlive)
                 return;
 
-            if (ZomblesGame.Time - _lastSearch > TargetSearchInterval)
+            if (MainWindow.Time - _lastSearch > TargetSearchInterval)
                 FindTarget();
 
             if (_curTarget != null) {
@@ -54,12 +54,12 @@ namespace Zombles.Scripts.Entities
                     _curTarget = null;
                 else {
                     _lastSeenPos = _curTarget.Position2D;
-                    _lastSeen = ZomblesGame.Time;
+                    _lastSeen = MainWindow.Time;
 
-                    if (ZomblesGame.Time - _lastAttack > AttackInterval) {
+                    if (MainWindow.Time - _lastAttack > AttackInterval) {
                         if (diff.LengthSquared < 0.75f) {
                             Human.Attack(diff);
-                            _lastAttack = ZomblesGame.Time;
+                            _lastAttack = MainWindow.Time;
                             Human.StopMoving();
                         } else {
                             Human.StartMoving(diff);
@@ -67,7 +67,7 @@ namespace Zombles.Scripts.Entities
                     }
                 }
             } else {
-                if ((ZomblesGame.Time - _lastSeen) > 10.0 ||
+                if ((MainWindow.Time - _lastSeen) > 10.0 ||
                     City.Difference(Position2D, _lastSeenPos).LengthSquared <= 1.0f) {
                     int attempts = 0;
                     while (attempts++ < 16) {
@@ -90,9 +90,9 @@ namespace Zombles.Scripts.Entities
                     }
 
                     if (attempts == 16)
-                        _lastSeen = ZomblesGame.Time + Tools.Random.NextDouble() * 1.0 + 9.0;
+                        _lastSeen = MainWindow.Time + Tools.Random.NextDouble() * 1.0 + 9.0;
                     else
-                        _lastSeen = ZomblesGame.Time;
+                        _lastSeen = MainWindow.Time;
                 }
 
                 Human.StartMoving(City.Difference(Position2D, _lastSeenPos));
@@ -131,7 +131,7 @@ namespace Zombles.Scripts.Entities
             }
 
             _curTarget = closest;
-            _lastSearch = ZomblesGame.Time;
+            _lastSearch = MainWindow.Time;
         }
     }
 }

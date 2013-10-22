@@ -8,7 +8,7 @@ namespace Zombles
         [STAThread]
         public static void Main(string[] args)
         {
-            ZomblesGame game = new ZomblesGame();
+            MainWindow game = new MainWindow();
             Plugin.SetGame(game);
             game.Run();
             game.Dispose();

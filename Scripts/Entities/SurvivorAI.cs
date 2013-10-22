@@ -27,7 +27,7 @@ namespace Zombles.Scripts.Entities
             base.OnSpawn();
 
             _fleePos = new Vector2();
-            _lastSearch = ZomblesGame.Time - Tools.Random.NextDouble() * TargetSearchInterval;
+            _lastSearch = MainWindow.Time - Tools.Random.NextDouble() * TargetSearchInterval;
         }
 
         public override void OnThink( double dt )
@@ -35,9 +35,9 @@ namespace Zombles.Scripts.Entities
             if ( !Human.Health.IsAlive )
                 return;
 
-            if ( ZomblesGame.Time - _lastSearch > TargetSearchInterval )
+            if ( MainWindow.Time - _lastSearch > TargetSearchInterval )
             {
-                _lastSearch = ZomblesGame.Time + Tools.Random.NextSingle() * TargetSearchInterval;
+                _lastSearch = MainWindow.Time + Tools.Random.NextSingle() * TargetSearchInterval;
 
                 _fleePos = new Vector2();
 

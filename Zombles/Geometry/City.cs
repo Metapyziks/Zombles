@@ -15,52 +15,6 @@ namespace Zombles.Geometry
 {
     public class City : IEnumerable<Block>, IDisposable
     {
-        private class Intersection
-        {
-            private Dictionary<Intersection, Vector2> _edges;
-            
-            public Vector2 Position { get; private set; }
-            public int ID { get; private set; }
-
-            public float X { get { return Position.X; } }
-            public float Y { get { return Position.Y; } }
-
-            public IEnumerable<KeyValuePair<Intersection, Vector2>> Edges
-            {
-                get { return _edges; }
-            }
-
-            public Intersection(Vector2 pos, int id)
-            {
-                Position = pos;
-                ID = id;
-
-                _edges = new Dictionary<Intersection, Vector2>();
-            }
-
-            public void Connect(City city, Intersection other)
-            {
-                if (!_edges.ContainsKey(other)) {
-                    _edges.Add(other, city.Difference(Position, other.Position));
-                }
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is Intersection && ((Intersection) obj).Position.Equals(Position);
-            }
-
-            public override int GetHashCode()
-            {
-                return Position.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return Position.ToString();
-            }
-        }
-
         private const int BloodResolution = 2;
 
         private VertexBuffer _geomVertexBuffer;
@@ -76,6 +30,7 @@ namespace Zombles.Geometry
         public int Depth { get { return RootDistrict.Depth; } }
 
         public IEnumerable<Entity> Entities { get { return this.SelectMany(x => x); } }
+        public IEnumerable<Intersection> Intersections { get { return _intersections.SelectMany(x => x.Value); } }
 
         public City(int width, int height)
         {
@@ -175,14 +130,27 @@ namespace Zombles.Geometry
                     && ((y.Y >= tl.Y && y.Y <= br.Y) || y.Y == brw.Y)).ToArray();
 
                 foreach (var first in ints) {
-                    foreach (var secnd in ints) {
-                        if (first.Equals(secnd)) continue;
+                    Action<Tuple<Intersection, Vector2>> join = (secnd) => {
+                        if (secnd == null) return;
+                        first.Connect(secnd.Item1, secnd.Item2);
+                        secnd.Item1.Connect(first, -secnd.Item2);
+                    };
 
-                        if ((first.X == secnd.X && (first.X == tl.X || first.X == brw.X)) || 
-                            (first.Y == secnd.Y && (first.Y == tl.Y || first.Y == brw.Y))) {
-                            first.Connect(this, secnd);
-                            secnd.Connect(this, first);
-                        }
+                    Func<IEnumerable<Intersection>, IEnumerable<Tuple<Intersection, Vector2>>> filter =
+                        list => list
+                            .Select(secnd => Tuple.Create(secnd, Difference(first.Position, secnd.Position)))
+                            .OrderBy(x => x.Item2.LengthSquared);
+
+                    if (first.X == tl.X || first.X == brw.X) {
+                        var horz = filter(ints.Where(secnd => secnd != first && first.X == secnd.X));
+                        join(horz.FirstOrDefault(x => x.Item2.Y < 0));
+                        join(horz.FirstOrDefault(x => x.Item2.Y > 0));
+                    }
+
+                    if (first.Y == tl.Y || first.Y == brw.Y) {
+                        var vert = filter(ints.Where(secnd => secnd != first && first.Y == secnd.Y));
+                        join(vert.FirstOrDefault(x => x.Item2.X < 0));
+                        join(vert.FirstOrDefault(x => x.Item2.X > 0));
                     }
                 }
 
@@ -209,22 +177,28 @@ namespace Zombles.Geometry
         {
             shader.SetTexture("bloodmap", _bloodMap);
             _geomVertexBuffer.Begin(shader);
-            RootDistrict.RenderGeometry(_geomVertexBuffer, shader, baseOnly);
+            foreach (var block in RootDistrict.GetVisibleBlocks(shader.Camera)) {
+                block.RenderGeometry(_geomVertexBuffer, shader, baseOnly);
+            }
             _geomVertexBuffer.End();
         }
 
         public void RenderEntities(FlatEntityShader shader)
         {
-            RootDistrict.RenderEntities(shader);
+            foreach (var block in RootDistrict.GetVisibleBlocks(shader.Camera)) {
+                block.RenderEntities(shader);
+            }
         }
 
         public void RenderIntersectionNetwork(DebugTraceShader shader)
         {
             var denom = _intersections.Count / 4f;
-            foreach (var inter in _intersections.Values.SelectMany(x => x)) {
-                foreach (var edge in inter.Edges.Where(x => x.Key.ID < inter.ID)) {
-                    shader.Render(inter.X, inter.ID / denom, inter.Y,
-                        inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
+            foreach (var block in RootDistrict.GetVisibleBlocks(shader.Camera)) {
+                foreach (var inter in _intersections[block]) {
+                    foreach (var edge in inter.Edges) {
+                        shader.Render(inter.X, inter.ID / denom, inter.Y,
+                            inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
+                    }
                 }
             }
         }

@@ -80,17 +80,17 @@ namespace Zombles.Scripts.Entities
                 Health.Revive();
             }
 
-            _turnTime = ZomblesGame.Time;
-            _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble() * 0.125;
+            _turnTime = MainWindow.Time;
+            _nextBleed = MainWindow.Time + Tools.Random.NextDouble() * 0.125;
         }
 
         public override void OnThink(double dt)
         {
             base.OnThink(dt);
 
-            if (ZomblesGame.Time - _turnTime < _bleedTime && ZomblesGame.Time >= _nextBleed) {
+            if (MainWindow.Time - _turnTime < _bleedTime && MainWindow.Time >= _nextBleed) {
                 City.SplashBlood(Position2D, 0.5f);
-                _nextBleed = ZomblesGame.Time + Tools.Random.NextDouble();
+                _nextBleed = MainWindow.Time + Tools.Random.NextDouble();
             }
         }
     }

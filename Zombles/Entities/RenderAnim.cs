@@ -39,7 +39,7 @@ namespace Zombles.Entities
 
         public void Start( EntityAnim anim, EntityAnim nextAnim )
         {
-            _startTime = ZomblesGame.Time;
+            _startTime = MainWindow.Time;
             CurAnim = anim;
             NextAnim = nextAnim;
             Playing = true;
@@ -60,7 +60,7 @@ namespace Zombles.Entities
             int frame = 0;
             if ( Playing )
             {
-                frame = (int) ( ( ZomblesGame.Time - _startTime ) *
+                frame = (int) ( ( MainWindow.Time - _startTime ) *
                     Speed * CurAnim.Frequency * CurAnim.FrameCount );
 
                 if ( frame >= CurAnim.FrameCount )
@@ -74,7 +74,7 @@ namespace Zombles.Entities
                         return;
                     }
                     
-                    frame = (int) ( ( ZomblesGame.Time - _startTime ) *
+                    frame = (int) ( ( MainWindow.Time - _startTime ) *
                         Speed * CurAnim.Frequency * CurAnim.FrameCount ) % CurAnim.FrameCount;
                 }
             }

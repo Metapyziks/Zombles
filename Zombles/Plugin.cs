@@ -25,9 +25,9 @@ namespace Zombles
         private static List<Type> _sPluginTypeList = new List<Type>();
         private static Dictionary<String, Plugin> _sRegistered;
 
-        protected static ZomblesGame Game { get; private set; }
+        protected static MainWindow Game { get; private set; }
 
-        internal static void SetGame( ZomblesGame game )
+        internal static void SetGame( MainWindow game )
         {
             Game = game;
         }

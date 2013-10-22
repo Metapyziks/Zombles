@@ -18,10 +18,10 @@ namespace Zombles
 
         internal bool FirstTime;
 
-        public ZomblesGame GameWindow { get; private set; }
+        public MainWindow GameWindow { get; private set; }
         public SpriteShader SpriteShader
         {
-            get { return ZomblesGame.SpriteShader; }
+            get { return MainWindow.SpriteShader; }
         }
 
         public int Width
@@ -41,7 +41,7 @@ namespace Zombles
 
         public bool IsCurrent
         {
-            get { return ZomblesGame.CurrentScene == this; }
+            get { return MainWindow.CurrentScene == this; }
         }
 
         public KeyboardDevice Keyboard
@@ -68,7 +68,7 @@ namespace Zombles
             set { GameWindow.CursorVisible = value; }
         }
 
-        public Scene(ZomblesGame gameWindow)
+        public Scene(MainWindow gameWindow)
         {
             GameWindow = gameWindow;
             _uiRoot = new UIObject(new Vector2(Width, Height));

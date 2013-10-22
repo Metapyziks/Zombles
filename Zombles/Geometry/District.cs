@@ -177,26 +177,22 @@ namespace Zombles.Geometry
                 Block.PostThink();
         }
 
-        public void RenderGeometry(VertexBuffer vb, GeometryShader shader, bool baseOnly = false)
+        public IEnumerable<Block> GetVisibleBlocks(OrthoCamera camera)
         {
             if (IsBranch) {
-                if (ChildA.Bounds.IntersectsWith(shader.Camera.ViewBounds))
-                    ChildA.RenderGeometry(vb, shader, baseOnly);
-                if (ChildB.Bounds.IntersectsWith(shader.Camera.ViewBounds))
-                    ChildB.RenderGeometry(vb, shader, baseOnly);
-            } else if (IsLeaf)
-                Block.RenderGeometry(vb, shader, baseOnly);
-        }
-
-        public void RenderEntities(FlatEntityShader shader)
-        {
-            if (IsBranch) {
-                if (ChildA.Bounds.IntersectsWith(shader.Camera.ViewBounds))
-                    ChildA.RenderEntities(shader);
-                if (ChildB.Bounds.IntersectsWith(shader.Camera.ViewBounds))
-                    ChildB.RenderEntities(shader);
-            } else if (IsLeaf)
-                Block.RenderEntities(shader);
+                if (ChildA.Bounds.IntersectsWith(camera.ViewBounds)) {
+                    foreach (var block in ChildA.GetVisibleBlocks(camera)) {
+                        yield return block;
+                    }
+                }
+                if (ChildB.Bounds.IntersectsWith(camera.ViewBounds)) {
+                    foreach (var block in ChildB.GetVisibleBlocks(camera)) {
+                        yield return block;
+                    }
+                }
+            } else if (IsLeaf) {
+                yield return Block;
+            }
         }
 
         public IEnumerator<Block> GetEnumerator()

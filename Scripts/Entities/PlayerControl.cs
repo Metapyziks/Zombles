@@ -21,7 +21,7 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink( double dt )
         {
-            GameScene scene = ZomblesGame.CurrentScene as GameScene;
+            GameScene scene = MainWindow.CurrentScene as GameScene;
             Survivor surv = Human as Survivor;
 
             if ( scene.Mouse[MouseButton.Left] )

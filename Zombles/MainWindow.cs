@@ -19,7 +19,7 @@ using OpenTKTK.Shaders;
 
 namespace Zombles
 {
-    public class ZomblesGame : GameWindow
+    public class MainWindow : GameWindow
     {
         public const double ThinkFrequency = 60.0;
         public const double ThinkPeriod = 1.0 / ThinkFrequency;
@@ -37,11 +37,11 @@ namespace Zombles
             get { return _timer.Elapsed.TotalSeconds; }
         }
 
-        public ZomblesGame()
+        public MainWindow()
             : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16, 0), "Zombles")
         {
-            VSync = VSyncMode.On;
-            Context.SwapInterval = 1;
+            // VSync = VSyncMode.On;
+            // Context.SwapInterval = 1;
 
             WindowBorder = WindowBorder.Fixed;
 
@@ -60,9 +60,7 @@ namespace Zombles
 
             var resourceDirs = new[] {
                 dataPath,
-#if DEBUG
                 Path.Combine(dataPath, "..", "..", "..", "Content")
-#endif
             };
 
             var archives = File.ReadAllLines(loadorderpath).Where(x => x.Length > 0);

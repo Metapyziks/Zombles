@@ -66,7 +66,7 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public City City { get; private set; }
 
-        public GameScene(ZomblesGame gameWindow)
+        public GameScene(MainWindow gameWindow)
             : base(gameWindow)
         {
             _hideTop = false;
@@ -259,7 +259,7 @@ namespace Zombles.Scripts
                 FlatEntShader.End();
 
                 _traceShader.Begin(true);
-                City.RenderIntersectionNetwork(_traceShader);
+                // City.RenderIntersectionNetwork(_traceShader);
                 _traceShader.Render(trace);
                 _traceShader.Render(trace.End.X - hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y - hs);
                 _traceShader.Render(trace.End.X + hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y + hs);

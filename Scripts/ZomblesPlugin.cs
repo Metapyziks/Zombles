@@ -33,12 +33,12 @@ namespace Zombles.Scripts
                 ent.AddComponent<ZombieAI>();
             });
 
-            ZomblesGame.SetScene(new GameScene(Game));
+            MainWindow.SetScene(new GameScene(Game));
         }
 
         protected override void OnCityGenerated()
         {
-            GameScene scene = ZomblesGame.CurrentScene as GameScene;
+            GameScene scene = MainWindow.CurrentScene as GameScene;
             City city = scene.City;
             Random rand = Tools.Random;
 
