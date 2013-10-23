@@ -36,6 +36,10 @@ namespace Zombles.Entities
                     _curProgress = _curRoute.GetEnumerator();
                     _curWaypoint = _curRoute.Origin;
                     _ended = !_curProgress.MoveNext();
+
+                    if (!_ended) {
+                        ScanAhead();
+                    }
                 }
             }
         }
@@ -86,12 +90,15 @@ namespace Zombles.Entities
 
         private void MoveNext()
         {
+            if (_ended) {
+                CurrentRoute = null;
+                return;
+            }
+
             _curWaypoint = _curProgress.Current;
             _ended = !_curProgress.MoveNext();
 
-            if (_ended) {
-                CurrentRoute = null;
-            } else {
+            if (!_ended) {
                 ScanAhead();
             }
         }

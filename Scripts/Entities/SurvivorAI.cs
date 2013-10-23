@@ -48,8 +48,12 @@ namespace Zombles.Scripts.Entities
                 return;
             }
 
-            if (RouteNavigation != null && RouteNavigation.HasPath) {
-                Human.StartMoving(City.Difference(Position2D, RouteNavigation.NextWaypoint));
+            if (RouteNavigation != null) {
+                if (RouteNavigation.HasPath) {
+                    Human.StartMoving(City.Difference(Position2D, RouteNavigation.NextWaypoint));
+                } else {
+                    Human.StopMoving();
+                }
             } else if (MainWindow.Time - _lastSearch > TargetSearchInterval) {
                 _lastSearch = MainWindow.Time + Tools.Random.NextSingle() * TargetSearchInterval;
 
