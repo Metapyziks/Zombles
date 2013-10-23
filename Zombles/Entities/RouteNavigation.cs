@@ -22,7 +22,7 @@ namespace Zombles.Entities
             while (_sQueue.Count > 0) {
                 var first = _sQueue.Dequeue();
                 if (first.HasRoute && !first.HasPath) {
-                    first._curPath = first._curRoute.ToList().GetEnumerator();
+                    first._curPath = first._curRoute.GetEnumerator();
                     first._curWaypoint = first._curRoute.Origin;
                     first._ended = !first._curPath.MoveNext();
 
