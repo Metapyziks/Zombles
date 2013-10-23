@@ -10,16 +10,47 @@ namespace Zombles.Entities
 {
     public class RouteNavigation : Component
     {
+        private static double MaxRouteFindingTime = 1.0 / 120.0;
+
+        private static Queue<RouteNavigation> _sQueue = new Queue<RouteNavigation>();
+
+        public static void Think(double dt)
+        {
+            var timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+
+            while (_sQueue.Count > 0) {
+                var first = _sQueue.Dequeue();
+                if (first.HasRoute && !first.HasPath) {
+                    first._curPath = first._curRoute.ToList().GetEnumerator();
+                    first._curWaypoint = first._curRoute.Origin;
+                    first._ended = !first._curPath.MoveNext();
+
+                    if (!first._ended) {
+                        first.ScanAhead();
+                    }
+                }
+
+                if (timer.Elapsed.TotalSeconds >= MaxRouteFindingTime)
+                    break;
+            }
+        }
+
         private Route _curRoute;
-        private IEnumerator<Vector2> _curProgress;
+        private IEnumerator<Vector2> _curPath;
         private Vector2 _curWaypoint;
         private bool _ended;
 
         private double _lastScan;
 
-        public bool HasPath
+        public bool HasRoute
         {
             get { return _curRoute != null; }
+        }
+
+        public bool HasPath
+        {
+            get { return _curPath != null; }
         }
 
         public Route CurrentRoute
@@ -31,15 +62,10 @@ namespace Zombles.Entities
             set
             {
                 _curRoute = value;
+                _curPath = null;
 
-                if (_curRoute != null) {
-                    _curProgress = _curRoute.GetEnumerator();
-                    _curWaypoint = _curRoute.Origin;
-                    _ended = !_curProgress.MoveNext();
-
-                    if (!_ended) {
-                        ScanAhead();
-                    }
+                if (_curRoute != null && !_sQueue.Contains(this)) {
+                    _sQueue.Enqueue(this);
                 }
             }
         }
@@ -48,7 +74,7 @@ namespace Zombles.Entities
         {
             get
             {
-                if (CurrentRoute == null)
+                if (!HasPath)
                     return Entity.Position2D;
 
                 return CurrentRoute.Target;
@@ -59,7 +85,7 @@ namespace Zombles.Entities
         {
             get
             {
-                if (CurrentRoute == null)
+                if (!HasPath)
                     return Entity.Position2D;
 
                 if (!_ended)
@@ -79,7 +105,7 @@ namespace Zombles.Entities
 
         public override void OnThink(double dt)
         {
-            if (CurrentRoute != null) {
+            if (HasPath) {
                 if ((NextWaypoint - Position2D).LengthSquared <= 0.25f) {
                     MoveNext();
                 } else if ((MainWindow.Time - _lastScan) >= 1.0) {
@@ -92,11 +118,12 @@ namespace Zombles.Entities
         {
             if (_ended) {
                 CurrentRoute = null;
+                _curPath = null;
                 return;
             }
 
-            _curWaypoint = _curProgress.Current;
-            _ended = !_curProgress.MoveNext();
+            _curWaypoint = _curPath.Current;
+            _ended = !_curPath.MoveNext();
 
             if (!_ended) {
                 ScanAhead();
@@ -111,7 +138,7 @@ namespace Zombles.Entities
 
             Trace trace = new Trace(City) {
                 Origin = Position2D,
-                Target = _curProgress.Current,
+                Target = _curPath.Current,
                 HitEntities = false,
                 HitGeometry = true,
                 HullSize = new Vector2(0.5f, 0.5f)

@@ -16,6 +16,7 @@ using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 using System.Reflection;
 using OpenTKTK.Shaders;
+using Zombles.Entities;
 
 namespace Zombles
 {
@@ -128,6 +129,7 @@ namespace Zombles
             if (CurrentScene != null)
                 CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
 
+            RouteNavigation.Think(ThinkPeriod);
             Plugin.Think(ThinkPeriod);
         }
 
