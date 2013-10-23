@@ -199,9 +199,6 @@ namespace Zombles.Geometry
                         if (edge.Key.ID < inter.ID) {
                             shader.Render(inter.X, inter.ID / denom, inter.Y,
                                 inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
-                        } else {
-                            shader.Render(inter.X, inter.ID / denom + .5f, inter.Y,
-                                inter.X + edge.Value.X, edge.Key.ID / denom + .5f, inter.Y + edge.Value.Y);
                         }
                     }
                 }

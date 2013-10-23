@@ -58,7 +58,7 @@ namespace Zombles.Geometry
             Func<City, T, IEnumerable<Tuple<T, float>>> adjFunc, Func<T, Vector2> vecFunc)
         {
             var open = new SortedSet<NodeInfo<T>>(Comparer<NodeInfo<T>>.Create((a, b) =>
-                b.Total > a.Total ? 1 : b.Total == a.Total ? 0 : -1));
+                b.Total > a.Total ? -1 : b.Total == a.Total ? 0 : 1));
             var clsd = new HashSet<NodeInfo<T>>();
 
             var targPos = vecFunc(target);
@@ -69,12 +69,7 @@ namespace Zombles.Geometry
             open.Add(first);
 
             while (open.Count > 0) {
-                NodeInfo<T> cur = null;
-                foreach (var node in open) {
-                    if (cur == null || node.Total < cur.Total) cur = node;
-                }
-
-                open.Remove(cur);
+                NodeInfo<T> cur = open.First();
 
                 if (cur.Node.Equals(target)) {
                     var path = new T[cur.Depth + 1];
@@ -84,6 +79,9 @@ namespace Zombles.Geometry
                     }
                     return path;
                 }
+
+                open.Remove(cur);
+                clsd.Add(cur);
 
                 foreach (var adj in adjFunc(city, cur.Node)) {
                     var node = new NodeInfo<T>(adj.Item1, vecFunc(adj.Item1), cur, adj.Item2);
@@ -109,8 +107,6 @@ namespace Zombles.Geometry
 
                     open.Add(node);
                 }
-
-                clsd.Add(cur);
             }
 
             return null;
@@ -171,16 +167,17 @@ namespace Zombles.Geometry
             {
                 for (int i = 0; i < 4; ++i) {
                     var face = (Face) (1 << i);
+                    var othr = city.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal());
 
-                    if (tile.IsWallSolid(face)) {
-                        yield return Tuple.Create(city.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal()), 1f);
-                    }
+                    //if (!tile.IsWallSolid(face)) {
+                        yield return Tuple.Create(othr, 1f);
+                    //}
                 }
             }
 
             private static Vector2 VectorFunc(Tile tile)
             {
-                return new Vector2(tile.X, tile.Y);
+                return new Vector2(tile.X + .5f, tile.Y + .5f);
             }
 
             public MicroRoute(City city, Vector2 origin, Vector2 target)
@@ -201,7 +198,7 @@ namespace Zombles.Geometry
 
         public static Route Find(City city, Vector2 origin, Vector2 dest)
         {
-            return new MacroRoute(city, origin, dest);
+            return new MicroRoute(city, origin, dest);
         }
 
         protected City City { get; private set; }

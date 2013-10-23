@@ -284,7 +284,7 @@ namespace Zombles.Scripts
                 if (_path != null) {
                     var prev = _pathStart;
                     foreach (var node in _path) {
-                        _traceShader.Render(prev, prev += node);
+                        _traceShader.Render(prev, prev + City.Difference(prev, prev = City.Wrap(prev + node)));
                     }
                 }
 
@@ -314,7 +314,11 @@ namespace Zombles.Scripts
             _pathStart = _pathEnd;
             _pathEnd = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
-            _path = Route.Find(City, _pathStart, _pathEnd).ToArray();
+            try {
+                _path = Route.Find(City, _pathStart, _pathEnd).ToArray();
+            } catch (ArgumentNullException ex) {
+                Debug.WriteLine(ex);
+            }
 
             var prev = _pathStart;
             for (int i = 0; i < _path.Length; ++i) {
