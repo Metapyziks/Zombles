@@ -105,6 +105,8 @@ namespace Zombles.Entities
 
         private void ScanAhead()
         {
+            if (_ended) return;
+
             _lastScan = MainWindow.Time;
 
             Trace trace = new Trace(City) {
