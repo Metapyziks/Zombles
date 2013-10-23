@@ -138,7 +138,7 @@ namespace Zombles.Geometry
                 float lBest = float.MaxValue;
 
                 foreach (var inter in City.GetIntersections(City.GetBlock(Origin))) {
-                    var fDiff = City.Difference(Target, inter.Position).Length;
+                    var fDiff = City.Difference(Target, inter.Position).Length + City.Difference(inter.Position, Origin).Length;
                     if (fDiff <= fBest) {
                         first = inter;
                         fBest = fDiff;
@@ -146,7 +146,7 @@ namespace Zombles.Geometry
                 }
 
                 foreach (var inter in City.GetIntersections(City.GetBlock(Target))) {
-                    var lDiff = City.Difference(inter.Position, Origin).Length;
+                    var lDiff = City.Difference(Target, inter.Position).Length + City.Difference(inter.Position, Origin).Length;
                     if (lDiff <= lBest) {
                         last = inter;
                         lBest = lDiff;
