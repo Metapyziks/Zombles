@@ -188,8 +188,11 @@ namespace Zombles.Geometry
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
-                var path = AStar(City, City.GetTile(Origin), City.GetTile(Target), NeighboursFunc, VectorFunc)
-                    .Select(x => new Vector2(x.X + .5f, x.Y + .5f)).ToArray();
+                var nodes = AStar(City, City.GetTile(Origin), City.GetTile(Target), NeighboursFunc, VectorFunc);
+
+                if (nodes == null) yield break;
+
+                var path = nodes.Select(x => new Vector2(x.X + .5f, x.Y + .5f)).ToArray();
 
                 foreach (var node in path) yield return node;
 
@@ -214,6 +217,9 @@ namespace Zombles.Geometry
                     if (!macNode.Equals(macLast) && City.GetBlock(macNode) == City.GetBlock(prev)) continue;
 
                     var micro = new MicroRoute(City, prev, macNode).ToArray();
+
+                    if (micro.Length == 0) yield break;
+
                     var micLast = micro.Last();
                     foreach (var micNode in micro) {
                         if (micNode.Equals(micLast) || micNode.Equals(prev)) continue;

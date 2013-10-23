@@ -314,6 +314,12 @@ namespace Zombles.Scripts
             _pathStart = _pathEnd;
             _pathEnd = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
+            foreach (var ent in City.Entities) {
+                if (ent.HasComponent<RouteNavigation>()) {
+                    ent.GetComponent<RouteNavigation>().NavigateTo(_pathEnd);
+                }
+            }
+
             try {
                 _path = Route.Find(City, _pathStart, _pathEnd).ToArray();
             } catch (ArgumentNullException ex) {

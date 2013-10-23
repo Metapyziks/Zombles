@@ -26,6 +26,7 @@ namespace Zombles.Scripts
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<SurvivorAI>();
+                ent.AddComponent<RouteNavigation>();
             });
 
             Entity.Register("zombie", "human", ent => {
