@@ -57,8 +57,7 @@ namespace Zombles.Geometry
         private static IEnumerable<T> AStar<T>(City city, T origin, T target,
             Func<City, T, IEnumerable<Tuple<T, float>>> adjFunc, Func<T, Vector2> vecFunc)
         {
-            var open = new SortedSet<NodeInfo<T>>(Comparer<NodeInfo<T>>.Create((a, b) =>
-                b.Total > a.Total ? -1 : b.Total == a.Total ? 0 : 1));
+            var open = new List<NodeInfo<T>>();
             var clsd = new HashSet<NodeInfo<T>>();
 
             var targPos = vecFunc(target);
@@ -69,7 +68,10 @@ namespace Zombles.Geometry
             open.Add(first);
 
             while (open.Count > 0) {
-                NodeInfo<T> cur = open.First();
+                NodeInfo<T> cur = null;
+                foreach (var node in open) {
+                    if (cur == null || node.Total < cur.Total) cur = node;
+                }
 
                 if (cur.Node.Equals(target)) {
                     var path = new T[cur.Depth + 1];
@@ -169,9 +171,9 @@ namespace Zombles.Geometry
                     var face = (Face) (1 << i);
                     var othr = city.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal());
 
-                    //if (!tile.IsWallSolid(face)) {
+                    if (!tile.IsWallSolid(face)) {
                         yield return Tuple.Create(othr, 1f);
-                    //}
+                    }
                 }
             }
 
