@@ -137,15 +137,16 @@ namespace Zombles.Geometry
                 float fBest = float.MaxValue;
                 float lBest = float.MaxValue;
 
-                foreach (var inter in City.Intersections) {
-                    var fDiff = City.Difference(Origin, inter.Position).Length;
-                    var lDiff = City.Difference(inter.Position, Target).Length;
-
+                foreach (var inter in City.GetIntersections(City.GetBlock(Origin))) {
+                    var fDiff = City.Difference(Target, inter.Position).Length;
                     if (fDiff <= fBest) {
                         first = inter;
                         fBest = fDiff;
                     }
+                }
 
+                foreach (var inter in City.GetIntersections(City.GetBlock(Target))) {
+                    var lDiff = City.Difference(inter.Position, Origin).Length;
                     if (lDiff <= lBest) {
                         last = inter;
                         lBest = lDiff;
@@ -198,9 +199,34 @@ namespace Zombles.Geometry
             }
         }
 
+        private class CombinedRoute : Route
+        {
+            public CombinedRoute(City city, Vector2 origin, Vector2 target)
+                : base(city, origin, target) { }
+
+            public override IEnumerator<Vector2> GetEnumerator()
+            {
+                var macro = new MacroRoute(City, Origin, Target).ToArray();
+                var macLast = macro.Last();
+
+                var prev = Origin;
+                foreach (var macNode in macro) {
+                    if (!macNode.Equals(macLast) && City.GetBlock(macNode) == City.GetBlock(prev)) continue;
+
+                    var micro = new MicroRoute(City, prev, macNode).ToArray();
+                    var micLast = micro.Last();
+                    foreach (var micNode in micro) {
+                        if (micNode.Equals(micLast) || micNode.Equals(prev)) continue;
+                        yield return micNode;
+                    }
+                    prev = macNode;
+                }
+            }
+        }
+
         public static Route Find(City city, Vector2 origin, Vector2 dest)
         {
-            return new MicroRoute(city, origin, dest);
+            return new CombinedRoute(city, origin, dest);
         }
 
         protected City City { get; private set; }

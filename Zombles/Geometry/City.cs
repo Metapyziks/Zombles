@@ -30,7 +30,6 @@ namespace Zombles.Geometry
         public int Depth { get { return RootDistrict.Depth; } }
 
         public IEnumerable<Entity> Entities { get { return this.SelectMany(x => x); } }
-        public IEnumerable<Intersection> Intersections { get { return _intersections.SelectMany(x => x.Value); } }
 
         public City(int width, int height)
         {
@@ -106,6 +105,16 @@ namespace Zombles.Geometry
             int iy = (int) pos.Y;
 
             return GetBlock(pos)[ix, iy];
+        }
+
+        public IEnumerable<Intersection> GetIntersections()
+        {
+            return _intersections.Values.SelectMany(x => x);
+        }
+
+        public IEnumerable<Intersection> GetIntersections(Block block)
+        {
+            return _intersections[block];
         }
 
         public void FindBlockIntersections()
