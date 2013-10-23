@@ -94,7 +94,6 @@ namespace Zombles.Geometry
 
                         clsd.Remove(existing);
                         node.Heuristic = existing.Heuristic;
-                        continue;
                     }
 
                     existing = open.FirstOrDefault(x => x.Node.Equals(adj.Item1));
@@ -105,9 +104,10 @@ namespace Zombles.Geometry
                         open.Remove(existing);
                         node.Heuristic = existing.Heuristic;
                     } else {
-                        open.Add(node);
                         node.CalculateHeuristic(city, targPos);
                     }
+
+                    open.Add(node);
                 }
 
                 clsd.Add(cur);

@@ -119,7 +119,7 @@ namespace Zombles.Geometry
                     Wrap(new Vector2(block.District.X + block.District.Width, block.District.Y + block.District.Height)),
                     Wrap(new Vector2(block.District.X, block.District.Y + block.District.Height))
                 }
-            ).Distinct().Select((x, i) => new Intersection(x, i));
+            ).Distinct().Select((x, i) => new Intersection(x, i)).ToArray();
 
             foreach (var block in RootDistrict) {
                 var tl = new Vector2(block.District.X, block.District.Y);
@@ -130,7 +130,7 @@ namespace Zombles.Geometry
                     && ((y.Y >= tl.Y && y.Y <= br.Y) || y.Y == brw.Y)).ToArray();
 
                 foreach (var first in ints) {
-                    Action<Tuple<Intersection, Vector2>> join = (secnd) => {
+                    Action<Tuple<Intersection, Vector2>> join = secnd => {
                         if (secnd == null) return;
                         first.Connect(secnd.Item1, secnd.Item2);
                         secnd.Item1.Connect(first, -secnd.Item2);
@@ -196,8 +196,13 @@ namespace Zombles.Geometry
             foreach (var block in RootDistrict.GetVisibleBlocks(shader.Camera)) {
                 foreach (var inter in _intersections[block]) {
                     foreach (var edge in inter.Edges) {
-                        shader.Render(inter.X, inter.ID / denom, inter.Y,
-                            inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
+                        if (edge.Key.ID < inter.ID) {
+                            shader.Render(inter.X, inter.ID / denom, inter.Y,
+                                inter.X + edge.Value.X, edge.Key.ID / denom, inter.Y + edge.Value.Y);
+                        } else {
+                            shader.Render(inter.X, inter.ID / denom + .5f, inter.Y,
+                                inter.X + edge.Value.X, edge.Key.ID / denom + .5f, inter.Y + edge.Value.Y);
+                        }
                     }
                 }
             }

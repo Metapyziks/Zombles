@@ -39,6 +39,11 @@ namespace Zombles.Scripts
         private int _oldCamDir;
         private bool _mapView;
         private bool _drawPathNetwork;
+        private bool _drawTestTrace;
+
+        private Vector2 _pathStart;
+        private Vector2 _pathEnd;
+        private Vector2[] _path;
 
         private DebugTraceShader _traceShader;
 
@@ -236,15 +241,19 @@ namespace Zombles.Scripts
 
             float hullSize = .5f;
 
-            var trace = new Zombles.Geometry.Trace(City) {
-                Origin = Camera.Position2D,
-                HullSize = new Vector2(hullSize, hullSize),
-                HitGeometry = true,
-                HitEntities = false,
-                Length = 32f,
-                Normal = City.Difference(Camera.Position2D,
-                    Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
-            }.GetResult();
+            TraceResult trace = null;
+
+            if (_drawTestTrace) {
+                trace = new Zombles.Geometry.Trace(City) {
+                    Origin = Camera.Position2D,
+                    HullSize = new Vector2(hullSize, hullSize),
+                    HitGeometry = true,
+                    HitEntities = false,
+                    Length = 32f,
+                    Normal = City.Difference(Camera.Position2D,
+                        Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
+                }.GetResult();
+            }
 
             var hs = hullSize / 2f;
 
@@ -259,12 +268,26 @@ namespace Zombles.Scripts
                 FlatEntShader.End();
 
                 _traceShader.Begin(true);
-                // City.RenderIntersectionNetwork(_traceShader);
-                _traceShader.Render(trace);
-                _traceShader.Render(trace.End.X - hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y - hs);
-                _traceShader.Render(trace.End.X + hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y + hs);
-                _traceShader.Render(trace.End.X + hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y + hs);
-                _traceShader.Render(trace.End.X - hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y - hs);
+
+                if (_drawPathNetwork) {
+                    City.RenderIntersectionNetwork(_traceShader);
+                }
+
+                if (_drawTestTrace) {
+                    _traceShader.Render(trace);
+                    _traceShader.Render(trace.End.X - hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y - hs);
+                    _traceShader.Render(trace.End.X + hs, trace.End.Y - hs, trace.End.X + hs, trace.End.Y + hs);
+                    _traceShader.Render(trace.End.X + hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y + hs);
+                    _traceShader.Render(trace.End.X - hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y - hs);
+                }
+
+                if (_path != null) {
+                    var prev = _pathStart;
+                    foreach (var node in _path) {
+                        _traceShader.Render(prev, prev += node);
+                    }
+                }
+
                 _traceShader.End();
             }
 
@@ -286,6 +309,21 @@ namespace Zombles.Scripts
             _camMoveSpeed = 64.0f / Camera.Scale;
         }
 
+        public override void OnMouseButtonDown(MouseButtonEventArgs e)
+        {
+            _pathStart = _pathEnd;
+            _pathEnd = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+
+            _path = Route.Find(City, _pathStart, _pathEnd).ToArray();
+
+            var prev = _pathStart;
+            for (int i = 0; i < _path.Length; ++i) {
+                var temp = _path[i];
+                _path[i] = City.Difference(prev, temp);
+                prev = temp;
+            }
+        }
+
         public override void OnKeyPress(KeyPressEventArgs e)
         {
             switch (char.ToLower(e.KeyChar)) {
@@ -294,6 +332,9 @@ namespace Zombles.Scripts
                     break;
                 case 'p':
                     _drawPathNetwork = !_drawPathNetwork;
+                    break;
+                case 't':
+                    _drawTestTrace = !_drawTestTrace;
                     break;
                 case 'f':
                     if (GameWindow.WindowState == WindowState.Fullscreen)
