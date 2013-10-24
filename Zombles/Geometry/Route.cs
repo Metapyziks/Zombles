@@ -204,29 +204,69 @@ namespace Zombles.Geometry
 
         private class CombinedRoute : Route
         {
+            private class CombinedRouteEnumerator : IEnumerator<Vector2>
+            {
+                private City _city;
+                private Vector2 _origin;
+                private IEnumerable<Vector2> _macro;
+
+                private Vector2 _prevMacro;
+                private IEnumerator<Vector2> _macroIter;
+                private IEnumerator<Vector2> _microIter;
+
+                public CombinedRouteEnumerator(City city, Vector2 origin, IEnumerable<Vector2> macro)
+                {
+                    _city = city;
+                    _origin = origin;
+                    _macro = macro;
+
+                    Reset();
+                }
+
+                public Vector2 Current
+                {
+                    get { return _microIter.Current; }
+                }
+
+                public void Dispose()
+                {
+                    throw new NotImplementedException();
+                }
+
+                object System.Collections.IEnumerator.Current
+                {
+                    get { return _microIter.Current; }
+                }
+
+                public bool MoveNext()
+                {
+                    while (_microIter == null || !_microIter.MoveNext()) {
+                        if (_microIter != null) _prevMacro = _macroIter.Current;
+                        if (!_macroIter.MoveNext()) return false;
+
+                        var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current);
+                        _microIter = micro.GetEnumerator();
+                    }
+
+                    return true;
+                }
+
+                public void Reset()
+                {
+                    _prevMacro = _origin;
+
+                    _macroIter = _macro.GetEnumerator();
+                    _microIter = null;
+                }
+            }
+
             public CombinedRoute(City city, Vector2 origin, Vector2 target)
                 : base(city, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
                 var macro = new MacroRoute(City, Origin, Target).ToArray();
-                var macLast = macro.Last();
-
-                var prev = Origin;
-                foreach (var macNode in macro) {
-                    if (!macNode.Equals(macLast) && City.GetBlock(macNode) == City.GetBlock(prev)) continue;
-
-                    var micro = new MicroRoute(City, prev, macNode).ToArray();
-
-                    if (micro.Length == 0) yield break;
-
-                    var micLast = micro.Last();
-                    foreach (var micNode in micro) {
-                        if (micNode.Equals(micLast) || micNode.Equals(prev)) continue;
-                        yield return micNode;
-                    }
-                    prev = macNode;
-                }
+                return new CombinedRouteEnumerator(City, Origin, macro);
             }
         }
 

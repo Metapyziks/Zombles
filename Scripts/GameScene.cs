@@ -41,10 +41,6 @@ namespace Zombles.Scripts
         private bool _drawPathNetwork;
         private bool _drawTestTrace;
 
-        private Vector2 _pathStart;
-        private Vector2 _pathEnd;
-        private Vector2[] _path;
-
         private DebugTraceShader _traceShader;
 
         private float TargetCameraPitch
@@ -281,13 +277,6 @@ namespace Zombles.Scripts
                     _traceShader.Render(trace.End.X - hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y - hs);
                 }
 
-                if (_path != null) {
-                    var prev = _pathStart;
-                    foreach (var node in _path) {
-                        _traceShader.Render(prev, prev + City.Difference(prev, prev = City.Wrap(prev + node)));
-                    }
-                }
-
                 _traceShader.End();
             }
 
@@ -311,26 +300,12 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            _pathStart = _pathEnd;
-            _pathEnd = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
             foreach (var ent in City.Entities) {
                 if (ent.HasComponent<RouteNavigation>()) {
-                    ent.GetComponent<RouteNavigation>().NavigateTo(_pathEnd);
+                    ent.GetComponent<RouteNavigation>().NavigateTo(pos);
                 }
-            }
-
-            try {
-                _path = Route.Find(City, _pathStart, _pathEnd).ToArray();
-            } catch (ArgumentNullException ex) {
-                Debug.WriteLine(ex);
-            }
-
-            var prev = _pathStart;
-            for (int i = 0; i < _path.Length; ++i) {
-                var temp = _path[i];
-                _path[i] = City.Difference(prev, temp);
-                prev = temp;
             }
         }
 
