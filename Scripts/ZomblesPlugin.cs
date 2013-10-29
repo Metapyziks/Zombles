@@ -43,18 +43,26 @@ namespace Zombles.Scripts
             City city = scene.City;
             Random rand = Tools.Random;
 
-            int count = 512;
+            int count = 256;
             int zoms = 0; // Math.Max(count / 32, 8);
+
+            Func<Vector2> randPos = () => {
+                Vector2 pos;
+                do {
+                    pos = new Vector2(rand.NextSingle() * city.Width, rand.NextSingle() * city.Height);
+                } while (city.GetTile(pos).FloorHeight > 0);
+                return pos;
+            };
 
             for (int i = 0; i < count - zoms; ++i) {
                 Entity surv = Entity.Create(city, "survivor");
-                surv.Position = new Vector3(rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height);
+                surv.Position2D = randPos();
                 surv.Spawn();
             }
 
             for (int i = 0; i < zoms; ++i) {
                 Entity zomb = Entity.Create(city, "zombie");
-                zomb.Position = new Vector3(rand.NextSingle() * city.Width, 0.0f, rand.NextSingle() * city.Height);
+                zomb.Position2D = randPos();
                 zomb.Spawn();
             }
         }

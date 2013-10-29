@@ -260,16 +260,7 @@ namespace Zombles.Geometry
                         if (_microIter != null) _prevMacro = _macroIter.Current;
                         if (!_macroIter.MoveNext()) return false;
 
-                        var blocks = new[] {
-                            new Vector2(-1, -1),
-                            new Vector2(1, -1),
-                            new Vector2(1, 1),
-                            new Vector2(-1, 1)
-                        }.SelectMany(x => new[] { _prevMacro, _macroIter.Current }
-                            .Select(y => _city.GetBlock(y)))
-                            .Distinct();
-
-                        var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current, blocks);
+                        var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current);
                         _microIter = micro.GetEnumerator();
                     }
 
@@ -303,6 +294,40 @@ namespace Zombles.Geometry
         protected City City { get; private set; }
         public Vector2 Origin { get; private set; }
         public Vector2 Target { get; private set; }
+
+        public float EstimateLength
+        {
+            get
+            {
+                float length = 0f;
+                var prev = Origin;
+
+                var trace = new Trace(City) {
+                    Origin = Origin,
+                    HitEntities = false,
+                    HitGeometry = true,
+                    HullSize = new Vector2(0.5f, 0.5f)
+                };
+
+                foreach (var node in this) {
+                    trace.Target = node;
+                    if (node.Equals(Target)) {
+                        if (trace.GetResult().Hit) {
+                            length += City.Difference(trace.Origin, prev).Length;
+                            trace.Origin = prev;
+                        }
+                        length += City.Difference(trace.Origin, node).Length;
+                        break;
+                    } else if (trace.GetResult().Hit) {
+                        length += City.Difference(trace.Origin, prev).Length;
+                        trace.Origin = prev;
+                    }
+                    prev = node;
+                }
+
+                return length;
+            }
+        }
 
         protected Route(City city, Vector2 origin, Vector2 target)
         {

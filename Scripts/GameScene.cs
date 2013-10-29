@@ -122,32 +122,6 @@ namespace Zombles.Scripts
                 _traceShader.Camera = Camera;
 
                 _frameTimer.Start();
-
-                var rand = new Random(0x4812f34e);
-                for (var i = 0; i < 10; ++i) {
-                    Vector2 pos;
-
-                    do {
-                        pos = new Vector2(rand.Next(0, City.Width), rand.Next(0, City.Height))
-                            + new Vector2(0.5f, 0.5f);
-                    } while (City.GetTile(pos).FloorHeight != 0);
-
-                    var timer = new Stopwatch();
-                    timer.Start();
-
-                    foreach (var ent in City.Entities) {
-                        if (ent.HasComponent<RouteNavigation>()) {
-                            ent.GetComponent<RouteNavigation>().NavigateTo(pos);
-                        }
-                    }
-
-                    timer.Stop();
-
-                    Debug.WriteLine("{2}",
-                        City.Entities.Count(x => x.HasComponent<RouteNavigation>()),
-                        Route.Find(City, new Vector2(), new Vector2()).GetType().Name,
-                        timer.Elapsed.TotalMilliseconds);
-                }
             }
         }
 
