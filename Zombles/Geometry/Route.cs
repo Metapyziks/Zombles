@@ -155,6 +155,7 @@ namespace Zombles.Geometry
 
                 if (first == last) {
                     yield return last.Position;
+                    yield return Target;
                     yield break;
                 }
 

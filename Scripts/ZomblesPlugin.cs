@@ -43,7 +43,7 @@ namespace Zombles.Scripts
             City city = scene.City;
             Random rand = Tools.Random;
 
-            int count = 16;
+            int count = 512;
             int zoms = 0; // Math.Max(count / 32, 8);
 
             for (int i = 0; i < count - zoms; ++i) {

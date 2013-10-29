@@ -57,11 +57,9 @@ namespace Zombles.Entities
                 _curRoute = value;
                 _curPath = null;
 
-                /*
-                if (_curRoute != null && !_sQueue.Contains(this)) {
-                    _sQueue.Enqueue(this);
-                }
-                */
+                //if (_curRoute != null && !_sQueue.Contains(this)) {
+                //    _sQueue.Enqueue(this);
+                //}
 
                 CalculatePath();
             }

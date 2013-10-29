@@ -89,7 +89,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                City = Generator.Generate(WorldSize, WorldSize);
+                City = Generator.Generate(WorldSize, WorldSize, 0x4812f34e);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -122,6 +122,32 @@ namespace Zombles.Scripts
                 _traceShader.Camera = Camera;
 
                 _frameTimer.Start();
+
+                var rand = new Random(0x4812f34e);
+                for (var i = 0; i < 10; ++i) {
+                    Vector2 pos;
+
+                    do {
+                        pos = new Vector2(rand.Next(0, City.Width), rand.Next(0, City.Height))
+                            + new Vector2(0.5f, 0.5f);
+                    } while (City.GetTile(pos).FloorHeight != 0);
+
+                    var timer = new Stopwatch();
+                    timer.Start();
+
+                    foreach (var ent in City.Entities) {
+                        if (ent.HasComponent<RouteNavigation>()) {
+                            ent.GetComponent<RouteNavigation>().NavigateTo(pos);
+                        }
+                    }
+
+                    timer.Stop();
+
+                    Debug.WriteLine("{2}",
+                        City.Entities.Count(x => x.HasComponent<RouteNavigation>()),
+                        Route.Find(City, new Vector2(), new Vector2()).GetType().Name,
+                        timer.Elapsed.TotalMilliseconds);
+                }
             }
         }
 
@@ -300,28 +326,13 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            Vector2 pos;
-
-            do {
-                pos = new Vector2(Tools.Random.Next(0, City.Width), Tools.Random.Next(0, City.Height))
-                    + new Vector2(0.5f, 0.5f);
-            } while (City.GetTile(pos).FloorHeight != 0);
-
-            var timer = new Stopwatch();
-            timer.Start();
+            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
             foreach (var ent in City.Entities) {
                 if (ent.HasComponent<RouteNavigation>()) {
                     ent.GetComponent<RouteNavigation>().NavigateTo(pos);
                 }
             }
-
-            timer.Stop();
-
-            Debug.WriteLine("Time for {0} ents using {1}: {2}ms",
-                City.Entities.Count(x => x.HasComponent<RouteNavigation>()),
-                Route.Find(City, new Vector2(), new Vector2()).GetType().Name,
-                timer.Elapsed.TotalMilliseconds);
         }
 
         public override void OnKeyPress(KeyPressEventArgs e)
