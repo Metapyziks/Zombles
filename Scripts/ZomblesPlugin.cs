@@ -43,8 +43,8 @@ namespace Zombles.Scripts
             City city = scene.City;
             Random rand = Tools.Random;
 
-            int count = (city.Width * city.Height) / 64;
-            int zoms = Math.Max(count / 32, 8);
+            int count = 16;
+            int zoms = 0; // Math.Max(count / 32, 8);
 
             for (int i = 0; i < count - zoms; ++i) {
                 Entity surv = Entity.Create(city, "survivor");

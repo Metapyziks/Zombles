@@ -21,15 +21,7 @@ namespace Zombles.Entities
 
             while (_sQueue.Count > 0) {
                 var first = _sQueue.Dequeue();
-                if (first.HasRoute && !first.HasPath) {
-                    first._curPath = first._curRoute.GetEnumerator();
-                    first._curWaypoint = first._curRoute.Origin;
-                    first._ended = !first._curPath.MoveNext();
-
-                    if (!first._ended) {
-                        first.ScanAhead();
-                    }
-                }
+                first.CalculatePath();
 
                 if (timer.Elapsed.TotalSeconds >= MaxRouteFindingTime)
                     break;
@@ -37,6 +29,7 @@ namespace Zombles.Entities
         }
 
         private Route _curRoute;
+        private List<Vector2> _history;
         private IEnumerator<Vector2> _curPath;
         private Vector2 _curWaypoint;
         private bool _ended;
@@ -64,9 +57,13 @@ namespace Zombles.Entities
                 _curRoute = value;
                 _curPath = null;
 
+                /*
                 if (_curRoute != null && !_sQueue.Contains(this)) {
                     _sQueue.Enqueue(this);
                 }
+                */
+
+                CalculatePath();
             }
         }
 
@@ -103,6 +100,21 @@ namespace Zombles.Entities
             CurrentRoute = Route.Find(City, Entity.Position2D, target);
         }
 
+        private void CalculatePath()
+        {
+            if (HasRoute && !HasPath) {
+                _history = new List<Vector2>();
+
+                _curPath = _curRoute.GetEnumerator();
+                _curWaypoint = _curRoute.Origin;
+                _ended = !_curPath.MoveNext();
+
+                if (!_ended) {
+                    ScanAhead();
+                }
+            }
+        }
+
         public override void OnThink(double dt)
         {
             if (HasPath) {
@@ -121,6 +133,8 @@ namespace Zombles.Entities
                 _curPath = null;
                 return;
             }
+
+            _history.Add(_curWaypoint);
 
             _curWaypoint = _curPath.Current;
             _ended = !_curPath.MoveNext();
@@ -146,6 +160,11 @@ namespace Zombles.Entities
 
             if (!trace.GetResult().Hit) {
                 MoveNext();
+            } else {
+                trace.Target = _curWaypoint;
+                if (trace.GetResult().Hit) {
+                    // Start using history
+                }
             }
         }
     }

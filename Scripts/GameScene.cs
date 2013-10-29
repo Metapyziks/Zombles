@@ -300,13 +300,28 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+            Vector2 pos;
+
+            do {
+                pos = new Vector2(Tools.Random.Next(0, City.Width), Tools.Random.Next(0, City.Height))
+                    + new Vector2(0.5f, 0.5f);
+            } while (City.GetTile(pos).FloorHeight != 0);
+
+            var timer = new Stopwatch();
+            timer.Start();
 
             foreach (var ent in City.Entities) {
                 if (ent.HasComponent<RouteNavigation>()) {
                     ent.GetComponent<RouteNavigation>().NavigateTo(pos);
                 }
             }
+
+            timer.Stop();
+
+            Debug.WriteLine("Time for {0} ents using {1}: {2}ms",
+                City.Entities.Count(x => x.HasComponent<RouteNavigation>()),
+                Route.Find(City, new Vector2(), new Vector2()).GetType().Name,
+                timer.Elapsed.TotalMilliseconds);
         }
 
         public override void OnKeyPress(KeyPressEventArgs e)

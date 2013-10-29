@@ -49,6 +49,11 @@ namespace Zombles.Geometry
             }
         }
 
+        public bool Contains(int x, int y)
+        {
+            return x >= X && x < X + Width && y >= Y && y < Y + Height;
+        }
+
         public void BuildTiles(TileBuilder[,] tiles)
         {
             lock (_tiles)

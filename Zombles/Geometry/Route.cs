@@ -153,6 +153,11 @@ namespace Zombles.Geometry
                     }
                 }
 
+                if (first == last) {
+                    yield return last.Position;
+                    yield break;
+                }
+
                 var path = AStar(City, first, last, NeighboursFunc, VectorFunc)
                     .Select(x => x.Position).ToArray();
 
@@ -166,11 +171,23 @@ namespace Zombles.Geometry
 
         private class MicroRoute : Route
         {
-            private static IEnumerable<Tuple<Tile, float>> NeighboursFunc(City city, Tile tile)
+            private IEnumerable<Block> _blocks;
+
+            public MicroRoute(City city, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
+                : base(city, origin, target)
+            {
+                _blocks = blocks;
+            }
+
+            private IEnumerable<Tuple<Tile, float>> NeighboursFunc(City city, Tile tile)
             {
                 for (int i = 0; i < 4; ++i) {
                     var face = (Face) (1 << i);
                     var othr = city.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal());
+
+                    if (_blocks != null && !_blocks.Any(x => x.Contains(othr.X, othr.Y))) {
+                        continue;
+                    }
 
                     if (!tile.IsWallSolid(face)) {
                         yield return Tuple.Create(othr, 1f);
@@ -178,13 +195,10 @@ namespace Zombles.Geometry
                 }
             }
 
-            private static Vector2 VectorFunc(Tile tile)
+            private Vector2 VectorFunc(Tile tile)
             {
                 return new Vector2(tile.X + .5f, tile.Y + .5f);
             }
-
-            public MicroRoute(City city, Vector2 origin, Vector2 target)
-                : base(city, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
@@ -230,7 +244,8 @@ namespace Zombles.Geometry
 
                 public void Dispose()
                 {
-                    throw new NotImplementedException();
+                    if (_macroIter != null) _macroIter.Dispose();
+                    if (_microIter != null) _microIter.Dispose();
                 }
 
                 object System.Collections.IEnumerator.Current
@@ -244,7 +259,16 @@ namespace Zombles.Geometry
                         if (_microIter != null) _prevMacro = _macroIter.Current;
                         if (!_macroIter.MoveNext()) return false;
 
-                        var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current);
+                        var blocks = new[] {
+                            new Vector2(-1, -1),
+                            new Vector2(1, -1),
+                            new Vector2(1, 1),
+                            new Vector2(-1, 1)
+                        }.SelectMany(x => new[] { _prevMacro, _macroIter.Current }
+                            .Select(y => _city.GetBlock(y)))
+                            .Distinct();
+
+                        var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current, blocks);
                         _microIter = micro.GetEnumerator();
                     }
 
@@ -265,7 +289,7 @@ namespace Zombles.Geometry
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
-                var macro = new MacroRoute(City, Origin, Target).ToArray();
+                var macro = new MacroRoute(City, Origin, Target);
                 return new CombinedRouteEnumerator(City, Origin, macro);
             }
         }
