@@ -242,7 +242,7 @@ namespace Zombles.Scripts
             if (_drawTestTrace) {
                 trace = new Zombles.Geometry.Trace(City) {
                     Origin = Camera.Position2D,
-                    HullSize = new Vector2(hullSize, hullSize),
+                    //HullSize = new Vector2(hullSize, hullSize),
                     HitGeometry = true,
                     HitEntities = false,
                     Length = 32f,

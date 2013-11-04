@@ -23,8 +23,8 @@ namespace Zombles.Entities
         }
         public bool IsMoving { get; private set; }
 
-        public Movement( Entity ent )
-            : base( ent )
+        public Movement(Entity ent)
+            : base(ent)
         {
             Velocity = new Vector2();
         }
@@ -33,7 +33,7 @@ namespace Zombles.Entities
         {
             _collision = null;
 
-            if ( Entity.HasComponent<Collision>() )
+            if (Entity.HasComponent<Collision>())
                 _collision = Entity.GetComponent<Collision>();
         }
 
@@ -42,21 +42,17 @@ namespace Zombles.Entities
             Velocity = new Vector2();
         }
 
-        public override void OnThink( double dt )
+        public override void OnThink(double dt)
         {
-            if ( Velocity.LengthSquared > 0.0f )
-                Move( Velocity * (float) dt );
+            if (Velocity.LengthSquared > 0.0f)
+                Move(Velocity * (float) dt);
         }
 
-        public void Move( Vector2 move )
+        public void Move(Vector2 move)
         {
-            if ( _collision != null )
-                move = _collision.TryMove( move );
-
-            Vector3 pos = Entity.Position;
-            pos.X += move.X;
-            pos.Z += move.Y;
-            Entity.Position = pos;
+            if (_collision != null) {
+                Entity.Position2D = _collision.TryMove(move);
+            }
         }
     }
 }

@@ -34,9 +34,6 @@ namespace Zombles.Geometry
 
         public bool IsWallSolid(Face face)
         {
-            if (FloorHeight > 0)
-                return true;
-
             if (WallHeight == 0)
                 return false;
 

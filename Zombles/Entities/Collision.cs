@@ -64,17 +64,17 @@ namespace Zombles.Entities
         public Vector2 TryMove(Vector2 move)
         {
             if (Model == CollisionModel.None)
-                return move;
+                return Position2D + move;
 
             if ((Model & CollisionModel.Entity) != 0) {
                 NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.City,
-                    new Vector2(Entity.Position.X, Entity.Position.Z), 2.0f + move.Length);
+                    new Vector2(Position2D.X, Position2D.Y), 2.0f + move.Length);
 
                 while (iter.MoveNext())
                     move = TryMove(iter.Current, move);
             }
 
-            float xm = 1.0f, ym = 1.0f;
+            float xm = Position2D.X + move.X, ym = Position2D.Y + move.Y;
 
             float error = 1.0f / 32.0f;
 
@@ -126,7 +126,7 @@ namespace Zombles.Entities
                         }
 
                         if (hit) {
-                            xm = (ix - startX) / move.X;
+                            xm = move.X > 0 ? ix - Offset.X - Size.X : ix - Offset.X;
                             ix = xe - xa;
                             break;
                         }
@@ -182,7 +182,7 @@ namespace Zombles.Entities
                         }
 
                         if (hit) {
-                            ym = (iy - startY) / move.Y;
+                            ym = move.Y > 0 ? iy - Offset.Y - Size.Y : iy - Offset.Y;
                             iy = ye - ya;
                             break;
                         }
@@ -190,7 +190,7 @@ namespace Zombles.Entities
                 }
             }
 
-            return new Vector2(xm * move.X, ym * move.Y);
+            return new Vector2(xm, ym);
         }
 
         private Vector2 TryMove(Entity obstacle, Vector2 move)
