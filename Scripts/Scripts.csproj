@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />
     <Compile Include="Geometry\Generation\Structures\Doorway.cs" />
     <Compile Include="Geometry\Generation\Structures\GarageDoor.cs" />
