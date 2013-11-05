@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
+﻿using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
 
@@ -48,20 +43,21 @@ namespace Zombles.Scripts.Entities.Behaviours
                 var it = SearchNearbyEnts(FleeRadius);
                 while (it.MoveNext()) {
                     Entity cur = it.Current;
-                    if (cur.HasComponent<T>()) {
-                        Vector2 diff = City.Difference(Position2D, cur.Position2D);
-                        float dist2 = diff.LengthSquared;
+                    if (!cur.HasComponent<T>()) continue;
 
-                        if (dist2 > 0) {
-                            trace.Target = cur.Position2D;
+                    Vector2 diff = City.Difference(Position2D, cur.Position2D);
+                    float dist2 = diff.LengthSquared;
 
-                            if (!trace.GetResult().Hit) {
-                                _fleeDir -= diff / dist2;
+                    if (dist2 == 0) continue;
 
-                                if (dist2 < RunRadius * RunRadius && Human is Survivor)
-                                    (Human as Survivor).StartRunning();
-                            }
-                        }
+                    trace.Target = cur.Position2D;
+
+                    if (trace.GetResult().Hit) continue;
+
+                    _fleeDir -= diff / dist2;
+
+                    if (dist2 < RunRadius * RunRadius && Human is Survivor) {
+                        (Human as Survivor).StartRunning();
                     }
                 }
             }
