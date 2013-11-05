@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using Zombles.Entities;
 using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
@@ -23,6 +24,11 @@ namespace Zombles.Scripts.Entities
             protected City City { get { return _stack.City; } }
             protected Human Human { get { return _stack.Human; } }
 
+            protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
+            {
+                return new NearbyEntityEnumerator(City, Position2D, radius);
+            }
+
             protected virtual void OnSpawn() { }
             protected virtual void OnRemove() { }
 
@@ -42,36 +48,48 @@ namespace Zombles.Scripts.Entities
 
             internal bool Think(double dt)
             {
-                if (_next != null && _next.Think(dt)) {
+                if (OnThink(dt)) {
                     return true;
+                } else if (_next != null) {
+                    return _next.Think(dt);
                 } else {
-                    return OnThink(dt);
+                    return false;
                 }
             }
         }
 
         private Layer _top;
 
-        public void Push<T>()
+        public SubsumptionStack(Entity ent)
+            : base(ent) { }
+
+        public SubsumptionStack Push<T>()
             where T : Layer, new()
         {
             var layer = new T();
             layer.SetStack(this);
+            return this;
         }
 
         public override void OnSpawn()
         {
+            base.OnSpawn();
+
             if (_top != null) _top.Spawn();
         }
 
         public override void OnRemove()
         {
+            base.OnRemove();
+
             if (_top != null) _top.Remove();
         }
 
         public override void OnThink(double dt)
         {
-            if (_top != null) _top.Think(dt);
+            base.OnThink(dt);
+
+            if (_top != null && Human.Health.IsAlive) _top.Think(dt);
         }
     }
 }

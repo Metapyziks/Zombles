@@ -312,6 +312,16 @@ namespace Zombles
             return (float) rand.NextDouble();
         }
 
+        public static float NextSingle(this Random rand, float min, float max)
+        {
+            return (float) (rand.NextDouble() * (max - min) + min);
+        }
+
+        public static double NextDouble(this Random rand, double min, double max)
+        {
+            return rand.NextDouble() * (max - min) + min;
+        }
+
         public static ResourceLocator NextTexture(this Random rand, ResourceLocator prefix, int max)
         {
             return prefix[rand.Next(max).ToString("X").ToLower()];

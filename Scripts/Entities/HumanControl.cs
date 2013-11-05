@@ -11,21 +11,21 @@ namespace Zombles.Scripts.Entities
     {
         protected Human Human { get; private set; }
 
-        public HumanControl( Entity ent )
-            : base( ent )
+        public HumanControl(Entity ent)
+            : base(ent)
         {
 
         }
 
         public override void OnSpawn()
         {
-            if ( Entity.HasComponent<Human>() )
+            if (Entity.HasComponent<Human>())
                 Human = Entity.GetComponent<Human>();
         }
 
-        protected NearbyEntityEnumerator SearchNearbyEnts( float radius )
+        protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
         {
-            return new NearbyEntityEnumerator( City, Position2D, radius );
+            return new NearbyEntityEnumerator(City, Position2D, radius);
         }
     }
 }
