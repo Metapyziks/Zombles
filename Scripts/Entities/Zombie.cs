@@ -75,8 +75,12 @@ namespace Zombles.Scripts.Entities
         {
             base.OnSpawn();
 
+            AttackPeriod = 0.75;
+            MinAttackDamage = 15;
+            MaxAttackDamage = 30;
+
             if (Health.IsAlive && Health.MaxHealth == 1) {
-                Health.SetMaximum(50);
+                Health.SetMaximum(100);
                 Health.Revive();
             }
 

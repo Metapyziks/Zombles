@@ -9,7 +9,7 @@ namespace Zombles.Entities
     {
         public readonly int Healed;
 
-        public HealedEventArgs( int healed )
+        public HealedEventArgs(int healed)
         {
             Healed = healed;
         }
@@ -25,7 +25,7 @@ namespace Zombles.Entities
             get { return Attacker != null; }
         }
 
-        public DamagedEventArgs( int damage, Entity attacker = null )
+        public DamagedEventArgs(int damage, Entity attacker = null)
         {
             Damage = damage;
             Attacker = attacker;
@@ -41,7 +41,7 @@ namespace Zombles.Entities
             get { return Attacker != null; }
         }
 
-        public KilledEventArgs( Entity attacker = null )
+        public KilledEventArgs(Entity attacker = null)
         {
             Attacker = attacker;
         }
@@ -58,8 +58,8 @@ namespace Zombles.Entities
         public event EventHandler<DamagedEventArgs> Damaged;
         public event EventHandler<KilledEventArgs> Killed;
 
-        public Health( Entity ent )
-            : base( ent )
+        public Health(Entity ent)
+            : base(ent)
         {
             MaxHealth = 1;
             Value = 1;
@@ -72,48 +72,45 @@ namespace Zombles.Entities
             Value = MaxHealth;
             IsAlive = true;
 
-            if ( Healed != null )
-                Healed( this, new HealedEventArgs( MaxHealth ) );
+            if (Healed != null)
+                Healed(this, new HealedEventArgs(MaxHealth));
         }
 
-        public void SetMaximum( int value )
+        public void SetMaximum(int value)
         {
             MaxHealth = value;
 
-            if ( Value > MaxHealth )
+            if (Value > MaxHealth)
                 Value = MaxHealth;
         }
 
-        public void Heal( int value )
+        public void Heal(int value)
         {
-            if ( value > 0 && IsAlive )
-            {
+            if (value > 0 && IsAlive) {
                 Value += value;
 
-                if ( Value > MaxHealth )
+                if (Value > MaxHealth)
                     Value = MaxHealth;
 
-                if ( Healed != null )
-                    Healed( this, new HealedEventArgs( value ) );
+                if (Healed != null)
+                    Healed(this, new HealedEventArgs(value));
             }
         }
 
-        public void Damage( int value, Entity attacker = null )
+        public void Damage(int value, Entity attacker = null)
         {
-            if ( value > 0 && IsAlive )
-            {
+            if (value > 0 && IsAlive) {
                 Value -= value;
 
-                if ( Damaged != null )
-                    Damaged( this, new DamagedEventArgs( value, attacker ) );
+                if (Damaged != null)
+                    Damaged(this, new DamagedEventArgs(value, attacker));
 
-                if ( Value <= 0 )
-                {
+                if (Value <= 0) {
                     Value = 0;
                     IsAlive = false;
 
-                    if ( Killed != null )
-                        Killed( this, new KilledEventArgs( attacker ) );
+                    if (Killed != null)
+                        Killed(this, new KilledEventArgs(attacker));
                 }
             }
         }

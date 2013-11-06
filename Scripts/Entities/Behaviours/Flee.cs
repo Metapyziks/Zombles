@@ -42,11 +42,13 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 var it = SearchNearbyEnts(FleeRadius);
                 while (it.MoveNext()) {
-                    Entity cur = it.Current;
-                    if (!cur.HasComponent<T>()) continue;
+                    var cur = it.Current;
+                    if (!cur.HasComponent<T>() || !cur.HasComponent<Health>()) continue;
+
+                    if (!cur.GetComponent<Health>().IsAlive) continue;
 
                     Vector2 diff = City.Difference(Position2D, cur.Position2D);
-                    float dist2 = diff.LengthSquared;
+                    var dist2 = diff.LengthSquared;
 
                     if (dist2 == 0) continue;
 

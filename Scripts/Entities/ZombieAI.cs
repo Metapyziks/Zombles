@@ -13,12 +13,10 @@ namespace Zombles.Scripts.Entities
     public class ZombieAI : HumanControl
     {
         private const double TargetSearchInterval = 1.0;
-        private const double AttackInterval = 1.0;
 
         private float _viewRadius;
 
         private double _lastSearch;
-        private double _lastAttack;
         private double _lastSeen;
         private Entity _curTarget;
         private Vector2 _lastSeenPos;
@@ -56,10 +54,9 @@ namespace Zombles.Scripts.Entities
                     _lastSeenPos = _curTarget.Position2D;
                     _lastSeen = MainWindow.Time;
 
-                    if (MainWindow.Time - _lastAttack > AttackInterval) {
+                    if (Human.CanAttack) {
                         if (diff.LengthSquared < 0.75f) {
                             Human.Attack(diff);
-                            _lastAttack = MainWindow.Time;
                             Human.StopMoving();
                         } else {
                             Human.StartMoving(diff);

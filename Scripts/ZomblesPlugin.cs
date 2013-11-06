@@ -29,7 +29,8 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
-                    .Push<Entities.Behaviours.Flee<Zombie>>();
+                    .Push<Entities.Behaviours.Flee<Zombie>>()
+                    .Push<Entities.Behaviours.SelfDefence<Zombie>>();
             });
 
             Entity.Register("zombie", "human", ent => {
@@ -46,8 +47,8 @@ namespace Zombles.Scripts
             City city = scene.City;
             Random rand = Tools.Random;
 
-            int count = 256;
-            int zoms = Math.Max(count / 32, 8);
+            int count = 512;
+            int zoms = Math.Max(count * 3 / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;

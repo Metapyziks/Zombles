@@ -44,7 +44,7 @@ namespace Zombles
             // VSync = VSyncMode.Off;
             Context.SwapInterval = 1;
 
-            WindowBorder = WindowBorder.Fixed;
+            // WindowBorder = WindowBorder.Fixed;
 
             CurrentScene = null;
         }

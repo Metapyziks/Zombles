@@ -13,9 +13,15 @@ namespace Zombles.Scripts.Entities
 {
     public abstract class Human : Component
     {
+        private double _nextAttack;
+
         public Movement Movement { get; private set; }
         public RenderAnim Anim { get; private set; }
         public Health Health { get; private set; }
+
+        public double AttackPeriod { get; protected set; }
+        public int MinAttackDamage { get; protected set; }
+        public int MaxAttackDamage { get; protected set; }
 
         public abstract EntityAnim WalkAnim { get; }
         public abstract EntityAnim StandAnim { get; }
@@ -23,10 +29,19 @@ namespace Zombles.Scripts.Entities
 
         public abstract float MoveSpeed { get; }
 
+        public virtual bool CanAttack
+        {
+            get { return MainWindow.Time >= _nextAttack; }
+        }
+
         public Human(Entity ent)
             : base(ent)
         {
+            _nextAttack = MainWindow.Time;
 
+            AttackPeriod = 1.0;
+            MinAttackDamage = 10;
+            MaxAttackDamage = 25;
         }
 
         public override void OnSpawn()
@@ -97,8 +112,10 @@ namespace Zombles.Scripts.Entities
 
         public virtual void Attack(Vector2 dir)
         {
-            if (!Health.IsAlive)
+            if (!Health.IsAlive || !CanAttack)
                 return;
+
+            _nextAttack = MainWindow.Time + AttackPeriod;
 
             FaceDirection(dir);
 
@@ -112,7 +129,7 @@ namespace Zombles.Scripts.Entities
 
             TraceResult res = trace.GetResult();
             if (res.HitEntity && res.Entity.HasComponent<Health>())
-                res.Entity.GetComponent<Health>().Damage(Tools.Random.Next(10, 25), Entity);
+                res.Entity.GetComponent<Health>().Damage(Tools.Random.Next(MinAttackDamage, MaxAttackDamage + 1), Entity);
         }
 
         public void FaceDirection(Vector2 dir)
