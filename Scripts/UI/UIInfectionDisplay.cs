@@ -23,9 +23,9 @@ namespace Zombles.Scripts.UI
         private UISprite _survivorBar;
         private UISprite _zombieBar;
 
-        public UIInfectionDisplay(World city)
+        public UIInfectionDisplay(World world)
         {
-            _city = city;
+            _city = world;
 
             _survivorBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.Pink));
             _zombieBar = new UISprite(new Sprite(0.5f, 1.0f, Color4.LightGreen));

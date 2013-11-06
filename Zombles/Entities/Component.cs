@@ -25,9 +25,9 @@ namespace Zombles.Entities
             get { return Entity.ID; }
         }
 
-        protected World City
+        protected World World
         {
-            get { return Entity.City; }
+            get { return Entity.World; }
         }
 
         protected Vector3 Position

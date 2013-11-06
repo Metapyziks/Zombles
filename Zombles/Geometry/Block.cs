@@ -17,7 +17,7 @@ namespace Zombles.Geometry
         private int _topGeomVertCount;
         private int _geomVertOffset;
 
-        public readonly World City;
+        public readonly World World;
         public readonly District District;
 
         public readonly int X;
@@ -28,7 +28,7 @@ namespace Zombles.Geometry
 
         public Block(District district)
         {
-            City = district.City;
+            World = district.World;
             District = district;
 
             X = district.X;

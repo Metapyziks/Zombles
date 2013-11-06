@@ -48,13 +48,13 @@ namespace Zombles.Geometry
                 Cost = prev.Cost + costAdd;
             }
 
-            public void CalculateHeuristic(World city, Vector2 target)
+            public void CalculateHeuristic(World world, Vector2 target)
             {
-                Heuristic = city.Difference(Pos, target).Length;
+                Heuristic = world.Difference(Pos, target).Length;
             }
         }
 
-        private static IEnumerable<T> AStar<T>(World city, T origin, T target,
+        private static IEnumerable<T> AStar<T>(World world, T origin, T target,
             Func<World, T, IEnumerable<Tuple<T, float>>> adjFunc, Func<T, Vector2> vecFunc)
         {
             var open = new List<NodeInfo<T>>();
@@ -63,7 +63,7 @@ namespace Zombles.Geometry
             var targPos = vecFunc(target);
 
             var first = new NodeInfo<T>(origin, vecFunc(origin));
-            first.CalculateHeuristic(city, targPos);
+            first.CalculateHeuristic(world, targPos);
 
             open.Add(first);
 
@@ -85,7 +85,7 @@ namespace Zombles.Geometry
                 open.Remove(cur);
                 clsd.Add(cur);
 
-                foreach (var adj in adjFunc(city, cur.Node)) {
+                foreach (var adj in adjFunc(world, cur.Node)) {
                     var node = new NodeInfo<T>(adj.Item1, vecFunc(adj.Item1), cur, adj.Item2);
                     var existing = clsd.FirstOrDefault(x => x.Node.Equals(adj.Item1));
 
@@ -104,7 +104,7 @@ namespace Zombles.Geometry
                         open.Remove(existing);
                         node.Heuristic = existing.Heuristic;
                     } else {
-                        node.CalculateHeuristic(city, targPos);
+                        node.CalculateHeuristic(world, targPos);
                     }
 
                     open.Add(node);
@@ -116,7 +116,7 @@ namespace Zombles.Geometry
 
         private class MacroRoute : Route
         {
-            private static IEnumerable<Tuple<Intersection, float>> NeighboursFunc(World city, Intersection inter)
+            private static IEnumerable<Tuple<Intersection, float>> NeighboursFunc(World world, Intersection inter)
             {
                 return inter.Edges.Select(x => Tuple.Create(x.Key, x.Value.Length));
             }
@@ -126,8 +126,8 @@ namespace Zombles.Geometry
                 return inter.Position;
             }
 
-            public MacroRoute(World city, Vector2 origin, Vector2 target)
-                : base(city, origin, target) { }
+            public MacroRoute(World world, Vector2 origin, Vector2 target)
+                : base(world, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
@@ -137,16 +137,16 @@ namespace Zombles.Geometry
                 float fBest = float.MaxValue;
                 float lBest = float.MaxValue;
 
-                foreach (var inter in City.GetIntersections(City.GetBlock(Origin))) {
-                    var fDiff = City.Difference(Target, inter.Position).Length + City.Difference(inter.Position, Origin).Length;
+                foreach (var inter in World.GetIntersections(World.GetBlock(Origin))) {
+                    var fDiff = World.Difference(Target, inter.Position).Length + World.Difference(inter.Position, Origin).Length;
                     if (fDiff <= fBest) {
                         first = inter;
                         fBest = fDiff;
                     }
                 }
 
-                foreach (var inter in City.GetIntersections(City.GetBlock(Target))) {
-                    var lDiff = City.Difference(Target, inter.Position).Length + City.Difference(inter.Position, Origin).Length;
+                foreach (var inter in World.GetIntersections(World.GetBlock(Target))) {
+                    var lDiff = World.Difference(Target, inter.Position).Length + World.Difference(inter.Position, Origin).Length;
                     if (lDiff <= lBest) {
                         last = inter;
                         lBest = lDiff;
@@ -159,7 +159,7 @@ namespace Zombles.Geometry
                     yield break;
                 }
 
-                var path = AStar(City, first, last, NeighboursFunc, VectorFunc)
+                var path = AStar(World, first, last, NeighboursFunc, VectorFunc)
                     .Select(x => x.Position).ToArray();
 
                 foreach (var node in path) yield return node;
@@ -174,17 +174,17 @@ namespace Zombles.Geometry
         {
             private IEnumerable<Block> _blocks;
 
-            public MicroRoute(World city, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
-                : base(city, origin, target)
+            public MicroRoute(World world, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
+                : base(world, origin, target)
             {
                 _blocks = blocks;
             }
 
-            private IEnumerable<Tuple<Tile, float>> NeighboursFunc(World city, Tile tile)
+            private IEnumerable<Tuple<Tile, float>> NeighboursFunc(World world, Tile tile)
             {
                 for (int i = 0; i < 4; ++i) {
                     var face = (Face) (1 << i);
-                    var othr = city.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal());
+                    var othr = world.GetTile(new Vector2(tile.X, tile.Y) + face.GetNormal());
 
                     if (_blocks != null && !_blocks.Any(x => x.Contains(othr.X, othr.Y))) {
                         continue;
@@ -203,7 +203,7 @@ namespace Zombles.Geometry
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
-                var nodes = AStar(City, City.GetTile(Origin), City.GetTile(Target), NeighboursFunc, VectorFunc);
+                var nodes = AStar(World, World.GetTile(Origin), World.GetTile(Target), NeighboursFunc, VectorFunc);
 
                 if (nodes == null) yield break;
 
@@ -229,9 +229,9 @@ namespace Zombles.Geometry
                 private IEnumerator<Vector2> _macroIter;
                 private IEnumerator<Vector2> _microIter;
 
-                public CombinedRouteEnumerator(World city, Vector2 origin, IEnumerable<Vector2> macro)
+                public CombinedRouteEnumerator(World world, Vector2 origin, IEnumerable<Vector2> macro)
                 {
-                    _city = city;
+                    _city = world;
                     _origin = origin;
                     _macro = macro;
 
@@ -276,22 +276,22 @@ namespace Zombles.Geometry
                 }
             }
 
-            public CombinedRoute(World city, Vector2 origin, Vector2 target)
-                : base(city, origin, target) { }
+            public CombinedRoute(World world, Vector2 origin, Vector2 target)
+                : base(world, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
             {
-                var macro = new MacroRoute(City, Origin, Target);
-                return new CombinedRouteEnumerator(City, Origin, macro);
+                var macro = new MacroRoute(World, Origin, Target);
+                return new CombinedRouteEnumerator(World, Origin, macro);
             }
         }
 
-        public static Route Find(World city, Vector2 origin, Vector2 dest)
+        public static Route Find(World world, Vector2 origin, Vector2 dest)
         {
-            return new CombinedRoute(city, origin, dest);
+            return new CombinedRoute(world, origin, dest);
         }
 
-        protected World City { get; private set; }
+        protected World World { get; private set; }
         public Vector2 Origin { get; private set; }
         public Vector2 Target { get; private set; }
 
@@ -302,7 +302,7 @@ namespace Zombles.Geometry
                 float length = 0f;
                 var prev = Origin;
 
-                var trace = new Trace(City) {
+                var trace = new Trace(World) {
                     Origin = Origin,
                     HitEntities = false,
                     HitGeometry = true,
@@ -313,13 +313,13 @@ namespace Zombles.Geometry
                     trace.Target = node;
                     if (node.Equals(Target)) {
                         if (trace.GetResult().Hit) {
-                            length += City.Difference(trace.Origin, prev).Length;
+                            length += World.Difference(trace.Origin, prev).Length;
                             trace.Origin = prev;
                         }
-                        length += City.Difference(trace.Origin, node).Length;
+                        length += World.Difference(trace.Origin, node).Length;
                         break;
                     } else if (trace.GetResult().Hit) {
-                        length += City.Difference(trace.Origin, prev).Length;
+                        length += World.Difference(trace.Origin, prev).Length;
                         trace.Origin = prev;
                     }
                     prev = node;
@@ -329,9 +329,9 @@ namespace Zombles.Geometry
             }
         }
 
-        protected Route(World city, Vector2 origin, Vector2 target)
+        protected Route(World world, Vector2 origin, Vector2 target)
         {
-            City = city;
+            World = world;
             Origin = origin;
             Target = target;
         }

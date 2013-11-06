@@ -93,7 +93,7 @@ namespace Zombles.Entities
 
         public void NavigateTo(Vector2 target)
         {
-            CurrentRoute = Route.Find(City, Entity.Position2D, target);
+            CurrentRoute = Route.Find(World, Entity.Position2D, target);
         }
 
         private void CalculatePath()
@@ -146,7 +146,7 @@ namespace Zombles.Entities
 
             _lastScan = MainWindow.Time;
 
-            Trace trace = new Trace(City) {
+            Trace trace = new Trace(World) {
                 Origin = Position2D,
                 Target = _curPath.Current,
                 HitEntities = false,

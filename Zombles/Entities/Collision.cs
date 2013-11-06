@@ -67,7 +67,7 @@ namespace Zombles.Entities
                 return Position2D + move;
 
             if ((Model & CollisionModel.Entity) != 0) {
-                NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.City,
+                NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.World,
                     new Vector2(Position2D.X, Position2D.Y), 2.0f + move.Length);
 
                 while (iter.MoveNext())
@@ -95,18 +95,18 @@ namespace Zombles.Entities
                 Block blk = null;
 
                 for (int ix = startIX; ix != xe; ix += xa, y += xa * dydx) {
-                    int wx = (ix + wxa) - (int) Math.Floor((double) (ix + wxa) / City.Width) * City.Width;
-                    int sx = (ix + sxa) - (int) Math.Floor((double) (ix + sxa) / City.Width) * City.Width;
+                    int wx = (ix + wxa) - (int) Math.Floor((double) (ix + wxa) / World.Width) * World.Width;
+                    int sx = (ix + sxa) - (int) Math.Floor((double) (ix + sxa) / World.Width) * World.Width;
 
                     int minY = (int) Math.Floor(y + Offset.Y + error);
                     int maxY = (int) Math.Floor(y + Offset.Y + Size.Y - error);
 
                     for (int iy = minY; iy <= maxY; ++iy) {
-                        int wy = iy - (int) Math.Floor((double) iy / City.Height) * City.Height;
+                        int wy = iy - (int) Math.Floor((double) iy / World.Height) * World.Height;
 
                         if (blk == null || wx < blk.X || wy < blk.Y ||
                                 wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
-                            blk = City.GetBlock(wx, wy);
+                            blk = World.GetBlock(wx, wy);
 
                         bool hit = false;
 
@@ -117,7 +117,7 @@ namespace Zombles.Entities
                         if (!hit) {
                             if (sx < blk.X || wy < blk.Y ||
                                     sx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
-                                blk = City.GetBlock(sx, wy);
+                                blk = World.GetBlock(sx, wy);
 
                             Tile ts = blk[sx, wy];
 
@@ -151,18 +151,18 @@ namespace Zombles.Entities
                 Block blk = null;
 
                 for (int iy = startIY; iy != ye; iy += ya, x += ya * dxdy) {
-                    int wy = (iy + wya) - (int) Math.Floor((double) (iy + wya) / City.Height) * City.Height;
-                    int sy = (iy + sya) - (int) Math.Floor((double) (iy + sya) / City.Height) * City.Height;
+                    int wy = (iy + wya) - (int) Math.Floor((double) (iy + wya) / World.Height) * World.Height;
+                    int sy = (iy + sya) - (int) Math.Floor((double) (iy + sya) / World.Height) * World.Height;
 
                     int minX = (int) Math.Floor(x + Offset.X + error);
                     int maxX = (int) Math.Floor(x + Offset.X + Size.X - error);
 
                     for (int ix = minX; ix <= maxX; ++ix) {
-                        int wx = ix - (int) Math.Floor((double) ix / City.Width) * City.Width;
+                        int wx = ix - (int) Math.Floor((double) ix / World.Width) * World.Width;
 
                         if (blk == null || wx < blk.X || wy < blk.Y ||
                                 wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
-                            blk = City.GetBlock(wx, wy);
+                            blk = World.GetBlock(wx, wy);
 
                         bool hit = false;
 
@@ -173,7 +173,7 @@ namespace Zombles.Entities
                         if (!hit) {
                             if (wx < blk.X || sy < blk.Y ||
                                     wx >= blk.X + blk.Width || sy >= blk.Y + blk.Height)
-                                blk = City.GetBlock(wx, sy);
+                                blk = World.GetBlock(wx, sy);
 
                             Tile ts = blk[wx, sy];
 
@@ -203,7 +203,7 @@ namespace Zombles.Entities
             if (that.Model == CollisionModel.None)
                 return move;
 
-            Vector2 diff = City.Difference(Position2D, that.Position2D);
+            Vector2 diff = World.Difference(Position2D, that.Position2D);
 
             float al = Offset.X;
             float ar = al + Size.X;

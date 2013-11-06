@@ -15,11 +15,11 @@ namespace Zombles.Geometry.Generation
 
         public World Generate(int width, int height, Random rand)
         {
-            World city = new World(width, height);
-            Subdivide(city.RootDistrict, 0, 3, 3, 3, 3, rand);
-            city.FindBlockIntersections();
-            city.UpdateGeometryVertexBuffer();
-            return city;
+            World world = new World(width, height);
+            Subdivide(world.RootDistrict, 0, 3, 3, 3, 3, rand);
+            world.FindBlockIntersections();
+            world.UpdateGeometryVertexBuffer();
+            return world;
         }
 
         private void Subdivide(District district, int depth,

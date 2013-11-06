@@ -110,7 +110,7 @@ namespace Zombles.Scripts.Entities
         public void Zombify()
         {
             StopMoving();
-            City.SplashBlood(Position2D, 4.0f);
+            World.SplashBlood(Position2D, 4.0f);
 
             if (Entity.HasComponent<Survivor>())
                 Entity.SwapComponent<Survivor, Zombie>();

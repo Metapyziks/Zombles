@@ -55,15 +55,15 @@ namespace Zombles.Entities
                 _sEntBuilders[name] = new BuilderInfo(name, baseName, builder);
         }
 
-        public static Entity Create(World city)
+        public static Entity Create(World world)
         {
-            return new Entity(city);
+            return new Entity(world);
         }
 
-        public static Entity Create(World city, String type)
+        public static Entity Create(World world, String type)
         {
             BuilderInfo info = _sEntBuilders[type];
-            Entity ent = (info.Base != null ? Create(city, info.Base) : Create(city));
+            Entity ent = (info.Base != null ? Create(world, info.Base) : Create(world));
             info.Builder(ent);
             return ent;
         }
@@ -75,7 +75,7 @@ namespace Zombles.Entities
 
         public readonly uint ID;
 
-        public readonly World City;
+        public readonly World World;
         public Block Block
         {
             get;
@@ -93,10 +93,10 @@ namespace Zombles.Entities
             set
             {
                 _position = value;
-                if (_position.X < 0 || _position.X >= City.Width)
-                    _position.X -= (int) Math.Floor(_position.X / City.Width) * City.Width;
-                if (_position.Z < 0 || _position.Z >= City.Height)
-                    _position.Z -= (int) Math.Floor(_position.Z / City.Height) * City.Height;
+                if (_position.X < 0 || _position.X >= World.Width)
+                    _position.X -= (int) Math.Floor(_position.X / World.Width) * World.Width;
+                if (_position.Z < 0 || _position.Z >= World.Height)
+                    _position.Z -= (int) Math.Floor(_position.Z / World.Height) * World.Height;
                 _posChanged = true;
             }
         }
@@ -108,18 +108,18 @@ namespace Zombles.Entities
             {
                 _position.X = value.X;
                 _position.Z = value.Y;
-                if (_position.X < 0 || _position.X >= City.Width)
-                    _position.X -= (int) Math.Floor(_position.X / City.Width) * City.Width;
-                if (_position.Z < 0 || _position.Z >= City.Height)
-                    _position.Z -= (int) Math.Floor(_position.Z / City.Height) * City.Height;
+                if (_position.X < 0 || _position.X >= World.Width)
+                    _position.X -= (int) Math.Floor(_position.X / World.Width) * World.Width;
+                if (_position.Z < 0 || _position.Z >= World.Height)
+                    _position.Z -= (int) Math.Floor(_position.Z / World.Height) * World.Height;
                 _posChanged = true;
             }
         }
 
-        private Entity(World city)
+        private Entity(World world)
         {
             ID = _sNextID++;
-            City = city;
+            World = world;
 
             _comps = new List<Component>();
             _compDict = new Dictionary<Type, Component>();
@@ -261,7 +261,7 @@ namespace Zombles.Entities
         public void UpdateBlock()
         {
             if (IsValid && _posChanged) {
-                Block newBlock = City.GetBlock(_position.X, _position.Z);
+                Block newBlock = World.GetBlock(_position.X, _position.Z);
                 if (newBlock != Block) {
                     if (Block != null)
                         Block.RemoveEntity(this);

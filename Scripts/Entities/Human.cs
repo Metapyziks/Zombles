@@ -84,13 +84,13 @@ namespace Zombles.Scripts.Entities
 
         protected virtual void OnDamaged(object sender, DamagedEventArgs e)
         {
-            City.SplashBlood(Position2D, Math.Min(0.25f * e.Damage + 0.5f, 4.0f));
+            World.SplashBlood(Position2D, Math.Min(0.25f * e.Damage + 0.5f, 4.0f));
             UpdateSpeed();
         }
 
         protected virtual void OnKilled(object sender, KilledEventArgs e)
         {
-            City.SplashBlood(Position2D, 4.0f);
+            World.SplashBlood(Position2D, 4.0f);
             StopMoving();
 
             Anim.Start(DeadAnim);
@@ -104,7 +104,7 @@ namespace Zombles.Scripts.Entities
             for (int i = 0; i < 4; ++i) {
                 Face face = (Face) (1 << i);
                 Vector2 ray = face.GetNormal() / 2.0f;
-                TraceResult res = Trace.Quick(City, Position2D, Position2D + ray);
+                TraceResult res = Trace.Quick(World, Position2D, Position2D + ray);
                 if (res.Hit)
                     Entity.Position2D -= res.Vector;
             }
@@ -119,7 +119,7 @@ namespace Zombles.Scripts.Entities
 
             FaceDirection(dir);
 
-            Trace trace = new Trace(City);
+            Trace trace = new Trace(World);
             trace.HitGeometry = true;
             trace.HitEntities = true;
             trace.HitEntityPredicate = (x => x != Entity);

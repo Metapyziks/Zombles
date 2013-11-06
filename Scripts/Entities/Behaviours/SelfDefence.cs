@@ -34,7 +34,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 _attackTarget = null;
 
-                var trace = new Trace(City);
+                var trace = new Trace(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;
@@ -48,7 +48,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                     if (!cur.GetComponent<Health>().IsAlive) continue;
 
-                    Vector2 diff = City.Difference(Position2D, cur.Position2D);
+                    Vector2 diff = World.Difference(Position2D, cur.Position2D);
                     var dist2 = diff.LengthSquared;
 
                     if (dist2 == 0 || dist2 >= closestDist2) continue;
@@ -63,7 +63,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             }
 
             if (_attackTarget != null && _attackTarget.GetComponent<Health>().IsAlive) {
-                var diff = City.Difference(Position2D, _attackTarget.Position2D);
+                var diff = World.Difference(Position2D, _attackTarget.Position2D);
 
                 if (Human.CanAttack) {
                     if (diff.LengthSquared < 0.75f) {

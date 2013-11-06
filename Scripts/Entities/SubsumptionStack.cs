@@ -21,13 +21,13 @@ namespace Zombles.Scripts.Entities
             protected Vector3 Position { get { return _stack.Position; } }
             protected Vector2 Position2D { get { return _stack.Position2D; } }
 
-            protected World City { get { return _stack.City; } }
+            protected World World { get { return _stack.World; } }
             protected Entity Entity { get { return _stack.Entity; } }
             protected Human Human { get { return _stack.Human; } }
 
             protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
             {
-                return new NearbyEntityEnumerator(City, Position2D, radius);
+                return new NearbyEntityEnumerator(World, Position2D, radius);
             }
 
             protected virtual void OnSpawn() { }

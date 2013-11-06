@@ -44,7 +44,7 @@ namespace Zombles.Scripts
         protected override void OnCityGenerated()
         {
             GameScene scene = MainWindow.CurrentScene as GameScene;
-            World city = scene.City;
+            World world = scene.World;
             Random rand = Tools.Random;
 
             int count = 512;
@@ -53,19 +53,19 @@ namespace Zombles.Scripts
             Func<Vector2> randPos = () => {
                 Vector2 pos;
                 do {
-                    pos = new Vector2(rand.NextSingle() * city.Width, rand.NextSingle() * city.Height);
-                } while (city.GetTile(pos).FloorHeight > 0);
+                    pos = new Vector2(rand.NextSingle() * world.Width, rand.NextSingle() * world.Height);
+                } while (world.GetTile(pos).FloorHeight > 0);
                 return pos;
             };
 
             for (int i = 0; i < count - zoms; ++i) {
-                Entity surv = Entity.Create(city, "survivor");
+                Entity surv = Entity.Create(world, "survivor");
                 surv.Position2D = randPos();
                 surv.Spawn();
             }
 
             for (int i = 0; i < zoms; ++i) {
-                Entity zomb = Entity.Create(city, "zombie");
+                Entity zomb = Entity.Create(world, "zombie");
                 zomb.Position2D = randPos();
                 zomb.Spawn();
             }

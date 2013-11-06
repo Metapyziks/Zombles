@@ -65,7 +65,7 @@ namespace Zombles.Scripts
         public GeometryShader GeoShader { get; private set; }
         public FlatEntityShader FlatEntShader { get; private set; }
         public CityGenerator Generator { get; private set; }
-        public World City { get; private set; }
+        public World World { get; private set; }
 
         public GameScene(MainWindow gameWindow)
             : base(gameWindow)
@@ -89,7 +89,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                City = Generator.Generate(WorldSize, WorldSize, 0x4812f34e);
+                World = Generator.Generate(WorldSize, WorldSize, 0x4812f34e);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -99,7 +99,7 @@ namespace Zombles.Scripts
                 _posText.Colour = Color4.White;
                 AddChild(_posText);
 
-                _infDisplay = new UIInfectionDisplay(City);
+                _infDisplay = new UIInfectionDisplay(World);
                 AddChild(_infDisplay);
 
                 PositionUI();
@@ -161,7 +161,7 @@ namespace Zombles.Scripts
 
             _posText.Text = string.Format("X: {0:F} Y: {1:F}", Camera.X, Camera.Z);
 
-            City.Think(e.Time);
+            World.Think(e.Time);
 
             _infDisplay.UpdateBars();
 
@@ -240,13 +240,13 @@ namespace Zombles.Scripts
             TraceResult trace = null;
 
             if (_drawTestTrace) {
-                trace = new Zombles.Geometry.Trace(City) {
+                trace = new Zombles.Geometry.Trace(World) {
                     Origin = Camera.Position2D,
                     HullSize = new Vector2(hullSize, hullSize),
                     HitGeometry = true,
                     HitEntities = false,
                     Length = 32f,
-                    Normal = City.Difference(Camera.Position2D,
+                    Normal = World.Difference(Camera.Position2D,
                         Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
                 }.GetResult();
             }
@@ -257,16 +257,16 @@ namespace Zombles.Scripts
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
                 Camera.WorldOffsetY = (i & 0x2) == 0x0 ? y0 : y1;
 
-                City.RenderGeometry(GeoShader, _hideTop);
+                World.RenderGeometry(GeoShader, _hideTop);
 
                 FlatEntShader.Begin();
-                City.RenderEntities(FlatEntShader);
+                World.RenderEntities(FlatEntShader);
                 FlatEntShader.End();
 
                 _traceShader.Begin(true);
 
                 if (_drawPathNetwork) {
-                    City.RenderIntersectionNetwork(_traceShader);
+                    World.RenderIntersectionNetwork(_traceShader);
                 }
 
                 if (_drawTestTrace) {
@@ -302,7 +302,7 @@ namespace Zombles.Scripts
         {
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
-            foreach (var ent in City.Entities) {
+            foreach (var ent in World.Entities) {
                 if (ent.HasComponent<RouteNavigation>()) {
                     ent.GetComponent<RouteNavigation>().NavigateTo(pos);
                 }
@@ -328,7 +328,7 @@ namespace Zombles.Scripts
                         GameWindow.WindowState = WindowState.Fullscreen;
                     break;
                 case 'g':
-                    City = Generator.Generate(WorldSize, WorldSize);
+                    World = Generator.Generate(WorldSize, WorldSize);
                     Plugin.CityGenerated();
                     break;
             }
@@ -338,7 +338,7 @@ namespace Zombles.Scripts
 
         public override void Dispose()
         {
-            City.Dispose();
+            World.Dispose();
 
             base.Dispose();
         }

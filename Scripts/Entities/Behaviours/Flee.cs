@@ -35,7 +35,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 _fleeDir = new Vector2();
 
-                var trace = new Trace(City);
+                var trace = new Trace(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;
@@ -47,7 +47,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                     if (!cur.GetComponent<Health>().IsAlive) continue;
 
-                    Vector2 diff = City.Difference(Position2D, cur.Position2D);
+                    Vector2 diff = World.Difference(Position2D, cur.Position2D);
                     var dist2 = diff.LengthSquared;
 
                     if (dist2 == 0) continue;

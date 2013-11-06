@@ -44,7 +44,7 @@ namespace Zombles.Scripts.Entities
                 FindTarget();
 
             if (_curTarget != null) {
-                Vector2 diff = City.Difference(Position2D, _curTarget.Position2D);
+                Vector2 diff = World.Difference(Position2D, _curTarget.Position2D);
 
                 Health targHealth = _curTarget.GetComponent<Health>();
 
@@ -65,7 +65,7 @@ namespace Zombles.Scripts.Entities
                 }
             } else {
                 if ((MainWindow.Time - _lastSeen) > 10.0 ||
-                    City.Difference(Position2D, _lastSeenPos).LengthSquared <= 1.0f) {
+                    World.Difference(Position2D, _lastSeenPos).LengthSquared <= 1.0f) {
                     int attempts = 0;
                     while (attempts++ < 16) {
                         float rad = 2.0f + Tools.Random.NextSingle() * 6.0f;
@@ -76,7 +76,7 @@ namespace Zombles.Scripts.Entities
                             Position2D.Y + (float) Math.Sin(ang) * rad
                         );
 
-                        Trace trace = new Trace(City);
+                        Trace trace = new Trace(World);
                         trace.Origin = Position2D;
                         trace.Target = _lastSeenPos;
                         trace.HitGeometry = true;
@@ -92,13 +92,13 @@ namespace Zombles.Scripts.Entities
                         _lastSeen = MainWindow.Time;
                 }
 
-                Human.StartMoving(City.Difference(Position2D, _lastSeenPos));
+                Human.StartMoving(World.Difference(Position2D, _lastSeenPos));
             }
         }
 
         private void FindTarget()
         {
-            Trace trace = new Trace(City);
+            Trace trace = new Trace(World);
             trace.Origin = Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;
@@ -114,7 +114,7 @@ namespace Zombles.Scripts.Entities
                 if (!it.Current.GetComponent<Health>().IsAlive)
                     continue;
 
-                Vector2 diff = City.Difference(Position2D, it.Current.Position2D);
+                Vector2 diff = World.Difference(Position2D, it.Current.Position2D);
 
                 float dist2 = diff.LengthSquared;
                 if (dist2 < bestDist2) {

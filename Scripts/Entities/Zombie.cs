@@ -93,7 +93,7 @@ namespace Zombles.Scripts.Entities
             base.OnThink(dt);
 
             if (MainWindow.Time - _turnTime < _bleedTime && MainWindow.Time >= _nextBleed) {
-                City.SplashBlood(Position2D, 0.5f);
+                World.SplashBlood(Position2D, 0.5f);
                 _nextBleed = MainWindow.Time + Tools.Random.NextDouble();
             }
         }

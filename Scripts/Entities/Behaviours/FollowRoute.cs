@@ -14,7 +14,7 @@ namespace Zombles.Scripts.Entities.Behaviours
         protected override bool OnThink(double dt)
         {
             if (RouteNavigation != null && RouteNavigation.HasPath) {
-                Human.StartMoving(City.Difference(Position2D, RouteNavigation.NextWaypoint));
+                Human.StartMoving(World.Difference(Position2D, RouteNavigation.NextWaypoint));
                 return true;
             }
 

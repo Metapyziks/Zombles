@@ -25,7 +25,7 @@ namespace Zombles.Scripts.Entities
 
         protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
         {
-            return new NearbyEntityEnumerator(City, Position2D, radius);
+            return new NearbyEntityEnumerator(World, Position2D, radius);
         }
     }
 }

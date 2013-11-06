@@ -18,13 +18,13 @@ namespace Zombles.Entities
         private float _hWidth;
         private float _hHeight;
 
-        public World City { get; private set; }
+        public World World { get; private set; }
         public Vector2 Center { get; private set; }
         public float Range { get; private set; }
 
-        public NearbyEntityEnumerator(World city, Vector2 center, float range)
+        public NearbyEntityEnumerator(World world, Vector2 center, float range)
         {
-            City = city;
+            World = world;
             Center = center;
             Range = range;
 
@@ -32,8 +32,8 @@ namespace Zombles.Entities
             _entEnumerator = null;
             _range2 = range * range;
 
-            _hWidth = City.Width / 2.0f;
-            _hHeight = City.Height / 2.0f;
+            _hWidth = World.Width / 2.0f;
+            _hHeight = World.Height / 2.0f;
         }
 
         public Entity Current
@@ -56,7 +56,7 @@ namespace Zombles.Entities
         {
             while (true) {
                 if (_curDistrict == null)
-                    _curDistrict = City.RootDistrict;
+                    _curDistrict = World.RootDistrict;
                 else if (_curDistrict.IsLeaf) {
                     while (_entEnumerator.MoveNext())
                         if (InRange(_entEnumerator.Current))
@@ -89,21 +89,21 @@ namespace Zombles.Entities
         {
             float xdiff = 0.0f, ydiff = 0.0f;
             if (Center.X < district.Bounds.Left)
-                xdiff = Math.Min(district.Bounds.Left - Center.X, Center.X - district.Bounds.Right + City.Width);
+                xdiff = Math.Min(district.Bounds.Left - Center.X, Center.X - district.Bounds.Right + World.Width);
             else if (Center.X > district.Bounds.Right)
-                xdiff = Math.Min(Center.X - district.Bounds.Right, district.Bounds.Left - Center.X + City.Width);
+                xdiff = Math.Min(Center.X - district.Bounds.Right, district.Bounds.Left - Center.X + World.Width);
 
             if (Center.Y < district.Bounds.Top)
-                ydiff = Math.Min(district.Bounds.Top - Center.Y, Center.Y - district.Bounds.Bottom + City.Height);
+                ydiff = Math.Min(district.Bounds.Top - Center.Y, Center.Y - district.Bounds.Bottom + World.Height);
             else if (Center.Y > district.Bounds.Bottom)
-                ydiff = Math.Min(Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + City.Height);
+                ydiff = Math.Min(Center.Y - district.Bounds.Bottom, district.Bounds.Top - Center.Y + World.Height);
 
             return xdiff * xdiff + ydiff * ydiff <= _range2;
         }
 
         private bool InRange(Entity ent)
         {
-            return City.Difference(Center, ent.Position2D).LengthSquared <= _range2;
+            return World.Difference(Center, ent.Position2D).LengthSquared <= _range2;
         }
 
         public void Reset()

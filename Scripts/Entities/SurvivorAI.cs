@@ -49,13 +49,13 @@ namespace Zombles.Scripts.Entities
             }
 
             if (RouteNavigation != null && RouteNavigation.HasPath) {
-                Human.StartMoving(City.Difference(Position2D, RouteNavigation.NextWaypoint));
+                Human.StartMoving(World.Difference(Position2D, RouteNavigation.NextWaypoint));
             } else if (MainWindow.Time - _lastSearch > TargetSearchInterval) {
                 _lastSearch = MainWindow.Time + Tools.Random.NextSingle() * TargetSearchInterval;
 
                 _fleePos = new Vector2();
 
-                Trace trace = new Trace(City);
+                Trace trace = new Trace(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;
@@ -64,7 +64,7 @@ namespace Zombles.Scripts.Entities
                 while (it.MoveNext()) {
                     Entity cur = it.Current;
                     if (cur.HasComponent<Zombie>()) {
-                        Vector2 diff = City.Difference(Position2D, cur.Position2D);
+                        Vector2 diff = World.Difference(Position2D, cur.Position2D);
                         float dist2 = diff.LengthSquared;
 
                         if (dist2 > 0) {
