@@ -201,9 +201,28 @@ namespace Zombles.Entities
             return (T) _compDict[typeof(T)];
         }
 
+        public T GetComponentOrNull<T>()
+            where T : Component
+        {
+            if (_compDict.ContainsKey(typeof(T))) {
+                return (T) _compDict[typeof(T)];
+            } else {
+                return null;
+            }
+        }
+
         public Component GetComponent(Type t)
         {
             return _compDict[t];
+        }
+
+        public Component GetComponentOrNull(Type t)
+        {
+            if (_compDict.ContainsKey(t)) {
+                return _compDict[t];
+            } else {
+                return null;
+            }
         }
 
         public void Spawn()
