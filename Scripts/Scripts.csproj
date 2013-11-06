@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Behaviours\Flee.cs" />
+    <Compile Include="Entities\Behaviours\FollowRoute.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />

@@ -22,6 +22,7 @@ namespace Zombles.Scripts.Entities
             protected Vector2 Position2D { get { return _stack.Position2D; } }
 
             protected City City { get { return _stack.City; } }
+            protected Entity Entity { get { return _stack.Entity; } }
             protected Human Human { get { return _stack.Human; } }
 
             protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
