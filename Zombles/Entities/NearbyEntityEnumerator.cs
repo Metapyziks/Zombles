@@ -18,11 +18,11 @@ namespace Zombles.Entities
         private float _hWidth;
         private float _hHeight;
 
-        public City City { get; private set; }
+        public World City { get; private set; }
         public Vector2 Center { get; private set; }
         public float Range { get; private set; }
 
-        public NearbyEntityEnumerator(City city, Vector2 center, float range)
+        public NearbyEntityEnumerator(World city, Vector2 center, float range)
         {
             City = city;
             Center = center;

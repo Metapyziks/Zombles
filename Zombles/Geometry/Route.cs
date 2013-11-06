@@ -48,14 +48,14 @@ namespace Zombles.Geometry
                 Cost = prev.Cost + costAdd;
             }
 
-            public void CalculateHeuristic(City city, Vector2 target)
+            public void CalculateHeuristic(World city, Vector2 target)
             {
                 Heuristic = city.Difference(Pos, target).Length;
             }
         }
 
-        private static IEnumerable<T> AStar<T>(City city, T origin, T target,
-            Func<City, T, IEnumerable<Tuple<T, float>>> adjFunc, Func<T, Vector2> vecFunc)
+        private static IEnumerable<T> AStar<T>(World city, T origin, T target,
+            Func<World, T, IEnumerable<Tuple<T, float>>> adjFunc, Func<T, Vector2> vecFunc)
         {
             var open = new List<NodeInfo<T>>();
             var clsd = new HashSet<NodeInfo<T>>();
@@ -116,7 +116,7 @@ namespace Zombles.Geometry
 
         private class MacroRoute : Route
         {
-            private static IEnumerable<Tuple<Intersection, float>> NeighboursFunc(City city, Intersection inter)
+            private static IEnumerable<Tuple<Intersection, float>> NeighboursFunc(World city, Intersection inter)
             {
                 return inter.Edges.Select(x => Tuple.Create(x.Key, x.Value.Length));
             }
@@ -126,7 +126,7 @@ namespace Zombles.Geometry
                 return inter.Position;
             }
 
-            public MacroRoute(City city, Vector2 origin, Vector2 target)
+            public MacroRoute(World city, Vector2 origin, Vector2 target)
                 : base(city, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
@@ -174,13 +174,13 @@ namespace Zombles.Geometry
         {
             private IEnumerable<Block> _blocks;
 
-            public MicroRoute(City city, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
+            public MicroRoute(World city, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
                 : base(city, origin, target)
             {
                 _blocks = blocks;
             }
 
-            private IEnumerable<Tuple<Tile, float>> NeighboursFunc(City city, Tile tile)
+            private IEnumerable<Tuple<Tile, float>> NeighboursFunc(World city, Tile tile)
             {
                 for (int i = 0; i < 4; ++i) {
                     var face = (Face) (1 << i);
@@ -221,7 +221,7 @@ namespace Zombles.Geometry
         {
             private class CombinedRouteEnumerator : IEnumerator<Vector2>
             {
-                private City _city;
+                private World _city;
                 private Vector2 _origin;
                 private IEnumerable<Vector2> _macro;
 
@@ -229,7 +229,7 @@ namespace Zombles.Geometry
                 private IEnumerator<Vector2> _macroIter;
                 private IEnumerator<Vector2> _microIter;
 
-                public CombinedRouteEnumerator(City city, Vector2 origin, IEnumerable<Vector2> macro)
+                public CombinedRouteEnumerator(World city, Vector2 origin, IEnumerable<Vector2> macro)
                 {
                     _city = city;
                     _origin = origin;
@@ -276,7 +276,7 @@ namespace Zombles.Geometry
                 }
             }
 
-            public CombinedRoute(City city, Vector2 origin, Vector2 target)
+            public CombinedRoute(World city, Vector2 origin, Vector2 target)
                 : base(city, origin, target) { }
 
             public override IEnumerator<Vector2> GetEnumerator()
@@ -286,12 +286,12 @@ namespace Zombles.Geometry
             }
         }
 
-        public static Route Find(City city, Vector2 origin, Vector2 dest)
+        public static Route Find(World city, Vector2 origin, Vector2 dest)
         {
             return new CombinedRoute(city, origin, dest);
         }
 
-        protected City City { get; private set; }
+        protected World City { get; private set; }
         public Vector2 Origin { get; private set; }
         public Vector2 Target { get; private set; }
 
@@ -329,7 +329,7 @@ namespace Zombles.Geometry
             }
         }
 
-        protected Route(City city, Vector2 origin, Vector2 target)
+        protected Route(World city, Vector2 origin, Vector2 target)
         {
             City = city;
             Origin = origin;

@@ -18,12 +18,12 @@ namespace Zombles.Scripts.UI
 {
     public class UIInfectionDisplay : UIObject
     {
-        private City _city;
+        private World _city;
 
         private UISprite _survivorBar;
         private UISprite _zombieBar;
 
-        public UIInfectionDisplay(City city)
+        public UIInfectionDisplay(World city)
         {
             _city = city;
 

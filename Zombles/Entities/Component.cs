@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 using OpenTK;
 
-using Zombles.Graphics;
 using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
     public abstract class Component
     {
-        public static T Create<T>( Entity ent )
+        public static T Create<T>(Entity ent)
             where T : Component
         {
-            Type t = typeof( T );
-            ConstructorInfo c = t.GetConstructor( new Type[] { typeof( Entity ) } );
-            if ( c == null )
-                throw new MissingMethodException( "Type " + t.FullName + " is missing a valid constructor." );
+            Type t = typeof(T);
+            ConstructorInfo c = t.GetConstructor(new Type[] { typeof(Entity) });
+            if (c == null)
+                throw new MissingMethodException("Type " + t.FullName + " is missing a valid constructor.");
 
-            return (T) c.Invoke( new object[] { ent } );
+            return (T) c.Invoke(new object[] { ent });
         }
 
         protected uint ID
@@ -29,7 +25,7 @@ namespace Zombles.Entities
             get { return Entity.ID; }
         }
 
-        protected City City
+        protected World City
         {
             get { return Entity.City; }
         }
@@ -46,24 +42,15 @@ namespace Zombles.Entities
 
         public readonly Entity Entity;
 
-        protected Component( Entity ent )
+        protected Component(Entity ent)
         {
             Entity = ent;
         }
 
-        public virtual void OnSpawn()
-        {
+        public virtual void OnSpawn() { }
 
-        }
+        public virtual void OnThink(double dt) { }
 
-        public virtual void OnThink( double dt )
-        {
-
-        }
-
-        public virtual void OnRemove()
-        {
-
-        }
+        public virtual void OnRemove() { }
     }
 }

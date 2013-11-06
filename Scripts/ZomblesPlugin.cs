@@ -44,7 +44,7 @@ namespace Zombles.Scripts
         protected override void OnCityGenerated()
         {
             GameScene scene = MainWindow.CurrentScene as GameScene;
-            City city = scene.City;
+            World city = scene.City;
             Random rand = Tools.Random;
 
             int count = 512;

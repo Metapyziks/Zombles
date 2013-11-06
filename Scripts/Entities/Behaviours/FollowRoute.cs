@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Zombles.Entities;
+﻿using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities.Behaviours
 {
@@ -13,9 +8,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         protected override void OnSpawn()
         {
-            if (Entity.HasComponent<RouteNavigation>()) {
-                RouteNavigation = Entity.GetComponent<RouteNavigation>();
-            }
+            RouteNavigation = Entity.GetComponentOrNull<RouteNavigation>();
         }
 
         protected override bool OnThink(double dt)

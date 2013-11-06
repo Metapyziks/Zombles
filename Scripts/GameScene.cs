@@ -65,7 +65,7 @@ namespace Zombles.Scripts
         public GeometryShader GeoShader { get; private set; }
         public FlatEntityShader FlatEntShader { get; private set; }
         public CityGenerator Generator { get; private set; }
-        public City City { get; private set; }
+        public World City { get; private set; }
 
         public GameScene(MainWindow gameWindow)
             : base(gameWindow)

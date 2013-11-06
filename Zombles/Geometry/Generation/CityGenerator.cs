@@ -7,15 +7,15 @@ namespace Zombles.Geometry.Generation
 {
     public class CityGenerator
     {
-        public City Generate(int width, int height, int seed = 0)
+        public World Generate(int width, int height, int seed = 0)
         {
             Random rand = (seed == 0 ? new Random() : new Random(seed));
             return Generate(width, height, rand);
         }
 
-        public City Generate(int width, int height, Random rand)
+        public World Generate(int width, int height, Random rand)
         {
-            City city = new City(width, height);
+            World city = new World(width, height);
             Subdivide(city.RootDistrict, 0, 3, 3, 3, 3, rand);
             city.FindBlockIntersections();
             city.UpdateGeometryVertexBuffer();

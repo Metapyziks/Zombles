@@ -55,12 +55,12 @@ namespace Zombles.Entities
                 _sEntBuilders[name] = new BuilderInfo(name, baseName, builder);
         }
 
-        public static Entity Create(City city)
+        public static Entity Create(World city)
         {
             return new Entity(city);
         }
 
-        public static Entity Create(City city, String type)
+        public static Entity Create(World city, String type)
         {
             BuilderInfo info = _sEntBuilders[type];
             Entity ent = (info.Base != null ? Create(city, info.Base) : Create(city));
@@ -75,7 +75,7 @@ namespace Zombles.Entities
 
         public readonly uint ID;
 
-        public readonly City City;
+        public readonly World City;
         public Block Block
         {
             get;
@@ -116,7 +116,7 @@ namespace Zombles.Entities
             }
         }
 
-        private Entity(City city)
+        private Entity(World city)
         {
             ID = _sNextID++;
             City = city;

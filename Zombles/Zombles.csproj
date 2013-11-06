@@ -68,7 +68,7 @@
     <Compile Include="Entities\Render2D.cs" />
     <Compile Include="Entities\RouteNavigation.cs" />
     <Compile Include="Geometry\Block.cs" />
-    <Compile Include="Geometry\City.cs" />
+    <Compile Include="Geometry\World.cs" />
     <Compile Include="Geometry\District.cs" />
     <Compile Include="Geometry\DistrictEnumerator.cs" />
     <Compile Include="Geometry\Face.cs" />

@@ -11,7 +11,7 @@ namespace Zombles.Geometry
 {
     public class Trace
     {
-        public static TraceResult Quick(City city, Vector2 start, Vector2 end,
+        public static TraceResult Quick(World city, Vector2 start, Vector2 end,
             bool hitEnts = false, bool hitGeom = true, Vector2 hullSize = default( Vector2 ))
         {
             return new Trace(city) {
@@ -25,7 +25,7 @@ namespace Zombles.Geometry
 
         private Vector2 _normal;
 
-        public readonly City City;
+        public readonly World City;
 
         public Vector2 Origin { get; set; }
         public Vector2 Normal
@@ -69,7 +69,7 @@ namespace Zombles.Geometry
             }
         }
 
-        public Trace(City city)
+        public Trace(World city)
         {
             City = city;
 
@@ -386,7 +386,7 @@ namespace Zombles.Geometry
 
     public class TraceResult
     {
-        public readonly City City;
+        public readonly World City;
 
         public Vector2 Origin { get; private set; }
         public Vector2 Normal { get; private set; }

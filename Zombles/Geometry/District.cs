@@ -17,7 +17,7 @@ namespace Zombles.Geometry
     {
         private List<Entity> _unspawnedEnts;
 
-        public City City { get; private set; }
+        public World City { get; private set; }
 
         public Rectangle Bounds { get; private set; }
         public int LongSide { get; private set; }
@@ -42,7 +42,7 @@ namespace Zombles.Geometry
 
         public Block Block { get; private set; }
 
-        public District(City city, int x, int y, int width, int height)
+        public District(World city, int x, int y, int width, int height)
             : this((District) null, x, y, width, height)
         {
             City = city;

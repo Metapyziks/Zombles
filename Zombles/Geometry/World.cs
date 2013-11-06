@@ -13,7 +13,7 @@ using OpenTKTK.Textures;
 
 namespace Zombles.Geometry
 {
-    public class City : IEnumerable<Block>, IDisposable
+    public class World : IEnumerable<Block>, IDisposable
     {
         private const int BloodResolution = 2;
 
@@ -31,7 +31,7 @@ namespace Zombles.Geometry
 
         public IEnumerable<Entity> Entities { get { return this.SelectMany(x => x); } }
 
-        public City(int width, int height)
+        public World(int width, int height)
         {
             RootDistrict = new District(this, 0, 0, width, height);
 

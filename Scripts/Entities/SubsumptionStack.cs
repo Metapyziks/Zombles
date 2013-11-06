@@ -21,7 +21,7 @@ namespace Zombles.Scripts.Entities
             protected Vector3 Position { get { return _stack.Position; } }
             protected Vector2 Position2D { get { return _stack.Position2D; } }
 
-            protected City City { get { return _stack.City; } }
+            protected World City { get { return _stack.City; } }
             protected Entity Entity { get { return _stack.Entity; } }
             protected Human Human { get { return _stack.Human; } }
 
