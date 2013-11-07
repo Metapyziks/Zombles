@@ -135,8 +135,7 @@ namespace Zombles.Entities
             T comp = Component.Create<T>(this);
             Type type = typeof(T);
 
-            do
-                _compDict.Add(type, comp);
+            do _compDict.Add(type, comp);
             while ((type = type.BaseType) != typeof(Component));
 
             _comps.Add(comp);
@@ -150,8 +149,7 @@ namespace Zombles.Entities
             T comp = GetComponent<T>();
             Type type = typeof(T);
 
-            do
-                _compDict.Remove(type);
+            do _compDict.Remove(type);
             while ((type = type.BaseType) != typeof(Component));
 
             _comps.Remove(comp);
@@ -168,15 +166,13 @@ namespace Zombles.Entities
 
             Type type = old.GetType();
 
-            do
-                _compDict.Remove(type);
+            do _compDict.Remove(type);
             while ((type = type.BaseType) != typeof(Component));
 
             TNew comp = Component.Create<TNew>(this);
             type = typeof(TNew);
 
-            do
-                _compDict.Add(type, comp);
+            do _compDict.Add(type, comp);
             while ((type = type.BaseType) != typeof(Component));
 
             _comps[_comps.IndexOf(old)] = comp;
