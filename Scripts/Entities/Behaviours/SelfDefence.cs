@@ -4,8 +4,7 @@ using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Behaviours
 {
-    public class SelfDefence<T> : SubsumptionStack.Layer
-        where T : Component
+    public class SelfDefence : SubsumptionStack.Layer
     {
         public double MinAttackCheckPeriod { get; set; }
         public double MaxAttackCheckPeriod { get; set; }
@@ -44,7 +43,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 var it = SearchNearbyEnts(AttackRadius);
                 while (it.MoveNext()) {
                     var cur = it.Current;
-                    if (!cur.HasComponent<T>() || !cur.HasComponent<Health>()) continue;
+                    if (!cur.HasComponent<Zombie>() || !cur.HasComponent<Health>()) continue;
 
                     if (!cur.GetComponent<Health>().IsAlive) continue;
 

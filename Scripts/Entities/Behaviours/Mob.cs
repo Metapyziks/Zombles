@@ -3,14 +3,89 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
+using Zombles.Entities;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Behaviours
 {
     public class Mob : SubsumptionStack.Layer
     {
+        public double MinMobCheckPeriod { get; set; }
+        public double MaxMobCheckPeriod { get; set; }
+
+        public float MobRadius { get; set; }
+        public float MaxMobRatio { get; set; }
+
+        protected double _nextMobCheck;
+        protected Entity _mobTarget;
+
+        protected override void OnSpawn()
+        {
+            _nextMobCheck = MainWindow.Time;
+            _mobTarget = null;
+
+            MinMobCheckPeriod = 0.25;
+            MaxMobCheckPeriod = 0.5;
+
+            MaxMobRatio = 0.25f;
+
+            MobRadius = 6f + Tools.Random.NextSingle() * 2f;
+        }
+
         protected override bool OnThink(double dt)
         {
-            throw new NotImplementedException();
+            if (MainWindow.Time >= _nextMobCheck) {
+                _nextMobCheck = MainWindow.Time + Tools.Random.NextDouble(
+                    MinMobCheckPeriod, MaxMobCheckPeriod);
+
+                int survivors = 0;
+                int zombies = 0;
+
+                var trace = new Trace(World);
+                trace.Origin = Position2D;
+                trace.HitGeometry = true;
+                trace.HitEntities = false;
+
+                float closestDist2 = float.MaxValue;
+
+                _mobTarget = null;
+
+                var it = SearchNearbyEnts(MobRadius);
+                while (it.MoveNext()) {
+                    var cur = it.Current;
+                    if (!cur.HasComponent<Human>() || !cur.HasComponent<Health>()) continue;
+
+                    if (!cur.GetComponent<Health>().IsAlive) continue;
+
+                    if (cur.HasComponent<Zombie>()) {
+                        ++zombies;
+
+                        Vector2 diff = World.Difference(Position2D, cur.Position2D);
+                        var dist2 = diff.LengthSquared;
+
+                        if (dist2 == 0 || dist2 >= closestDist2) continue;
+
+                        trace.Target = cur.Position2D;
+
+                        if (trace.GetResult().Hit) continue;
+
+                        _mobTarget = cur;
+                        closestDist2 = dist2;
+                    } else ++survivors;
+                }
+
+                if (zombies > MaxMobRatio * survivors) {
+                    _mobTarget = null;
+                }
+            }
+
+            if (_mobTarget != null && _mobTarget.GetComponent<Health>().IsAlive) {
+                Human.StartMoving(World.Difference(Position2D, _mobTarget.Position2D));
+                return true;
+            }
+
+            return false;
         }
     }
 }

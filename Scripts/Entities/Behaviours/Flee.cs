@@ -5,8 +5,7 @@ using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Behaviours
 {
-    public class Flee<T> : SubsumptionStack.Layer
-        where T : Component
+    public class Flee : SubsumptionStack.Layer
     {
         public double MinFleeCheckPeriod { get; set; }
         public double MaxFleeCheckPeriod { get; set; }
@@ -44,7 +43,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 var it = SearchNearbyEnts(FleeRadius);
                 while (it.MoveNext()) {
                     var cur = it.Current;
-                    if (!cur.HasComponent<T>() || !cur.HasComponent<Health>()) continue;
+                    if (!cur.HasComponent<Zombie>() || !cur.HasComponent<Health>()) continue;
 
                     if (!cur.GetComponent<Health>().IsAlive) continue;
 
@@ -70,15 +69,15 @@ namespace Zombles.Scripts.Entities.Behaviours
                 var wallAvoid = new Vector2();
 
                 if (tile.IsWallSolid(Face.West) && !tile.IsWallSolid(Face.East)) {
-                    wallAvoid.X += Math.Max(0f, 0.75f - (Position2D.X - Mathf.Floor(Position2D.X)));
+                    wallAvoid.X += 1f - (Position2D.X - Mathf.Floor(Position2D.X));
                 } else if (tile.IsWallSolid(Face.East) && !tile.IsWallSolid(Face.West)) {
-                    wallAvoid.X -= Math.Max(0f, (Position2D.X - Mathf.Floor(Position2D.X) - 0.25f));
+                    wallAvoid.X -= Position2D.X - Mathf.Floor(Position2D.X);
                 }
 
                 if (tile.IsWallSolid(Face.North) && !tile.IsWallSolid(Face.South)) {
-                    wallAvoid.Y += Math.Max(0f, 0.75f - (Position2D.Y - Mathf.Floor(Position2D.Y)));
+                    wallAvoid.Y += 1f - (Position2D.Y - Mathf.Floor(Position2D.Y));
                 } else if (tile.IsWallSolid(Face.South) && !tile.IsWallSolid(Face.North)) {
-                    wallAvoid.Y -= Math.Max(0f, (Position2D.Y - Mathf.Floor(Position2D.Y) - 0.25f));
+                    wallAvoid.Y -= Position2D.Y - Mathf.Floor(Position2D.Y);
                 }
 
                 Human.StartMoving(_fleeDir + wallAvoid);

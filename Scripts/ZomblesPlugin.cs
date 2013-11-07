@@ -29,8 +29,9 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
-                    .Push<Entities.Behaviours.Flee<Zombie>>()
-                    .Push<Entities.Behaviours.SelfDefence<Zombie>>();
+                    .Push<Entities.Behaviours.Flee>()
+                    .Push<Entities.Behaviours.Mob>()
+                    .Push<Entities.Behaviours.SelfDefence>();
             });
 
             Entity.Register("zombie", "human", ent => {
