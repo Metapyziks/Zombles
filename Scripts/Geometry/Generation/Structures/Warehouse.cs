@@ -46,7 +46,7 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                 GenHelper.BuildWall(tiles, X, Y, Face.West, SizeY, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X, Y + SizeY - 1, Face.South, SizeX, rheight + 1, texFunc);
                 GenHelper.BuildWall(tiles, X + SizeX - 1, Y, Face.East, SizeY, rheight + 1, texFunc);
-
+                
                 var entrFace = rand.NextFace(EntranceFaces);
                 var doorway = new GarageDoor {
                     Direction = entrFace,

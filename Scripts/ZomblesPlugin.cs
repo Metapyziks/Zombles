@@ -48,7 +48,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = 512;
-            int zoms = Math.Max(count * 3 / 4, 8);
+            int zoms = Math.Max(count / 8, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;

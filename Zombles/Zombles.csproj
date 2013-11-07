@@ -68,7 +68,6 @@
     <Compile Include="Entities\Render2D.cs" />
     <Compile Include="Entities\RouteNavigation.cs" />
     <Compile Include="Geometry\Block.cs" />
-    <Compile Include="Geometry\Hint.cs" />
     <Compile Include="Geometry\World.cs" />
     <Compile Include="Geometry\District.cs" />
     <Compile Include="Geometry\DistrictEnumerator.cs" />
@@ -91,6 +90,7 @@
     <Compile Include="Graphics\FrameSprite.cs" />
     <Compile Include="Graphics\GeometryShader.cs" />
     <Compile Include="Graphics\WorldShader.cs" />
+    <Compile Include="Mathf.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Graphics\PixelText.cs" />

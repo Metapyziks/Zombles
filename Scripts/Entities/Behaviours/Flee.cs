@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
 
@@ -65,7 +66,22 @@ namespace Zombles.Scripts.Entities.Behaviours
             }
 
             if (_fleeDir.LengthSquared > 0f) {
-                Human.StartMoving(_fleeDir);
+                var tile = World.GetTile(Position2D);
+                var wallAvoid = new Vector2();
+
+                if (tile.IsWallSolid(Face.West) && !tile.IsWallSolid(Face.East)) {
+                    wallAvoid.X += Math.Max(0f, 0.75f - (Position2D.X - Mathf.Floor(Position2D.X)));
+                } else if (tile.IsWallSolid(Face.East) && !tile.IsWallSolid(Face.West)) {
+                    wallAvoid.X -= Math.Max(0f, (Position2D.X - Mathf.Floor(Position2D.X) - 0.25f));
+                }
+
+                if (tile.IsWallSolid(Face.North) && !tile.IsWallSolid(Face.South)) {
+                    wallAvoid.Y += Math.Max(0f, 0.75f - (Position2D.Y - Mathf.Floor(Position2D.Y)));
+                } else if (tile.IsWallSolid(Face.South) && !tile.IsWallSolid(Face.North)) {
+                    wallAvoid.Y -= Math.Max(0f, (Position2D.Y - Mathf.Floor(Position2D.Y) - 0.25f));
+                }
+
+                Human.StartMoving(_fleeDir + wallAvoid);
                 return true;
             } else {
                 return false;
