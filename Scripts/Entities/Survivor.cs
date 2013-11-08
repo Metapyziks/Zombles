@@ -112,11 +112,13 @@ namespace Zombles.Scripts.Entities
             StopMoving();
             World.SplashBlood(Position2D, 4.0f);
 
-            if (Entity.HasComponent<Survivor>())
-                Entity.SwapComponent<Survivor, Zombie>();
+            Entity.SwapComponent<Human, Zombie>();
 
-            if (Entity.HasComponent<HumanControl>())
+            if (Entity.HasComponent<HumanControl>()) {
                 Entity.SwapComponent<HumanControl, ZombieAI>();
+            } else {
+                Entity.AddComponent<ZombieAI>();
+            }
 
             Entity.UpdateComponents();
 

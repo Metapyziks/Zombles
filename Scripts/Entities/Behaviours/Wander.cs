@@ -22,11 +22,22 @@ namespace Zombles.Scripts.Entities.Behaviours
         {
             if (MainWindow.Time >= _nextDirTime) {
                 _nextDirTime = MainWindow.Time + Tools.Random.NextDouble(MinRedirectPeriod, MaxRedirectPeriod);
-                _wanderDir = new Vector2(Tools.Random.NextSingle(-1f, 1f), Tools.Random.NextSingle(-1f, 1f));
+
+                if (Tools.Random.NextDouble() < 0.5) {
+                    _wanderDir = Vector2.Zero;
+                    Human.StopMoving();
+                    return true;
+                } else {
+                    _wanderDir = new Vector2(Tools.Random.NextSingle(-1f, 1f), Tools.Random.NextSingle(-1f, 1f));
+                }
             }
 
-            Human.StartMoving(_wanderDir);
-            return true;
+            if (_wanderDir.LengthSquared > 0) {
+                Human.StartMoving(_wanderDir);
+                return true;
+            }
+
+            return false;
         }
     }
 }
