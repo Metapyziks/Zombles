@@ -1,6 +1,0 @@
-[submodule "ResourceLibrary"]
-	path = ResourceLibrary
-	url = git@github.com:Metapyziks/ResourceLibrary.git
-[submodule "OpenTKTK"]
-	path = OpenTKTK
-	url = git@github.com:Metapyziks/OpenTKTK.git
