@@ -1,4 +1,8 @@
-﻿using System;
+﻿#define SUBSUMPTIVE
+
+using System;
+using System.Linq;
+using System.Diagnostics;
 
 using OpenTK;
 
@@ -7,11 +11,22 @@ using Zombles.Geometry;
 using Zombles.Entities;
 
 using Zombles.Scripts.Entities;
+using System.IO;
 
 namespace Zombles.Scripts
 {
     public class ZomblesPlugin : Plugin
     {
+        private double _lastAliveCheck;
+        private int _lastSurvivors;
+        private int _lastZombies;
+
+#if SUBSUMPTIVE
+        private String _logFileName = "subsumptive.log";
+#else
+        private String _logFileName = "original.log";
+#endif
+
         protected override void OnInitialize()
         {
             Entity.Register("human", ent => {
@@ -26,12 +41,16 @@ namespace Zombles.Scripts
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<RouteNavigation>();
+#if SUBSUMPTIVE
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.Mob>()
                     .Push<Entities.Behaviours.SelfDefence>();
+#else
+                ent.AddComponent<SurvivorAI>();
+#endif
             });
 
             Entity.Register("zombie", "human", ent => {
@@ -40,6 +59,8 @@ namespace Zombles.Scripts
             });
 
             MainWindow.SetScene(new GameScene(Game));
+
+            File.Create(_logFileName).Close();
         }
 
         protected override void OnCityGenerated()
@@ -49,7 +70,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = 512;
-            int zoms = Math.Max(count / 8, 8);
+            int zoms = Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;
@@ -69,6 +90,31 @@ namespace Zombles.Scripts
                 Entity zomb = Entity.Create(world, "zombie");
                 zomb.Position2D = randPos();
                 zomb.Spawn();
+            }
+        }
+
+        protected override void OnThink(double dt)
+        {
+            base.OnThink(dt);
+
+            if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
+                World world = (Scene as GameScene).World;
+
+                _lastAliveCheck = MainWindow.Time;
+
+                int survivors = world.Entities.Where(x => x.HasComponent<Survivor>())
+                .Count(x => x.GetComponent<Health>().IsAlive);
+
+                int zombies = world.Entities.Where(x => x.HasComponent<Zombie>())
+                    .Count(x => x.GetComponent<Health>().IsAlive);
+
+                if (survivors != _lastSurvivors || zombies != _lastZombies) {
+                    _lastSurvivors = survivors;
+                    _lastZombies = zombies;
+                    var log = String.Format("{0} {1} {2}", _lastAliveCheck, survivors, zombies);
+                    Debug.WriteLine(log);
+                    File.AppendAllText(_logFileName, log + Environment.NewLine);
+                }
             }
         }
     }

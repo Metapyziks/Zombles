@@ -89,12 +89,14 @@ namespace Zombles.Geometry
 
         public Block GetBlock(Vector2 pos)
         {
+            pos = Wrap(pos);
+
             return RootDistrict.GetBlock(pos.X, pos.Y);
         }
 
         public Block GetBlock(float x, float y)
         {
-            return RootDistrict.GetBlock(x, y);
+            return GetBlock(new Vector2(x, y));
         }
 
         public Tile GetTile(Vector2 pos)
