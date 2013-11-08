@@ -45,8 +45,8 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
-                    .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.Mob>()
+                    .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.SelfDefence>();
 #else
                 ent.AddComponent<SurvivorAI>();
@@ -93,29 +93,29 @@ namespace Zombles.Scripts
             }
         }
 
-        protected override void OnThink(double dt)
-        {
-            base.OnThink(dt);
+        //protected override void OnThink(double dt)
+        //{
+        //    base.OnThink(dt);
 
-            if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
-                World world = (Scene as GameScene).World;
+        //    if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
+        //        World world = (Scene as GameScene).World;
 
-                _lastAliveCheck = MainWindow.Time;
+        //        _lastAliveCheck = MainWindow.Time;
 
-                int survivors = world.Entities.Where(x => x.HasComponent<Survivor>())
-                .Count(x => x.GetComponent<Health>().IsAlive);
+        //        int survivors = world.Entities.Where(x => x.HasComponent<Survivor>())
+        //        .Count(x => x.GetComponent<Health>().IsAlive);
 
-                int zombies = world.Entities.Where(x => x.HasComponent<Zombie>())
-                    .Count(x => x.GetComponent<Health>().IsAlive);
+        //        int zombies = world.Entities.Where(x => x.HasComponent<Zombie>())
+        //            .Count(x => x.GetComponent<Health>().IsAlive);
 
-                if (survivors != _lastSurvivors || zombies != _lastZombies) {
-                    _lastSurvivors = survivors;
-                    _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2}", _lastAliveCheck, survivors, zombies);
-                    Debug.WriteLine(log);
-                    File.AppendAllText(_logFileName, log + Environment.NewLine);
-                }
-            }
-        }
+        //        if (survivors != _lastSurvivors || zombies != _lastZombies) {
+        //            _lastSurvivors = survivors;
+        //            _lastZombies = zombies;
+        //            var log = String.Format("{0} {1} {2}", _lastAliveCheck, survivors, zombies);
+        //            Debug.WriteLine(log);
+        //            File.AppendAllText(_logFileName, log + Environment.NewLine);
+        //        }
+        //    }
+        //}
     }
 }

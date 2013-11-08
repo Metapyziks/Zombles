@@ -291,6 +291,11 @@ namespace Zombles.Geometry
             return new CombinedRoute(world, origin, dest);
         }
 
+        public static Route FindRefined(World world, Vector2 origin, Vector2 dest)
+        {
+            return new MicroRoute(world, origin, dest);
+        }
+
         protected World World { get; private set; }
         public Vector2 Origin { get; private set; }
         public Vector2 Target { get; private set; }

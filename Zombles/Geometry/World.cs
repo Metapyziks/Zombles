@@ -169,6 +169,16 @@ namespace Zombles.Geometry
             }
         }
 
+        public bool IsPositionNavigatable(Vector2 pos)
+        {
+            if (GetTile(pos).FloorHeight > 0) return false;
+
+            var inter = GetIntersections(GetBlock(pos))
+                .OrderBy(x => (pos - x.Position).LengthSquared).First();
+
+            return Route.FindRefined(this, pos, inter.Position).Count() > 0;
+        }
+
         public void UpdateGeometryVertexBuffer()
         {
             int count = RootDistrict.GetGeometryVertexCount();

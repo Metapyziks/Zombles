@@ -302,6 +302,11 @@ namespace Zombles.Scripts
         {
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
+            if (!World.IsPositionNavigatable(pos)) {
+                Debug.WriteLine("Position {0} not navigatable", pos);
+                return;
+            }
+
             foreach (var ent in World.Entities) {
                 if (ent.HasComponent<RouteNavigation>()) {
                     ent.GetComponent<RouteNavigation>().NavigateTo(pos);
