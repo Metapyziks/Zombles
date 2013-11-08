@@ -169,7 +169,7 @@ namespace Zombles.Geometry
             }
         }
 
-        public bool IsPositionNavigatable(Vector2 pos)
+        public bool IsPositionNavigable(Vector2 pos)
         {
             if (GetTile(pos).FloorHeight > 0) return false;
 
