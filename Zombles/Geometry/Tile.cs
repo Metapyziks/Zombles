@@ -1,6 +1,7 @@
 ﻿using System;
 
 using OpenTK;
+using System.Linq;
 
 namespace Zombles.Geometry
 {
@@ -73,7 +74,7 @@ namespace Zombles.Geometry
                 ++count;
             }
 
-            int i;
+                for (int j = 0; j < 4; ++j) {
             for (i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
                 for (int j = 0; j < 4; ++j) {
                     if (WallTileIndices[j, i] != 0xffff) {
@@ -83,6 +84,12 @@ namespace Zombles.Geometry
             }
 
             return count * 4;
+        }
+
+        public int GetWallEdgeVertexCount()
+        {
+            return Enumerable.Range(0, 4).Sum(x =>
+                IsWallSolid((Face) (1 << x)) ? 4 : 0);
         }
 
         public void GetBaseVertices(float[] verts, ref int offset)
@@ -115,6 +122,17 @@ namespace Zombles.Geometry
                     GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
         }
 
+        private void GetWallEdgeVertices(float[] verts, ref int offset)
+        {
+            for (int j = 0; j < 4; ++j) {
+                for (int i = WallHeight - 1; i >= FloorHeight; --i) {
+                    if (WallTileIndices[j, i] == 0xffff) continue;
+                    GetWallEdgeVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                    break;
+                }
+            }
+        }
+
         private void GetFloorVertices(int level, Face slant, ushort tile, float[] verts, ref int i)
         {
             if (tile == 0xffff)
@@ -145,6 +163,57 @@ namespace Zombles.Geometry
                 case Face.West:
                     tl = new Vector3(X + 0.0f, level + 0.5f, Y + 1.0f);
                     br = new Vector3(X + 0.0f, level + 0.0f, Y + 0.0f);
+                    break;
+                case Face.North:
+                    tl = new Vector3(X + 0.0f, level + 0.5f, Y + 0.0f);
+                    br = new Vector3(X + 1.0f, level + 0.0f, Y + 0.0f);
+                    break;
+                case Face.East:
+                    tl = new Vector3(X + 1.0f, level + 0.5f, Y + 0.0f);
+                    br = new Vector3(X + 1.0f, level + 0.0f, Y + 1.0f);
+                    break;
+                case Face.South:
+                    tl = new Vector3(X + 1.0f, level + 0.5f, Y + 1.0f);
+                    br = new Vector3(X + 0.0f, level + 0.0f, Y + 1.0f);
+                    break;
+                default:
+                    return;
+            }
+
+            int texData = tile << (4 + 4);
+            int shade = (((int) face) & 0xa) != 0 ? 8 : 0;
+            int tt = texData | (((level + 1) & 0xf) << 4) | shade;
+            int bt = texData | ((level & 0xf) << 4) | shade;
+
+            int ol = (level & 0x1) << 1;
+
+            int xFace = (((int) face & 0xa) != 0 ? 0x1000 : 0);
+            int yFace = (((int) face & 0xc) != 0 ? 0x1000 : 0);
+
+            verts[i++] = ((int) tl.X & 0xfff) | xFace;
+            verts[i++] = ((int) tl.Z & 0xfff) | yFace;
+            verts[i++] = tt | (0x0 + ol);
+            verts[i++] = ((int) br.X & 0xfff) | xFace;
+            verts[i++] = ((int) br.Z & 0xfff) | yFace;
+            verts[i++] = tt | (0x1 + ol);
+            verts[i++] = ((int) br.X & 0xfff) | xFace;
+            verts[i++] = ((int) br.Z & 0xfff) | yFace;
+            verts[i++] = bt | (0x3 + ol);
+            verts[i++] = ((int) tl.X & 0xfff) | xFace;
+            verts[i++] = ((int) tl.Z & 0xfff) | yFace;
+            verts[i++] = bt | (0x2 + ol);
+        }
+
+        private void GetWallEdgeVertices(Face face, int level, ushort tile, float[] verts, ref int i)
+        {
+            Vector3 tl, br;
+
+            float ed = 1f / 8f;
+
+            switch (face) {
+                case Face.West:
+                    tl = new Vector3(X + 0f, level + 1f, Y + 1f);
+                    br = new Vector3(X + 0f, level + 1f, Y + ed);
                     break;
                 case Face.North:
                     tl = new Vector3(X + 0.0f, level + 0.5f, Y + 0.0f);
