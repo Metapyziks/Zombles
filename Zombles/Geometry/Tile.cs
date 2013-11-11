@@ -44,10 +44,14 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if (FloorHeight <= 2 && FloorTileIndex != 0xffff)
+            if (FloorHeight <= 2 && FloorTileIndex != 0xffff) {
                 ++count;
-            if (RoofHeight > FloorHeight && RoofHeight == 1 && RoofTileIndex != 0xffff)
+            }
+
+            if (RoofHeight > FloorHeight && RoofHeight == 1 && RoofTileIndex != 0xffff) {
                 ++count;
+            }
+
             int i;
             for (i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i)
                 for (int j = 0; j < 4; ++j)
@@ -61,30 +65,41 @@ namespace Zombles.Geometry
         {
             int count = 0;
 
-            if (FloorHeight > 2 && FloorTileIndex != 0xffff)
+            if (FloorHeight > 2 && FloorTileIndex != 0xffff) {
                 ++count;
-            if (RoofHeight > FloorHeight && RoofHeight > 1 && RoofTileIndex != 0xffff)
+            }
+
+            if (RoofHeight > FloorHeight && RoofHeight > 1 && RoofTileIndex != 0xffff) {
                 ++count;
+            }
+
             int i;
-            for (i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i)
-                for (int j = 0; j < 4; ++j)
-                    if (WallTileIndices[j, i] != 0xffff)
+            for (i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    if (WallTileIndices[j, i] != 0xffff) {
                         ++count;
+                    }
+                }
+            }
 
             return count * 4;
         }
 
         public void GetBaseVertices(float[] verts, ref int offset)
         {
-            if (FloorHeight <= 2)
+            if (FloorHeight <= 2) {
                 GetFloorVertices(FloorHeight, Face.None, FloorTileIndex, verts, ref offset);
+            } 
 
-            if (RoofHeight > FloorHeight && RoofHeight == 1)
+            if (RoofHeight > FloorHeight && RoofHeight == 1) {
                 GetFloorVertices(RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset);
+            }
 
-            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i)
-                for (int j = 0; j < 4; ++j)
+            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+                for (int j = 0; j < 4; ++j) {
                     GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                }
+            }
         }
 
         public void GetTopVertices(float[] verts, ref int offset)
