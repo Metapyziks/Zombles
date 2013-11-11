@@ -74,8 +74,7 @@ namespace Zombles.Geometry
                 ++count;
             }
 
-                for (int j = 0; j < 4; ++j) {
-            for (i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
+            for (int i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
                 for (int j = 0; j < 4; ++j) {
                     if (WallTileIndices[j, i] != 0xffff) {
                         ++count;
