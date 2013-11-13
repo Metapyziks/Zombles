@@ -45,17 +45,41 @@ namespace Zombles.Geometry
 
         public int GetBaseFlatVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            if (FloorHeight <= 2 && FloorTileIndex != 0xffff) count += 4;
+            if (RoofHeight > FloorHeight && RoofHeight < 2 && RoofTileIndex != 0xffff) count += 4;
+
+            return count;
         }
 
         public int GetBaseWallVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    if (WallTileIndices[j, i] != 0xffff) count += 4;
+                }
+            }
+
+            return count;
         }
 
         public int GetBaseEdgeVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            for (int j = 0; j < 4; ++j) {
+                for (int i = Math.Min(WallHeight, (byte) 2) - 1; i >= FloorHeight; --i) {
+                    if (WallTileIndices[j, i] != 0xffff) {
+                        count += 4;
+                        break;
+                    }
+                }
+            }
+
+            return count;
         }
 
         public int GetTopFlatVertexCount()
@@ -103,7 +127,7 @@ namespace Zombles.Geometry
             throw new NotImplementedException();
         }
 
-        private void GetFloorVertices(int level, Face slant, ushort tile, float[] verts, ref int i)
+        private void GetFlatVertices(int level, Face slant, ushort tile, float[] verts, ref int i)
         {
             if (tile == 0xffff) return;
 
@@ -172,7 +196,7 @@ namespace Zombles.Geometry
             verts[i++] = bt | (0x2 + ol);
         }
 
-        private void GetWallEdgeVertices(Face face, int level, ushort tile, float[] verts, ref int i)
+        private void GetEdgeVertices(Face face, int level, ushort tile, float[] verts, ref int i)
         {
             Vector3 tl, br;
 
