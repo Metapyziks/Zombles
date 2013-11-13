@@ -5,6 +5,7 @@ using Zombles.Graphics;
 using Zombles.Entities;
 
 using OpenTKTK.Utils;
+using System.Diagnostics;
 
 namespace Zombles.Geometry
 {
@@ -116,27 +117,33 @@ namespace Zombles.Geometry
 
             lock (_tiles) {
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetBaseFlatVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetBaseFlatVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetBaseFlatVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetBaseWallVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetBaseWallVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetBaseWallVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetBaseEdgeVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetBaseEdgeVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetBaseEdgeVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetTopFlatVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetTopFlatVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetTopFlatVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetTopWallVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetTopWallVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetTopWallVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _tiles[x, y].GetTopEdgeVertices(verts, ref i);
+                    int prev = i; _tiles[x, y].GetTopEdgeVertices(verts, ref i);
+                    Debug.Assert(i - prev == _tiles[x, y].GetTopEdgeVertexCount() * 3);
                 }
             }
         }
@@ -145,18 +152,20 @@ namespace Zombles.Geometry
         {
             bool topDown = shader.IsTopDown;
 
-            vb.Render(_geomVertOffset, !topDown ? _baseFlatVertEnd : _baseWallVertEnd);
-
             if (topDown) {
+                vb.Render(_geomVertOffset, _baseFlatVertEnd);
                 vb.Render(_geomVertOffset + _baseWallVertEnd, _baseEdgeVertEnd - _baseWallVertEnd);
+            } else {
+                vb.Render(_geomVertOffset, _baseWallVertEnd);
             }
 
             if (baseOnly) return;
 
-            vb.Render(_geomVertOffset + _baseEdgeVertEnd, (!topDown ? _topFlatVertEnd : _topWallVertEnd) - _baseEdgeVertEnd);
-
             if (topDown) {
+                vb.Render(_geomVertOffset + _baseEdgeVertEnd, _topFlatVertEnd - _baseEdgeVertEnd);
                 vb.Render(_geomVertOffset + _topWallVertEnd, _topEdgeVertEnd - _topWallVertEnd);
+            } else {
+                vb.Render(_geomVertOffset + _baseEdgeVertEnd, _topWallVertEnd - _baseEdgeVertEnd);
             }
         }
 
