@@ -48,7 +48,7 @@ namespace Zombles.Geometry
             int count = 0;
 
             if (FloorHeight <= 2 && FloorTileIndex != 0xffff) count += 4;
-            if (RoofHeight > FloorHeight && RoofHeight <= 2 && RoofTileIndex != 0xffff) count += 4;
+            if (RoofHeight > FloorHeight && RoofHeight < 2 && RoofTileIndex != 0xffff) count += 4;
 
             return count;
         }
@@ -87,7 +87,7 @@ namespace Zombles.Geometry
             int count = 0;
 
             if (FloorHeight > 2 && FloorTileIndex != 0xffff) count += 4;
-            if (RoofHeight > FloorHeight && RoofHeight > 2 && RoofTileIndex != 0xffff) count += 4;
+            if (RoofHeight > FloorHeight && RoofHeight >= 2 && RoofTileIndex != 0xffff) count += 4;
 
             return count;
         }
@@ -123,17 +123,34 @@ namespace Zombles.Geometry
 
         public void GetBaseFlatVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            if (FloorHeight <= 2) {
+                GetFlatVertices(FloorHeight, Face.None, FloorTileIndex, verts, ref offset);
+            }
+
+            if (RoofHeight > FloorHeight && RoofHeight < 2) {
+                GetFlatVertices(RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset);
+            }
         }
 
         public void GetBaseWallVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                }
+            }
         }
 
         public void GetBaseEdgeVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            for (int j = 0; j < 4; ++j) {
+                for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+                    if (WallTileIndices[j, i] != 0xffff) {
+                        GetEdgeVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                        break;
+                    }
+                }
+            }
         }
 
         public void GetTopFlatVertices(float[] verts, ref int offset)
