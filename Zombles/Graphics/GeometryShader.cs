@@ -30,8 +30,8 @@ namespace Zombles.Graphics
                     int ix = int(in_vertex.x);
                     int iz = int(in_vertex.y);
 
-                    int x = ix & 0xfff;
-                    int z = iz & 0xfff;
+                    float x = (ix & 0xfff) / 8.0;
+                    float z = (iz & 0xfff) / 8.0;
 
                     var_tex = vec3(
                         float(dat & 0x1),
