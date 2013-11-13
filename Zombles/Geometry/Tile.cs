@@ -134,7 +134,7 @@ namespace Zombles.Geometry
 
         public void GetBaseWallVertices(float[] verts, ref int offset)
         {
-            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+            for (int i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
                 for (int j = 0; j < 4; ++j) {
                     GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
                 }
@@ -155,17 +155,34 @@ namespace Zombles.Geometry
 
         public void GetTopFlatVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            if (FloorHeight > 2) {
+                GetFlatVertices(FloorHeight, Face.None, FloorTileIndex, verts, ref offset);
+            }
+
+            if (RoofHeight > FloorHeight && RoofHeight >= 2) {
+                GetFlatVertices(RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset);
+            }
         }
 
         public void GetTopWallVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                }
+            }
         }
 
         public void GetTopEdgeVertices(float[] verts, ref int offset)
         {
-            throw new NotImplementedException();
+            for (int j = 0; j < 4; ++j) {
+                for (int i = Math.Min(WallHeight, (byte) 2) - 1; i >= FloorHeight; --i) {
+                    if (WallTileIndices[j, i] != 0xffff) {
+                        GetEdgeVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+                        break;
+                    }
+                }
+            }
         }
 
         private void GetFlatVertices(int level, Face slant, ushort tile, float[] verts, ref int i)
