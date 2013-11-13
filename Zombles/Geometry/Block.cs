@@ -12,10 +12,14 @@ namespace Zombles.Geometry
     {
         private Tile[,] _tiles;
         private List<Entity> _ents;
-        
-        private int _baseGeomVertCount;
-        private int _topGeomVertCount;
+
         private int _geomVertOffset;
+        private int _baseFlatVertEnd;
+        private int _baseWallVertEnd;
+        private int _baseEdgeVertEnd;
+        private int _topFlatVertEnd;
+        private int _topWallVertEnd;
+        private int _topEdgeVertEnd;
 
         public readonly World World;
         public readonly District District;
@@ -43,10 +47,7 @@ namespace Zombles.Geometry
 
         public Tile this[int x, int y]
         {
-            get
-            {
-                return _tiles[x - X, y - Y];
-            }
+            get { return _tiles[x - X, y - Y]; }
         }
 
         public bool Contains(int x, int y)
@@ -56,9 +57,11 @@ namespace Zombles.Geometry
 
         public void BuildTiles(TileBuilder[,] tiles)
         {
-            lock (_tiles)
-                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y)
-                        _tiles[x, y] = tiles[x, y].Create(X + x, Y + y);
+            lock (_tiles) {
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y] = tiles[x, y].Create(X + x, Y + y);
+                }
+            }
         }
 
         internal void AddEntity(Entity ent)
@@ -73,27 +76,38 @@ namespace Zombles.Geometry
 
         public void Think(double dt)
         {
-            for (int i = _ents.Count - 1; i >= 0; --i)
+            for (int i = _ents.Count - 1; i >= 0; --i) {
                 _ents[i].Think(dt);
+            }
         }
 
         public void PostThink()
         {
-            for (int i = _ents.Count - 1; i >= 0; --i)
+            for (int i = _ents.Count - 1; i >= 0; --i) {
                 _ents[i].UpdateBlock();
+            }
         }
 
         public int GetGeometryVertexCount()
         {
-            _baseGeomVertCount = 0;
-            _topGeomVertCount = 0;
+            _baseFlatVertEnd = 0;
+            _baseWallVertEnd = 0;
+            _baseEdgeVertEnd = 0;
+            _topFlatVertEnd = 0;
+            _topWallVertEnd = 0;
+            _topEdgeVertEnd = 0;
 
             for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
-                    _baseGeomVertCount += _tiles[x, y].GetBaseVertexCount();
-                    _topGeomVertCount += _tiles[x, y].GetTopVertexCount();
-                }
+                _baseFlatVertEnd += _tiles[x, y].GetBaseFlatVertexCount();
+                _baseWallVertEnd += _tiles[x, y].GetBaseWallVertexCount();
+                _baseEdgeVertEnd += _tiles[x, y].GetBaseEdgeVertexCount();
+                _topFlatVertEnd += _tiles[x, y].GetTopFlatVertexCount();
+                _topWallVertEnd += _tiles[x, y].GetTopWallVertexCount();
+                _topEdgeVertEnd += _tiles[x, y].GetTopEdgeVertexCount();
+            }
 
-            return _baseGeomVertCount + _topGeomVertCount;
+            return _topEdgeVertEnd += _topWallVertEnd += _topFlatVertEnd
+                += _baseEdgeVertEnd += _baseWallVertEnd += _baseFlatVertEnd;
         }
 
         public void GetGeometryVertices(float[] verts, ref int i)
@@ -101,24 +115,58 @@ namespace Zombles.Geometry
             _geomVertOffset = i / 3;
 
             lock (_tiles) {
-                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y)
-                        _tiles[x, y].GetBaseVertices(verts, ref i);
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetBaseFlatVertices(verts, ref i);
+                }
 
-                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y)
-                        _tiles[x, y].GetTopVertices(verts, ref i);
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetBaseWallVertices(verts, ref i);
+                }
+
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetBaseEdgeVertices(verts, ref i);
+                }
+
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetTopFlatVertices(verts, ref i);
+                }
+
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetTopWallVertices(verts, ref i);
+                }
+
+                for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
+                    _tiles[x, y].GetTopEdgeVertices(verts, ref i);
+                }
             }
         }
 
         public void RenderGeometry(VertexBuffer vb, GeometryShader shader, bool baseOnly = false)
         {
-            vb.Render(_geomVertOffset, (baseOnly ? _baseGeomVertCount : _baseGeomVertCount + _topGeomVertCount));
+            bool topDown = shader.IsTopDown;
+
+            vb.Render(_geomVertOffset, !topDown ? _baseFlatVertEnd : _baseWallVertEnd);
+
+            if (topDown) {
+                vb.Render(_geomVertOffset + _baseWallVertEnd, _baseEdgeVertEnd - _baseWallVertEnd);
+            }
+
+            if (baseOnly) return;
+
+            vb.Render(_geomVertOffset + _baseEdgeVertEnd, (!topDown ? _topFlatVertEnd : _topWallVertEnd) - _baseEdgeVertEnd);
+
+            if (topDown) {
+                vb.Render(_geomVertOffset + _topWallVertEnd, _topEdgeVertEnd - _topWallVertEnd);
+            }
         }
 
         public void RenderEntities(FlatEntityShader shader)
         {
-            foreach (Entity ent in _ents)
-                if (ent.HasComponent<Render2D>())
+            foreach (Entity ent in _ents) {
+                if (ent.HasComponent<Render2D>()) {
                     ent.GetComponent<Render2D>().OnRender(shader);
+                }
+            }
         }
 
         public IEnumerator<Entity> GetEnumerator()

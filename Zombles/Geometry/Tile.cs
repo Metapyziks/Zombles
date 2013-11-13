@@ -17,7 +17,7 @@ namespace Zombles.Geometry
         public readonly ushort FloorTileIndex;
         public readonly ushort RoofTileIndex;
 
-        public readonly ushort[ , ] WallTileIndices;
+        public readonly ushort[,] WallTileIndices;
 
         public Tile(int x, int y, TileBuilder builder)
         {
@@ -27,7 +27,9 @@ namespace Zombles.Geometry
             WallHeight = builder.WallHeight;
             FloorHeight = builder.FloorHeight;
             RoofHeight = builder.RoofHeight;
+
             RoofSlant = builder.RoofSlant;
+
             FloorTileIndex = builder.FloorTileIndex;
             RoofTileIndex = builder.RoofTileIndex;
             WallTileIndices = builder.GetWallTileIndices();
@@ -41,101 +43,69 @@ namespace Zombles.Geometry
             return WallTileIndices[face.GetIndex(), 0] != 0xffff;
         }
 
-        public int GetBaseVertexCount()
+        public int GetBaseFlatVertexCount()
         {
-            int count = 0;
-
-            if (FloorHeight <= 2 && FloorTileIndex != 0xffff) {
-                ++count;
-            }
-
-            if (RoofHeight > FloorHeight && RoofHeight == 1 && RoofTileIndex != 0xffff) {
-                ++count;
-            }
-
-            int i;
-            for (i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i)
-                for (int j = 0; j < 4; ++j)
-                    if (WallTileIndices[j, i] != 0xffff)
-                        ++count;
-
-            return count * 4;
+            throw new NotImplementedException();
         }
 
-        public int GetTopVertexCount()
+        public int GetBaseWallVertexCount()
         {
-            int count = 0;
-
-            if (FloorHeight > 2 && FloorTileIndex != 0xffff) {
-                ++count;
-            }
-
-            if (RoofHeight > FloorHeight && RoofHeight > 1 && RoofTileIndex != 0xffff) {
-                ++count;
-            }
-
-            for (int i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
-                for (int j = 0; j < 4; ++j) {
-                    if (WallTileIndices[j, i] != 0xffff) {
-                        ++count;
-                    }
-                }
-            }
-
-            return count * 4;
+            throw new NotImplementedException();
         }
 
-        public int GetWallEdgeVertexCount()
+        public int GetBaseEdgeVertexCount()
         {
-            return Enumerable.Range(0, 4).Sum(x =>
-                IsWallSolid((Face) (1 << x)) ? 4 : 0);
+            throw new NotImplementedException();
         }
 
-        public void GetBaseVertices(float[] verts, ref int offset)
+        public int GetTopFlatVertexCount()
         {
-            if (FloorHeight <= 2) {
-                GetFloorVertices(FloorHeight, Face.None, FloorTileIndex, verts, ref offset);
-            } 
-
-            if (RoofHeight > FloorHeight && RoofHeight == 1) {
-                GetFloorVertices(RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset);
-            }
-
-            for (int i = FloorHeight; i < Math.Min(WallHeight, (byte) 2); ++i) {
-                for (int j = 0; j < 4; ++j) {
-                    GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
-                }
-            }
+            throw new NotImplementedException();
         }
 
-        public void GetTopVertices(float[] verts, ref int offset)
+        public int GetTopWallVertexCount()
         {
-            if (FloorHeight > 2)
-                GetFloorVertices(FloorHeight, Face.None, FloorTileIndex, verts, ref offset);
-
-            if (RoofHeight > FloorHeight && RoofHeight > 1)
-                GetFloorVertices(RoofHeight, RoofSlant, RoofTileIndex, verts, ref offset);
-
-            for (int i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i)
-                for (int j = 0; j < 4; ++j)
-                    GetWallVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
+            throw new NotImplementedException();
         }
 
-        private void GetWallEdgeVertices(float[] verts, ref int offset)
+        public int GetTopEdgeVertexCount()
         {
-            for (int j = 0; j < 4; ++j) {
-                for (int i = WallHeight - 1; i >= FloorHeight; --i) {
-                    if (WallTileIndices[j, i] == 0xffff) continue;
-                    GetWallEdgeVertices((Face) (1 << j), i, WallTileIndices[j, i], verts, ref offset);
-                    break;
-                }
-            }
+            throw new NotImplementedException();
+        }
+
+        public void GetBaseFlatVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetBaseWallVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetBaseEdgeVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetTopFlatVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetTopWallVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetTopEdgeVertices(float[] verts, ref int offset)
+        {
+            throw new NotImplementedException();
         }
 
         private void GetFloorVertices(int level, Face slant, ushort tile, float[] verts, ref int i)
         {
-            if (tile == 0xffff)
-                return;
+            if (tile == 0xffff) return;
 
             int tt = (tile << (4 + 4)) | ((level & 0xf) << 4)
                 | (level == FloorHeight && RoofHeight > FloorHeight && RoofTileIndex != 0xffff ? 8 : 0);
@@ -153,8 +123,7 @@ namespace Zombles.Geometry
 
         private void GetWallVertices(Face face, int level, ushort tile, float[] verts, ref int i)
         {
-            if (tile == 0xffff)
-                return;
+            if (tile == 0xffff) return;
 
             Vector3 tl, br;
 

@@ -14,6 +14,11 @@ namespace Zombles.Graphics
         private int _worldOffsetLoc;
         private int _worldSizeLoc;
 
+        public bool IsTopDown
+        {
+            get { return Camera.Pitch >= Math.PI * 0.49; }
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
