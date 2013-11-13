@@ -48,7 +48,7 @@ namespace Zombles.Geometry
             int count = 0;
 
             if (FloorHeight <= 2 && FloorTileIndex != 0xffff) count += 4;
-            if (RoofHeight > FloorHeight && RoofHeight < 2 && RoofTileIndex != 0xffff) count += 4;
+            if (RoofHeight > FloorHeight && RoofHeight <= 2 && RoofTileIndex != 0xffff) count += 4;
 
             return count;
         }
@@ -84,17 +84,41 @@ namespace Zombles.Geometry
 
         public int GetTopFlatVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            if (FloorHeight > 2 && FloorTileIndex != 0xffff) count += 4;
+            if (RoofHeight > FloorHeight && RoofHeight > 2 && RoofTileIndex != 0xffff) count += 4;
+
+            return count;
         }
 
         public int GetTopWallVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            for (int i = Math.Max(FloorHeight, (byte) 2); i < WallHeight; ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    if (WallTileIndices[j, i] != 0xffff) count += 4;
+                }
+            }
+
+            return count;
         }
 
         public int GetTopEdgeVertexCount()
         {
-            throw new NotImplementedException();
+            int count = 0;
+
+            for (int j = 0; j < 4; ++j) {
+                for (int i = FloorHeight - 1; i >= Math.Max(FloorHeight, (byte) 2); --i) {
+                    if (WallTileIndices[j, i] != 0xffff) {
+                        count += 4;
+                        break;
+                    }
+                }
+            }
+
+            return count;
         }
 
         public void GetBaseFlatVertices(float[] verts, ref int offset)
