@@ -1,19 +1,27 @@
 ﻿using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Zombles.Graphics;
 
 namespace Zombles.Entities
 {
     public class Render3D : Component
     {
+        private Vector3 _lastPos;
+        private Quaternion _rotation;
+
         private Matrix4 _transform;
         private bool _transformInvalid;
 
-        public Quaternion Rotation { get; set; }
+        public Quaternion Rotation
+        {
+            get { return _rotation; }
+            set
+            {
+                _rotation = value;
+                _transformInvalid = true;
+            }
+        }
+
         public EntityModel Model { get; set; }
 
         public Render3D(Entity ent)
@@ -28,15 +36,18 @@ namespace Zombles.Entities
 
         public virtual void OnRender(ModelEntityShader shader)
         {
-            if (_transformInvalid) {
+            if (_transformInvalid || _lastPos != Position) {
                 _transform = Matrix4.Mult(
                     Matrix4.CreateTranslation(Entity.Position),
                     Matrix4.CreateFromQuaternion(Rotation));
 
                 _transformInvalid = false;
+                _lastPos = Position;
             }
 
-            shader.Render(Model, _transform);
+            if (Model != null) {
+                shader.Render(Model, _transform);
+            }
         }
     }
 }
