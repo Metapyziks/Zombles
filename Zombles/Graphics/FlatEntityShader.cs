@@ -24,10 +24,10 @@ namespace Zombles.Graphics
                 _sVB = new VertexBuffer(3);
                 _sVB.SetData(new float[]
                 {
-                    -0.5f, 1.0f, 0.0f,
-                    0.5f, 1.0f, 1.0f,
-                    0.5f, 0.0f, 3.0f,
-                    -0.5f, 0.0f, 2.0f
+                    -0.5f, 1.0f, 0f,
+                    0.5f, 1.0f, 1f,
+                    0.5f, 0.0f, 3f,
+                    -0.5f, 0.0f, 2f
                 });
             }
 
@@ -74,8 +74,7 @@ namespace Zombles.Graphics
                 void main(void)
                 {
                     out_frag_colour = texture2DArray(ents, var_tex);
-                    if(out_frag_colour.a < 0.5)
-                        discard;
+                    if(out_frag_colour.a < 0.5) discard;
                 }
             ";
 

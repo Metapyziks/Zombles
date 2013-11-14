@@ -21,8 +21,8 @@ namespace Zombles.Entities
         public float Rotation { get; set; }
         public double Speed { get; set; }
 
-        public RenderAnim( Entity ent )
-            : base( ent )
+        public RenderAnim(Entity ent)
+            : base(ent)
         {
             _startTime = 0.0;
 
@@ -32,12 +32,12 @@ namespace Zombles.Entities
             Speed = 1.0;
         }
 
-        public void Start( EntityAnim anim )
+        public void Start(EntityAnim anim)
         {
-            Start( anim, anim );
+            Start(anim, anim);
         }
 
-        public void Start( EntityAnim anim, EntityAnim nextAnim )
+        public void Start(EntityAnim anim, EntityAnim nextAnim)
         {
             _startTime = MainWindow.Time;
             CurAnim = anim;
@@ -50,45 +50,40 @@ namespace Zombles.Entities
             Playing = false;
         }
 
-        public override void OnRender( FlatEntityShader shader )
+        public override void OnRender(FlatEntityShader shader)
         {
-            if ( CurAnim == null )
+            if (CurAnim == null)
                 return;
 
             Size = CurAnim.Size;
 
             int frame = 0;
-            if ( Playing )
-            {
-                frame = (int) ( ( MainWindow.Time - _startTime ) *
-                    Speed * CurAnim.Frequency * CurAnim.FrameCount );
+            if (Playing) {
+                frame = (int) ((MainWindow.Time - _startTime) *
+                    Speed * CurAnim.Frequency * CurAnim.FrameCount);
 
-                if ( frame >= CurAnim.FrameCount )
-                {
-                    _startTime += 1.0 / ( CurAnim.Frequency * Speed );
+                if (frame >= CurAnim.FrameCount) {
+                    _startTime += 1.0 / (CurAnim.Frequency * Speed);
                     CurAnim = NextAnim;
 
-                    if ( CurAnim == null )
-                    {
+                    if (CurAnim == null) {
                         Playing = false;
                         return;
                     }
-                    
-                    frame = (int) ( ( MainWindow.Time - _startTime ) *
-                        Speed * CurAnim.Frequency * CurAnim.FrameCount ) % CurAnim.FrameCount;
+
+                    frame = (int) ((MainWindow.Time - _startTime) *
+                        Speed * CurAnim.Frequency * CurAnim.FrameCount) % CurAnim.FrameCount;
                 }
             }
 
-            if ( CurAnim.IsDirectional )
-            {
-                float diff = Tools.AngleDif( shader.Camera.Rotation.Y, Rotation );
-                int dir = (int) Math.Round( diff * 2.0f / MathHelper.Pi + 2 ) % 4;
-                TextureIndex = CurAnim.FrameIndices[ dir, frame ];
-            }
-            else
-                TextureIndex = CurAnim.FrameIndices[ 0, frame ];
+            if (CurAnim.IsDirectional) {
+                float diff = Tools.AngleDif(shader.Camera.Rotation.Y, Rotation);
+                int dir = (int) Math.Round(diff * 2.0f / MathHelper.Pi + 2) % 4;
+                TextureIndex = CurAnim.FrameIndices[dir, frame];
+            } else
+                TextureIndex = CurAnim.FrameIndices[0, frame];
 
-            base.OnRender( shader );
+            base.OnRender(shader);
         }
     }
 }
