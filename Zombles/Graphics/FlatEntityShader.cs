@@ -31,7 +31,7 @@ namespace Zombles.Graphics
                 });
             }
 
-            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
+            var vert = new ShaderBuilder(ShaderType.VertexShader, false);
             vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
             vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddUniform(ShaderVarType.Vec2, "scale");
@@ -39,20 +39,20 @@ namespace Zombles.Graphics
             vert.AddUniform(ShaderVarType.Vec2, "size");
             vert.AddUniform(ShaderVarType.Float, "texture");
             vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
-            vert.AddVarying(ShaderVarType.Vec3, "var_tex");
+            vert.AddVarying(ShaderVarType.Vec3, "var_texture");
             vert.Logic = @"
                 void main(void)
                 {
                     switch(int(in_vertex.z))
                     {
                         case 0:
-                            var_tex = vec3(0.0, 0.0, texture); break;
+                            var_texture = vec3(0.0, 0.0, texture); break;
                         case 1:
-                            var_tex = vec3(size.x, 0.0, texture); break;
+                            var_texture = vec3(size.x, 0.0, texture); break;
                         case 2:
-                            var_tex = vec3(0.0, size.y, texture); break;
+                            var_texture = vec3(0.0, size.y, texture); break;
                         case 3:
-                            var_tex = vec3(size.x, size.y, texture); break;
+                            var_texture = vec3(size.x, size.y, texture); break;
                     }
 
                     const float yscale = 2.0 / sqrt(3.0);
@@ -66,14 +66,13 @@ namespace Zombles.Graphics
                 }
             ";
 
-            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false);
+            var frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
             frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
-            frag.AddVarying(ShaderVarType.Vec3, "var_tex");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
-                    out_frag_colour = texture2DArray(ents, var_tex);
+                    out_frag_colour = texture2DArray(ents, var_texture);
                     if(out_frag_colour.a < 0.5) discard;
                 }
             ";

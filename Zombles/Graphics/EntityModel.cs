@@ -80,7 +80,7 @@ namespace Zombles.Graphics
                 }
                 
                 if (_sVBInvalid) {
-                    float[] data = new float[_sFound.Values.Sum(x => x.Size)];
+                    float[] data = new float[_sFound.Values.Sum(x => x.Size * 6)];
                     int i = 0;
                     foreach (var mdl in _sFound.Values) {
                         mdl.GetVertices(data, ref i);
@@ -116,7 +116,7 @@ namespace Zombles.Graphics
                 .Select(x => new Face((JObject) x))
                 .ToArray();
 
-            Size = _faces.Length * 4 * 6;
+            Size = _faces.Length * 4;
         }
 
         private void GetVertices(float[] verts, ref int i)
@@ -126,6 +126,11 @@ namespace Zombles.Graphics
             foreach (var face in _faces) {
                 face.GetVertices(verts, ref i);
             }
+        }
+
+        public void Render()
+        {
+            VertexBuffer.Render(_vertOffset, Size);
         }
     }
 }
