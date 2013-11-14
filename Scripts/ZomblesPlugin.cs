@@ -1,4 +1,4 @@
-﻿//#define SUBSUMPTIVE
+﻿#define SUBSUMPTIVE
 #define LOG
 
 using System;

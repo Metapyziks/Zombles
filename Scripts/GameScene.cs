@@ -308,6 +308,8 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
+            return;
+
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
             if (!World.IsPositionNavigable(pos)) {
