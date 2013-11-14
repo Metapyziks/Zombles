@@ -178,6 +178,15 @@ namespace Zombles.Geometry
             }
         }
 
+        public void RenderEntities(ModelEntityShader shader)
+        {
+            foreach (Entity ent in _ents) {
+                if (ent.HasComponent<Render3D>()) {
+                    ent.GetComponent<Render3D>().OnRender(shader);
+                }
+            }
+        }
+
         public IEnumerator<Entity> GetEnumerator()
         {
             return _ents.GetEnumerator();

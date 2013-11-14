@@ -64,6 +64,7 @@ namespace Zombles.Scripts
         public OrthoCamera Camera { get; private set; }
         public GeometryShader GeoShader { get; private set; }
         public FlatEntityShader FlatEntShader { get; private set; }
+        public ModelEntityShader ModelEntShader { get; private set; }
         public CityGenerator Generator { get; private set; }
         public World World { get; private set; }
 
@@ -117,6 +118,9 @@ namespace Zombles.Scripts
 
                 FlatEntShader = new FlatEntityShader();
                 FlatEntShader.Camera = Camera;
+
+                ModelEntShader = new ModelEntityShader();
+                ModelEntShader.Camera = Camera;
 
                 _traceShader = new DebugTraceShader();
                 _traceShader.Camera = Camera;
@@ -262,6 +266,10 @@ namespace Zombles.Scripts
                 FlatEntShader.Begin();
                 World.RenderEntities(FlatEntShader);
                 FlatEntShader.End();
+
+                ModelEntShader.Begin();
+                World.RenderEntities(ModelEntShader);
+                ModelEntShader.End();
 
                 _traceShader.Begin(true);
 

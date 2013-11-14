@@ -1,6 +1,7 @@
 ﻿using System;
-
+using OpenTK;
 using Zombles;
+using Zombles.Entities;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
@@ -22,8 +23,9 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
             for (int x = 0; x < SizeX; ++x) {
                 for (int y = 0; y < SizeY; ++y) {
                     if (rand.NextDouble() <= CrateFrequency) {
-                        GenHelper.BuildSolid(tiles, X + x, Y + y, 1, 1, rand.Next(1, MaxHeight + 1),
-                            "wall/crate/0", "floor/crate/0");
+                        var crate = Entity.Create(district.World, "crate");
+                        crate.Position2D = new Vector2(district.X + X + x + 0.5f, district.Y + Y + y + 0.5f);
+                        district.PlaceEntity(crate);
                     }
                 }
             }

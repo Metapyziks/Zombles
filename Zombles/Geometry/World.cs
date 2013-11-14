@@ -211,6 +211,13 @@ namespace Zombles.Geometry
             }
         }
 
+        public void RenderEntities(ModelEntityShader shader)
+        {
+            foreach (var block in RootDistrict.GetVisibleBlocks(shader.Camera)) {
+                block.RenderEntities(shader);
+            }
+        }
+
         public void RenderIntersectionNetwork(DebugTraceShader shader)
         {
             var denom = _intersections.Count / 4f;

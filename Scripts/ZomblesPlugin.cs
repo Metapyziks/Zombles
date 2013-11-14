@@ -58,6 +58,14 @@ namespace Zombles.Scripts
                 ent.AddComponent<ZombieAI>();
             });
 
+            Entity.Register("crate", ent => {
+                ent.AddComponent<Render3D>()
+                    .Model = EntityModel.Get("models", "deco", "crate");
+                /*ent.AddComponent<Collision>()
+                    .SetDimentions(1f, 1f)
+                    .Model = CollisionModel.Box;*/
+            });
+
             MainWindow.SetScene(new GameScene(Game));
 
             File.Create(_logFileName).Close();

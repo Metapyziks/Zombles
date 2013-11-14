@@ -1,7 +1,7 @@
 {
     "faces" : [
         {
-            "texture" : "tiles/wall/crate/1",
+            "texture" : "crate/1",
             "verts" : [
                 { "x" : -0.5, "y" : 0.5, "z" : -0.5, "u" : 0, "v" : 0 },
                 { "x" :  0.5, "y" : 0.5, "z" : -0.5, "u" : 8, "v" : 0 },
@@ -10,7 +10,7 @@
             ]
         },
         {
-            "texture" : "tiles/wall/crate/0",
+            "texture" : "crate/0",
             "verts" : [
                 { "x" :  0.5, "y" : 0.5, "z" : -0.5, "u" : 0, "v" : 0 },
                 { "x" : -0.5, "y" : 0.5, "z" : -0.5, "u" : 8, "v" : 0 },
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "texture" : "tiles/wall/crate/0",
+            "texture" : "crate/0",
             "verts" : [
                 { "x" :  0.5, "y" : 0.5, "z" :  0.5, "u" : 0, "v" : 0 },
                 { "x" :  0.5, "y" : 0.5, "z" : -0.5, "u" : 8, "v" : 0 },
@@ -28,7 +28,7 @@
             ]
         },
         {
-            "texture" : "tiles/wall/crate/0",
+            "texture" : "crate/0",
             "verts" : [
                 { "x" : -0.5, "y" : 0.5, "z" :  0.5, "u" : 0, "v" : 0 },
                 { "x" :  0.5, "y" : 0.5, "z" :  0.5, "u" : 8, "v" : 0 },
@@ -37,7 +37,7 @@
             ]
         },
         {
-            "texture" : "tiles/wall/crate/0",
+            "texture" : "crate/0",
             "verts" : [
                 { "x" : -0.5, "y" : 0.5, "z" : -0.5, "u" : 0, "v" : 0 },
                 { "x" : -0.5, "y" : 0.5, "z" :  0.5, "u" : 8, "v" : 0 },

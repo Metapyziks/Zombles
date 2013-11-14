@@ -29,8 +29,8 @@ namespace Zombles.Graphics
                 };
 
                 TexCoord = new Vector2 {
-                    X = (int) obj["u"],
-                    Y = (int) obj["v"]
+                    X = (int) obj["u"] / 8f,
+                    Y = (int) obj["v"] / 8f
                 };
             }
             
@@ -59,9 +59,10 @@ namespace Zombles.Graphics
 
             public void GetVertices(float[] verts, ref int i)
             {
+                int texIndex = TextureManager.Ents.GetIndex(Texture);
                 foreach (var vert in Vertices) {
                     vert.GetVertices(verts, ref i);
-                    verts[i++] = TextureManager.Ents.GetIndex(Texture);
+                    verts[i++] = texIndex;
                 }
             }
         }
@@ -95,7 +96,7 @@ namespace Zombles.Graphics
             }
         }
 
-        public static EntityModel GetModel(params String[] nameLocator)
+        public static EntityModel Get(params String[] nameLocator)
         {
             var name = String.Join("/", nameLocator);
 

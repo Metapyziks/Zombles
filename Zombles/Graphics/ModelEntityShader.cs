@@ -13,7 +13,8 @@ namespace Zombles.Graphics
         {
             var vert = new ShaderBuilder(ShaderType.VertexShader, false);
             vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
-            vert.AddUniform(ShaderVarType.Mat4, "transform");
+            vert.AddUniform(ShaderVarType.Mat4, "mdl_matrix");
+            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddAttribute(ShaderVarType.Vec3, "in_position");
             vert.AddAttribute(ShaderVarType.Vec3, "in_texture");
             vert.AddVarying(ShaderVarType.Vec3, "var_texture");
@@ -21,17 +22,24 @@ namespace Zombles.Graphics
                 void main(void)
                 {
                     var_texture = in_texture;
-                    gl_Position = vp_matrix * (transform * in_position);
+
+                    gl_Position = vp_matrix * (mdl_matrix * vec4(
+                        in_position.x + world_offset.x,
+                        in_position.y,
+                        in_position.z + world_offset.y,
+                        1.0
+                    ));
                 }
             ";
 
             var frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
             frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
-            vert.FragOutIdentifier = "out_frag_colour";
+            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
                     out_frag_colour = texture2DArray(ents, var_texture);
+                    //out_frag_colour = vec4(1.0, 0.0, 1.0, 1.0);
                     if(out_frag_colour.a < 0.5) discard;
                 }
             ";
@@ -48,12 +56,12 @@ namespace Zombles.Graphics
         {
             base.OnCreate();
 
-            AddAttribute("in_vertex", 3);
+            AddAttribute("in_position", 3);
             AddAttribute("in_texture", 3);
 
             AddTexture("ents");
 
-            _transformLoc = GL.GetUniformLocation(Program, "transform");
+            _transformLoc = GL.GetUniformLocation(Program, "mdl_matrix");
         }
 
         public void Begin()

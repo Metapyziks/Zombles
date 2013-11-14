@@ -100,7 +100,7 @@ namespace Zombles.Geometry
 
                 for (int ix = startX; ix != xe; ix += xa, y += xa * dydx) {
                     int wx = (ix + wxa) - (int) Math.Floor((double) (ix + wxa) / World.Width) * World.Width;
-                    int wy = (int) (y - (int) Math.Floor(y / World.Height) * World.Height);
+                    int wy = Math.Min(World.Height - 1, (int) (y - (int) Math.Floor(y / World.Height) * World.Height));
 
                     if (blk == null || wx < blk.X || wy < blk.Y ||
                             wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)
@@ -127,7 +127,7 @@ namespace Zombles.Geometry
 
                 for (int iy = startY; iy != ye; iy += ya, x += ya * dxdy) {
                     int wy = (iy + wya) - (int) Math.Floor((double) (iy + wya) / World.Height) * World.Height;
-                    int wx = (int) (x - (int) Math.Floor(x / World.Width) * World.Width);
+                    int wx = Math.Min(World.Width - 1, (int) (x - (int) Math.Floor(x / World.Width) * World.Width));
 
                     if (blk == null || wx < blk.X || wy < blk.Y ||
                             wx >= blk.X + blk.Width || wy >= blk.Y + blk.Height)

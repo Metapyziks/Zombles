@@ -13,7 +13,7 @@ namespace Zombles.Graphics
         private static Dictionary<String, EntityAnim> _sFound =
             new Dictionary<string, EntityAnim>();
 
-        public static EntityAnim GetAnim(params String[] nameLocator)
+        public static EntityAnim Get(params String[] nameLocator)
         {
             var name = String.Join("/", nameLocator);
 
