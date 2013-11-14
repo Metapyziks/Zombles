@@ -10,7 +10,8 @@ namespace Zombles.Graphics
 {
     public class EntityAnim
     {
-        private static Dictionary<String, EntityAnim> _sFound = new Dictionary<string, EntityAnim>();
+        private static Dictionary<String, EntityAnim> _sFound =
+            new Dictionary<string, EntityAnim>();
 
         public static EntityAnim GetAnim(params String[] nameLocator)
         {

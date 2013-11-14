@@ -62,6 +62,7 @@
     <Compile Include="Entities\Health.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\NearbyEntityEnumerator.cs" />
+    <Compile Include="Entities\Render3D.cs" />
     <Compile Include="Entities\RenderAnim.cs" />
     <Compile Include="Entities\Component.cs" />
     <Compile Include="Entities\Entity.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Geometry\TileBuilder.cs" />
     <Compile Include="Geometry\Trace.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
+    <Compile Include="Graphics\EntityModel.cs" />
+    <Compile Include="Graphics\MeshEntityShader.cs" />
     <Compile Include="Graphics\OrthoCamera.cs" />
     <Compile Include="Graphics\DebugTraceShader.cs" />
     <Compile Include="Graphics\EntityAnim.cs" />
