@@ -11,6 +11,7 @@ namespace Zombles.Scripts.Entities
 
         private float _fleeRadius;
         private float _runRadius;
+        private float _fightRadius;
 
         private Vector2 _fleePos;
         private double _lastSearch;
@@ -22,6 +23,7 @@ namespace Zombles.Scripts.Entities
         {
             _fleeRadius = 4.0f + Tools.Random.NextSingle() * 6.0f;
             _runRadius = 2.0f + Tools.Random.NextSingle() * 4.0f;
+            _fightRadius = 0.75f + Tools.Random.NextSingle() * 1.25f;
         }
 
         public override void OnSpawn()
@@ -63,7 +65,7 @@ namespace Zombles.Scripts.Entities
                 NearbyEntityEnumerator it = SearchNearbyEnts(_fleeRadius);
                 while (it.MoveNext()) {
                     Entity cur = it.Current;
-                    if (cur.HasComponent<Zombie>()) {
+                    if (cur.HasComponent<Zombie>() && cur.GetComponent<Health>().IsAlive) {
                         Vector2 diff = World.Difference(Position2D, cur.Position2D);
                         float dist2 = diff.LengthSquared;
 
@@ -71,7 +73,17 @@ namespace Zombles.Scripts.Entities
                             trace.Target = cur.Position2D;
 
                             if (!trace.GetResult().Hit) {
-                                _fleePos -= diff / dist2;
+                                if (dist2 < _fightRadius * _fightRadius) {
+                                    _fleePos += diff / dist2;
+
+                                    if (dist2 < 0.75f) {
+                                        Human.Attack(diff);
+                                        Human.StopMoving();
+                                        return;
+                                    }
+                                } else {
+                                    _fleePos -= diff / dist2;
+                                }
 
                                 if (dist2 < _runRadius * _runRadius)
                                     (Human as Survivor).StartRunning();
