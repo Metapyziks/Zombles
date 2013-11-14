@@ -65,6 +65,13 @@ namespace Zombles.Geometry
             }
         }
 
+        internal void FindTileNeighbours()
+        {
+            foreach (var tile in _tiles) {
+                tile.FindNeighbours(World);
+            }
+        }
+
         internal void AddEntity(Entity ent)
         {
             _ents.Add(ent);

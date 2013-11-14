@@ -109,6 +109,13 @@ namespace Zombles.Geometry
             return GetBlock(pos)[ix, iy];
         }
 
+        internal void FindTileNeighbours()
+        {
+            foreach (var block in this) {
+                block.FindTileNeighbours();
+            }
+        }
+
         public IEnumerable<Intersection> GetIntersections()
         {
             return _intersections.Values.SelectMany(x => x);

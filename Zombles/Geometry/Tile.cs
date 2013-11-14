@@ -2,11 +2,16 @@
 
 using OpenTK;
 using System.Linq;
+using System.Collections.Generic;
+using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
     public class Tile
     {
+        private HashSet<Entity> _staticEnts;
+        private Tile[] _neighbours;
+
         public readonly int X;
         public readonly int Y;
 
@@ -21,6 +26,9 @@ namespace Zombles.Geometry
 
         public Tile(int x, int y, TileBuilder builder)
         {
+            _staticEnts = new HashSet<Entity>();
+            _neighbours = new Tile[4];
+
             X = x;
             Y = y;
 
@@ -35,10 +43,33 @@ namespace Zombles.Geometry
             WallTileIndices = builder.GetWallTileIndices();
         }
 
+        internal void FindNeighbours(World world)
+        {
+            for (int i = 0; i < 4; ++i) {
+                var face = (Face) (1 << i);
+                _neighbours[i] = world.GetTile(new Vector2(X + 0.5f, Y + 0.5f) + face.GetNormal());
+            }
+        }
+        
+        internal void AddStaticEntity(Entity ent)
+        {
+            _staticEnts.Add(ent);
+        }
+
+        internal void RemoveStaticEntity(Entity ent)
+        {
+            _staticEnts.Remove(ent);
+        }
+
+        public bool IsSolid()
+        {
+            return FloorHeight > 0 || _staticEnts.Count > 0;
+        }
+
         public bool IsWallSolid(Face face)
         {
-            if (WallHeight == 0)
-                return false;
+            if (_neighbours[face.GetIndex()].IsSolid()) return true;
+            if (WallHeight == 0) return false;
 
             return WallTileIndices[face.GetIndex(), 0] != 0xffff;
         }

@@ -17,6 +17,7 @@ namespace Zombles.Geometry.Generation
         {
             World world = new World(width, height);
             Subdivide(world.RootDistrict, 0, 3, 3, 3, 3, rand);
+            world.FindTileNeighbours();
             world.FindBlockIntersections();
             world.UpdateGeometryVertexBuffer();
             return world;
