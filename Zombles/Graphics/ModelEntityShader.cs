@@ -1,19 +1,15 @@
 ﻿using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTKTK.Utils;
 using OpenTK.Graphics.OpenGL;
+
+using OpenTKTK.Utils;
 
 namespace Zombles.Graphics
 {
-    public class MeshEntityShader : WorldShader
+    public class ModelEntityShader : WorldShader
     {
         private int _transformLoc;
 
-        public MeshEntityShader()
+        public ModelEntityShader()
         {
             var vert = new ShaderBuilder(ShaderType.VertexShader, false);
             vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");

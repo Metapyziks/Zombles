@@ -85,7 +85,7 @@
     <Compile Include="Geometry\Trace.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Graphics\EntityModel.cs" />
-    <Compile Include="Graphics\MeshEntityShader.cs" />
+    <Compile Include="Graphics\ModelEntityShader.cs" />
     <Compile Include="Graphics\OrthoCamera.cs" />
     <Compile Include="Graphics\DebugTraceShader.cs" />
     <Compile Include="Graphics\EntityAnim.cs" />

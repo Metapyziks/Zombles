@@ -26,7 +26,7 @@ namespace Zombles.Entities
             Model = null;
         }
 
-        public virtual void OnRender(MeshEntityShader shader)
+        public virtual void OnRender(ModelEntityShader shader)
         {
             if (_transformInvalid) {
                 _transform = Matrix4.Mult(
