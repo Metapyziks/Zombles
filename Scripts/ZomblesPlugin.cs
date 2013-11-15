@@ -1,7 +1,4 @@
-﻿#define SUBSUMPTIVE
-#define LOG
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Diagnostics;
 
@@ -22,12 +19,6 @@ namespace Zombles.Scripts
         private int _lastSurvivors;
         private int _lastZombies;
 
-#if SUBSUMPTIVE
-        private String _logFileName = "subsumptive.log";
-#else
-        private String _logFileName = "original.log";
-#endif
-
         protected override void OnInitialize()
         {
             Entity.Register("human", ent => {
@@ -39,27 +30,15 @@ namespace Zombles.Scripts
                 ent.AddComponent<Health>();
             });
 
-            int braveCount = (384 * 100) / 100;
-
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<RouteNavigation>();
-#if SUBSUMPTIVE
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
-                    .Push<Entities.Behaviours.Flee>();
-
-                if (braveCount-- > 0) {
-                    ent.GetComponent<SubsumptionStack>()
-                        .Push<Entities.Behaviours.Mob>();
-                }
-
-                ent.GetComponent<SubsumptionStack>()
+                    .Push<Entities.Behaviours.Flee>()
+                    .Push<Entities.Behaviours.Mob>()
                     .Push<Entities.Behaviours.SelfDefence>();
-#else
-                ent.AddComponent<SurvivorAI>();
-#endif
             });
 
             Entity.Register("zombie", "human", ent => {
@@ -78,10 +57,6 @@ namespace Zombles.Scripts
             });
 
             MainWindow.SetScene(new GameScene(Game));
-
-#if LOG
-            File.Create(_logFileName).Close();
-#endif
         }
 
         protected override void OnCityGenerated()
@@ -114,33 +89,6 @@ namespace Zombles.Scripts
                 zomb.Position2D = randPos();
                 zomb.Spawn();
             }
-        }
-        
-        protected override void OnThink(double dt)
-        {
-            base.OnThink(dt);
-
-#if LOG
-            if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
-                World world = (Scene as GameScene).World;
-
-                _lastAliveCheck = MainWindow.Time;
-
-                int survivors = world.Entities.Where(x => x.HasComponent<Survivor>())
-                .Count(x => x.GetComponent<Health>().IsAlive);
-
-                int zombies = world.Entities.Where(x => x.HasComponent<Zombie>())
-                    .Count(x => x.GetComponent<Health>().IsAlive);
-
-                if (survivors != _lastSurvivors || zombies != _lastZombies) {
-                    _lastSurvivors = survivors;
-                    _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2}", _lastAliveCheck, survivors, zombies);
-                    Debug.WriteLine(log);
-                    File.AppendAllText(_logFileName, log + Environment.NewLine);
-                }
-            }
-#endif
         }
     }
 }
