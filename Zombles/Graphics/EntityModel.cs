@@ -23,9 +23,9 @@ namespace Zombles.Graphics
             public Vertex(JObject obj)
             {
                 Position = new Vector3 {
-                    X = (float) obj["x"],
-                    Y = (float) obj["y"],
-                    Z = (float) obj["z"]
+                    X = (int) obj["x"] / 8f,
+                    Y = (int) obj["y"] / 8f,
+                    Z = (int) obj["z"] / 8f
                 };
 
                 TexCoord = new Vector2 {
