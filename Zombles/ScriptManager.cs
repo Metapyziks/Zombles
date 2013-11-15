@@ -61,7 +61,7 @@ namespace Zombles
             compParams.ReferencedAssemblies.AddRange(allowedAssemblies.ToArray());
 
             Dictionary<string,string> providerOptions = new Dictionary<string, string>();
-            providerOptions.Add("CompilerVersion", "v4.5");
+            providerOptions.Add("CompilerVersion", "v4.0");
 
             CodeDomProvider compiler = new CSharpCodeProvider(providerOptions);
 
