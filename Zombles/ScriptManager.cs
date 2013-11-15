@@ -61,14 +61,14 @@ namespace Zombles
             compParams.ReferencedAssemblies.AddRange(allowedAssemblies.ToArray());
 
             Dictionary<string,string> providerOptions = new Dictionary<string, string>();
-            providerOptions.Add("CompilerVersion", "v4.0");
+            providerOptions.Add("CompilerVersion", "v4.5");
 
             CodeDomProvider compiler = new CSharpCodeProvider(providerOptions);
 
             compParams.GenerateExecutable = false;
             compParams.GenerateInMemory = true;
             compParams.TempFiles = new TempFileCollection(Environment.GetEnvironmentVariable("TEMP"), true);
-            compParams.TempFiles.KeepFiles = true;
+            compParams.TempFiles.KeepFiles = false;
             compParams.IncludeDebugInformation = true;
 
             String[] sources = new String[_sScripts.Count];

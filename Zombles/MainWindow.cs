@@ -69,7 +69,7 @@ namespace Zombles
             foreach (var resDir in resourceDirs) {
                 foreach (String line in archives.Select(x => Path.Combine(resDir, x + ".dat")))
                     if (File.Exists(line)) Archive.FromFile(line).Mount();
-
+                
                 foreach (String line in archives.Select(x => Path.Combine(resDir, x)))
                     if (line.Length > 0 && Directory.Exists(line))
                         Archive.FromDirectory(line).Mount();
