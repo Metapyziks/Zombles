@@ -23,6 +23,7 @@ namespace Zombles.Entities
         }
 
         public EntityModel Model { get; set; }
+        public int Skin { get; set; }
 
         public Render3D(Entity ent)
             : base(ent)
@@ -32,21 +33,22 @@ namespace Zombles.Entities
 
             Rotation = Quaternion.Identity;
             Model = null;
+            Skin = 0;
         }
 
         public virtual void OnRender(ModelEntityShader shader)
         {
             if (_transformInvalid || _lastPos != Position) {
                 _transform = Matrix4.Mult(
-                    Matrix4.CreateTranslation(Entity.Position),
-                    Matrix4.CreateFromQuaternion(Rotation));
+                    Matrix4.CreateFromQuaternion(Rotation),
+                    Matrix4.CreateTranslation(Entity.Position));
 
                 _transformInvalid = false;
                 _lastPos = Position;
             }
 
             if (Model != null) {
-                shader.Render(Model, _transform);
+                shader.Render(Model, Skin, _transform);
             }
         }
     }

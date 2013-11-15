@@ -17,6 +17,8 @@ namespace Zombles.Graphics
     {
         private class Vertex
         {
+            public const int Size = 9;
+
             public Vector3 Position;
             public Vector2 TexCoord;
 
@@ -49,9 +51,9 @@ namespace Zombles.Graphics
             public ResourceLocator Texture;
             public Vertex[] Vertices;
 
-            public Face(JObject obj)
+            public Face(JObject obj, Dictionary<String, ResourceLocator> skin)
             {
-                Texture = (String) obj["texture"];
+                Texture = skin[(String) obj["texture"]];
                 Vertices = ((JArray) obj["verts"])
                     .Select(x => new Vertex((JObject) x))
                     .ToArray();
@@ -60,9 +62,18 @@ namespace Zombles.Graphics
             public void GetVertices(float[] verts, ref int i)
             {
                 int texIndex = TextureManager.Ents.GetIndex(Texture);
+
+                var normal = Vector3.Cross(
+                    Vertices[2].Position - Vertices[0].Position,
+                    Vertices[3].Position - Vertices[1].Position)
+                    .Normalized();
+
                 foreach (var vert in Vertices) {
                     vert.GetVertices(verts, ref i);
                     verts[i++] = texIndex;
+                    verts[i++] = normal.X;
+                    verts[i++] = normal.Y;
+                    verts[i++] = normal.Z;
                 }
             }
         }
@@ -78,12 +89,12 @@ namespace Zombles.Graphics
             get
             {
                 if (_sVB == null) {
-                    _sVB = new VertexBuffer(6, BufferUsageHint.StaticDraw);
+                    _sVB = new VertexBuffer(Vertex.Size, BufferUsageHint.StaticDraw);
                     _sVBInvalid = true;
                 }
                 
                 if (_sVBInvalid) {
-                    float[] data = new float[_sFound.Values.Sum(x => x.Size * 6)];
+                    float[] data = new float[_sFound.Values.Sum(x => x.TotalSize * Vertex.Size)];
                     int i = 0;
                     foreach (var mdl in _sFound.Values) {
                         mdl.GetVertices(data, ref i);
@@ -109,31 +120,56 @@ namespace Zombles.Graphics
         }
 
         private int _vertOffset;
-        private Face[] _faces;
+        private Face[,] _faces;
 
-        public int Size { get; private set; }
+        public int Skins { get; private set; }
+        public int Faces { get; private set; }
+
+        public int TotalSize { get; private set; }
+        public int SingleSize { get; private set; }
 
         private EntityModel(JObject obj)
         {
-            _faces = ((JArray) obj["faces"])
-                .Select(x => new Face((JObject) x))
+            var skins = ((JArray) obj["skins"])
+                .Cast<JObject>()
+                .Select(x => x.Properties()
+                    .ToDictionary(
+                        y => y.Name,
+                        y => (ResourceLocator) (String) y.Value))
                 .ToArray();
 
-            Size = _faces.Length * 4;
+            Skins = skins.Length;
+
+            var faces = ((JArray) obj["faces"])
+                .Cast<JObject>()
+                .ToArray();
+
+            Faces = faces.Length;
+
+            _faces = new Face[Skins, Faces];
+
+            for (int s = 0; s < Skins; ++s) {
+                for (int f = 0; f < Faces; ++f) {
+                    _faces[s, f] = new Face(faces[f], skins[s]);
+                }
+            }
+
+            SingleSize = Faces * 4;
+            TotalSize = SingleSize * Skins;
         }
 
         private void GetVertices(float[] verts, ref int i)
         {
-            _vertOffset = i / 6;
+            _vertOffset = i / Vertex.Size;
 
             foreach (var face in _faces) {
                 face.GetVertices(verts, ref i);
             }
         }
 
-        public void Render()
+        public void Render(int skin)
         {
-            VertexBuffer.Render(_vertOffset, Size);
+            VertexBuffer.Render(_vertOffset + skin * SingleSize, SingleSize);
         }
     }
 }

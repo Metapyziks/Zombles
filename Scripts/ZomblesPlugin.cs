@@ -69,9 +69,12 @@ namespace Zombles.Scripts
 
             Entity.Register("crate", ent => {
                 ent.AddComponent<StaticTile>();
-                ent.AddComponent<Render3D>()
-                    .Model = EntityModel.Get("models", "deco", "crate",
-                        Tools.Random.NextDouble() < 0.5 ? "large" : "small");
+                var render3d = ent.AddComponent<Render3D>();
+                
+                render3d.Model = EntityModel.Get("models", "deco", "crate",
+                    Tools.Random.NextDouble() < 0.5 ? "large" : "small");
+
+                render3d.Skin = Tools.Random.Next(render3d.Model.Skins);
             });
 
             MainWindow.SetScene(new GameScene(Game));

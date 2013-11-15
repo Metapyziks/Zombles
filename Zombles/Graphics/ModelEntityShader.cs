@@ -17,11 +17,17 @@ namespace Zombles.Graphics
             vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddAttribute(ShaderVarType.Vec3, "in_position");
             vert.AddAttribute(ShaderVarType.Vec3, "in_texture");
+            vert.AddAttribute(ShaderVarType.Vec3, "in_normal");
+            vert.AddVarying(ShaderVarType.Float, "var_shade");
             vert.AddVarying(ShaderVarType.Vec3, "var_texture");
             vert.Logic = @"
                 void main(void)
                 {
                     var_texture = in_texture;
+
+                    const vec3 sunDir = normalize(vec3(1.0, -2.0, 0.0));
+
+                    var_shade = 0.75 + abs(dot(sunDir, (mdl_matrix * vec4(in_normal, 0.0)).xyz)) * 0.25;
 
                     gl_Position = vp_matrix * (mdl_matrix * vec4(
                         in_position.x + world_offset.x,
@@ -38,9 +44,9 @@ namespace Zombles.Graphics
             frag.Logic = @"
                 void main(void)
                 {
-                    out_frag_colour = texture2DArray(ents, var_texture);
-                    //out_frag_colour = vec4(1.0, 0.0, 1.0, 1.0);
-                    if(out_frag_colour.a < 0.5) discard;
+                    vec4 clr = texture2DArray(ents, var_texture);
+                    if(clr.a < 0.5) discard;
+                    out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
             ";
 
@@ -58,6 +64,7 @@ namespace Zombles.Graphics
 
             AddAttribute("in_position", 3);
             AddAttribute("in_texture", 3);
+            AddAttribute("in_normal", 3);
 
             AddTexture("ents");
 
@@ -83,11 +90,11 @@ namespace Zombles.Graphics
             GL.Enable(EnableCap.DepthTest);
         }
 
-        public void Render(EntityModel model, Matrix4 transform)
+        public void Render(EntityModel model, int skin, Matrix4 transform)
         {
             GL.UniformMatrix4(_transformLoc, false, ref transform);
 
-            model.Render();
+            model.Render(skin);
         }
 
         protected override void OnEnd()
