@@ -55,6 +55,15 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
             conflict = GetConflict(tiles, X + dirX * (Width + 1), Y - dirY * (Width + 1));
             GenHelper.BuildWall(tiles, X + dirX * Width, Y + dirY * Width, Direction, 1, conflict, BothBorderTile);
             GenHelper.BuildWall(tiles, X + dirX * Width, Y + dirY * Width, Direction, 1, conflict, Height - conflict, right);
+
+            for (int i = 0; i < Width; ++i) {
+                var doorway = Tuple.Create(tiles[X + dirX * i, Y + dirY * i], Direction, Height);
+                if (_doorways.Any(x => x.Item2 == Direction && x.Item1 == doorway.Item1)) {
+                    var existing = _doorways.First(x => x.Item2 == Direction && x.Item1 == doorway.Item1);
+                    if (existing.Item3 >= doorway.Item3) continue;
+                }
+                _doorways.Add(doorway);
+            }
         }
 
         public void GenerateOpposite(District district, TileBuilder[,] tiles, Random rand)
