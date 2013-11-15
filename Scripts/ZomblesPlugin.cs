@@ -39,6 +39,8 @@ namespace Zombles.Scripts
                 ent.AddComponent<Health>();
             });
 
+            int braveCount = (384 * 100) / 100;
+
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<RouteNavigation>();
@@ -46,8 +48,14 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.FollowRoute>()
-                    .Push<Entities.Behaviours.Flee>()
-                    .Push<Entities.Behaviours.Mob>()
+                    .Push<Entities.Behaviours.Flee>();
+
+                if (braveCount-- > 0) {
+                    ent.GetComponent<SubsumptionStack>()
+                        .Push<Entities.Behaviours.Mob>();
+                }
+
+                ent.GetComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.SelfDefence>();
 #else
                 ent.AddComponent<SurvivorAI>();
@@ -77,7 +85,7 @@ namespace Zombles.Scripts
         {
             GameScene scene = MainWindow.CurrentScene as GameScene;
             World world = scene.World;
-            Random rand = Tools.Random;
+            Random rand = new Random(0x4812f34e);
 
             int count = 512;
             int zoms = Math.Max(count / 4, 8);
@@ -90,9 +98,11 @@ namespace Zombles.Scripts
                 return pos;
             };
 
+
             for (int i = 0; i < count - zoms; ++i) {
                 Entity surv = Entity.Create(world, "survivor");
                 surv.Position2D = randPos();
+
                 surv.Spawn();
             }
 
