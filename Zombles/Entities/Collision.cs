@@ -61,6 +61,12 @@ namespace Zombles.Entities
             return this;
         }
 
+        public Collision SetModel(CollisionModel model)
+        {
+            Model = model;
+            return this;
+        }
+
         public Vector2 TryMove(Vector2 move)
         {
             if (Model == CollisionModel.None)

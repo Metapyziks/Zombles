@@ -90,7 +90,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                World = Generator.Generate(WorldSize, WorldSize, 0x4812f34e);
+                World = Generator.Generate(WorldSize, WorldSize);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -308,8 +308,6 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            return;
-
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
             if (!World.IsPositionNavigable(pos)) {

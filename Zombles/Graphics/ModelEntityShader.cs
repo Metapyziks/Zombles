@@ -25,16 +25,23 @@ namespace Zombles.Graphics
                 {
                     var_texture = in_texture;
 
-                    const vec3 sunDir = normalize(vec3(1.0, -2.0, 0.0));
+                    const vec3 sun_dir = normalize(vec3(1.0, -2.0, 0.0));
 
-                    var_shade = 0.75 + abs(dot(sunDir, (mdl_matrix * vec4(in_normal, 0.0)).xyz)) * 0.25;
+                    var_shade = 0.75 + abs(dot(sun_dir, (mdl_matrix * vec4(in_normal, 0.0)).xyz)) * 0.25;
 
-                    gl_Position = vp_matrix * (mdl_matrix * vec4(
-                        in_position.x + world_offset.x,
+                    vec3 world_pos = mdl_matrix * vec4(
+                        in_position.x,
                         in_position.y,
-                        in_position.z + world_offset.y,
+                        in_position.z,
                         1.0
-                    ));
+                    );
+
+                    gl_Position = vp_matrix * vec4(
+                        world_pos.x + world_offset.x,
+                        world_pos.y,
+                        world_pos.z + world_offset.y,
+                        1.0
+                    );
                 }
             ";
 

@@ -25,7 +25,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>()
                     .SetDimentions(0.5f, 0.5f)
-                    .Model = CollisionModel.Repel | CollisionModel.Entity;
+                    .SetModel(CollisionModel.Repel | CollisionModel.Entity);
                 ent.AddComponent<Movement>();
                 ent.AddComponent<Health>();
             });
@@ -48,12 +48,15 @@ namespace Zombles.Scripts
 
             Entity.Register("crate", ent => {
                 ent.AddComponent<StaticTile>();
-                var render3d = ent.AddComponent<Render3D>();
-                
-                render3d.Model = EntityModel.Get("models", "deco", "crate",
-                    Tools.Random.NextDouble() < 0.5 ? "large" : "small");
-
-                render3d.Skin = Tools.Random.Next(render3d.Model.Skins);
+                ent.AddComponent<Render3D>()
+                    .SetScale(
+                        Tools.Random.NextSingle(0.75f, 0.9f),
+                        Tools.Random.NextSingle(0.75f, 0.9f),
+                        Tools.Random.NextSingle(0.75f, 0.9f))
+                    .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
+                    .SetModel(EntityModel.Get("models", "deco", "crate",
+                        Tools.Random.NextDouble() < 0.5 ? "large" : "small"))
+                    .SetSkin(Tools.Random);
             });
 
             MainWindow.SetScene(new GameScene(Game));
@@ -63,7 +66,7 @@ namespace Zombles.Scripts
         {
             GameScene scene = MainWindow.CurrentScene as GameScene;
             World world = scene.World;
-            Random rand = new Random(0x4812f34e);
+            Random rand = Tools.Random;
 
             int count = 512;
             int zoms = Math.Max(count / 4, 8);

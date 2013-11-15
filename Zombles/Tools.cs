@@ -14,6 +14,8 @@ namespace Zombles
 {
     public static class Tools
     {
+        public static readonly Vector3 Up = new Vector3(0f, 1f, 0f);
+
         public static readonly Random Random = new Random();
 
         [ResourceTypeRegistration]
