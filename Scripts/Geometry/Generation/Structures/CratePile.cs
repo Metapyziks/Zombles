@@ -1,6 +1,7 @@
 ﻿using System;
+
 using OpenTK;
-using Zombles;
+
 using Zombles.Entities;
 using Zombles.Geometry;
 using Zombles.Geometry.Generation;
@@ -25,7 +26,9 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
                     if (rand.NextDouble() <= CrateFrequency) {
                         var crateClass = rand.NextDouble() < 0.5
                             ? "small crate"
-                            : "large crate";
+                            : rand.NextDouble() < 0.75
+                                ? "large crate"
+                                : "wood pile";
                         var crate = Entity.Create(district.World, crateClass);
                         crate.Position2D = new Vector2(district.X + X + x + 0.5f, district.Y + Y + y + 0.5f);
                         district.PlaceEntity(crate);

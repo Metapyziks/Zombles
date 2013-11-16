@@ -15,10 +15,6 @@ namespace Zombles.Scripts
 {
     public class ZomblesPlugin : Plugin
     {
-        private double _lastAliveCheck;
-        private int _lastSurvivors;
-        private int _lastZombies;
-
         protected override void OnInitialize()
         {
             Entity.Register("human", ent => {
@@ -49,11 +45,11 @@ namespace Zombles.Scripts
             Entity.Register("crate", ent => {
                 ent.AddComponent<StaticTile>();
                 ent.AddComponent<Render3D>()
+                    .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
                     .SetScale(
                         Tools.Random.NextSingle(0.75f, 0.9f),
                         Tools.Random.NextSingle(0.75f, 0.9f),
-                        Tools.Random.NextSingle(0.75f, 0.9f))
-                    .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f));
+                        Tools.Random.NextSingle(0.75f, 0.9f));
             });
 
             Entity.Register("small crate", "crate", ent => {
@@ -66,6 +62,25 @@ namespace Zombles.Scripts
                 ent.GetComponent<Render3D>()
                     .SetModel(EntityModel.Get("models", "deco", "crate", "large"))
                     .SetSkin(Tools.Random);
+            });
+
+            Entity.Register("plank", ent => {
+                ent.AddComponent<Render3D>()
+                    .SetModel(EntityModel.Get("models", "deco", "plank"))
+                    .SetSkin(Tools.Random)
+                    .SetScale(
+                        Tools.Random.NextSingle(0.75f, 0.9f),
+                        Tools.Random.NextSingle(0.75f, 0.9f),
+                        Tools.Random.NextSingle(0.75f, 0.9f));
+            });
+
+            Entity.Register("wood pile", ent => {
+                var pile = ent.AddComponent<WoodPile>();
+
+                int count = Tools.Random.Next(8) + 1;
+                for (int i = 0; i < count; ++i) {
+                    pile.AddPlank(Entity.Create(ent.World, "plank"));
+                }
             });
 
             MainWindow.SetScene(new GameScene(Game));

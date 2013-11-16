@@ -179,18 +179,14 @@ namespace Zombles.Geometry
         public void RenderEntities(FlatEntityShader shader)
         {
             foreach (Entity ent in _ents) {
-                if (ent.HasComponent<Render2D>()) {
-                    ent.GetComponent<Render2D>().OnRender(shader);
-                }
+                ent.Render(shader);
             }
         }
 
         public void RenderEntities(ModelEntityShader shader)
         {
             foreach (Entity ent in _ents) {
-                if (ent.HasComponent<Render3D>()) {
-                    ent.GetComponent<Render3D>().OnRender(shader);
-                }
+                ent.Render(shader);
             }
         }
 

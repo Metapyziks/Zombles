@@ -6,6 +6,7 @@ using System.Text;
 using OpenTK;
 
 using Zombles.Geometry;
+using Zombles.Graphics;
 
 namespace Zombles.Entities
 {
@@ -70,16 +71,28 @@ namespace Zombles.Entities
 
         private List<Component> _comps;
         private Dictionary<Type, Component> _compDict;
+        private List<Entity> _children;
+
+        private Block _block;
         private Vector3 _position;
         private bool _posChanged;
 
         public readonly uint ID;
 
+        public Entity Parent { get; private set; }
+
+        public IEnumerable<Entity> Children { get { return _children; } }
+
+        public bool HasParent
+        {
+            get { return Parent != null; }
+        }
+
         public readonly World World;
         public Block Block
         {
-            get;
-            private set;
+            get { return HasParent ? Parent.Block : _block; }
+            private set { _block = value; }
         }
         public bool IsValid
         {
@@ -87,32 +100,52 @@ namespace Zombles.Entities
             private set;
         }
 
-        public Vector3 Position
+        public Vector3 RelativePosition
         {
             get { return _position; }
             set
             {
                 _position = value;
-                if (_position.X < 0 || _position.X >= World.Width)
-                    _position.X -= (int) Math.Floor(_position.X / World.Width) * World.Width;
-                if (_position.Z < 0 || _position.Z >= World.Height)
-                    _position.Z -= (int) Math.Floor(_position.Z / World.Height) * World.Height;
+                
+                if (!HasParent) {
+                    if (_position.X < 0 || _position.X >= World.Width)
+                        _position.X -= (int) Math.Floor(_position.X / World.Width) * World.Width;
+                    if (_position.Z < 0 || _position.Z >= World.Height)
+                        _position.Z -= (int) Math.Floor(_position.Z / World.Height) * World.Height;
+                }
+
                 _posChanged = true;
+            }
+        }
+
+        public Vector2 RelativePosition2D
+        {
+            get { return _position.Xz; }
+            set
+            {
+                RelativePosition = new Vector3(value.X, _position.Y, value.Y);
+            }
+        }
+
+        public Vector3 Position
+        {
+            get { return HasParent ? Parent.Position + _position : _position; }
+            set
+            {
+                if (HasParent) {
+                    RelativePosition = value - Parent.Position;
+                } else {
+                    RelativePosition = value;
+                }
             }
         }
 
         public Vector2 Position2D
         {
-            get { return new Vector2(_position.X, _position.Z); }
+            get { return Position.Xz; }
             set
             {
-                _position.X = value.X;
-                _position.Z = value.Y;
-                if (_position.X < 0 || _position.X >= World.Width)
-                    _position.X -= (int) Math.Floor(_position.X / World.Width) * World.Width;
-                if (_position.Z < 0 || _position.Z >= World.Height)
-                    _position.Z -= (int) Math.Floor(_position.Z / World.Height) * World.Height;
-                _posChanged = true;
+                Position = new Vector3(value.X, Position.Y, value.Y);
             }
         }
 
@@ -126,7 +159,39 @@ namespace Zombles.Entities
             _position = new Vector3();
             _posChanged = true;
 
+            _children = new List<Entity>();
+
             IsValid = false;
+        }
+
+        public Entity AddChild(Entity child)
+        {
+            if (_children.Contains(child)) return child;
+
+            if (child.HasParent) {
+                child.Parent.RemoveChild(child);
+            }
+
+            _children.Add(child);
+
+            child.Parent = this;
+            child.RelativePosition -= Position;
+            child.UpdateBlock();
+
+            return child;
+        }
+
+        public Entity RemoveChild(Entity child)
+        {
+            if (!_children.Contains(child)) return child;
+
+            _children.Remove(child);
+
+            child.Parent = null;
+            child.RelativePosition += Position;
+            child.UpdateBlock();
+
+            return child;
         }
 
         public T AddComponent<T>()
@@ -227,22 +292,21 @@ namespace Zombles.Entities
                 IsValid = true;
                 UpdateBlock();
 
-                foreach (Component comp in this)
-                    comp.OnSpawn();
+                foreach (var comp in this) comp.OnSpawn();
+                foreach (var child in _children) child.Spawn();
             }
         }
 
         public void UpdateComponents()
         {
-            foreach (Component comp in this)
-                comp.OnSpawn();
+            foreach (var comp in this) comp.OnSpawn();
         }
 
         public void Remove()
         {
             if (IsValid) {
-                foreach (Component comp in this)
-                    comp.OnRemove();
+                foreach (var comp in this) comp.OnRemove();
+                foreach (var child in _children) child.Remove();
 
                 IsValid = false;
             }
@@ -252,22 +316,40 @@ namespace Zombles.Entities
         {
             for (int i = _comps.Count - 1; i >= 0; --i)
                 _comps[i].OnThink(dt);
+
+            foreach (var child in _children) child.Think(dt);
+        }
+
+        public void Render(FlatEntityShader shader)
+        {
+            var comp = GetComponentOrNull<Render2D>();
+            if (comp != null) comp.OnRender(shader);
+
+            foreach (var child in _children) child.Render(shader);
+        }
+
+        public void Render(ModelEntityShader shader)
+        {
+            var comp = GetComponentOrNull<Render3D>();
+            if (comp != null) comp.OnRender(shader);
+
+            foreach (var child in _children) child.Render(shader);
         }
 
         public void UpdateBlock()
         {
-            if (IsValid && _posChanged) {
+            if (IsValid && !HasParent && (_posChanged || _block == null)) {
                 Block newBlock = World.GetBlock(_position.X, _position.Z);
-                if (newBlock != Block) {
-                    if (Block != null)
-                        Block.RemoveEntity(this);
-                    Block = newBlock;
-                    Block.AddEntity(this);
+                if (newBlock != _block) {
+                    if (_block != null)
+                        _block.RemoveEntity(this);
+                    _block = newBlock;
+                    _block.AddEntity(this);
                 }
                 _posChanged = false;
-            } else if (!IsValid && Block != null) {
-                Block.RemoveEntity(this);
-                Block = null;
+            } else if ((HasParent || !IsValid) && _block != null) {
+                _block.RemoveEntity(this);
+                _block = null;
             }
         }
 

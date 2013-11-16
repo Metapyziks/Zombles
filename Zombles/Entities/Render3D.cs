@@ -7,7 +7,9 @@ namespace Zombles.Entities
     public class Render3D : Component
     {
         private Vector3 _lastPos;
+        
         private Quaternion _rotation;
+        private Vector3 _offset;
         private Vector3 _scale;
 
         private Matrix4 _transform;
@@ -19,6 +21,16 @@ namespace Zombles.Entities
             set
             {
                 _rotation = value;
+                _transformInvalid = true;
+            }
+        }
+
+        public Vector3 Offset
+        {
+            get { return _offset; }
+            set
+            {
+                _offset = value;
                 _transformInvalid = true;
             }
         }
@@ -84,6 +96,18 @@ namespace Zombles.Entities
             return this;
         }
 
+        public Render3D SetOffset(Vector3 offset)
+        {
+            Offset = offset;
+            return this;
+        }
+
+        public Render3D SetOffset(float x, float y, float z)
+        {
+            Offset = new Vector3(x, y, z);
+            return this;
+        }
+
         public Render3D SetScale(float scale)
         {
             Scale = new Vector3(scale, scale, scale);
@@ -105,9 +129,12 @@ namespace Zombles.Entities
         public virtual void OnRender(ModelEntityShader shader)
         {
             if (_transformInvalid || _lastPos != Position) {
-                _transform = Matrix4.Mult(
+                _transform =
                     Matrix4.Mult(
-                        Matrix4.CreateScale(_scale),
+                        Matrix4.Mult(
+                            Matrix4.Mult(
+                                Matrix4.CreateTranslation(_offset),
+                                Matrix4.CreateScale(_scale)),
                         Matrix4.CreateFromQuaternion(Rotation)),
                     Matrix4.CreateTranslation(Entity.Position));
 

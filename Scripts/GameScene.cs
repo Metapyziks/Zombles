@@ -33,7 +33,7 @@ namespace Zombles.Scripts
 
         private bool _hideTop;
 
-        private float _camMoveSpeed;
+        private float _camScale;
         private int _camDir;
         private DateTime _camRotTime;
         private int _oldCamDir;
@@ -73,7 +73,7 @@ namespace Zombles.Scripts
         {
             _hideTop = false;
 
-            _camMoveSpeed = 16.0f;
+            _camScale = 4f;
             _camDir = 2;
             _camRotTime = DateTime.MinValue;
             _mapView = false;
@@ -192,8 +192,10 @@ namespace Zombles.Scripts
             if (movement.Length != 0) {
                 movement.Normalize();
                 Camera.Position2D += movement *
-                    (float) (e.Time * _camMoveSpeed * (Keyboard[Key.ShiftLeft] ? 4.0f : 1.0f));
+                    (float) (e.Time * (64f / Camera.Scale) * (Keyboard[Key.ShiftLeft] ? 4.0f : 1.0f));
             }
+
+            Camera.Scale += (_camScale - Camera.Scale) * 0.1f;
 
             if ((DateTime.Now - _camRotTime).TotalSeconds >= 0.25) {
                 if (Camera.Yaw != TargetCameraYaw)
@@ -297,13 +299,11 @@ namespace Zombles.Scripts
 
         public override void OnMouseWheelChanged(MouseWheelEventArgs e)
         {
-            if (e.DeltaPrecise >= 0.0f) {
-                Camera.Scale *= 1.0f + (e.DeltaPrecise / 4.0f);
+            if (e.DeltaPrecise >= 0f) {
+                _camScale = Math.Min(8f, _camScale * (1f + (e.DeltaPrecise / 4f)));
             } else {
-                Camera.Scale /= 1.0f - (e.DeltaPrecise / 4.0f);
+                _camScale = Math.Max(1.6384f, _camScale / (1f - (e.DeltaPrecise / 4f)));
             }
-
-            _camMoveSpeed = 64.0f / Camera.Scale;
         }
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
