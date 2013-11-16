@@ -125,32 +125,32 @@ namespace Zombles.Geometry
             lock (_tiles) {
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetBaseFlatVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetBaseFlatVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetBaseFlatVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetBaseWallVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetBaseWallVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetBaseWallVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetBaseEdgeVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetBaseEdgeVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetBaseEdgeVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetTopFlatVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetTopFlatVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetTopFlatVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetTopWallVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetTopWallVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetTopWallVertexCount() * 3);
                 }
 
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     int prev = i; _tiles[x, y].GetTopEdgeVertices(verts, ref i);
-                    Debug.Assert(i - prev == _tiles[x, y].GetTopEdgeVertexCount() * 3);
+                    Trace.Assert(i - prev == _tiles[x, y].GetTopEdgeVertexCount() * 3);
                 }
             }
         }

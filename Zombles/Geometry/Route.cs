@@ -315,7 +315,7 @@ namespace Zombles.Geometry
                 float length = 0f;
                 var prev = Origin;
 
-                var trace = new Trace(World) {
+                var trace = new TraceLine(World) {
                     Origin = Origin,
                     HitEntities = false,
                     HitGeometry = true,

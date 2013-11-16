@@ -57,7 +57,7 @@ namespace Zombles.Scripts.Entities
 
                 _fleePos = new Vector2();
 
-                Trace trace = new Trace(World);
+                TraceLine trace = new TraceLine(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;

@@ -35,7 +35,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         private bool ShouldMob(Entity ent)
         {
-            var trace = new Trace(World);
+            var trace = new TraceLine(World);
             trace.Origin = ent.Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;
@@ -69,7 +69,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 _nextMobCheck = MainWindow.Time + Tools.Random.NextDouble(
                     MinMobCheckPeriod, MaxMobCheckPeriod);
 
-                var trace = new Trace(World);
+                var trace = new TraceLine(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;

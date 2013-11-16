@@ -244,7 +244,7 @@ namespace Zombles.Scripts
             TraceResult trace = null;
 
             if (_drawTestTrace) {
-                trace = new Zombles.Geometry.Trace(World) {
+                trace = new Zombles.Geometry.TraceLine(World) {
                     Origin = Camera.Position2D,
                     HullSize = new Vector2(hullSize, hullSize),
                     HitGeometry = true,

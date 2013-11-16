@@ -9,12 +9,12 @@ using Zombles.Entities;
 
 namespace Zombles.Geometry
 {
-    public class Trace
+    public class TraceLine
     {
         public static TraceResult Quick(World world, Vector2 start, Vector2 end,
             bool hitEnts = false, bool hitGeom = true, Vector2 hullSize = default( Vector2 ))
         {
-            return new Trace(world) {
+            return new TraceLine(world) {
                 Origin = start,
                 Target = end,
                 HitEntities = hitEnts,
@@ -69,7 +69,7 @@ namespace Zombles.Geometry
             }
         }
 
-        public Trace(World world)
+        public TraceLine(World world)
         {
             World = world;
 
@@ -419,7 +419,7 @@ namespace Zombles.Geometry
         public Face Face { get; private set; }
         public Entity Entity { get; private set; }
 
-        internal TraceResult(Trace trace, Vector2 vec)
+        internal TraceResult(TraceLine trace, Vector2 vec)
         {
             World = trace.World;
 
@@ -430,14 +430,14 @@ namespace Zombles.Geometry
             Vector = vec;
         }
 
-        internal TraceResult(Trace trace, Vector2 vec, Entity ent)
+        internal TraceResult(TraceLine trace, Vector2 vec, Entity ent)
             : this(trace, vec)
         {
             HitEntity = true;
             Entity = ent;
         }
 
-        internal TraceResult(Trace trace, Vector2 vec, Face face)
+        internal TraceResult(TraceLine trace, Vector2 vec, Face face)
             : this(trace, vec)
         {
             HitWorld = true;

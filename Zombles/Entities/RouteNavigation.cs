@@ -146,7 +146,7 @@ namespace Zombles.Entities
 
             _lastScan = MainWindow.Time;
 
-            Trace trace = new Trace(World) {
+            TraceLine trace = new TraceLine(World) {
                 Origin = Position2D,
                 Target = _curPath.Current,
                 HitEntities = false,

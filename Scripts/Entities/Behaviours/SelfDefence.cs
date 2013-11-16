@@ -33,7 +33,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 _attackTarget = null;
 
-                var trace = new Trace(World);
+                var trace = new TraceLine(World);
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;

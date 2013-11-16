@@ -77,7 +77,7 @@ namespace Zombles.Geometry
                 float x = pos.X + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
                 float y = pos.Y + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
 
-                TraceResult res = Trace.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
+                TraceResult res = TraceLine.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
                 
                 int ix = (int) (res.End.X * BloodResolution);
                 int iy = (int) (res.End.Y * BloodResolution);

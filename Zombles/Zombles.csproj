@@ -83,7 +83,7 @@
     <Compile Include="Geometry\Route.cs" />
     <Compile Include="Geometry\Tile.cs" />
     <Compile Include="Geometry\TileBuilder.cs" />
-    <Compile Include="Geometry\Trace.cs" />
+    <Compile Include="Geometry\TraceLine.cs" />
     <Compile Include="Graphics\AnimatedSprite.cs" />
     <Compile Include="Graphics\EntityModel.cs" />
     <Compile Include="Graphics\ModelEntityShader.cs" />

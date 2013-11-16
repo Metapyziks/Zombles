@@ -63,7 +63,7 @@ namespace Zombles
         {
             VSync = VSyncMode.Off;
 
-            Debug.Listeners.Add(new DebugListener());
+            Trace.Listeners.Add(new DebugListener());
 
             CurrentScene = null;
         }

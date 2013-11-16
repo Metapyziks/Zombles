@@ -79,12 +79,12 @@ namespace Zombles
             CompilerResults results = compiler.CompileAssemblyFromSource(compParams, sources);
 
             if (results.Errors.Count > 0) {
-                Debug.WriteLine(results.Errors.Count + " error" + (results.Errors.Count != 1 ? "s" : "") + " while compiling Scripts!");
+                Trace.WriteLine(results.Errors.Count + " error" + (results.Errors.Count != 1 ? "s" : "") + " while compiling Scripts!");
                 foreach (CompilerError error in results.Errors) {
                     if (error.FileName != "")
-                        Debug.WriteLine((error.IsWarning ? "Warning" : "Error") + " in '" + error.FileName + "', at line " + error.Line);
+                        Trace.WriteLine((error.IsWarning ? "Warning" : "Error") + " in '" + error.FileName + "', at line " + error.Line);
 
-                    Debug.WriteLine(error.ErrorText);
+                    Trace.WriteLine(error.ErrorText);
                 }
                 return;
             }

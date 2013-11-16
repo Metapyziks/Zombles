@@ -76,7 +76,7 @@ namespace Zombles.Scripts.Entities
                             Position2D.Y + (float) Math.Sin(ang) * rad
                         );
 
-                        Trace trace = new Trace(World);
+                        TraceLine trace = new TraceLine(World);
                         trace.Origin = Position2D;
                         trace.Target = _lastSeenPos;
                         trace.HitGeometry = true;
@@ -98,7 +98,7 @@ namespace Zombles.Scripts.Entities
 
         private void FindTarget()
         {
-            Trace trace = new Trace(World);
+            TraceLine trace = new TraceLine(World);
             trace.Origin = Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;

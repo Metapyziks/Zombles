@@ -104,7 +104,7 @@ namespace Zombles.Scripts.Entities
             for (int i = 0; i < 4; ++i) {
                 Face face = (Face) (1 << i);
                 Vector2 ray = face.GetNormal() / 2.0f;
-                TraceResult res = Trace.Quick(World, Position2D, Position2D + ray);
+                TraceResult res = TraceLine.Quick(World, Position2D, Position2D + ray);
                 if (res.Hit)
                     Entity.Position2D -= res.Vector;
             }
@@ -119,7 +119,7 @@ namespace Zombles.Scripts.Entities
 
             FaceDirection(dir);
 
-            Trace trace = new Trace(World);
+            TraceLine trace = new TraceLine(World);
             trace.HitGeometry = true;
             trace.HitEntities = true;
             trace.HitEntityPredicate = (x => x != Entity);
