@@ -29,12 +29,7 @@ namespace Zombles.Graphics
 
                     var_shade = 0.75 + abs(dot(sun_dir, (mdl_matrix * vec4(in_normal, 0.0)).xyz)) * 0.25;
 
-                    vec3 world_pos = mdl_matrix * vec4(
-                        in_position.x,
-                        in_position.y,
-                        in_position.z,
-                        1.0
-                    );
+                    vec3 world_pos = (mdl_matrix * vec4(in_position, 1.0)).xyz;
 
                     gl_Position = vp_matrix * vec4(
                         world_pos.x + world_offset.x,

@@ -22,6 +22,26 @@ namespace Zombles
 {
     public class MainWindow : GameWindow
     {
+        private class DebugListener : TraceListener
+        {
+            private static readonly String LogPath = "debug.log";
+
+            public DebugListener()
+            {
+                File.Create(LogPath).Close();
+            }
+
+            public override void Write(string message)
+            {
+                File.AppendAllText(LogPath, message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                File.AppendAllText(LogPath, message + Environment.NewLine);
+            }
+        }
+
         public const double ThinkFrequency = 60.0;
         public const double ThinkPeriod = 1.0 / ThinkFrequency;
 
@@ -41,10 +61,9 @@ namespace Zombles
         public MainWindow()
             : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16, 0), "Zombles")
         {
-            // VSync = VSyncMode.Off;
-            Context.SwapInterval = 1;
+            VSync = VSyncMode.Off;
 
-            // WindowBorder = WindowBorder.Fixed;
+            Debug.Listeners.Add(new DebugListener());
 
             CurrentScene = null;
         }
