@@ -195,7 +195,13 @@ namespace Zombles.Scripts
                     (float) (e.Time * (64f / Camera.Scale) * (Keyboard[Key.ShiftLeft] ? 4.0f : 1.0f));
             }
 
-            Camera.Scale += (_camScale - Camera.Scale) * 0.1f;
+            if (Math.Abs(Camera.Scale - _camScale) < 1f / 128f) {
+                if (Camera.Scale != _camScale) {
+                    Camera.Scale = _camScale;
+                }
+            } else {
+                Camera.Scale += (_camScale - Camera.Scale) * 0.25f;
+            }
 
             if ((DateTime.Now - _camRotTime).TotalSeconds >= 0.25) {
                 if (Camera.Yaw != TargetCameraYaw)

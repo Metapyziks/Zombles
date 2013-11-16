@@ -92,7 +92,7 @@ namespace Zombles.Scripts
             World world = scene.World;
             Random rand = Tools.Random;
 
-            int count = 512;
+            int count = (world.Width * world.Height) / 32;
             int zoms = Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {

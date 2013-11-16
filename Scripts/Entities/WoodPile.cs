@@ -37,6 +37,10 @@ namespace Zombles.Scripts.Entities
                 + Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f));
             
             ++Count;
+
+            if (Count > 4 && !Entity.HasComponent<StaticTile>()) {
+                Entity.AddComponent<StaticTile>();
+            }
         }
 
         public Entity TakePlank()
@@ -44,6 +48,10 @@ namespace Zombles.Scripts.Entities
             if (Count == 0) return null;
 
             --Count;
+
+            if (Count <= 4 && Entity.HasComponent<StaticTile>()) {
+                Entity.RemoveComponent<StaticTile>();
+            }
 
             var plank = Entity.Children.Last();
             plank.RelativePosition = new Vector3(0f, 0f, 0f);
