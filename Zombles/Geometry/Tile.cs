@@ -24,6 +24,14 @@ namespace Zombles.Geometry
 
         public readonly ushort[,] WallTileIndices;
 
+        public bool IsSolid
+        {
+            get
+            {
+                return FloorHeight > 0 || _staticEnts.Count > 0;
+            }
+        }
+
         public Tile(int x, int y, TileBuilder builder)
         {
             _staticEnts = new HashSet<Entity>();
@@ -61,14 +69,9 @@ namespace Zombles.Geometry
             _staticEnts.Remove(ent);
         }
 
-        public bool IsSolid()
-        {
-            return FloorHeight > 0 || _staticEnts.Count > 0;
-        }
-
         public bool IsWallSolid(Face face)
         {
-            if (_neighbours[face.GetIndex()].IsSolid()) return true;
+            if (_neighbours[face.GetIndex()].IsSolid) return true;
             if (WallHeight == 0) return false;
 
             return WallTileIndices[face.GetIndex(), 0] != 0xffff;

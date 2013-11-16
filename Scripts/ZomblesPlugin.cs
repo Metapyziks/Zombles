@@ -53,9 +53,18 @@ namespace Zombles.Scripts
                         Tools.Random.NextSingle(0.75f, 0.9f),
                         Tools.Random.NextSingle(0.75f, 0.9f),
                         Tools.Random.NextSingle(0.75f, 0.9f))
-                    .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
-                    .SetModel(EntityModel.Get("models", "deco", "crate",
-                        Tools.Random.NextDouble() < 0.5 ? "large" : "small"))
+                    .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f));
+            });
+
+            Entity.Register("small crate", "crate", ent => {
+                ent.GetComponent<Render3D>()
+                    .SetModel(EntityModel.Get("models", "deco", "crate", "small"))
+                    .SetSkin(Tools.Random);
+            });
+
+            Entity.Register("large crate", "crate", ent => {
+                ent.GetComponent<Render3D>()
+                    .SetModel(EntityModel.Get("models", "deco", "crate", "large"))
                     .SetSkin(Tools.Random);
             });
 
@@ -75,7 +84,7 @@ namespace Zombles.Scripts
                 Vector2 pos;
                 do {
                     pos = new Vector2(rand.NextSingle() * world.Width, rand.NextSingle() * world.Height);
-                } while (world.GetTile(pos).FloorHeight > 0);
+                } while (world.GetTile(pos).IsSolid);
                 return pos;
             };
 

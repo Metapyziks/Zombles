@@ -57,8 +57,8 @@ namespace Zombles.Graphics
                 }
             ";
 
-            VertexSource = vert.Generate(GL3);
-            FragmentSource = frag.Generate(GL3);
+            VertexSource = vert.Generate();
+            FragmentSource = frag.Generate();
 
             BeginMode = BeginMode.Quads;
 

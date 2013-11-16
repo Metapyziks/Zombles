@@ -23,7 +23,10 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
             for (int x = 0; x < SizeX; ++x) {
                 for (int y = 0; y < SizeY; ++y) {
                     if (rand.NextDouble() <= CrateFrequency) {
-                        var crate = Entity.Create(district.World, "crate");
+                        var crateClass = rand.NextDouble() < 0.5
+                            ? "small crate"
+                            : "large crate";
+                        var crate = Entity.Create(district.World, crateClass);
                         crate.Position2D = new Vector2(district.X + X + x + 0.5f, district.Y + Y + y + 0.5f);
                         district.PlaceEntity(crate);
                     }
