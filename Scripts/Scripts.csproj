@@ -59,6 +59,7 @@
     <Compile Include="Entities\Behaviours\Mob.cs" />
     <Compile Include="Entities\Behaviours\SelfDefence.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
+    <Compile Include="Entities\Breakable.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Entities\WoodPile.cs" />
     <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />

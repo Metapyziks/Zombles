@@ -64,24 +64,28 @@ namespace Zombles.Entities
             IsAlive = true;
         }
 
-        public void Revive()
+        public Health Revive()
         {
             Value = MaxHealth;
             IsAlive = true;
 
             if (Healed != null)
                 Healed(this, new HealedEventArgs(MaxHealth));
+
+            return this;
         }
 
-        public void SetMaximum(int value)
+        public Health SetMaximum(int value)
         {
             MaxHealth = value;
 
             if (Value > MaxHealth)
                 Value = MaxHealth;
+
+            return this;
         }
 
-        public void Heal(int value)
+        public Health Heal(int value)
         {
             if (value > 0 && IsAlive) {
                 Value += value;
@@ -92,9 +96,11 @@ namespace Zombles.Entities
                 if (Healed != null)
                     Healed(this, new HealedEventArgs(value));
             }
+
+            return this;
         }
 
-        public void Damage(int value, Entity attacker = null)
+        public Health Damage(int value, Entity attacker = null)
         {
             if (value > 0 && IsAlive) {
                 Value -= value;
@@ -110,6 +116,8 @@ namespace Zombles.Entities
                         Killed(this, new KilledEventArgs(attacker));
                 }
             }
+
+            return this;
         }
     }
 }
