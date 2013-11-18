@@ -208,7 +208,7 @@ namespace Zombles.Entities
             return comp;
         }
 
-        public void RemoveComponent<T>()
+        public Entity RemoveComponent<T>()
             where T : Component
         {
             T comp = GetComponent<T>();
@@ -218,6 +218,8 @@ namespace Zombles.Entities
             while ((type = type.BaseType) != typeof(Component));
 
             _comps.Remove(comp);
+
+            return this;
         }
 
         public TNew SwapComponent<TOld, TNew>()
@@ -286,7 +288,7 @@ namespace Zombles.Entities
             }
         }
 
-        public void Spawn()
+        public Entity Spawn()
         {
             if (!IsValid) {
                 IsValid = true;
@@ -295,11 +297,15 @@ namespace Zombles.Entities
                 foreach (var comp in this) comp.OnSpawn();
                 foreach (var child in _children) child.Spawn();
             }
+
+            return this;
         }
 
-        public void UpdateComponents()
+        public Entity UpdateComponents()
         {
             foreach (var comp in this) comp.OnSpawn();
+
+            return this;
         }
 
         public void Remove()

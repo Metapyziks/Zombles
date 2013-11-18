@@ -4,7 +4,7 @@ using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
 {
-    public class Breakable : Component
+    public abstract class Breakable : Component
     {
         protected Health Health { get; private set; }
 

@@ -44,9 +44,8 @@ namespace Zombles.Scripts
 
             Entity.Register("crate", ent => {
                 ent.AddComponent<StaticTile>();
-                ent.AddComponent<Health>()
-                    .SetMaximum(100)
-                    .Revive();
+                ent.AddComponent<Health>();
+                ent.AddComponent<WoodenBreakable>();
                 ent.AddComponent<Render3D>()
                     .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
                     .SetScale(
@@ -59,12 +58,21 @@ namespace Zombles.Scripts
                 ent.GetComponent<Health>()
                     .SetMaximum(50)
                     .Revive();
+                ent.GetComponent<WoodenBreakable>()
+                    .SetMinPlanks(2)
+                    .SetMaxPlanks(3);
                 ent.GetComponent<Render3D>()
                     .SetModel(EntityModel.Get("models", "deco", "crate", "small"))
                     .SetSkin(Tools.Random);
             });
 
             Entity.Register("large crate", "crate", ent => {
+                ent.GetComponent<Health>()
+                    .SetMaximum(100)
+                    .Revive();
+                ent.GetComponent<WoodenBreakable>()
+                    .SetMinPlanks(3)
+                    .SetMaxPlanks(6);
                 ent.GetComponent<Render3D>()
                     .SetModel(EntityModel.Get("models", "deco", "crate", "large"))
                     .SetSkin(Tools.Random);

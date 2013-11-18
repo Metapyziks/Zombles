@@ -21,6 +21,22 @@ namespace Zombles.Scripts.Entities
             Count = 0;
         }
 
+        public WoodPile SetPlankCount(int value)
+        {
+            while (Count < value) {
+                var plank = Entity.Create(Entity.World, "plank");
+                AddPlank(plank);
+
+                if (Entity.IsValid) plank.Spawn();
+            }
+
+            while (Count > value) {
+                TakePlank().Remove();
+            }
+
+            return this;
+        }
+
         public void AddPlank(Entity plank)
         {
             if (Entity.Children.Contains(plank)) return;
