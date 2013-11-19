@@ -68,7 +68,7 @@ namespace Zombles
             compParams.GenerateExecutable = false;
             compParams.GenerateInMemory = true;
             compParams.TempFiles = new TempFileCollection(Environment.GetEnvironmentVariable("TEMP"), true);
-            compParams.TempFiles.KeepFiles = false;
+            compParams.TempFiles.KeepFiles = true;
             compParams.IncludeDebugInformation = true;
 
             String[] sources = new String[_sScripts.Count];

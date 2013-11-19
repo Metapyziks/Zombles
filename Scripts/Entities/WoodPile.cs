@@ -26,8 +26,6 @@ namespace Zombles.Scripts.Entities
             while (Count < value) {
                 var plank = Entity.Create(Entity.World, "plank");
                 AddPlank(plank);
-
-                if (Entity.IsValid) plank.Spawn();
             }
 
             while (Count > value) {

@@ -128,8 +128,9 @@ namespace Zombles.Scripts.Entities
             trace.Length = 1.0f;
 
             TraceResult res = trace.GetResult();
-            if (res.HitEntity && res.Entity.HasComponent<Health>())
-                res.Entity.GetComponent<Health>().Damage(Tools.Random.Next(MinAttackDamage, MaxAttackDamage + 1), Entity);
+            if (!res.HitEntity || !res.Entity.HasComponent<Health>()) return;
+
+            res.Entity.GetComponent<Health>().Damage(Tools.Random.Next(MinAttackDamage, MaxAttackDamage + 1), Entity);
         }
 
         public void FaceDirection(Vector2 dir)

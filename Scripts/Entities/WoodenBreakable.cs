@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Zombles.Entities;
 
@@ -39,7 +35,9 @@ namespace Zombles.Scripts.Entities
             if (planks <= 0) return;
 
             var pile = Entity.Create(Entity.World, "wood pile");
+
             pile.GetComponent<WoodPile>().SetPlankCount(planks);
+            pile.Position2D = Entity.Position2D;
 
             pile.Spawn();
         }

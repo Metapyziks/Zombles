@@ -31,6 +31,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<RouteNavigation>();
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
+                    .Push<Entities.Behaviours.SalvagePlanks>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.Mob>()
@@ -46,6 +47,9 @@ namespace Zombles.Scripts
                 ent.AddComponent<StaticTile>();
                 ent.AddComponent<Health>();
                 ent.AddComponent<WoodenBreakable>();
+                ent.AddComponent<Collision>()
+                    .SetDimentions(1.125f, 1.125f)
+                    .SetModel(CollisionModel.Box);
                 ent.AddComponent<Render3D>()
                     .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
                     .SetScale(
@@ -107,7 +111,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = (world.Width * world.Height) / 32;
-            int zoms = Math.Max(count / 4, 8);
+            int zoms = 0; //Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;

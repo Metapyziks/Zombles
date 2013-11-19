@@ -16,7 +16,7 @@ namespace Zombles.Scripts.Geometry.Generation.Structures
         public CratePile()
         {
             MaxHeight = 2;
-            CrateFrequency = 0.2;
+            CrateFrequency = 0.1;
         }
 
         public override void Generate(District district, TileBuilder[,] tiles, Random rand)

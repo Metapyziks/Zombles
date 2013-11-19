@@ -57,6 +57,7 @@
     <Compile Include="Entities\Behaviours\Flee.cs" />
     <Compile Include="Entities\Behaviours\FollowRoute.cs" />
     <Compile Include="Entities\Behaviours\Mob.cs" />
+    <Compile Include="Entities\Behaviours\SalvagePlanks.cs" />
     <Compile Include="Entities\Behaviours\SelfDefence.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
     <Compile Include="Entities\Breakable.cs" />

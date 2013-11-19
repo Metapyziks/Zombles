@@ -19,7 +19,7 @@ namespace Zombles.Scripts.Geometry.Generation.Rooms
 
             new Structures.CratePile {
                 X = X + 1, Y = Y + 1, SizeX = SizeX - 2, SizeY = SizeY - 2,
-                CrateFrequency = rand.NextDouble() * 0.5
+                CrateFrequency = rand.NextDouble() * 0.2
             }.Generate(district, tiles, rand);
         }
     }

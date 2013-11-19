@@ -173,10 +173,12 @@ namespace Zombles.Entities
             }
 
             _children.Add(child);
-
+            
             child.Parent = this;
             child.RelativePosition -= Position;
-            child.UpdateBlock();
+
+            if (IsValid && !child.IsValid) child.Spawn();
+            else child.UpdateBlock();
 
             return child;
         }
