@@ -81,6 +81,7 @@ namespace Zombles.Scripts.Entities
                         trace.Target = _lastSeenPos;
                         trace.HitGeometry = true;
                         trace.HitEntities = false;
+                        trace.HullSize = Entity.GetComponent<Collision>().Size;
 
                         if (!trace.GetResult().Hit)
                             break;
@@ -102,6 +103,7 @@ namespace Zombles.Scripts.Entities
             trace.Origin = Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;
+            trace.HullSize = Entity.GetComponent<Collision>().Size;
 
             Entity closest = null;
             float bestDist2 = _viewRadius * _viewRadius;

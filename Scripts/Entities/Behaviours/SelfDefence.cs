@@ -37,6 +37,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 trace.Origin = Position2D;
                 trace.HitGeometry = true;
                 trace.HitEntities = false;
+                trace.HullSize = Entity.GetComponent<Collision>().Size;
 
                 float closestDist2 = float.MaxValue;
 

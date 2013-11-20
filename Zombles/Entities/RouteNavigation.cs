@@ -151,7 +151,7 @@ namespace Zombles.Entities
                 Target = _curPath.Current,
                 HitEntities = false,
                 HitGeometry = true,
-                HullSize = new Vector2(0.5f, 0.5f)
+                HullSize = Entity.GetComponent<Collision>().Size * 0.95f
             };
 
             if (!trace.GetResult().Hit) {
@@ -159,7 +159,7 @@ namespace Zombles.Entities
             } else {
                 trace.Target = _curWaypoint;
                 if (trace.GetResult().Hit) {
-                    // Start using history
+                    NavigateTo(CurrentTarget);
                 }
             }
         }

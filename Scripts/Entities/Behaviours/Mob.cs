@@ -39,6 +39,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             trace.Origin = ent.Position2D;
             trace.HitGeometry = true;
             trace.HitEntities = false;
+            trace.HullSize = Entity.GetComponent<Collision>().Size;
 
             int survivors = 1;
             int zombies = 1;

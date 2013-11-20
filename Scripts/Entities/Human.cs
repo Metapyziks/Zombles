@@ -95,6 +95,10 @@ namespace Zombles.Scripts.Entities
 
             Anim.Start(DeadAnim);
 
+            if (Entity.HasComponent<RouteNavigation>()) {
+                Entity.RemoveComponent<RouteNavigation>();
+            }
+
             Entity.RemoveComponent<HumanControl>();
             Entity.RemoveComponent<Collision>();
             Entity.RemoveComponent<Movement>();

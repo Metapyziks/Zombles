@@ -34,6 +34,7 @@ namespace Zombles.Scripts
                     .Push<Entities.Behaviours.SalvagePlanks>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
+                    .Push<Entities.Behaviours.VacateDangerousBlocks>()
                     .Push<Entities.Behaviours.Mob>()
                     .Push<Entities.Behaviours.SelfDefence>();
             });
@@ -111,7 +112,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = (world.Width * world.Height) / 32;
-            int zoms = 0; //Math.Max(count / 4, 8);
+            int zoms = Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;
@@ -120,7 +121,6 @@ namespace Zombles.Scripts
                 } while (world.GetTile(pos).IsSolid);
                 return pos;
             };
-
 
             for (int i = 0; i < count - zoms; ++i) {
                 Entity surv = Entity.Create(world, "survivor");
