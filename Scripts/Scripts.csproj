@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Behaviours\BalanceWoodPiles.cs" />
     <Compile Include="Entities\Behaviours\Flee.cs" />
     <Compile Include="Entities\Behaviours\FollowRoute.cs" />
     <Compile Include="Entities\Behaviours\Mob.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Entities\Behaviours\VacateDangerousBlocks.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
     <Compile Include="Entities\Breakable.cs" />
+    <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Entities\WoodenBreakable.cs" />
     <Compile Include="Entities\WoodPile.cs" />

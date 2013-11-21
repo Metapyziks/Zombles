@@ -55,7 +55,7 @@ namespace Zombles.Scripts.Entities
             }
         }
 
-        public override float MoveSpeed
+        public override float BaseMoveSpeed
         {
             get { return _moveSpeed; }
         }

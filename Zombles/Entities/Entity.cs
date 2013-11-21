@@ -65,9 +65,12 @@ namespace Zombles.Entities
         {
             BuilderInfo info = _sEntBuilders[type];
             Entity ent = (info.Base != null ? Create(world, info.Base) : Create(world));
+            ent.PushClassName(type);
             info.Builder(ent);
             return ent;
         }
+
+        private Stack<String> _classNames;
 
         private List<Component> _comps;
         private Dictionary<Type, Component> _compDict;
@@ -78,6 +81,8 @@ namespace Zombles.Entities
         private bool _posChanged;
 
         public readonly uint ID;
+
+        public String ClassName { get { return _classNames.LastOrDefault(); } }
 
         public Entity Parent { get; private set; }
 
@@ -154,6 +159,8 @@ namespace Zombles.Entities
             ID = _sNextID++;
             World = world;
 
+            _classNames = new Stack<string>();
+
             _comps = new List<Component>();
             _compDict = new Dictionary<Type, Component>();
             _position = new Vector3();
@@ -162,6 +169,16 @@ namespace Zombles.Entities
             _children = new List<Entity>();
 
             IsValid = false;
+        }
+
+        private void PushClassName(String className)
+        {
+            _classNames.Push(className);
+        }
+
+        public bool IsOfClass(String className)
+        {
+            return _classNames.Contains(className);
         }
 
         public Entity AddChild(Entity child)

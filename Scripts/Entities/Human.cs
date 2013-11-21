@@ -27,11 +27,26 @@ namespace Zombles.Scripts.Entities
         public abstract EntityAnim StandAnim { get; }
         public abstract EntityAnim DeadAnim { get; }
 
-        public abstract float MoveSpeed { get; }
+        public abstract float BaseMoveSpeed { get; }
+
+        public float MoveSpeed
+        {
+            get { return BaseMoveSpeed * (IsHoldingItem ? 0.5f : 1f); }
+        }
 
         public virtual bool CanAttack
         {
             get { return MainWindow.Time >= _nextAttack; }
+        }
+
+        public Entity HeldItem
+        {
+            get { return Entity.Children.First(); }
+        }
+
+        public bool IsHoldingItem
+        {
+            get { return Entity.Children.Count() != 0; }
         }
 
         public Human(Entity ent)
@@ -77,6 +92,22 @@ namespace Zombles.Scripts.Entities
             }
         }
 
+        public void DropItem()
+        {
+            if (!IsHoldingItem) return;
+            var item = HeldItem;
+            Entity.RemoveChild(item);
+            item.GetComponent<Item>().OnDrop(Entity);
+        }
+
+        public void PickupItem(Entity item)
+        {
+            var comp = item.GetComponentOrNull<Item>();
+            if (comp == null || !comp.CanPickup(Entity)) return;
+
+            if (comp.OnPickup(Entity)) Entity.AddChild(item);
+        }
+
         protected virtual void OnHealed(object sender, HealedEventArgs e)
         {
             UpdateSpeed();
@@ -95,10 +126,12 @@ namespace Zombles.Scripts.Entities
 
             Anim.Start(DeadAnim);
 
+            if (IsHoldingItem) DropItem();
+
             if (Entity.HasComponent<RouteNavigation>()) {
                 Entity.RemoveComponent<RouteNavigation>();
             }
-
+            
             Entity.RemoveComponent<HumanControl>();
             Entity.RemoveComponent<Collision>();
             Entity.RemoveComponent<Movement>();

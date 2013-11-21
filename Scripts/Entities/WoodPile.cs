@@ -7,7 +7,7 @@ using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
-    public class WoodPile : Component
+    public class WoodPile : Item
     {
         private Face _baseFace; 
 
@@ -19,6 +19,17 @@ namespace Zombles.Scripts.Entities
             _baseFace = Tools.Random.NextFace();
 
             Count = 0;
+        }
+
+        public override bool CanPickup(Entity holder)
+        {
+            return base.CanPickup(holder) && Count > 0;
+        }
+
+        public override bool OnPickup(Entity holder)
+        {
+            holder.GetComponent<Human>().PickupItem(TakePlank());
+            return false;
         }
 
         public WoodPile SetPlankCount(int value)
@@ -71,6 +82,8 @@ namespace Zombles.Scripts.Entities
             plank.RelativePosition = new Vector3(0f, 0f, 0f);
             
             Entity.RemoveChild(plank);
+
+            if (Count == 0) Entity.Remove();
 
             return plank;
         }

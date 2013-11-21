@@ -84,6 +84,7 @@ namespace Zombles.Scripts
             });
 
             Entity.Register("plank", ent => {
+                ent.AddComponent<Item>();
                 ent.AddComponent<Render3D>()
                     .SetModel(EntityModel.Get("models", "deco", "plank"))
                     .SetSkin(Tools.Random)
