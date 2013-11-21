@@ -30,7 +30,7 @@ namespace Zombles.Geometry
 
         public readonly int Width;
         public readonly int Height;
-
+        
         public Block(District district)
         {
             World = district.World;

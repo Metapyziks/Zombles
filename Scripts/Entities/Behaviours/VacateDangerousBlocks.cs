@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
+﻿using System.Linq;
+
 using Zombles.Entities;
 using Zombles.Geometry;
 
@@ -27,10 +23,9 @@ namespace Zombles.Scripts.Entities.Behaviours
 
             var vacating = RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position;
 
-            var block = Entity.Block;
+            var block = World.GetBlock(Position2D);
 
-            if (block.X + 1 >= Position2D.X || block.X + block.Width - 1 < Position2D.X ||
-                block.Y + 1 >= Position2D.Y || block.Y + block.Height - 1 < Position2D.Y) {
+            if (!World.GetTile(Position2D).IsInterior) {
 
                 if (vacating) RouteNavigation.CurrentRoute = null;
                 return false;
@@ -48,11 +43,12 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 var diff = World.Difference(Entity.Position2D, ent.Position2D);
                 if (diff.LengthSquared > 8f * 8f) continue;
+                if (!World.GetTile(ent.Position2D).IsInterior) continue;
                 
                 trace.Target = ent.Position2D;
                 if (trace.GetResult().Hit) continue;
 
-                if (diff.LengthSquared < 2f * 2f) return false;
+                if (diff.LengthSquared < 3f * 3f) return false;
 
                 danger = true;
                 break;

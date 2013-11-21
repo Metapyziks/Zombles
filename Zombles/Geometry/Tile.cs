@@ -26,10 +26,12 @@ namespace Zombles.Geometry
 
         public bool IsSolid
         {
-            get
-            {
-                return FloorHeight > 0 || _staticEnts.Count > 0;
-            }
+            get { return FloorHeight > 0 || _staticEnts.Count > 0; }
+        }
+
+        public bool IsInterior
+        {
+            get { return RoofHeight > FloorHeight && RoofTileIndex != 0xffff; }
         }
 
         public Tile(int x, int y, TileBuilder builder)
