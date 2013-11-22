@@ -34,6 +34,11 @@ namespace Zombles.Geometry
             get { return RoofHeight > FloorHeight && RoofTileIndex != 0xffff; }
         }
 
+        public IEnumerable<Entity> StaticEntities
+        {
+            get { return _staticEnts; }
+        }
+
         public Tile(int x, int y, TileBuilder builder)
         {
             _staticEnts = new HashSet<Entity>();
