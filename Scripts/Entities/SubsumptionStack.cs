@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿using System;
+using System.Collections.Generic;
+using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
 
@@ -25,9 +27,29 @@ namespace Zombles.Scripts.Entities
             protected Entity Entity { get { return _stack.Entity; } }
             protected Human Human { get { return _stack.Human; } }
 
-            protected NearbyEntityEnumerator SearchNearbyEnts(float radius)
+            protected IEnumerable<Entity> SearchNearbyEnts(float radius)
             {
-                return new NearbyEntityEnumerator(World, Position2D, radius);
+                var iter = new NearbyEntityEnumerator(World, Position2D, radius);
+                while (iter.MoveNext()) yield return iter.Current;
+            }
+
+            protected IEnumerable<Entity> SearchNearbyVisibleEnts(float radius, Func<Entity, Vector2, bool> where)
+            {
+                var trace = new TraceLine(World);
+                trace.Origin = Entity.Position2D;
+                trace.HitGeometry = true;
+                trace.HitEntities = false;
+                trace.HullSize = Entity.GetComponent<Collision>().Size;
+
+                foreach (var ent in SearchNearbyEnts(radius)) {
+                    if (!where(ent, World.Difference(Entity.Position2D, ent.Position2D))) continue;
+
+                    trace.Target = ent.Position2D;
+
+                    if (trace.GetResult().Hit) continue;
+
+                    yield return ent;
+                }
             }
 
             protected virtual void OnSpawn() { }

@@ -79,7 +79,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 _mobTarget = null;
 
-                var it = SearchNearbyEnts(MobRadius);
+                var it = new NearbyEntityEnumerator(World, Entity.Position2D, MobRadius);
                 while (it.MoveNext()) {
                     var cur = it.Current;
                     if (!cur.HasComponent<Zombie>() || !cur.HasComponent<Health>()) continue;

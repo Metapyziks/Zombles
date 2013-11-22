@@ -32,6 +32,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.SalvagePlanks>()
+                    .Push<Entities.Behaviours.BalanceWoodPiles>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.VacateDangerousBlocks>()

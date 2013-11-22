@@ -92,12 +92,14 @@ namespace Zombles.Scripts.Entities
             }
         }
 
-        public void DropItem()
+        public Entity DropItem()
         {
-            if (!IsHoldingItem) return;
+            if (!IsHoldingItem) return null;
             var item = HeldItem;
             Entity.RemoveChild(item);
             item.GetComponent<Item>().OnDrop(Entity);
+
+            return item;
         }
 
         public void PickupItem(Entity item)

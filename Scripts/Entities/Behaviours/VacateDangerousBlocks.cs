@@ -21,7 +21,7 @@ namespace Zombles.Scripts.Entities.Behaviours
         {
             if (RouteNavigation == null) return false;
 
-            var vacating = RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position;
+            var vacating = _curDest != null && RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position;
 
             var block = World.GetBlock(Position2D);
 
@@ -29,29 +29,14 @@ namespace Zombles.Scripts.Entities.Behaviours
                 if (vacating) RouteNavigation.CurrentRoute = null;
                 return false;
             }
+
+            var zoms = SearchNearbyVisibleEnts(8f, (ent, diff) =>
+                ent.HasComponent<Zombie>() &&
+                ent.GetComponent<Health>().IsAlive &&
+                diff.LengthSquared < 3f * 3f &&
+                World.GetTile(ent.Position2D).IsInterior);
             
-            var trace = new TraceLine(World);
-            trace.Origin = Entity.Position2D;
-            trace.HitGeometry = true;
-            trace.HitEntities = false;
-
-            var danger = false;
-
-            foreach (var ent in block) {
-                if (!ent.HasComponent<Zombie>() || !ent.GetComponent<Health>().IsAlive) continue;
-
-                var diff = World.Difference(Entity.Position2D, ent.Position2D);
-                if (diff.LengthSquared > 8f * 8f) continue;
-                if (!World.GetTile(ent.Position2D).IsInterior) continue;
-                
-                trace.Target = ent.Position2D;
-                if (trace.GetResult().Hit) continue;
-
-                if (diff.LengthSquared < 3f * 3f) return false;
-
-                danger = true;
-                break;
-            }
+            var danger = zoms.Count() > 0;
 
             if (!danger) {
                 if (vacating) RouteNavigation.CurrentRoute = null;

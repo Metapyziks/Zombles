@@ -35,27 +35,13 @@ namespace Zombles.Scripts.Entities.Behaviours
 
                 _fleeDir = new Vector2();
 
-                var trace = new TraceLine(World);
-                trace.Origin = Position2D;
-                trace.HitGeometry = true;
-                trace.HitEntities = false;
-                trace.HullSize = Entity.GetComponent<Collision>().Size;
+                foreach (var ent in SearchNearbyVisibleEnts(FleeRadius, (ent, diff) => 
+                    ent.HasComponent<Zombie>() &&
+                    ent.GetComponent<Health>().IsAlive &&
+                    diff.LengthSquared > 0)) {
 
-                var it = SearchNearbyEnts(FleeRadius);
-                while (it.MoveNext()) {
-                    var cur = it.Current;
-                    if (!cur.HasComponent<Zombie>() || !cur.HasComponent<Health>()) continue;
-
-                    if (!cur.GetComponent<Health>().IsAlive) continue;
-
-                    Vector2 diff = World.Difference(Position2D, cur.Position2D);
+                    Vector2 diff = World.Difference(Position2D, ent.Position2D);
                     var dist2 = diff.LengthSquared;
-
-                    if (dist2 == 0) continue;
-
-                    trace.Target = cur.Position2D;
-
-                    if (trace.GetResult().Hit) continue;
 
                     _fleeDir -= diff / dist2;
 
