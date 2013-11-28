@@ -9,7 +9,7 @@ using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
-    public class NearbyEntityEnumerator : IEnumerator<Entity>
+    public class NearbyEntityEnumerator : IEnumerator<Entity>, IEnumerable<Entity>
     {
         private District _curDistrict;
         private IEnumerator<Entity> _entEnumerator;
@@ -110,6 +110,16 @@ namespace Zombles.Entities
         {
             _curDistrict = null;
             _entEnumerator = null;
+        }
+
+        public IEnumerator<Entity> GetEnumerator()
+        {
+            return this;
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this;
         }
     }
 }

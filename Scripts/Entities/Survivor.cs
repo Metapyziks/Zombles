@@ -6,14 +6,61 @@ using System.Diagnostics;
 
 using Zombles.Entities;
 using Zombles.Graphics;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
     public class Survivor : Human
     {
+        private const double ExposureCheckInterval = 0.25;
+
         private static EntityAnim _sWalkAnim;
         private static EntityAnim _sStandAnim;
         private static EntityAnim _sDeadAnim;
+
+        private float _lastExposure;
+        private double _nextExposureCheckTime;
+
+        public float Exposure
+        {
+            get
+            {
+                if (MainWindow.Time >= _nextExposureCheckTime) {
+                    _nextExposureCheckTime = MainWindow.Time + ExposureCheckInterval;
+
+                    _lastExposure = 0f;
+
+                    if (!World.GetTile(Position2D).IsInterior) {
+                        _lastExposure += .5f;
+                    }
+
+                    if (IsHoldingItem) {
+                        _lastExposure += .5f;
+                    }
+
+                    var trace = new TraceLine(World);
+                    trace.Origin = Position2D;
+                    trace.HitGeometry = true;
+                    trace.HitEntities = false;
+                    trace.HullSize = Entity.GetComponent<Collision>().Size;
+
+                    foreach (var ent in new NearbyEntityEnumerator(World, Position2D, 8f)) {
+                        if (!ent.HasComponent<Zombie>() || !ent.GetComponent<Health>().IsAlive) continue;
+
+                        var diff = World.Difference(Position2D, ent.Position2D);
+
+                        if (diff.LengthSquared < 0.25f) continue;
+
+                        trace.Target = ent.Position2D;
+                        if (trace.GetResult().Hit) continue;
+
+                        _lastExposure += Math.Min(1f, 16f / diff.LengthSquared);
+                    }
+                }
+
+                return _lastExposure;
+            }
+        }
 
         public bool IsInfected { get; private set; }
 
