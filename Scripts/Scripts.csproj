@@ -64,6 +64,7 @@
     <Compile Include="Entities\Behaviours\Wander.cs" />
     <Compile Include="Entities\Breakable.cs" />
     <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\Plank.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Entities\WoodenBreakable.cs" />
     <Compile Include="Entities\WoodPile.cs" />

@@ -30,6 +30,11 @@ namespace Zombles.Scripts.Entities.Behaviours
                     }
 
                     _currTarget = dest;
+
+                    if (_currTarget == null) {
+                        Human.DropItem();
+                        return true;
+                    }
                 } else {
                     var src = SearchNearbyVisibleEnts(8f, (ent, diff) =>
                         ent.HasComponent<WoodPile>() &&

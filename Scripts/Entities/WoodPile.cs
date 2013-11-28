@@ -9,16 +9,14 @@ namespace Zombles.Scripts.Entities
 {
     public class WoodPile : Item
     {
-        private Face _baseFace; 
+        private Face _baseFace;
 
-        public int Count { get; private set; }
+        public int Count { get { return Entity.Children.Where(x => x.IsOfClass("plank")).Count(); } }
 
         public WoodPile(Entity ent)
             : base(ent)
         {
             _baseFace = Tools.Random.NextFace();
-
-            Count = 0;
         }
 
         public override bool CanPickup(Entity holder)
@@ -61,22 +59,18 @@ namespace Zombles.Scripts.Entities
                 alignment.GetIndex() * MathHelper.PiOver2
                 + Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f));
             
-            ++Count;
-
-            if (Count > 4 && !Entity.HasComponent<StaticTile>()) {
-                Entity.AddComponent<StaticTile>();
-            }
+            //if (Count > 4 && !Entity.HasComponent<StaticTile>()) {
+            //    Entity.AddComponent<StaticTile>();
+            //}
         }
 
         public Entity TakePlank()
         {
             if (Count == 0) return null;
 
-            --Count;
-
-            if (Count <= 4 && Entity.HasComponent<StaticTile>()) {
-                Entity.RemoveComponent<StaticTile>();
-            }
+            //if (Count <= 4 && Entity.HasComponent<StaticTile>()) {
+            //    Entity.RemoveComponent<StaticTile>();
+            //}
 
             var plank = Entity.Children.Last();
             plank.RelativePosition = new Vector3(0f, 0f, 0f);

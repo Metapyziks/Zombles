@@ -143,6 +143,7 @@ namespace Zombles.Entities
         private void ScanAhead()
         {
             if (_ended) return;
+            if (!Entity.HasComponent<Collision>()) return;
 
             _lastScan = MainWindow.Time;
 
