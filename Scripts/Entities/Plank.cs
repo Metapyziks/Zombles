@@ -24,10 +24,13 @@ namespace Zombles.Scripts.Entities
 
                 pile = Entity.Create(World, "wood pile");
                 pile.Position2D = new Vector2(tile.X + .5f, tile.Y + .5f);
+                pile.GetComponent<WoodPile>().SetPlankCount(1);
                 pile.Spawn();
-            }
 
-            pile.GetComponent<WoodPile>().AddPlank(Entity);
+                Entity.Remove();
+            } else {
+                pile.GetComponent<WoodPile>().AddPlank(Entity);
+            }
         }
     }
 }
