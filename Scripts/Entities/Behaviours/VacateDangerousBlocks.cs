@@ -20,6 +20,7 @@ namespace Zombles.Scripts.Entities.Behaviours
         protected override bool OnThink(double dt)
         {
             if (RouteNavigation == null) return false;
+            if (!(Human is Survivor)) return false;
 
             var vacating = _curDest != null && RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position;
 
@@ -30,15 +31,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 return false;
             }
 
-            var zoms = SearchNearbyVisibleEnts(8f, (ent, diff) =>
-                ent.HasComponent<Zombie>() &&
-                ent.GetComponent<Health>().IsAlive &&
-                diff.LengthSquared < 3f * 3f &&
-                World.GetTile(ent.Position2D).IsInterior);
-            
-            var danger = zoms.Count() > 0;
-
-            if (!danger) {
+            if (((Survivor) Human).Exposure <= 0f) {
                 if (vacating) RouteNavigation.CurrentRoute = null;
                 return false;
             }

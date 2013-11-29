@@ -32,7 +32,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.PickupWood>()
-                    .Push<Entities.Behaviours.SalvagePlanks>()
+                    .Push<Entities.Behaviours.BreakCrates>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.VacateDangerousBlocks>()
@@ -115,7 +115,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = (world.Width * world.Height) / 32;
-            int zoms = Math.Max(count / 4, 8);
+            int zoms = 0; // Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;

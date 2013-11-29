@@ -3,7 +3,7 @@ using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Behaviours
 {
-    public class SalvagePlanks : SubsumptionStack.Layer
+    public class BreakCrates : SubsumptionStack.Layer
     {
         private double _nextSearch;
         private Entity _currTarget;
