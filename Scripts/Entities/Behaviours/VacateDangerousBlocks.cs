@@ -43,12 +43,13 @@ namespace Zombles.Scripts.Entities.Behaviours
                 return false;
             }
 
-            if (RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position) {
+            if (vacating) {
                 Human.StartMoving(World.Difference(Position2D, RouteNavigation.NextWaypoint));
                 return true;
             }
 
             _curDest = World.GetIntersections(block)
+                .Where(x => x.Position.LengthSquared > 0f)
                 .OrderBy(x => World.Difference(Entity.Position2D, x.Position).LengthSquared)
                 .First();
 

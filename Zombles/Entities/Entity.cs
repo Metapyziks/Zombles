@@ -233,6 +233,8 @@ namespace Zombles.Entities
             T comp = GetComponent<T>();
             Type type = typeof(T);
 
+            comp.OnRemove();
+
             do _compDict.Remove(type);
             while ((type = type.BaseType) != typeof(Component));
 

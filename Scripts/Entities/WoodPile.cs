@@ -48,10 +48,10 @@ namespace Zombles.Scripts.Entities
         {
             if (Entity.Children.Contains(plank)) return;
 
-            Entity.AddChild(plank);
-
             var tier = (Count / 2);
             var alignment = (Face) (1 << ((_baseFace.GetIndex() + tier) & 3));
+
+            Entity.AddChild(plank);
 
             plank.RelativePosition = new Vector3(0f, tier / 8f, 0f);
             plank.RelativePosition2D += alignment.GetNormal() * 0.2f * ((Count & 1) == 1 ? 1 : -1);
@@ -59,18 +59,20 @@ namespace Zombles.Scripts.Entities
                 alignment.GetIndex() * MathHelper.PiOver2
                 + Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f));
             
-            //if (Count > 4 && !Entity.HasComponent<StaticTile>()) {
-            //    Entity.AddComponent<StaticTile>();
-            //}
+            if (Count > 4 && !Entity.HasComponent<StaticTile>()) {
+                Entity.AddComponent<StaticTile>();
+                Entity.UpdateComponents();
+            }
         }
 
         public Entity TakePlank()
         {
             if (Count == 0) return null;
 
-            //if (Count <= 4 && Entity.HasComponent<StaticTile>()) {
-            //    Entity.RemoveComponent<StaticTile>();
-            //}
+            if (Count <= 4 && Entity.HasComponent<StaticTile>()) {
+                Entity.RemoveComponent<StaticTile>();
+                Entity.UpdateComponents();
+            }
 
             var plank = Entity.Children.Last();
             plank.RelativePosition = new Vector3(0f, 0f, 0f);

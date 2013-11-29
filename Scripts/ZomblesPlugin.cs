@@ -31,13 +31,14 @@ namespace Zombles.Scripts
                 ent.AddComponent<RouteNavigation>();
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
+                    .Push<Entities.Behaviours.PickupWood>()
                     .Push<Entities.Behaviours.SalvagePlanks>()
-                    .Push<Entities.Behaviours.BalanceWoodPiles>()
                     .Push<Entities.Behaviours.FollowRoute>()
                     .Push<Entities.Behaviours.Flee>()
                     .Push<Entities.Behaviours.VacateDangerousBlocks>()
                     .Push<Entities.Behaviours.Mob>()
-                    .Push<Entities.Behaviours.SelfDefence>();
+                    .Push<Entities.Behaviours.SelfDefence>()
+                    .Push<Entities.Behaviours.DropWood>();
             });
 
             Entity.Register("zombie", "human", ent => {

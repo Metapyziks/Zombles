@@ -10,6 +10,8 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         protected override bool OnThink(double dt)
         {
+            if (Human.IsHoldingItem && Human.HeldItem.HasComponent<Plank>()) return false;
+
             if (_currTarget != null) {
                 if (!_currTarget.IsValid || !_currTarget.HasComponent<WoodenBreakable>()) {
                     _currTarget = null;
