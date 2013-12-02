@@ -40,7 +40,7 @@ namespace Zombles.Graphics
                     );
 
                     const float yscale = 1.0 / sqrt(3.0);
-                    const vec2 normals[] = vec2[4]
+                    vec2 normals[] = vec2[4]
                     (
                         vec2( 0.5,  0.0),
                         vec2( 0.0,  0.5),

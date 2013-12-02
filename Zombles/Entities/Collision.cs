@@ -281,6 +281,8 @@ namespace Zombles.Entities
 
                 return move;
             } else {
+                return move;
+
                 if (intersecting) {
                     if (Math.Abs(ix) <= Math.Abs(iy))
                         return new Vector2(ix / 8.0f + move.X, move.Y);

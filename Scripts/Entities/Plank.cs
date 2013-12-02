@@ -17,7 +17,7 @@ namespace Zombles.Scripts.Entities
             var pile = World.GetBlock(Entity.Position2D)
                 .Where(x => x.HasComponent<WoodPile>())
                 .FirstOrDefault(x => World.Difference(Entity.Position2D, x.Position2D)
-                    .LengthSquared < 1f);
+                    .LengthSquared < 0.66f);
 
             if (pile == null) {
                 var tile = World.GetTile(Position2D);
