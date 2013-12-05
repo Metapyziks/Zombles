@@ -190,6 +190,8 @@ namespace Zombles.Scripts.Entities
 
         public override void OnThink(double dt)
         {
+            base.OnThink(dt);
+
             if (IsRunning) {
                 Stamina = Math.Max(0, Stamina - (float) dt);
 
@@ -201,7 +203,6 @@ namespace Zombles.Scripts.Entities
 
                     if (Stamina >= MaxStamina) {
                         Stamina = MaxStamina;
-                        UpdateSpeed();
                     }
                 }
             }
@@ -212,7 +213,6 @@ namespace Zombles.Scripts.Entities
             if (CanRun) {
                 Stamina -= 0.5f;
                 IsRunning = true;
-                UpdateSpeed();
             }
         }
 
@@ -220,7 +220,6 @@ namespace Zombles.Scripts.Entities
         {
             if (IsRunning) {
                 IsRunning = false;
-                UpdateSpeed();
             }
         }
 

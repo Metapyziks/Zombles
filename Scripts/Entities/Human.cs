@@ -14,6 +14,7 @@ namespace Zombles.Scripts.Entities
     public abstract class Human : Component
     {
         private double _nextAttack;
+        private Vector2 _moveDir;
 
         public Movement Movement { get; private set; }
         public RenderAnim Anim { get; private set; }
@@ -110,15 +111,11 @@ namespace Zombles.Scripts.Entities
             if (comp.OnPickup(Entity)) Entity.AddChild(item);
         }
 
-        protected virtual void OnHealed(object sender, HealedEventArgs e)
-        {
-            UpdateSpeed();
-        }
+        protected virtual void OnHealed(object sender, HealedEventArgs e) { }
 
         protected virtual void OnDamaged(object sender, DamagedEventArgs e)
         {
             World.SplashBlood(Position2D, Math.Min(0.25f * e.Damage + 0.5f, 4.0f));
-            UpdateSpeed();
         }
 
         protected virtual void OnKilled(object sender, KilledEventArgs e)
@@ -190,23 +187,9 @@ namespace Zombles.Scripts.Entities
             if (!Anim.Playing || !Movement.IsMoving || Anim.CurAnim != WalkAnim)
                 Anim.Start(WalkAnim);
 
-            dir.Normalize();
-            Movement.Velocity = dir * MoveSpeed;
+            _moveDir = dir.Normalized();
 
             Anim.Speed = MoveSpeed;
-
-            FaceDirection(dir);
-        }
-
-        public void UpdateSpeed()
-        {
-            if (Movement == null)
-                return;
-
-            if (!Movement.IsMoving)
-                return;
-
-            StartMoving(Movement.Velocity);
         }
 
         public void StopMoving()
@@ -217,7 +200,15 @@ namespace Zombles.Scripts.Entities
             if (!Anim.Playing || Movement.IsMoving || Anim.CurAnim != StandAnim)
                 Anim.Start(StandAnim);
 
-            Movement.Stop();
+            _moveDir = Vector2.Zero;
+        }
+
+        public override void OnThink(double dt)
+        {
+            base.OnThink(dt);
+
+            Movement.Velocity += (_moveDir * MoveSpeed - Movement.Velocity) * (float) Math.Min(1.0, 4.0 * dt);
+            FaceDirection(Movement.Velocity);
         }
     }
 }
