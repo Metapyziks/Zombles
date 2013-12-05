@@ -161,7 +161,9 @@ namespace Zombles.Scripts.Entities
             TraceLine trace = new TraceLine(World);
             trace.HitGeometry = true;
             trace.HitEntities = true;
-            trace.HitEntityPredicate = (x => x != Entity);
+            trace.HitEntityPredicate = (x => x != Entity
+                && (!x.HasComponent<Zombie>() || !Entity.HasComponent<Zombie>())
+                && (!x.HasComponent<Survivor>() || !Entity.HasComponent<Survivor>()));
             trace.Origin = Position2D;
             trace.Normal = dir;
             trace.Length = 1.0f;
