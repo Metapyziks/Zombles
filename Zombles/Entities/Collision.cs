@@ -311,31 +311,14 @@ namespace Zombles.Entities
 
                 Vector2 diff = World.Difference(Position2D, that.Position2D);
 
-                float al = Offset.X;
-                float ar = al + Size.X;
-                float at = Offset.Y;
-                float ab = at + Size.Y;
+                float ar = (float) Math.Sqrt(this.Size.X * this.Size.X * 0.25 + this.Size.Y * this.Size.Y * 0.25);
+                float br = (float) Math.Sqrt(that.Size.X * that.Size.X * 0.25 + that.Size.Y * that.Size.Y * 0.25);
 
-                float bl = diff.X + that.Offset.X;
-                float br = bl + that.Size.X;
-                float bt = diff.Y + that.Offset.Y;
-                float bb = bt + that.Size.Y;
+                if (ar + br < diff.Length) continue;
 
-                bool intersecting = al < br && ar > bl && at < bb && ab > bt;
+                float mag = Math.Min(1f, (float) ((ar + br) * dt) / diff.LengthSquared);
 
-                float ix = 0.0f, iy = 0.0f;
-
-                if (!intersecting) continue;
-
-                float il = br - al;
-                float ir = ar - bl;
-                ix = (il < ir) ? il : -ir;
-
-                float it = bb - at;
-                float ib = ab - bt;
-                iy = (it < ib) ? it : -ib;
-
-                movement.Velocity += new Vector2(ix, iy) * (float) (16.0 * dt);
+                movement.Velocity -= diff.Normalized() * mag;
             }
         }
     }
