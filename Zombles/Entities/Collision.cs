@@ -72,7 +72,7 @@ namespace Zombles.Entities
             if (Model == CollisionModel.None)
                 return Position2D + move;
 
-            if ((Model & CollisionModel.Entity) != 0) {
+            if (Model.HasFlag(CollisionModel.Entity)) {
                 NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.World,
                     new Vector2(Position2D.X, Position2D.Y), 2.0f + move.Length);
 
@@ -206,7 +206,7 @@ namespace Zombles.Entities
 
             Collision that = obstacle.GetComponent<Collision>();
 
-            if (that.Model == CollisionModel.None)
+            if (!that.Model.HasFlag(CollisionModel.Box))
                 return move;
 
             Vector2 diff = World.Difference(Position2D, that.Position2D);
@@ -235,62 +235,107 @@ namespace Zombles.Entities
                 iy = (it < ib) ? it : -ib;
             }
 
-            if ((this.Model & CollisionModel.Box) != 0 || (that.Model & CollisionModel.Box) != 0) {
-                if (intersecting) {
-                    if (Math.Abs(ix) <= Math.Abs(iy))
-                        return new Vector2(ix, move.Y);
-                    else
-                        return new Vector2(move.X, iy);
+            if (intersecting) {
+                if (Math.Abs(ix) <= Math.Abs(iy))
+                    return new Vector2(ix, move.Y);
+                else
+                    return new Vector2(move.X, iy);
+            }
+
+            if (move.X > 0) {
+                if (ar < bl && ar + move.X > bl) {
+                    float dx = bl - ar;
+                    float dy = (dx / move.X) * move.Y;
+
+                    if (at + dy < bb && ab + dy > bt)
+                        return new Vector2(dx, move.Y);
                 }
+            } else if (move.X < 0) {
+                if (al > br && al + move.X < br) {
+                    float dx = br - al;
+                    float dy = (dx / move.X) * move.Y;
 
-                if (move.X > 0) {
-                    if (ar < bl && ar + move.X > bl) {
-                        float dx = bl - ar;
-                        float dy = (dx / move.X) * move.Y;
-
-                        if (at + dy < bb && ab + dy > bt)
-                            return new Vector2(dx, move.Y);
-                    }
-                } else if (move.X < 0) {
-                    if (al > br && al + move.X < br) {
-                        float dx = br - al;
-                        float dy = (dx / move.X) * move.Y;
-
-                        if (at + dy < bb && ab + dy > bt)
-                            return new Vector2(dx, move.Y);
-                    }
+                    if (at + dy < bb && ab + dy > bt)
+                        return new Vector2(dx, move.Y);
                 }
+            }
 
-                if (move.Y > 0) {
-                    if (at < bt && at + move.Y > bt) {
-                        float dy = bt - ab;
-                        float dx = (dy / move.Y) * move.X;
+            if (move.Y > 0) {
+                if (at < bt && at + move.Y > bt) {
+                    float dy = bt - ab;
+                    float dx = (dy / move.Y) * move.X;
 
-                        if (al + dx < br && ar + dx > bl)
-                            return new Vector2(move.X, dy);
-                    }
-                } else if (move.Y < 0) {
-                    if (at > bb && at + move.Y < bb) {
-                        float dy = bb - at;
-                        float dx = (dy / move.Y) * move.X;
-
-                        if (al + dx < br && ar + dx > bl)
-                            return new Vector2(move.X, dy);
-                    }
+                    if (al + dx < br && ar + dx > bl)
+                        return new Vector2(move.X, dy);
                 }
+            } else if (move.Y < 0) {
+                if (at > bb && at + move.Y < bb) {
+                    float dy = bb - at;
+                    float dx = (dy / move.Y) * move.X;
 
-                return move;
-            } else {
-                return move;
-
-                if (intersecting) {
-                    if (Math.Abs(ix) <= Math.Abs(iy))
-                        return new Vector2(ix / 8.0f + move.X, move.Y);
-                    else
-                        return new Vector2(move.X, iy / 8.0f + move.Y);
+                    if (al + dx < br && ar + dx > bl)
+                        return new Vector2(move.X, dy);
                 }
+            }
 
-                return move;
+            return move;
+        }
+
+        public override void OnThink(double dt)
+        {
+            base.OnThink(dt);
+
+            if (Model.HasFlag(CollisionModel.Repel | CollisionModel.Entity)) {
+                Repel(dt);
+            }
+        }
+
+        public void Repel(double dt)
+        {
+            var movement = Entity.GetComponentOrNull<Movement>();
+            if (movement == null) return;
+
+            NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.World,
+                new Vector2(Position2D.X, Position2D.Y), 2.0f);
+
+            while (iter.MoveNext()) {
+                var obstacle = iter.Current;
+
+                if (obstacle == Entity || !obstacle.HasComponent<Collision>())
+                    continue;
+
+                var that = obstacle.GetComponent<Collision>();
+
+                if (!that.Model.HasFlag(CollisionModel.Entity | CollisionModel.Repel))
+                    continue;
+
+                Vector2 diff = World.Difference(Position2D, that.Position2D);
+
+                float al = Offset.X;
+                float ar = al + Size.X;
+                float at = Offset.Y;
+                float ab = at + Size.Y;
+
+                float bl = diff.X + that.Offset.X;
+                float br = bl + that.Size.X;
+                float bt = diff.Y + that.Offset.Y;
+                float bb = bt + that.Size.Y;
+
+                bool intersecting = al < br && ar > bl && at < bb && ab > bt;
+
+                float ix = 0.0f, iy = 0.0f;
+
+                if (!intersecting) continue;
+
+                float il = br - al;
+                float ir = ar - bl;
+                ix = (il < ir) ? il : -ir;
+
+                float it = bb - at;
+                float ib = ab - bt;
+                iy = (it < ib) ? it : -ib;
+
+                movement.Velocity += new Vector2(ix, iy) * (float) (16.0 * dt);
             }
         }
     }
