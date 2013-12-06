@@ -32,6 +32,8 @@ namespace Zombles.Scripts.Entities
 
                     if (!World.GetTile(Position2D).IsInterior) {
                         _lastExposure += .5f;
+                    } else if (Entity.Block.Enclosed) {
+                        _lastExposure -= .5f;
                     }
 
                     if (IsHoldingItem) {

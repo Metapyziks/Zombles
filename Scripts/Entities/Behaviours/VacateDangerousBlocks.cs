@@ -26,7 +26,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
             var block = World.GetBlock(Position2D);
 
-            if (!World.GetTile(Position2D).IsInterior) {
+            if (!World.GetTile(Position2D).IsInterior || block.Enclosed) {
                 if (vacating) RouteNavigation.CurrentRoute = null;
                 return false;
             }

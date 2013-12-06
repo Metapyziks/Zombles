@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
 
 using Zombles.Graphics;
 using Zombles.Entities;
 
 using OpenTKTK.Utils;
-using System.Diagnostics;
+using OpenTK;
 
 namespace Zombles.Geometry
 {
@@ -13,6 +15,8 @@ namespace Zombles.Geometry
     {
         private Tile[,] _tiles;
         private List<Entity> _ents;
+
+        private bool _enclosedInvalid;
 
         private int _geomVertOffset;
         private int _baseFlatVertEnd;
@@ -30,6 +34,8 @@ namespace Zombles.Geometry
 
         public readonly int Width;
         public readonly int Height;
+
+        public bool Enclosed { get; private set; }
         
         public Block(District district)
         {
@@ -44,6 +50,8 @@ namespace Zombles.Geometry
 
             _tiles = new Tile[Width, Height];
             _ents = new List<Entity>();
+
+            _enclosedInvalid = true;
         }
 
         public Tile this[int x, int y]
@@ -89,10 +97,49 @@ namespace Zombles.Geometry
             }
         }
 
+        public void InvalidateEnclosedness()
+        {
+            _enclosedInvalid = true;
+        }
+
+        private void TestEnclosedness()
+        {
+            _enclosedInvalid = false;
+
+            var tiles = new List<Tile>(_tiles.Length);
+
+            Enclosed = true;
+
+            foreach (var tile in _tiles) {
+                if (tile.IsInterior && !tile.IsSolid) {
+                    tiles.Add(tile);
+                }
+            }
+
+            tiles = tiles.OrderBy(x => Tools.Random.Next()).Take(16).ToList();
+
+            var dests = new[] {
+                new Vector2(X, Y + Height / 2),
+                new Vector2(X + Width, Y + Height / 2),
+                new Vector2(X + Width / 2, Y),
+                new Vector2(X + Width / 2, Y + Height)
+            };
+
+            Enclosed = !tiles
+                .Select(x => new Vector2(x.X + 0.5f, x.Y + 0.5f))
+                .Any(x => Route.FindRefined(World, x, dests
+                    .OrderBy(y => World.Difference(x, y).LengthSquared)
+                    .First()) != null);
+        }
+
         public void PostThink()
         {
             for (int i = _ents.Count - 1; i >= 0; --i) {
                 _ents[i].UpdateBlock();
+            }
+
+            if (_enclosedInvalid) {
+                TestEnclosedness();
             }
         }
 

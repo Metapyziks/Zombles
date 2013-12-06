@@ -68,12 +68,20 @@ namespace Zombles.Geometry
         
         internal void AddStaticEntity(Entity ent)
         {
+            if (_staticEnts.Count == 0) {
+                ent.World.GetBlock(X + 0.5f, Y + 0.5f).InvalidateEnclosedness();
+            }
+
             _staticEnts.Add(ent);
         }
 
         internal void RemoveStaticEntity(Entity ent)
         {
             _staticEnts.Remove(ent);
+
+            if (_staticEnts.Count == 0) {
+                ent.World.GetBlock(X + 0.5f, Y + 0.5f).InvalidateEnclosedness();
+            }
         }
 
         public bool IsWallSolid(Face face)
