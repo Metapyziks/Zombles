@@ -280,21 +280,9 @@ namespace Zombles.Entities
 
             return move;
         }
-
-        public override void OnThink(double dt)
+        
+        public void Repel(Movement movement, double dt)
         {
-            base.OnThink(dt);
-
-            if (Model.HasFlag(CollisionModel.Repel | CollisionModel.Entity)) {
-                Repel(dt);
-            }
-        }
-
-        public void Repel(double dt)
-        {
-            var movement = Entity.GetComponentOrNull<Movement>();
-            if (movement == null) return;
-
             NearbyEntityEnumerator iter = new NearbyEntityEnumerator(Entity.World,
                 new Vector2(Position2D.X, Position2D.Y), 2.0f);
 

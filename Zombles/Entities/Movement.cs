@@ -46,6 +46,10 @@ namespace Zombles.Entities
         {
             if (Velocity.LengthSquared > 0.0f)
                 Move(Velocity * (float) dt);
+
+            if (_collision != null && _collision.Model.HasFlag(CollisionModel.Entity | CollisionModel.Repel)) {
+                _collision.Repel(this, dt);
+            }
         }
 
         public void Move(Vector2 move)
