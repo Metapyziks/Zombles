@@ -20,7 +20,7 @@ namespace Zombles.Scripts
 {
     public class GameScene : Scene
     {
-        public const int WorldSize = 128;
+        public const int WorldSize = 64;
 
         private UILabel _fpsText;
         private UILabel _posText;
@@ -312,6 +312,7 @@ namespace Zombles.Scripts
             }
         }
 
+#if DEBUG
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
@@ -327,6 +328,7 @@ namespace Zombles.Scripts
                 }
             }
         }
+#endif
 
         public override void OnKeyPress(KeyPressEventArgs e)
         {
