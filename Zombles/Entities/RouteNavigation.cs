@@ -126,7 +126,6 @@ namespace Zombles.Entities
         {
             if (_ended) {
                 CurrentRoute = null;
-                _curPath = null;
                 return;
             }
 
@@ -160,7 +159,11 @@ namespace Zombles.Entities
             } else {
                 trace.Target = _curWaypoint;
                 if (trace.GetResult().Hit) {
-                    NavigateTo(CurrentTarget);
+                    if (World.IsPositionNavigable(CurrentTarget)) {
+                        NavigateTo(CurrentTarget);
+                    } else {
+                        CurrentRoute = null;
+                    }
                 }
             }
         }

@@ -42,12 +42,12 @@ namespace Zombles.Scripts.Entities
 
         public Entity HeldItem
         {
-            get { return Entity.Children.First(); }
+            get { return Entity.Children.Where(x => x.HasComponent<Item>()).First(); }
         }
 
         public bool IsHoldingItem
         {
-            get { return Entity.Children.Count() != 0; }
+            get { return Entity.Children.Count(x => x.HasComponent<Item>()) != 0; }
         }
 
         public Human(Entity ent)

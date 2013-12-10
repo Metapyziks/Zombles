@@ -182,10 +182,15 @@ namespace Zombles.Geometry
         {
             private IEnumerable<Block> _blocks;
 
-            public MicroRoute(World world, Vector2 origin, Vector2 target, IEnumerable<Block> blocks = null)
+            public MicroRoute(World world, Vector2 origin, Vector2 target)
                 : base(world, origin, target)
             {
-                _blocks = blocks;
+                var originBlock = world.GetBlock(origin);
+                var targetBlock = world.GetBlock(target);
+
+                _blocks = originBlock == targetBlock
+                    ? new Block[] { originBlock }
+                    : new Block[] { originBlock, targetBlock };
             }
 
             private IEnumerable<Tuple<Tile, float>> NeighboursFunc(World world, Tile tile)
@@ -236,6 +241,7 @@ namespace Zombles.Geometry
                 private Vector2 _prevMacro;
                 private IEnumerator<Vector2> _macroIter;
                 private IEnumerator<Vector2> _microIter;
+                private bool _firstMicroNode;
 
                 public CombinedRouteEnumerator(World world, Vector2 origin, IEnumerable<Vector2> macro)
                 {
@@ -265,12 +271,16 @@ namespace Zombles.Geometry
                 public bool MoveNext()
                 {
                     while (_microIter == null || !_microIter.MoveNext()) {
+                        if (_firstMicroNode) return false;                        
                         if (_microIter != null) _prevMacro = _macroIter.Current;
                         if (!_macroIter.MoveNext()) return false;
 
                         var micro = new MicroRoute(_city, _prevMacro, _macroIter.Current);
                         _microIter = micro.GetEnumerator();
+                        _firstMicroNode = true;
                     }
+
+                    _firstMicroNode = false;
 
                     return true;
                 }
