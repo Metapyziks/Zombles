@@ -129,7 +129,7 @@ namespace Zombles.Geometry
                 .Select(x => new Vector2(x.X + 0.5f, x.Y + 0.5f))
                 .Any(x => Route.FindRefined(World, x, dests
                     .OrderBy(y => World.Difference(x, y).LengthSquared)
-                    .First()) != null);
+                    .First()).GetEnumerator().MoveNext());
         }
 
         public void PostThink()
