@@ -50,6 +50,11 @@ namespace Zombles.Scripts.Entities
             get { return Entity.Children.Count(x => x.HasComponent<Item>()) != 0; }
         }
 
+        public bool IsSelected
+        {
+            get { return Entity.Children.Any(x => x.ClassName == "selection marker"); }
+        }
+
         public Human(Entity ent)
             : base(ent)
         {
@@ -201,6 +206,31 @@ namespace Zombles.Scripts.Entities
                 Anim.Start(StandAnim);
 
             _moveDir = Vector2.Zero;
+        }
+
+        public void Select()
+        {
+            if (IsSelected) return;
+
+            Entity.AddChild(Entity.Create(World, "selection marker"));
+        }
+
+        public void Deselect()
+        {
+            if (!IsSelected) return;
+
+            Entity.Children.First(x => x.ClassName == "selection marker").Remove();
+        }
+
+        public bool ToggleSelected()
+        {
+            if (IsSelected) {
+                Deselect();
+                return false;
+            } else {
+                Select();
+                return true;
+            }
         }
 
         public override void OnThink(double dt)

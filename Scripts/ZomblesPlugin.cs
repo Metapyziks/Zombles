@@ -17,6 +17,13 @@ namespace Zombles.Scripts
     {
         protected override void OnInitialize()
         {
+            Entity.Register("selection marker", ent => {
+                ent.AddComponent<Render3D>()
+                    .SetModel(EntityModel.Get("models", "selection"))
+                    .SetOffset(new Vector3(0f, 1f / 8f, 0f))
+                    .SetSkin(0);
+            });
+
             Entity.Register("human", ent => {
                 ent.AddComponent<RenderAnim>();
                 ent.AddComponent<Collision>()

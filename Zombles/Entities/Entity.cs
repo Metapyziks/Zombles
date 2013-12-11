@@ -336,6 +336,10 @@ namespace Zombles.Entities
                 foreach (var child in _children) child.Remove();
 
                 IsValid = false;
+
+                if (HasParent) {
+                    Parent.RemoveChild(this);
+                }
             }
         }
 

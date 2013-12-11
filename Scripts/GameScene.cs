@@ -15,6 +15,7 @@ using Zombles.Geometry;
 using Zombles.Geometry.Generation;
 
 using Zombles.Scripts.UI;
+using Zombles.Scripts.Entities;
 
 namespace Zombles.Scripts
 {
@@ -312,23 +313,29 @@ namespace Zombles.Scripts
             }
         }
 
-#if DEBUG
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
-            if (!World.IsPositionNavigable(pos)) {
-                Debug.WriteLine("Position {0} not navigable", pos);
-                return;
-            }
+            if (e.Button == MouseButton.Left) {
+                var best = new NearbyEntityEnumerator(World, pos, 2f)
+                    .Where(x => x.HasComponent<RouteNavigation>() && x.HasComponent<Human>())
+                    .OrderBy(x => World.Difference(pos, x.Position2D).LengthSquared)
+                    .FirstOrDefault();
 
-            foreach (var ent in World.Entities) {
-                if (ent.HasComponent<RouteNavigation>()) {
-                    ent.GetComponent<RouteNavigation>().NavigateTo(pos);
+                if (best != null) {
+                    best.GetComponent<Human>().ToggleSelected();
+                }
+            } else if (e.Button == MouseButton.Right) {
+                foreach (var ent in World.Entities) {
+                    var routeNav = ent.GetComponentOrNull<RouteNavigation>();
+                    if (routeNav == null) continue;
+                    var human = ent.GetComponentOrNull<Human>();
+                    if (human == null || !human.IsSelected) continue;
+                    routeNav.NavigateTo(pos);
                 }
             }
         }
-#endif
 
         public override void OnKeyPress(KeyPressEventArgs e)
         {
