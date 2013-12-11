@@ -11,6 +11,16 @@ using Zombles.Graphics;
 namespace Zombles.Entities
 {
     public delegate void EntityBuilderDelegate(Entity ent);
+    
+    public class ThinkEventArgs : EventArgs
+    {
+        public double DeltaTime { get; private set; }
+
+        public ThinkEventArgs(double dt)
+        {
+            DeltaTime = dt;
+        }
+    }
 
     public sealed class Entity : IEnumerable<Component>
     {
@@ -343,12 +353,18 @@ namespace Zombles.Entities
             }
         }
 
+        public event EventHandler<ThinkEventArgs> ThinkExtended;
+
         public void Think(double dt)
         {
             for (int i = _comps.Count - 1; i >= 0; --i)
                 _comps[i].OnThink(dt);
 
             foreach (var child in _children) child.Think(dt);
+
+            if (ThinkExtended != null) {
+                ThinkExtended(this, new ThinkEventArgs(dt));
+            }
         }
 
         public void Render(FlatEntityShader shader)

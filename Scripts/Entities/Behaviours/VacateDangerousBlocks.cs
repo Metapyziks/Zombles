@@ -22,7 +22,9 @@ namespace Zombles.Scripts.Entities.Behaviours
             if (RouteNavigation == null) return false;
             if (!(Human is Survivor)) return false;
 
-            var vacating = _curDest != null && RouteNavigation.HasRoute && RouteNavigation.CurrentTarget == _curDest.Position;
+            if (_curDest != null && RouteNavigation.HasRoute && RouteNavigation.CurrentTarget != _curDest.Position) return false;
+
+            var vacating = _curDest != null && RouteNavigation.HasRoute;
 
             var block = World.GetBlock(Position2D);
 

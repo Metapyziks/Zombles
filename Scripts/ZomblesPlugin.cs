@@ -21,7 +21,11 @@ namespace Zombles.Scripts
                 ent.AddComponent<Render3D>()
                     .SetModel(EntityModel.Get("models", "selection"))
                     .SetOffset(new Vector3(0f, 1f / 8f, 0f))
-                    .SetSkin(0);
+                    .SetScale(0.5f);
+                ent.ThinkExtended += (sender, e) => {
+                    ent.GetComponent<Render3D>()
+                        .SetRotation((float) (Math.PI * MainWindow.Time));
+                };
             });
 
             Entity.Register("human", ent => {

@@ -34,10 +34,14 @@ namespace Zombles.Scripts
 
         private bool _hideTop;
 
+        private bool _isSelecting;
+        private Vector2 _selectionStart;
+
         private float _camScale;
         private int _camDir;
         private DateTime _camRotTime;
         private int _oldCamDir;
+
         private bool _mapView;
         private bool _drawPathNetwork;
         private bool _drawTestTrace;
@@ -294,6 +298,15 @@ namespace Zombles.Scripts
                     _traceShader.Render(trace.End.X - hs, trace.End.Y + hs, trace.End.X - hs, trace.End.Y - hs);
                 }
 
+                if (_isSelecting) {
+                    var pos = Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), .5f);
+                    var diff = World.Difference(pos, _selectionStart);
+                    _traceShader.Render(pos.X, pos.Y, pos.X + diff.X, pos.Y);
+                    _traceShader.Render(pos.X + diff.X, pos.Y, pos.X + diff.X, pos.Y + diff.Y);
+                    _traceShader.Render(pos.X + diff.X, pos.Y + diff.Y, pos.X, pos.Y + diff.Y);
+                    _traceShader.Render(pos.X, pos.Y + diff.Y, pos.X, pos.Y);
+                }
+
                 _traceShader.End();
             }
 
@@ -318,14 +331,8 @@ namespace Zombles.Scripts
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
 
             if (e.Button == MouseButton.Left) {
-                var best = new NearbyEntityEnumerator(World, pos, 2f)
-                    .Where(x => x.HasComponent<RouteNavigation>() && x.HasComponent<Human>())
-                    .OrderBy(x => World.Difference(pos, x.Position2D).LengthSquared)
-                    .FirstOrDefault();
-
-                if (best != null) {
-                    best.GetComponent<Human>().ToggleSelected();
-                }
+                _isSelecting = true;
+                _selectionStart = pos;
             } else if (e.Button == MouseButton.Right) {
                 foreach (var ent in World.Entities) {
                     var routeNav = ent.GetComponentOrNull<RouteNavigation>();
@@ -333,6 +340,60 @@ namespace Zombles.Scripts
                     var human = ent.GetComponentOrNull<Human>();
                     if (human == null || !human.IsSelected) continue;
                     routeNav.NavigateTo(pos);
+                }
+            }
+        }
+
+        public override void OnMouseButtonUp(MouseButtonEventArgs e)
+        {
+            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+
+            if (e.Button == MouseButton.Left && _isSelecting) {
+                var diff = World.Difference(pos, _selectionStart);
+
+                _isSelecting = false;
+
+                if (diff.LengthSquared < 1f) {
+                    foreach (var ent in World.Entities) {
+                        var human = ent.GetComponentOrNull<Human>();
+                        if (human == null || !human.IsSelected) continue;
+
+                        human.Deselect();
+                    }
+
+                    var best = new NearbyEntityEnumerator(World, pos, 2f)
+                        .Where(x => x.HasComponent<RouteNavigation>() && x.HasComponent<Human>())
+                        .OrderBy(x => World.Difference(pos, x.Position2D).LengthSquared)
+                        .FirstOrDefault();
+
+                    if (best != null) {
+                        best.GetComponent<Human>().Select();
+                    }
+                } else {
+                    if (diff.X < 0) {
+                        var temp = _selectionStart.X;
+                        _selectionStart.X = pos.X;
+                        pos.X = temp;
+                        diff.X = -diff.X;
+                    }
+                    
+                    if (diff.Y < 0) {
+                        var temp = _selectionStart.Y;
+                        _selectionStart.Y = pos.Y;
+                        pos.Y = temp;
+                        diff.Y = -diff.Y;
+                    }
+
+                    foreach (var ent in World.Entities) {
+                        var human = ent.GetComponentOrNull<Human>();
+                        if (human == null || human.IsSelected) continue;
+
+                        var edif = World.Difference(pos, ent.Position2D);
+
+                        if (edif.X < 0 || edif.Y < 0 || edif.X > diff.X || edif.Y > diff.Y) continue;
+
+                        human.Select();
+                    }
                 }
             }
         }

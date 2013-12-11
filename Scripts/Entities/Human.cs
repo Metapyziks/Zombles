@@ -212,7 +212,11 @@ namespace Zombles.Scripts.Entities
         {
             if (IsSelected) return;
 
-            Entity.AddChild(Entity.Create(World, "selection marker"));
+            var marker = Entity.Create(World, "selection marker");
+
+            marker.Position2D = Entity.Position2D;
+
+            Entity.AddChild(marker).Spawn();
         }
 
         public void Deselect()
