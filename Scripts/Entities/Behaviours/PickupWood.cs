@@ -9,14 +9,16 @@ namespace Zombles.Scripts.Entities.Behaviours
             if (Human.IsHoldingItem) return false;
             if (Human is Survivor && ((Survivor) Human).Exposure > 0f) return false;
 
-            var pile = World.GetBlock(Entity.Position2D)
+            var block = World.GetBlock(Entity.Position2D);
+
+            var pile = block
                 .Where(x => x.HasComponent<WoodPile>())
                 .OrderBy(x => World.Difference(Entity.Position2D, x.Position2D).LengthSquared)
                 .FirstOrDefault(x => World.Difference(Entity.Position2D, x.Position2D)
-                    .LengthSquared < 2f && x.GetComponent<WoodPile>().CanPickup(Entity));
+                    .LengthSquared < 2f && x.GetComponent<WoodPile>().CanPickup(Entity)
+                    && World.GetTile(x.Position2D).IsInterior);
 
             if (pile == null) return false;
-            if (!World.GetTile(pile.Position2D).IsInterior) return false;
 
             Human.PickupItem(pile);
 

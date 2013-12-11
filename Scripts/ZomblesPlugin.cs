@@ -31,6 +31,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<RouteNavigation>();
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
+                    .Push<Entities.Behaviours.SeekRefuge>()
                     .Push<Entities.Behaviours.BreakCrates>()
                     .Push<Entities.Behaviours.MoveTowardsWood>()
                     .Push<Entities.Behaviours.PickupWood>()

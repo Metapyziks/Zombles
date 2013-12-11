@@ -61,6 +61,7 @@
     <Compile Include="Entities\Behaviours\MoveTowardsWood.cs" />
     <Compile Include="Entities\Behaviours\PickupWood.cs" />
     <Compile Include="Entities\Behaviours\BreakCrates.cs" />
+    <Compile Include="Entities\Behaviours\SeekRefuge.cs" />
     <Compile Include="Entities\Behaviours\SelfDefence.cs" />
     <Compile Include="Entities\Behaviours\VacateDangerousBlocks.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
