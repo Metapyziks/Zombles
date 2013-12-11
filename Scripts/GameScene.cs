@@ -353,7 +353,7 @@ namespace Zombles.Scripts
 
                 _isSelecting = false;
 
-                if (diff.LengthSquared < 1f) {
+                if (diff.LengthSquared < 0.25f) {
                     foreach (var ent in World.Entities) {
                         var human = ent.GetComponentOrNull<Human>();
                         if (human == null || !human.IsSelected) continue;

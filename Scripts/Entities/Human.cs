@@ -241,6 +241,8 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink(dt);
 
+            if (Movement == null) return;
+
             Movement.Velocity += (_moveDir * MoveSpeed - Movement.Velocity) * (float) Math.Min(1.0, 4.0 * dt);
             FaceDirection(Movement.Velocity);
         }
