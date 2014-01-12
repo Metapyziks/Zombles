@@ -109,3 +109,4 @@ UpgradeLog*.XML
 pingme.txt
 *.db
 *.aux
+Documents/Design/*.out
