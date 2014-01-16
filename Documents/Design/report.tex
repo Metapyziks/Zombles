@@ -63,7 +63,7 @@ These following core elements will be created before the end of the project.
 
 \section{Design}
 \subsection{Requirements}\noindent
-The main deliverable can be broken down into a set of core functional and non-functional requirements, each with a relative priority rating. These requirements have been categorised into the Core Requirements that the existing game will be extended to fulfil, and the AI Requirements that the two agent design prototypes must independently satisfy.
+The main deliverable can be broken down into a set of core functional and non-functional requirements, each with a relative priority rating. These requirements have been categorised into the Core Requirements that the existing game will be extended to fulfil, and the AI Requirements that the two agent design prototypes must independently satisfy. Functional requirements are prefixed with `FR', while non-functional requirements are prefixed with `NFR'.
 
 \subsubsection{Core Requirements}
 \begin{requirements}
@@ -75,36 +75,40 @@ The main deliverable can be broken down into a set of core functional and non-fu
   NPCs must be able to navigate between any two positions in the game environment if a path exists.
 }
 
-\requirement{FR}{Low}{% FR 1.3
-  Moving objects within the game environment must not pass through solid geometry.
-}
-
-\requirement{FR}{Low}{% FR 1.4
-  NPCs must demonstrate an ability to recognise whether a specified object is visible from their perspective.
-}
-
-\requirement{FR}{Med}{% FR 1.5
+\requirement{FR}{Med}{% FR 1.3
   Game objects representing a resource used when constructing barricades must exist within the game environment.
 }
 
-\requirement{FR}{High}{% FR 1.6
-  NPCs must have the ability to construct barricades, ideally using resource objects (FR 1.5).
+\requirement{FR}{High}{% FR 1.4
+  NPCs must have the ability to construct barricades, ideally using resource objects (FR 1.3).
 }
 
-\requirement{FR}{Med}{% FR 1.7
+\requirement{FR}{Med}{% FR 1.5
   A player must be able to select a group of human agents through the user interface.
 }
 
-\requirement{FR}{Med}{% FR 1.8
-  A player must be able to instruct selected agents (FR 1.7) to move to a chosen location.
+\requirement{FR}{Med}{% FR 1.6
+  A player must be able to instruct selected agents (FR 1.5) to move to a chosen location.
 }
 
-\requirement{FR}{Med}{% FR 1.9
-  A player must be able to instruct selected agents (FR 1.7) to block off a specified area with a barricade.
+\requirement{FR}{Med}{% FR 1.7
+  A player must be able to instruct selected agents (FR 1.5) to block off a specified area with a barricade.
 }
 
-\requirement{FR}{High}{% FR 1.10
+\requirement{FR}{High}{% FR 1.8
   An analysis of the scalability of the game environment must be produced, exploring how the environment size and number of agents affects performance.
+}
+
+\requirement{NFR}{Med}{% NFR 1.9
+  The simulation must be able to maintain an average frame time of at most 16.67ms with a world size of 128x128 tiles and 250 active agents.
+}
+
+\requirement{NFR}{Low}{% NFR 1.10
+  Moving objects within the game environment must not pass through solid geometry outside of exceptional circumstances that would not occur during standard gameplay.
+}
+
+\requirement{NFR}{Low}{% NFR 1.11
+  NPCs must demonstrate an ability to recognise whether a specified object is visible, and not react to things they should not be aware of.
 }
 \end{requirements}
 
@@ -128,6 +132,10 @@ The main deliverable can be broken down into a set of core functional and non-fu
 
 \requirement{FR}{High}{% FR 2.5
   An analysis of the survival rate and efficiency at which player assigned tasks are achieved must be produced.
+}
+
+\requirement{NFR}{Low}{% NFR 2.6
+  Agents should exhibit erratic or unnatural behaviour only rarely, if at all.
 }
 \end{requirements}
 

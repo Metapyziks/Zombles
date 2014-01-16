@@ -115,10 +115,10 @@
 \newcounter{ReqCounter}
 
 \newenvironment{requirements}
-{\begin{longtable}{r p{13cm} c}\setcounter{ReqCounter}{0}\hspace{-3mm}}
+{\begin{longtable}{r p{13cm} c}\setcounter{ReqCounter}{0}}
 {\end{longtable}}
 
 \newcommand{\requirement}[3]{%
   \stepcounter{ReqCounter}%
-  #1~\arabic{subsubsection}.\arabic{ReqCounter} & \small{#3}\vspace{2mm} & #2 \\%
+  #1~\arabic{subsubsection}.\arabic{ReqCounter} & {#3}\vspace{2mm} & #2 \\%
 }
