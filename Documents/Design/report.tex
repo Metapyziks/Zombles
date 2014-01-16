@@ -7,7 +7,7 @@
 \citationmode{abbr}
 \bibliographystyle{agsm}
 
-\title{Real-Time Human Directed Multi-Agent Task Planning in a Simulated Hazardous Environment}
+\title{AI for Autonomous Agents in Games and Simulations}
 \student{James King}
 \supervisor{Magnus Bordewich}
 \degree{BSc Computer Science}
@@ -63,15 +63,68 @@ These following core elements will be created before the end of the project.
 
 \section{Design}
 \subsection{Requirements}\noindent
-The main deliverable can be broken down into a set of core functional and non-functional requirements, each with a relative priority rating.
+The main deliverable can be broken down into a set of core functional and non-functional requirements, each with a relative priority rating. These requirements have been categorised into the Core Requirements that the existing game will be extended to fulfil, and the AI Requirements that the two agent design prototypes must independently satisfy.
 
-\subsubsection{Functional}
-\begin{requirements}{FR}
-  \requirement{Nav}{NPCs must be able to navigate between any two positions in the game environment if a path exists.}{High}
-  \requirement{Col}{Moving objects within the game environment must not pass through solid geometry.}{High}
-  \requirement{Vis}{NPCs must demonstrate an ability to recognise whether a specified object is visible from their perspective.}{High}
-  \requirement{Res}{Game objects representing a resource used when constructing barricades must exist within the game environment.}{High}
-  \requirement{Bar}{NPCs must have the ability to construct barricades using the resource objects added for FR4.}{High}
+\subsubsection{Core Requirements}
+\begin{requirements}
+\requirement{FR}{Med}{% FR 1.1
+  The number of initial humans, zombies, and the world size must be configurable.
+}
+
+\requirement{FR}{High}{% FR 1.2
+  NPCs must be able to navigate between any two positions in the game environment if a path exists.
+}
+
+\requirement{FR}{Low}{% FR 1.3
+  Moving objects within the game environment must not pass through solid geometry.
+}
+
+\requirement{FR}{Low}{% FR 1.4
+  NPCs must demonstrate an ability to recognise whether a specified object is visible from their perspective.
+}
+
+\requirement{FR}{Med}{% FR 1.5
+  Game objects representing a resource used when constructing barricades must exist within the game environment.
+}
+
+\requirement{FR}{High}{% FR 1.6
+  NPCs must have the ability to construct barricades, ideally using resource objects (FR 1.5).
+}
+
+\requirement{FR}{Med}{% FR 1.7
+  A player must be able to select a group of human agents through the user interface.
+}
+
+\requirement{FR}{Med}{% FR 1.8
+  A player must be able to instruct selected agents (FR 1.7) to move to a chosen location.
+}
+
+\requirement{FR}{Med}{% FR 1.9
+  A player must be able to instruct selected agents (FR 1.7) to block off a specified area with a barricade.
+}
+
+\requirement{FR}{High}{% FR 1.10
+  An analysis of the scalability of the game environment must be produced, exploring how the environment size and number of agents affects performance.
+}
+\end{requirements}
+
+\subsubsection{AI Requirements}
+\begin{requirements}
+\requirement{FR}{High}{% FR 2.1
+  Human agents must exhibit a strategy for avoiding or eliminating nearby visible threats.
+}
+
+\requirement{FR}{High}{% FR 2.2
+  Human agents must be able to navigate to a position as instructed by a player (using FR 1.8), unless this conflicts with FR 2.1.
+}
+
+\requirement{FR}{Med}{% FR 2.3
+  Human agents must possess the ability to autonomously construct barricades to block off areas without player direction.
+}
+
+\requirement{FR}{High}{% FR 2.4
+  Human agents must possess the ability to autonomously construct barricades to block off areas specified by a player (using FR 1.9).
+}
 \end{requirements}
 
 \subsection{Implementation}\noindent

@@ -19,6 +19,8 @@
 %
 % -------------------------------------------------
 
+\usepackage{longtable}
+
 \typeout{Durham CS undergraduate paper style 'durhampaper.sty'.}
 
 % set paper dimensions
@@ -107,13 +109,12 @@
 \newcommand{\deliverable}[2]{\item \textbf{#1} --- #2}
 
 \newcounter{ReqCounter}
-\newcommand{\ReqType}{FR}
 
-\newenvironment{requirements}[1]
-{\begin{tabular}{r p{13cm} c}\setcounter{ReqCounter}{0}\renewcommand{\ReqType}{#1}}
-{\end{tabular}}
+\newenvironment{requirements}
+{\begin{longtable}{r p{13cm} c}\setcounter{ReqCounter}{0}\hspace{-3mm}}
+{\end{longtable}}
 
 \newcommand{\requirement}[3]{%
   \stepcounter{ReqCounter}%
-  \ReqType\arabic{ReqCounter} & \small{#2} & #3 \\%
+  #1~\arabic{subsubsection}.\arabic{ReqCounter} & \small{#3}\vspace{2mm} & #2 \\%
 }
