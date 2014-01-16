@@ -45,23 +45,37 @@ On the topic of player-specified tasks, an efficient path finding technique will
 The two core approaches to be compared are a Subsumptive architecture and a Belief-Desires-Intentions model. A subsumptive architecture features a stack of behaviour layers where each may in turn choose to either act or subsume control to the next layer, starting with the top of the stack. The first layer in the sequence to specify an action is heeded, and the rest are ignored. This design usually relies on complex behaviour emerging from complimentary layers. A Belief-Desires-Intentions model is a radically different approach, where each agent records a formal representation of the world from which a set of attainable goals are found, a subset of which is acted upon according to estimated rationality.
 
 \subsection{Deliverables}\noindent
+These following core elements will be created before the end of the project.
+
 \begin{enumerate}
   \deliverable{Expanded Core Game}
   {The central mechanics that the AI system will interact with must be implemented. These include the creation of game objects that represent a resource to be used when building barricades, the system to support the construction of the barricades themselves, and an expanded user interface which allows a player to select groups of agents and assign tasks. Additionally facilities to be used by the two proposed architectures should be provided, such as a path-finding implementation.}
 
   \deliverable{Subsumptive Prototype}
-  {An agent design using a subsumptive architecture will be developed, implementing the core requirements of the human NPCs. This prototype will be constructed by breaking up the human's functionality into a stack of behaviours, from which a successful strategy is designed to emerge.}
+  {An agent design using a subsumptive architecture will be developed, implementing the core requirements of the human NPCs. This prototype will be constructed by breaking up the human's functionality into a stack of behaviours, from which a successful strategy is designed to emerge. Relies on deliverable 1.}
 
   \deliverable{BDI Prototype}
-  {A distinct agent design using a BDI architecture will also be developed, meeting the same requirements as the subsumptive approach. This prototype will use a personal abstracted representation of the environment for each human agent, from which a set of achievable goals are found using a goal evaluation algorithm. These goals are then further reduced into a set that is calculated to yield the most utility, and are simultaneously possible.}
+  {A distinct agent design using a BDI architecture will also be developed, meeting the same requirements as the subsumptive approach. This prototype will use a personal abstracted representation of the environment for each human agent, from which a set of achievable goals are found using a goal evaluation algorithm. These goals are then further reduced into a set that is calculated to yield the most utility, and are simultaneously possible. Relies on deliverable 1.}
 
   \deliverable{Analysis \& Final Report}
-  {Both completed prototypes will be analysed and compared in terms of agent survival rate (without player intervention), efficiency at which goals specified by a player are achieved, prevalence of unnatural behaviour, and system resource usage. The results of this comparison will be compiled into a report, along with the identification of the prototype that is most suited for the problem and an explanation for why that prototype was chosen. The report will also cover possible areas of additional research exposed by this project.}
-
+  {Both completed prototypes will be analysed and compared in terms of agent survival rate (without player intervention), efficiency at which goals specified by a player are achieved, prevalence of unnatural behaviour, and system resource usage. The results of this comparison will be compiled into a report, along with the identification of the prototype that is most suited for the problem and an explanation for why that prototype was chosen. The report will also cover possible areas of additional research exposed by this project. Relies on deliverables 2 and 3.}
 \end{enumerate}
 
 \section{Design}
+\subsection{Requirements}\noindent
+The main deliverable can be broken down into a set of core functional and non-functional requirements, each with a relative priority rating.
 
+\subsubsection{Functional}
+\begin{requirements}{FR}
+  \requirement{Nav}{NPCs must be able to navigate between any two positions in the game environment if a path exists.}{High}
+  \requirement{Col}{Moving objects within the game environment must not pass through solid geometry.}{High}
+  \requirement{Vis}{NPCs must demonstrate an ability to recognise whether a specified object is visible from their perspective.}{High}
+  \requirement{Res}{Game objects representing a resource used when constructing barricades must exist within the game environment.}{High}
+  \requirement{Bar}{NPCs must have the ability to construct barricades using the resource objects added for FR4.}{High}
+\end{requirements}
+
+\subsection{Implementation}\noindent
+Several key elements of this project require a non-trivial amount of planning and design, the details of which will be described in this section.
 
 \bibliography{report}
 

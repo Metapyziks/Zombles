@@ -105,3 +105,15 @@
 
 
 \newcommand{\deliverable}[2]{\item \textbf{#1} --- #2}
+
+\newcounter{ReqCounter}
+\newcommand{\ReqType}{FR}
+
+\newenvironment{requirements}[1]
+{\begin{tabular}{r p{13cm} c}\setcounter{ReqCounter}{0}\renewcommand{\ReqType}{#1}}
+{\end{tabular}}
+
+\newcommand{\requirement}[3]{%
+  \stepcounter{ReqCounter}%
+  \ReqType\arabic{ReqCounter} & \small{#2} & #3 \\%
+}
