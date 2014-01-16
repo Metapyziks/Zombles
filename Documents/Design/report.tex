@@ -149,7 +149,14 @@ Several key elements of this project require a non-trivial amount of planning an
 \centering
 \includegraphics[width=0.9\textwidth]{blocks}
 \caption{A diagram to show the structure of a procedurally generated city environment, featuring blocks of buildings separated by roads. Each block is bounded by a white rectangle.}
+\label{fig:block}
 \end{figure}
+
+The problem of finding efficient paths through virtual environments is often faced when developing AI for games, and so has been explored extensively. Generally the A* algorithm (or one of the many variants) is used, although while it guarantees a high quality path it may require a significant amount of time to find it (depending on the complexity of the environment). When observing the structure of the worlds produced by the procedural city generation algorithm (See figure~\ref{fig:block}) it is easy to spot aspects that could potentially be exploited to produce an A* adaptation which required less time to execute.
+
+When imagining how we would solve the problem of navigating between two disparate positions in a city in the real world, we don't think on a metre-by-metre basis. We plan our overall route street-by-street, and only worry about how to navigate down each street when we reach it. A similar approach can be implemented here, where an agent first applies the A* algorithm on a graph representing the road network of the city, and then applies a more refined A* instance along each street when it reaches it. A refined path is also found from the agent's initial position to the nearest street, and then from the final street to the destination. For cases where the street-based route takes a corner, the refined A* instance should look for paths between the start of the street preceding corner to the end of the street following it, in case the block that they both neighbour can be cut across.
+
+This algorithm should produce results very close in length as to when applying a single instance of refined A* across the entire route, with a far shorter execution time for all but the most trivial instances. If the implementation still leads to a performance bottleneck then it could potentially be improved by caching the paths found along individual streets, which can then be looked up instead of calculating the same paths multiple times. This will particularly be beneficial when a large group of nearby agents are travelling to the same destination.
 
 \subsubsection{Vision \& Collision Testing}
 
