@@ -34,7 +34,7 @@ AI, BDI, cooperative, multi-agent, subsumptive, task planning, video game
 Video game worlds are often populated with Non-Player Characters (or NPCS), the behaviour of which can make or break the game. A great deal of effort is required when designing the routines used by these characters if they are to satisfy some major requirements; they should behave with approximate rationality, they should provide an appropriate challenge for the player, and if the characters represent humans (or at least animals) they should act in a believable way. For Real-Time Strategy (or RTS) games the difficulty is further accentuated by the necessity of the game to support perhaps hundreds or even thousands of these characters in an environment simultaneously. This combines the previous three requirements with a fourth: efficiency. Designing solutions for the first three key requirements is often more of a creative task rather than a purely methodical one, and entails an element of subjectivity. The fourth requirement is easier to test, but the difficulty in maintaining a minimum performance quality heavily depends on the complexity of the solutions for the first three goals.
 
 \subsection{Problem Domain}\noindent
-This project aims to explore possible implementations of an NPC behaviour system designed to realise the central gameplay of a work-in-progress RTS game. The components of the game that existed prior to the beginning of this project form a zombie epidemic simulation. A city environment is procedurally generated, producing buildings separated by streets. When this process is complete, a number of human characters are dispersed around the environment, a fraction of which initialise as a zombie. The simulation then begins, with the zombies navigating towards the nearest visible human, and humans attempting to run away from danger if any is present (and otherwise just wandering randomly). If a zombie catches up to a human it may attack it, reducing a stored health value for that human and infecting that human with some probability. If a human loses all their health and is infected, they become a zombie too.
+This project aims to explore possible implementations of an NPC behaviour system designed to realise the central gameplay of a work-in-progress RTS game. The components of the game that existed prior to the beginning of this project form a zombie epidemic simulation. A city environment is procedurally generated, producing buildings separated by streets constructed on a tile-based grid. When this process is complete, a number of human characters are dispersed around the environment, a fraction of which initialise as a zombie. The simulation then begins, with the zombies navigating towards the nearest visible human, and humans attempting to run away from danger if any is present (and otherwise just wandering randomly). If a zombie catches up to a human it may attack it, reducing a stored health value for that human and infecting that human with some probability. If a human loses all their health and is infected, they become a zombie too.
 
 The conflict is clearly one-sided, not least because the zombies are smarter than the humans. The humans have little regard for their surroundings other than the locations of visible enemies, and so often run directly into the inner corners of walls. This would obviously not a sufficient behaviour; looking at the core requirements for a decent NPC it fails at being rational, at providing an appropriate challenge (the humans don't stand a chance), and they certainly don't act like humans. Their only redeeming quality is that their simple AI isn't too computationally expensive, so thousands of them can be supported simultaneously.
 
@@ -143,7 +143,7 @@ The main deliverable can be broken down into a set of core functional and non-fu
 \subsection{Implementation}\noindent
 Several key elements of this project require a non-trivial amount of planning and design, the details of which will be described in this section.
 
-\subsubsection{Path Finding \& Navigation}
+\subsubsection{Path Finding \& Navigation}\noindent
 
 \begin{figure}[h]
 \centering
@@ -158,7 +158,20 @@ When imagining how we would solve the problem of navigating between two disparat
 
 This algorithm should produce results very close in length as to when applying a single instance of refined A* across the entire route, with a far shorter execution time for all but the most trivial instances. If the implementation still leads to a performance bottleneck then it could potentially be improved by caching the paths found along individual streets, which can then be looked up instead of calculating the same paths multiple times. This will particularly be beneficial when a large group of nearby agents are travelling to the same destination.
 
-\subsubsection{Vision \& Collision Testing}
+\subsubsection{Vision \& Collision Testing}\noindent
+Visibility testing and collision detection are similar problems, and can be largely solved with the same algorithm. For collision detection the program is testing if an object (simplified as its bounding rectangle)
+can be `swept' along a vector representing the movement it wishes to make during the current simulation step. If the swept rectangle intersects with solid world geometry, the object's movement is pulled back to the furthest it could go without such an intersection. Similarly, when testing the visibility of an object you are essentially testing whether it can be swept towards the observer without being blocked by any solid geometry, thereby detecting if its image would be blocked by a wall.
+
+This sweeping action is the costly part of the technique, an optimal solution will limit the number of intersections tested with this swept area to the absolute smallest number required. As in this scenario only walls can intersect the object, and walls are found along the edges of tiles, the distance along the movement vector that the object is swept can be incremented by amounts that exactly move it to the next tile boundary that would be met.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{trace}
+\caption{A diagram to show the world geometry intersection checks performed when sweeping an object's bounding rectangle along a trace line. The object starts at position $S$, and its destination is position $E$. Black lines represent solid walls. The red boxes show iteration steps where a horizontal collision test is performed against possible obstructions to the right, and the blue boxes are iteration steps where vertical collision tests are performed upwards. Position $H$ is the projected box location where a collision is first detected, and so will be the position the object is moved to.}
+\label{fig:trace}
+\end{figure}
+
+This technique compares well against the usual na\"{i}ve approach of sweeping a certain fixed distance along the movement vector each iteration. It is guaranteed to find an intersection if one exists, and calculate the exact distance the object would have to travel to reach it rather than just the previous iteration location when using a constant step distance. It also requires fewer iterations, assuming a constant step distance approach uses a small iteration delta (which it would need to for accurate results).
 
 \subsubsection{Subsumptive Prototype}
 
