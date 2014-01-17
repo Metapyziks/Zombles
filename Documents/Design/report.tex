@@ -4,6 +4,11 @@
 \usepackage{durhampaper}
 \usepackage{harvard}
 \usepackage{graphicx}
+\usepackage{fontspec}
+
+\newfontface\lserif{Liberation Serif}
+
+\newcommand{\Csh}{C{\lserif\#}}
 
 \citationmode{abbr}
 \bibliographystyle{agsm}
@@ -144,7 +149,6 @@ The main deliverable can be broken down into a set of core functional and non-fu
 Several key elements of this project require a non-trivial amount of planning and design, the details of which will be described in this section.
 
 \subsubsection{Path Finding \& Navigation}\noindent
-
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{blocks}
@@ -162,14 +166,14 @@ This algorithm should produce results very close in length as to when applying a
 Visibility testing and collision detection are similar problems, and can be largely solved with the same algorithm. For collision detection the program is testing if an object (simplified as its bounding rectangle)
 can be `swept' along a vector representing the movement it wishes to make during the current simulation step. If the swept rectangle intersects with solid world geometry, the object's movement is pulled back to the furthest it could go without such an intersection. Similarly, when testing the visibility of an object you are essentially testing whether it can be swept towards the observer without being blocked by any solid geometry, thereby detecting if its image would be blocked by a wall.
 
-This sweeping action is the costly part of the technique, an optimal solution will limit the number of intersections tested with this swept area to the absolute smallest number required. As in this scenario only walls can intersect the object, and walls are found along the edges of tiles, the distance along the movement vector that the object is swept can be incremented by amounts that exactly move it to the next tile boundary that would be met.
-
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{trace}
 \caption{A diagram to show the world geometry intersection checks performed when sweeping an object's bounding rectangle along a trace line. The object starts at position $S$, and its destination is position $E$. Black lines represent solid walls. The red boxes show iteration steps where a horizontal collision test is performed against possible obstructions to the right, and the blue boxes are iteration steps where vertical collision tests are performed upwards. Position $H$ is the projected box location where a collision is first detected, and so will be the position the object is moved to.}
 \label{fig:trace}
 \end{figure}
+
+This sweeping action is the costly part of the technique, an optimal solution will limit the number of intersections tested with this swept area to the absolute smallest number required. As in this scenario only walls can intersect the object, and walls are found along the edges of tiles, the distance along the movement vector that the object is swept can be incremented by amounts that exactly move it to the next tile boundary that would be met.
 
 This technique compares well against the usual na\"{i}ve approach of sweeping a certain fixed distance along the movement vector each iteration. It is guaranteed to find an intersection if one exists, and calculate the exact distance the object would have to travel to reach it rather than just the previous iteration location when using a constant step distance. It also requires fewer iterations, assuming a constant step distance approach uses a small iteration delta (which it would need to for accurate results).
 
@@ -200,6 +204,9 @@ Barricade construction relies on a similar interaction between several behaviour
 This solution is quite trivial to implement due to the simplicity of each individual layer. Some behaviours, such as $Mob$ and $Flee$, provide some scope for experimentation by testing different thresholds for when to perform that action. Additionally, it may be interesting to test whether the agents perform best if they all posses the $Mob$ layer, or if there is some ratio of agents that refuse to actively attack zombies that leads to a higher overall survival rate.
 
 \subsubsection{BDI Prototype}
+
+\subsubsection{Development Environment}
+The original game that this project is extending is written in \Csh, so that will be the primary programming language used. Microsoft's Visual Studio 2013 will be used as an integrated development environment for its \Csh compiler, debugging and profiling tools, and Sublime Text 2 for any peripheral text editing. Development will mainly be on a Windows desktop PC (Intel Core i5, AMD 7850), using a Windows laptop (Intel Core i7, nVidia GeForce GT 540M) to test performance on a device with an nVidia GPU. The OpenTK library is used to expose OpenGL bindings for .NET, and is the only non-standard library used.
 
 \subsubsection{Analysis Strategy}
 
