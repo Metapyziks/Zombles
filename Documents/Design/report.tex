@@ -173,7 +173,30 @@ This sweeping action is the costly part of the technique, an optimal solution wi
 
 This technique compares well against the usual na\"{i}ve approach of sweeping a certain fixed distance along the movement vector each iteration. It is guaranteed to find an intersection if one exists, and calculate the exact distance the object would have to travel to reach it rather than just the previous iteration location when using a constant step distance. It also requires fewer iterations, assuming a constant step distance approach uses a small iteration delta (which it would need to for accurate results).
 
-\subsubsection{Subsumptive Prototype}
+\subsubsection{Subsumptive Prototype}\noindent
+Central to a subsumptive agent architecture is a stack structure upon which behaviour layers can be pushed. This is relatively simple to implement using an Object Oriented approach, using an abstracted behavioural layer class with a method to be overridden called when that layer should decide to act. This method will return $true$ if an action is performed by that layer, otherwise $false$. The first layer in the stack will be invoked first, and if that layer returned $false$ the next layer will be invoked. This continues until either a layer returns $true$, or the last layer has been invoked. The proposed layers to be implemented are listed below, with the top-most layer first.
+
+\begin{itemize}
+\layer{DropResource}{Drop a carried resource if in danger or at a barricade under construction}
+\layer{SelfDefence}{Attack a pursuer if they are too close}
+\layer{Mob}{If there are many more humans than zombies nearby, head towards a zombie}
+\layer{VacateBlock}{If carrying a resource or in danger while inside a building, run outside}
+\layer{Flee}{Run away from nearby danger}
+\layer{FollowRoute}{Follow a route assigned to this agent}
+\layer{PickupResource}{If standing on a resource and not in danger, pick it up}
+\layer{FindResource}{If not in danger and not holding anything, move towards a resource}
+\layer{HarvestResource}{Attack a nearby object that yields resources when broken}
+\layer{SeekRefuge}{When outside and neighbouring a safe-looking building, run inside it}
+\layer{Wander}{Walk around randomly}
+\end{itemize}
+
+This particular configuration of behaviours should satisfy each requirement of the AI prototype, using complimentary sets of layers to allow for more complex compound behaviours to emerge. The survival strategy is implemented with the $SelfDefence$, $Mob$, $VacateBlock$, $Flee$ and $SeekRefuge$ layers, $FollowRoute$ for travelling to player designated locations, and the remainder (along with $VacateBlock$ and $SeekRefuge$ again) for constructing barricades autonomously.
+
+The survival aspect functions with several emergent sub-strategies. The $SelfDefence$ behaviour will attack a zombie that is extremely close to the agent. This is expected to occur when the zombie catches up to the agent due to a movement speed advantage, or if the agent has been chased into a corner. At that point attacking the pursuer is the only rational thing left to do. The $Mob$ behaviour actively directs an agent towards a nearby zombie if that agent predicts that a decent number of other agents will perform the same action, enough to overwhelm the zombie. When the agents are close enough, the $SelfDefence$ behaviour will take control and cause the agents to attack the surrounded zombie. This strategy should lead to zombies being eliminated in safe situations where it is unlikely for a human agent to take much damage. $VacateBlock$ and $Flee$ will help avoid situations where being in close proximity to a zombie is unnecessary, and $SeekRefuge$ ensures agents aren't exposed outside.
+
+Barricade construction relies on a similar interaction between several behaviours. The process usually starts with an agent wandering around outside, carrying no resource object. The $SeekRefuge$ behaviour will lead it to navigate inside a building, within which it may find objects that yield resource items when damaged when obeying the $HarvestResource$ behaviour. When the object breaks into its component resources, the $PickupResource$ behaviour is followed and the agent now holds a resource item. The $VacateBlock$ layer instructs the agent to leave the building if it is holding a resource, and as soon as the agent leaves it drops the item as instructed by the $DropResource$ layer. The agent then attempts to $SeekRefuge$ again, and the cycle repeats. Resource items are continually dropped onto tiles neighbouring an exit to the building, which pile up to form barricades. When the barricade becomes large enough, the tile it belongs to becomes solid and the agent automatically finds a different path to leave / re-enter the building, thereby dropping items on a different tile.
+
+This solution is quite trivial to implement due to the simplicity of each individual layer. Some behaviours, such as $Mob$ and $Flee$, provide some scope for experimentation by testing different thresholds for when to perform that action. Additionally, it may be interesting to test whether the agents perform best if they all posses the $Mob$ layer, or if there is some ratio of agents that refuse to actively attack zombies that leads to a higher overall survival rate.
 
 \subsubsection{BDI Prototype}
 
