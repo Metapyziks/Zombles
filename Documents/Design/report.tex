@@ -69,7 +69,7 @@ The main deliverable can be broken down into a set of core functional and non-fu
 \subsubsection{Core Requirements}
 \begin{requirements}
 \requirement{FR}{Med}{% FR 1.1
-  The number of initial humans, zombies, and the world size must be configurable.
+  The number of initial agents and the world size must be configurable.
 }
 
 \requirement{FR}{High}{% FR 1.2
@@ -190,6 +190,7 @@ Central to a subsumptive agent architecture is a stack structure upon which beha
 \layer{Wander}{Walk around randomly}
 \end{itemize}
 
+\noindent
 This particular configuration of behaviours should satisfy each requirement of the AI prototype, using complimentary sets of layers to allow for more complex compound behaviours to emerge. The survival strategy is implemented with the $SelfDefence$, $Mob$, $VacateBlock$, $Flee$ and $SeekRefuge$ layers, $FollowRoute$ for travelling to player designated locations, and the remainder (along with $VacateBlock$ and $SeekRefuge$ again) for constructing barricades autonomously.
 
 The survival aspect functions with several emergent sub-strategies. The $SelfDefence$ behaviour will attack a zombie that is extremely close to the agent. This is expected to occur when the zombie catches up to the agent due to a movement speed advantage, or if the agent has been chased into a corner. At that point attacking the pursuer is the only rational thing left to do. The $Mob$ behaviour actively directs an agent towards a nearby zombie if that agent predicts that a decent number of other agents will perform the same action, enough to overwhelm the zombie. When the agents are close enough, the $SelfDefence$ behaviour will take control and cause the agents to attack the surrounded zombie. This strategy should lead to zombies being eliminated in safe situations where it is unlikely for a human agent to take much damage. $VacateBlock$ and $Flee$ will help avoid situations where being in close proximity to a zombie is unnecessary, and $SeekRefuge$ ensures agents aren't exposed outside.
