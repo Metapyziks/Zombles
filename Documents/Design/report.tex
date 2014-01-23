@@ -226,11 +226,13 @@ Forming desires related to the construction of barricades relies on there being 
 
 The intention filtering process attempts to reduce the set of desires into a set that maximises utility while leaving no conflicting goals (such as desiring to attack a target while also desiring to run away). Survival will take precedence over following player-given orders or automated barricade construction, and desires to move to a better block is preferable to building a barricade in a sub-optimal one.
 
+\subsubsection{Analysis Strategy}\noindent
+A comprehensive and fair analytical method is required for comparing the two agent architectures, and this section will cover a system for achieving both of these qualities.
+
+\paragraph{Survival Rate} will be tested by first selecting a set of initial simulation states (at least 10) and running the simulation using each once per agent architecture. Each simulation will be left to run for 5 minutes, and the number of survivors and zombies at each moment in time will be logged. The data produced will be used to produce graphs of the agent counts over time which can be analysed in terms of population decline rates, time until a stable population is established, and other statistical features that may appear. This test will involve no player interaction, only the purely autonomous aspects of the agent designs.
 
 \subsubsection{Development Environment}\noindent
 The original game that this project is extending is written in \Csh, so that will be the primary programming language used. Microsoft's Visual Studio 2013 will be used as an integrated development environment for its \Csh~compiler, debugging and profiling tools, and Sublime Text 2 for any peripheral text editing. Development will mainly be on a Windows desktop PC (Intel Core i5, AMD 7850), using a Windows laptop (Intel Core i7, nVidia GeForce GT 540M) to test performance on a device with an nVidia GPU. The OpenTK library is used to expose OpenGL bindings for .NET, and is the only non-standard library used.
-
-\subsubsection{Analysis Strategy}
 
 \bibliography{report}
 
