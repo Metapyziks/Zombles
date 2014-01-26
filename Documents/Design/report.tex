@@ -27,11 +27,11 @@
 \begin{abstract} {\bf Context:} Designing the core autonomous behaviour for characters in a video game where those characters are expected by the player to perform tasks for themselves poses many interesting challenges. This paper explores the tasks faced when developing a capable and somewhat convincing set of Artificial Intelligence routines within a simulated zombie epidemic real-time strategy game with player allocated goals.
 {\bf Aims:} As the game player doesn't have direct control over the characters, but instead can assign tasks, algorithms to allow the characters to plan and implement those tasks in a cooperative and efficient manor will need to be designed. These algorithms must not be computationally expensive to allow for many agents to act in real-time, and also express superficially convincing human-like behaviours.
 {\bf Method:} At least two conceptually distinct architectures for character behaviour will be designed, while several slight variations of each will also be explored. These will all be compared in terms of the ability for characters to achieve assigned tasks, to avoid threats, and system resource usage. A hybrid between the main designs may be explored if one is not universally better than the other.
-{\bf Proposed Solution:} A Subsumptive architecture will initially be explored, followed by a Belief-Desires-Intentions model. Following this, each approach will be adapted to experiment with different character behaviours and strategies including weighting self defence against fleeing, and group formation approaches.
+{\bf Proposed Solution:} A Subsumption architecture will initially be explored, followed by a Belief-Desires-Intentions model. Following this, each approach will be adapted to experiment with different character behaviours and strategies including weighting self defence against fleeing, and group formation approaches.
 \end{abstract}
 
 \begin{keywords}
-AI, BDI, cooperative, multi-agent, subsumptive, task planning, video game
+AI, BDI, cooperative, multi-agent, subsumption, task planning, video game
 \end{keywords}
 
 \section{Introduction}
@@ -48,7 +48,7 @@ At the very least the artificial intelligence routines explored in this project 
 
 On the topic of player-specified tasks, an efficient path finding technique will need to be implemented that balances computation time with optimality of the path found. This algorithm will be essential for when agents are directed to a specified location by the player, but also useful for attempting to navigate when performing other tasks or to detect if a path exists to bypass some barricades (thereby establishing whether they are secure). Some tasks may not be assigned to a specific agent but will rather be goals to be achieved by the collective group. For example, the player will be able to instruct that a barricade should be built in a specific location. In this instance the human agents should automatically distribute sub-tasks between themselves in order to achieve the common goal efficiently.
 
-The two core approaches to be compared are a Subsumptive architecture \cite{brooks90} and a Belief-Desires-Intentions model \cite{rao95}. A subsumptive architecture features a stack of behaviour layers where each may in turn choose to either act or subsume control to the next layer, starting with the top of the stack. The first layer in the sequence to specify an action is heeded, and the rest are ignored. This design usually relies on complex behaviour emerging from complimentary layers. A Belief-Desires-Intentions model is a radically different approach, where each agent records an internal representation of the world from which a set of attainable goals are found, a subset of which are committed to in an attempt to maximise expected utility.
+The two core approaches to be compared are a Subsumption architecture \cite{brooks90} and a Belief-Desires-Intentions model \cite{rao95}. A subsumption architecture features a stack of behaviour layers where each may in turn choose to either act or subsume control to the next layer, starting with the top of the stack. The first layer in the sequence to specify an action is heeded, and the rest are ignored. This design usually relies on complex behaviour emerging from complimentary layers. A Belief-Desires-Intentions model is a radically different approach, where each agent records an internal representation of the world from which a set of attainable goals are found, a subset of which are committed to in an attempt to maximise expected utility.
 
 \subsection{Deliverables}\noindent
 These following core elements will be created before the end of the project.
@@ -57,11 +57,11 @@ These following core elements will be created before the end of the project.
   \deliverable{Expanded Core Game}
   {The main environmental components that the AI system will interact with must be implemented. These include the creation of game objects that represent a resource to be used when building barricades, the system to support the construction of the barricades themselves, and an expanded user interface which allows a player to select groups of agents and assign tasks. Additionally facilities to be used by the two proposed architectures should be provided, such as a path-finding implementation.}
 
-  \deliverable{Subsumptive Prototype}
-  {An agent design using a subsumptive architecture will be developed, implementing the core requirements of the human NPCs. This prototype will be constructed by breaking up the human's functionality into a stack of behaviours, from which a successful strategy is designed to emerge. Relies on deliverable 1.}
+  \deliverable{Subsumption Prototype}
+  {An agent design using a subsumption architecture will be developed, implementing the core requirements of the human NPCs. This prototype will be constructed by breaking up the humans functionality into a stack of behaviours, from which a successful strategy is designed to emerge. Relies on deliverable 1.}
 
   \deliverable{BDI Prototype}
-  {A distinct agent design using a BDI architecture will also be developed, meeting the same requirements as the subsumptive approach. This prototype will use a personal abstracted representation of the environment for each human agent, from which a set of achievable goals are found using a goal evaluation algorithm. These goals are then further reduced into a set that is calculated to yield the most utility, and are simultaneously possible. Relies on deliverable 1.}
+  {A distinct agent design using a BDI architecture will also be developed, meeting the same requirements as the subsumption approach. This prototype will use a personal abstracted representation of the environment for each human agent, from which a set of achievable goals are found using a goal evaluation algorithm. These goals are then further reduced into a set that is calculated to yield the most utility, and are simultaneously possible. Relies on deliverable 1.}
 
   \deliverable{Analysis \& Final Report}
   {Both completed prototypes will be analysed and compared in terms of agent survival rate (without player intervention), efficiency at which goals specified by a player are achieved, prevalence of unnatural behaviour, and system resource usage. The results of this comparison will be compiled into a report, along with the identification of the prototype that is most suited for the problem and an explanation for why that prototype was chosen. The report will also cover possible areas of additional research exposed by this project. Relies on deliverables 2 and 3.}
@@ -178,8 +178,8 @@ This sweeping action is the costly part of the technique, an optimal solution wi
 
 This technique compares well against the usual na\"{i}ve approach of sweeping a certain fixed distance along the movement vector each iteration. It is guaranteed to find an intersection if one exists, and calculate the exact distance the object would have to travel to reach it rather than just the previous iteration location when using a constant step distance. It also requires fewer iterations, assuming a constant step distance approach uses a small iteration delta (which it would need to for accurate results).
 
-\subsubsection{Subsumptive Prototype}\noindent
-Central to a subsumptive agent architecture is a stack structure upon which behaviour layers can be pushed. This is relatively simple to implement using an Object Oriented approach, using an abstracted behavioural layer class with a method to be overridden called when that layer should decide to act. This method will return $true$ if an action is performed by that layer, otherwise $false$. The first layer in the stack will be invoked first, and if that layer returned $false$ the next layer will be invoked. This continues until either a layer returns $true$, or the last layer has been invoked. The proposed layers to be implemented are listed below, with the top-most layer first.
+\subsubsection{Subsumption Prototype}\noindent
+Central to a subsumption agent architecture is a stack structure upon which behaviour layers can be pushed. This is relatively simple to implement using an Object Oriented approach, using an abstracted behavioural layer class with a method to be overridden called when that layer should decide to act. This method will return $true$ if an action is performed by that layer, otherwise $false$. The first layer in the stack will be invoked first, and if that layer returned $false$ the next layer will be invoked. This continues until either a layer returns $true$, or the last layer has been invoked. The proposed layers to be implemented are listed below, with the top-most layer first.
 
 \noindent
 \begin{itemize}
