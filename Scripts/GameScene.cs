@@ -388,7 +388,7 @@ namespace Zombles.Scripts
                     }
 
                     var best = new NearbyEntityEnumerator(World, pos, 2f)
-                        .Where(x => x.HasComponent<RouteNavigation>() && x.HasComponent<Human>())
+                        .Where(x => x.HasComponent<RouteNavigation>() && x.HasComponent<Survivor>())
                         .OrderBy(x => World.Difference(pos, x.Position2D).LengthSquared)
                         .FirstOrDefault();
 
@@ -411,8 +411,8 @@ namespace Zombles.Scripts
                     }
 
                     foreach (var ent in World.Entities) {
-                        var human = ent.GetComponentOrNull<Human>();
-                        if (human == null || human.IsSelected) continue;
+                        var human = ent.GetComponentOrNull<Survivor>();
+                        if (human == null || human.IsSelected || !human.Health.IsAlive) continue;
 
                         var edif = World.Difference(pos, ent.Position2D);
 
