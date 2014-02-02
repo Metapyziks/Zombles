@@ -62,9 +62,9 @@ namespace Zombles.Graphics
                     var_blood = max(1.0 - y / 2.0, 0.0);
 
                     var_blood_tex = vec2(
-                        (z + bloodadd.y) / world_size.y,
-                        (x + bloodadd.x) / world_size.x
-                    );
+                        z + bloodadd.y,
+                        x + bloodadd.x
+                    ) * 8.0;
 
                     gl_Position = vp_matrix * vec4(
                         x + world_offset.x,
@@ -78,6 +78,7 @@ namespace Zombles.Graphics
             ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
             frag.AddUniform(ShaderVarType.Sampler2DArray, "tiles");
             frag.AddUniform(ShaderVarType.Sampler2D, "bloodmap");
+            frag.AddUniform(ShaderVarType.Vec2, "world_size");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
@@ -86,8 +87,17 @@ namespace Zombles.Graphics
                     if (clr.a < 1.0)
                         discard;
 
-                    if (var_blood > 0.0 && texture2D(bloodmap, var_blood_tex).a * var_blood >= 0.25)
-                        clr = clr * 0.5 + vec4(0.2, 0.0, 0.0, 0.0);
+                    vec2 blood_tex = vec2(
+                        floor(var_blood_tex.x) / world_size.y,
+                        floor(var_blood_tex.y) / world_size.x
+                    ) / 8.0;
+
+                    float blood = floor(var_blood * 8.0) / 8.0;
+
+                    if (blood > 0.0) {
+                        blood = floor(blood * texture2D(bloodmap, blood_tex).a * 5.0) / 4.0;
+                        clr = clr * (2.0 - blood) * 0.5 + vec4(0.2, 0.0, 0.0, 0.0) * blood;
+                    }
    
                     out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
