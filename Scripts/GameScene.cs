@@ -53,6 +53,8 @@ namespace Zombles.Scripts
         private Sprite _frameBufferSprite;
         private DebugTraceShader _traceShader;
 
+        private int _upScale = 1;
+
         private float TargetCameraPitch
         {
             get { return _mapView ? MathHelper.Pi * 90.0f / 180.0f : MathHelper.Pi * 30.0f / 180.0f; }
@@ -115,11 +117,11 @@ namespace Zombles.Scripts
 
                 PositionUI();
 
-                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / 2, Height / 2), 16);
-                _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, 2f);
+                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale), 16);
+                _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, _upScale);
                 _frameBufferSprite.FlipVertical = true;
 
-                Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 8.0f);
+                Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 4.0f / _upScale);
                 Camera.SetWrapSize(WorldSize, WorldSize);
                 Camera.Position2D = new Vector2(WorldSize, WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
@@ -147,8 +149,8 @@ namespace Zombles.Scripts
         {
             _frameBuffer.Dispose();
 
-            _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / 2, Height / 2), 16);
-            _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, 2f);
+            _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale), 16);
+            _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, _upScale);
             _frameBufferSprite.FlipVertical = true;
 
             Camera.SetScreenSize(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height);
@@ -212,7 +214,7 @@ namespace Zombles.Scripts
             if (movement.Length != 0) {
                 movement.Normalize();
                 Camera.Position2D += movement *
-                    (float) (e.Time * (64f / Camera.Scale) * (Keyboard[Key.ShiftLeft] ? 4.0f : 1.0f));
+                    (float) (e.Time * (64f / (Camera.Scale * _upScale)) * (Keyboard[Key.ShiftLeft] ? 4.0f : 1.0f));
             }
 
             if (Math.Abs(Camera.Scale - _camScale) < 1f / 128f) {
@@ -279,14 +281,14 @@ namespace Zombles.Scripts
                     HitEntities = false,
                     Length = 32f,
                     Normal = World.Difference(Camera.Position2D,
-                        Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), 0.5f))
+                        Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y) / _upScale, 0.5f))
                 }.GetResult();
             }
 
             var hs = hullSize / 2f;
 
             _frameBuffer.Begin();
-            GL.Clear(ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
 
             for (int i = 0; i < 4; ++i) {
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
@@ -317,7 +319,7 @@ namespace Zombles.Scripts
                 }
 
                 if (_isSelecting) {
-                    var pos = Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y), .5f);
+                    var pos = Camera.ScreenToWorld(new Vector2(Mouse.X, Mouse.Y) / _upScale, .5f);
                     var diff = World.Difference(pos, _selectionStart);
                     _traceShader.Render(pos.X, pos.Y, pos.X + diff.X, pos.Y);
                     _traceShader.Render(pos.X + diff.X, pos.Y, pos.X + diff.X, pos.Y + diff.Y);
@@ -344,15 +346,15 @@ namespace Zombles.Scripts
         public override void OnMouseWheelChanged(MouseWheelEventArgs e)
         {
             if (e.DeltaPrecise >= 0f) {
-                _camScale = Math.Min(4f, _camScale * (1f + (e.DeltaPrecise / 4f)));
+                _camScale = Math.Min(8f / _upScale, _camScale * (1f + (e.DeltaPrecise / 4f)));
             } else {
-                _camScale = Math.Max(1.6384f * 0.5f, _camScale / (1f - (e.DeltaPrecise / 4f)));
+                _camScale = Math.Max(1.6384f / _upScale, _camScale / (1f - (e.DeltaPrecise / 4f)));
             }
         }
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y) / _upScale, .5f);
 
             if (e.Button == MouseButton.Left) {
                 _isSelecting = true;
@@ -370,7 +372,7 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonUp(MouseButtonEventArgs e)
         {
-            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y), .5f);
+            var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y) / _upScale, .5f);
 
             if (e.Button == MouseButton.Left && _isSelecting) {
                 var diff = World.Difference(pos, _selectionStart);
@@ -433,6 +435,17 @@ namespace Zombles.Scripts
                     break;
                 case 't':
                     _drawTestTrace = !_drawTestTrace;
+                    break;
+                case 'z':
+                    _upScale = 3 - _upScale;
+                    if (_upScale == 2) {
+                        _camScale /= 2f;
+                        Camera.Scale /= 2f;
+                    } else {
+                        _camScale *= 2f;
+                        Camera.Scale *= 2f;
+                    }
+                    OnResize();
                     break;
                 case 'f':
                     if (GameWindow.WindowState == WindowState.Fullscreen)
