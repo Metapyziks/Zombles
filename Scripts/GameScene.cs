@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Diagnostics;
 
 using OpenTK;
@@ -16,6 +14,11 @@ using Zombles.Geometry.Generation;
 
 using Zombles.Scripts.UI;
 using Zombles.Scripts.Entities;
+
+using OpenTKTK.Utils;
+using OpenTKTK.Textures;
+using OpenTKTK.Scene;
+using OpenTK.Graphics.OpenGL;
 
 namespace Zombles.Scripts
 {
@@ -46,6 +49,8 @@ namespace Zombles.Scripts
         private bool _drawPathNetwork;
         private bool _drawTestTrace;
 
+        private FrameBuffer _frameBuffer;
+        private Sprite _frameBufferSprite;
         private DebugTraceShader _traceShader;
 
         private float TargetCameraPitch
@@ -109,8 +114,12 @@ namespace Zombles.Scripts
                 AddChild(_infDisplay);
 
                 PositionUI();
-                
-                Camera = new OrthoCamera(Width, Height, 4.0f);
+
+                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / 2, Height / 2), 16);
+                _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, 2f);
+                _frameBufferSprite.FlipVertical = true;
+
+                Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 8.0f);
                 Camera.SetWrapSize(WorldSize, WorldSize);
                 Camera.Position2D = new Vector2(WorldSize, WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
@@ -136,7 +145,13 @@ namespace Zombles.Scripts
 
         public override void OnResize()
         {
-            Camera.SetScreenSize(Width, Height);
+            _frameBuffer.Dispose();
+
+            _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / 2, Height / 2), 16);
+            _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, 2f);
+            _frameBufferSprite.FlipVertical = true;
+
+            Camera.SetScreenSize(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height);
 
             PositionUI();
         }
@@ -270,6 +285,9 @@ namespace Zombles.Scripts
 
             var hs = hullSize / 2f;
 
+            _frameBuffer.Begin();
+            GL.Clear(ClearBufferMask.DepthBufferBit);
+
             for (int i = 0; i < 4; ++i) {
                 Camera.WorldOffsetX = (i & 0x1) == 0x0 ? x0 : x1;
                 Camera.WorldOffsetY = (i & 0x2) == 0x0 ? y0 : y1;
@@ -310,6 +328,12 @@ namespace Zombles.Scripts
                 _traceShader.End();
             }
 
+            _frameBuffer.End();
+
+            SpriteShader.Begin(true);
+            _frameBufferSprite.Render(SpriteShader);
+            SpriteShader.End();
+
             base.OnRenderFrame(e);
 
             _totalFrameTime += _frameTimer.ElapsedTicks;
@@ -320,9 +344,9 @@ namespace Zombles.Scripts
         public override void OnMouseWheelChanged(MouseWheelEventArgs e)
         {
             if (e.DeltaPrecise >= 0f) {
-                _camScale = Math.Min(8f, _camScale * (1f + (e.DeltaPrecise / 4f)));
+                _camScale = Math.Min(4f, _camScale * (1f + (e.DeltaPrecise / 4f)));
             } else {
-                _camScale = Math.Max(1.6384f, _camScale / (1f - (e.DeltaPrecise / 4f)));
+                _camScale = Math.Max(1.6384f * 0.5f, _camScale / (1f - (e.DeltaPrecise / 4f)));
             }
         }
 

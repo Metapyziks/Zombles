@@ -2,20 +2,18 @@
 using System.Linq;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
+using OpenTKTK.Shaders;
+
 using ResourceLibrary;
 
 using Zombles.Graphics;
-using Zombles.UI;
-using Zombles.Geometry;
-using Zombles.Geometry.Generation;
-using System.Reflection;
-using OpenTKTK.Shaders;
 using Zombles.Entities;
 
 namespace Zombles
