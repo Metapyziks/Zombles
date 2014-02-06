@@ -65,6 +65,7 @@
     <Compile Include="Entities\Behaviours\SelfDefence.cs" />
     <Compile Include="Entities\Behaviours\VacateDangerousBlocks.cs" />
     <Compile Include="Entities\Behaviours\Wander.cs" />
+    <Compile Include="Entities\Beliefs.cs" />
     <Compile Include="Entities\Breakable.cs" />
     <Compile Include="Entities\Behaviours\DropWood.cs" />
     <Compile Include="Entities\Item.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Entities\Human.cs" />
     <Compile Include="Entities\PlayerControl.cs" />
     <Compile Include="Entities\Survivor.cs" />
-    <Compile Include="Entities\SurvivorAI.cs" />
+    <Compile Include="Entities\DeliberativeAI.cs" />
     <Compile Include="Entities\Zombie.cs" />
     <Compile Include="Entities\ZombieAI.cs" />
     <Compile Include="GameScene.cs" />

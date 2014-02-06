@@ -36,6 +36,8 @@ namespace Zombles.Geometry
         public readonly int Height;
 
         public bool Enclosed { get; private set; }
+
+        public bool HasInterior { get; private set; }
         
         public Block(District district)
         {
@@ -67,8 +69,10 @@ namespace Zombles.Geometry
         public void BuildTiles(TileBuilder[,] tiles)
         {
             lock (_tiles) {
+                HasInterior = false;
                 for (int x = 0; x < Width; ++x) for (int y = 0; y < Height; ++y) {
                     _tiles[x, y] = tiles[x, y].Create(X + x, Y + y);
+                    HasInterior = HasInterior || _tiles[x, y].IsInterior;
                 }
             }
         }
