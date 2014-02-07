@@ -86,7 +86,11 @@ namespace Zombles.Scripts.Entities
 
         private void ReceivePercept(Entity ent)
         {
-            // Update entity and block KBs
+            if (_entityKB.ContainsKey(ent)) {
+                _entityKB[ent].Update();
+            } else {
+                _entityKB.Add(ent, new EntityBeliefs(ent));
+            }
         }
 
         public void Update()
@@ -109,7 +113,11 @@ namespace Zombles.Scripts.Entities
                 ReceivePercept(ent);
             }
 
-            // Remove entities that haven't been seen in a long time
+            var old = _entityKB.Values.Where(x => MainWindow.Time - x.LastSeen > 10.0).ToArray();
+            foreach (var beliefs in old) {
+                _entityKB.Remove(beliefs.Entity);
+                
+            }
         }
     }
 }
