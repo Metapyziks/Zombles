@@ -82,6 +82,10 @@ namespace Zombles.Scripts.Entities
 
             _entityKB = new Dictionary<Entity, EntityBeliefs>();
             _blockKB = new Dictionary<Block, BlockBeliefs>();
+
+            foreach (var block in Agent.World) {
+                _blockKB.Add(block, new BlockBeliefs(block));
+            }
         }
 
         private void ReceivePercept(Entity ent)
@@ -116,7 +120,7 @@ namespace Zombles.Scripts.Entities
             var old = _entityKB.Values.Where(x => MainWindow.Time - x.LastSeen > 10.0).ToArray();
             foreach (var beliefs in old) {
                 _entityKB.Remove(beliefs.Entity);
-                
+
             }
         }
     }
