@@ -38,6 +38,11 @@ namespace Zombles.Geometry
         public bool Enclosed { get; private set; }
 
         public bool HasInterior { get; private set; }
+
+        public IEnumerable<Intersection> Intersections
+        {
+            get { return World.GetIntersections(this); }
+        }
         
         public Block(District district)
         {

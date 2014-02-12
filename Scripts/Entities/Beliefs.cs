@@ -11,6 +11,9 @@ namespace Zombles.Scripts.Entities
 {
     internal sealed class Beliefs
     {
+        private const float VisibleRange = 16f;
+        private const float VisibleRange2 = VisibleRange * VisibleRange;
+
         private enum EntityType
         {
             Other = 0,
@@ -56,12 +59,10 @@ namespace Zombles.Scripts.Entities
 
         private class BlockBeliefs
         {
-            private int _survivors;
-            private int _zombies;
-            private int _resources;
-
             private double _utility;
             private bool _utilityChanged;
+
+            private HashSet<EntityBeliefs> _remembered;
 
             public Block Block { get; private set; }
 
@@ -69,19 +70,35 @@ namespace Zombles.Scripts.Entities
             
             public double LastSeen { get; private set; }
 
-            public int Survivors { get { return _survivors + Beliefs._entityKB.Count(x => x.Value.Type == EntityType.Survivor && x.Value.LastBlock == Block); } }
+            public int Survivors
+            {
+                get
+                {
+                    return _remembered.Concat(Beliefs._entityKB.Values)
+                        .Count(x => x.Type == EntityType.Survivor && x.LastBlock == Block);
+                }
+            }
 
-            public int Zombies { get { return _zombies + Beliefs._entityKB.Count(x => x.Value.Type == EntityType.Zombie && x.Value.LastBlock == Block); } }
+            public int Zombies
+            {
+                get
+                {
+                    return _remembered.Concat(Beliefs._entityKB.Values)
+                        .Count(x => x.Type == EntityType.Zombie && x.LastBlock == Block);
+                }
+            }
 
             public int Resources
             {
                 get
                 {
-                    return _resources + Beliefs._entityKB
-                        .Where(x => x.Value.Type == EntityType.PlankPile && x.Value.LastBlock == Block)
-                        .Sum(x => x.Key.GetComponent<WoodPile>().Count) + Beliefs._entityKB
-                        .Where(x => x.Value.Type == EntityType.PlankSource && x.Value.LastBlock == Block)
-                        .Select(x => x.Key.GetComponent<WoodenBreakable>())
+                    var concat = _remembered.Concat(Beliefs._entityKB.Values);
+
+                    return concat
+                        .Where(x => x.Type == EntityType.PlankPile && x.LastBlock == Block)
+                        .Sum(x => x.Entity.GetComponent<WoodPile>().Count) + concat
+                        .Where(x => x.Type == EntityType.PlankSource && x.LastBlock == Block)
+                        .Select(x => x.Entity.GetComponent<WoodenBreakable>())
                         .Sum(x => x.MinPlanks + x.MaxPlanks) / 2;
                 }
             }
@@ -113,6 +130,36 @@ namespace Zombles.Scripts.Entities
             public void Update()
             {
                 LastSeen = MainWindow.Time;
+
+                var trace = new TraceLine(Beliefs.Agent.World) {
+                    Origin = Beliefs.Agent.Position2D,
+                    HitGeometry = true,
+                    HitEntities = false
+                };
+
+                var toRemove = new List<EntityBeliefs>();
+
+                foreach (var beliefs in _remembered) {
+                    if (beliefs.Entity.World.Difference(beliefs.LastPos, Beliefs.Agent.Position2D).LengthSquared > VisibleRange2)
+                        continue;
+
+                    trace.Target = beliefs.LastPos;
+
+                    if (!trace.GetResult().HitWorld) {
+                        toRemove.Add(beliefs);
+                    }
+                }
+
+                foreach (var beliefs in toRemove) {
+                    _remembered.Remove(beliefs);
+                    _utilityChanged = true;
+                }
+            }
+
+            public void Remember(EntityBeliefs beliefs)
+            {
+                _remembered.Add(beliefs);
+                _utilityChanged = true;
             }
         }
 
@@ -150,27 +197,35 @@ namespace Zombles.Scripts.Entities
                 HitEntities = false
             };
 
-            foreach (var ent in Agent.Block) {
-                var hp = ent.GetComponentOrNull<Health>();
-                if (hp != null && !hp.IsAlive) {
-                    if (_entityKB.ContainsKey(ent)) {
-                        _entityKB.Remove(ent);
+            var nearBlocks = _blockKB.Keys.Where(x => x.Intersections.Any(y =>
+                Agent.World.Difference(y.Position, Agent.Position2D).LengthSquared <= VisibleRange2));
+
+            foreach (var block in nearBlocks) {
+                _blockKB[block].Update();
+
+                foreach (var ent in block) {
+                    var hp = ent.GetComponentOrNull<Health>();
+                    if (hp != null && !hp.IsAlive) {
+                        if (_entityKB.ContainsKey(ent)) {
+                            _entityKB.Remove(ent);
+                        }
+                        continue;
                     }
-                    continue;
+
+                    trace.Target = ent.Position2D;
+
+                    var res = trace.GetResult();
+                    if (res.HitWorld) continue;
+
+                    ReceivePercept(ent);
                 }
-
-                trace.Target = ent.Position2D;
-
-                var res = trace.GetResult();
-                if (res.HitWorld) continue;
-
-                ReceivePercept(ent);
             }
 
             var old = _entityKB.Values.Where(x => MainWindow.Time - x.LastSeen > 10.0).ToArray();
 
             foreach (var beliefs in old) {
                 _entityKB.Remove(beliefs.Entity);
+                _blockKB[beliefs.LastBlock].Remember(beliefs);
             }
         }
     }
