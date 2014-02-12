@@ -1,16 +1,15 @@
-﻿using OpenTK;
-
-using Zombles.Entities;
-using Zombles.Geometry;
+﻿using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
 {
     public class DeliberativeAI : HumanControl
     {
+        private Beliefs _beliefs;
+
         public DeliberativeAI(Entity ent)
             : base(ent)
         {
-
+            _beliefs = new Beliefs(ent);
         }
 
         public override void OnSpawn()
@@ -21,6 +20,8 @@ namespace Zombles.Scripts.Entities
         public override void OnThink(double dt)
         {
             base.OnThink(dt);
+
+            _beliefs.Update();
         }
     }
 }
