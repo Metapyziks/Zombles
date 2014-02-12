@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Zombles.Scripts.Entities
 {
-    abstract class Desire
+    abstract class Desire : IComparable<Desire>
     {
         private static List<MethodInfo> _discoveryMethods;
 
@@ -29,7 +30,43 @@ namespace Zombles.Scripts.Entities
                 FindDiscoveryMethods();
             }
 
-            return _discoveryMethods.SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { beliefs }));
+            var desires = _discoveryMethods
+                .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { beliefs }))
+                .ToList();
+
+            desires.Sort();
+
+            var filtred = new List<Desire>();
+
+            for (int i = 0; i < desires.Count; ++i) {
+                var a = desires[i];
+                for (int j = desires.Count - 1; j >= i; --j) {
+                    var b = desires[j];
+
+                    if (a.ConflictsWith(b) || b.ConflictsWith(a)) {
+                        desires.RemoveAt(j);
+                        desires[i] = a.ResolveConflict(b);
+
+                        desires.Sort(); --i; break;
+                    }
+                }
+            }
+
+            return desires;
+        }
+
+        public abstract float Utility { get; }
+
+        public abstract bool ConflictsWith(Desire other);
+
+        public abstract Desire ResolveConflict(Desire other);
+
+        public int CompareTo(Desire other)
+        {
+            float thisU = Utility;
+            float thatU = other.Utility;
+
+            return thisU > thatU ? 1 : thisU == thatU ? 0 : -1;
         }
     }
 }
