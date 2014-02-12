@@ -68,7 +68,7 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                return _remembered.Concat(Beliefs._entityKB.Values)
+                return _remembered.Concat(Beliefs.Entities)
                     .Count(x => x.Type == EntityType.Survivor && x.LastBlock == Block);
             }
         }
@@ -77,7 +77,7 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                return _remembered.Concat(Beliefs._entityKB.Values)
+                return _remembered.Concat(Beliefs.Entities)
                     .Count(x => x.Type == EntityType.Zombie && x.LastBlock == Block);
             }
         }
@@ -86,7 +86,7 @@ namespace Zombles.Scripts.Entities
         {
             get
             {
-                var concat = _remembered.Concat(Beliefs._entityKB.Values);
+                var concat = _remembered.Concat(Beliefs.Entities);
 
                 return concat
                     .Where(x => x.Type == EntityType.PlankPile && x.LastBlock == Block)
@@ -134,7 +134,7 @@ namespace Zombles.Scripts.Entities
             var toRemove = new List<EntityBeliefs>();
 
             foreach (var beliefs in _remembered) {
-                if (beliefs.Entity.World.Difference(beliefs.LastPos, Beliefs.Agent.Position2D).LengthSquared > VisibleRange2)
+                if (beliefs.Entity.World.Difference(beliefs.LastPos, Beliefs.Agent.Position2D).LengthSquared > Beliefs.VisibleRange2)
                     continue;
 
                 trace.Target = beliefs.LastPos;
@@ -159,8 +159,8 @@ namespace Zombles.Scripts.Entities
 
     internal sealed class Beliefs
     {
-        private const float VisibleRange = 16f;
-        private const float VisibleRange2 = VisibleRange * VisibleRange;
+        public const float VisibleRange = 16f;
+        public const float VisibleRange2 = VisibleRange * VisibleRange;
 
         private Dictionary<Entity, EntityBeliefs> _entityKB;
         private Dictionary<Block, BlockBeliefs> _blockKB;
