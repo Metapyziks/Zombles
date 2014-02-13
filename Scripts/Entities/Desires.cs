@@ -61,6 +61,8 @@ namespace Zombles.Scripts.Entities
 
         public abstract Desire ResolveConflict(Desire other);
 
+        public abstract Intention GetIntention(Beliefs beliefs);
+
         public int CompareTo(Desire other)
         {
             float thisU = Utility;
