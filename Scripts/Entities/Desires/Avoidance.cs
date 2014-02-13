@@ -11,7 +11,7 @@ namespace Zombles.Scripts.Entities.Desires
         public static IEnumerable<Avoidance> Discover(Beliefs beliefs)
         {
             foreach (var zom in beliefs.Entities.Where(x => x.Type == EntityType.Zombie)) {
-                var diff = beliefs.Entity.World.Difference(beliefs.Entity.Position2D, zom.LastPos);
+                var diff = beliefs.Entity.World.Difference(zom.LastPos, beliefs.Entity.Position2D);
 
                 if (diff.LengthSquared < 0.25f) continue;
 

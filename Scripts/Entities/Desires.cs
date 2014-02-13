@@ -16,7 +16,7 @@ namespace Zombles.Scripts.Entities
             foreach (var type in ScriptManager.GetTypes(typeof(Desire))) {
                 var discover = type.GetMethod("Discover", BindingFlags.Public | BindingFlags.Static);
 
-                if (!discover.ReturnType.DoesExtend(typeof(IEnumerable<Desire>))) continue;
+                if (!typeof(IEnumerable<Desire>).IsAssignableFrom(discover.ReturnType)) continue;
                 if (discover.GetParameters().Length != 1) continue;
                 if (discover.GetParameters().First().ParameterType != typeof(Beliefs)) continue;
 
@@ -40,14 +40,14 @@ namespace Zombles.Scripts.Entities
 
             for (int i = 0; i < desires.Count; ++i) {
                 var a = desires[i];
-                for (int j = desires.Count - 1; j >= i; --j) {
+                for (int j = desires.Count - 1; j > i; --j) {
                     var b = desires[j];
 
                     if (a.ConflictsWith(b) || b.ConflictsWith(a)) {
                         desires.RemoveAt(j);
                         desires[i] = a.ResolveConflict(b);
 
-                        desires.Sort(); --i; break;
+                        desires.Sort(); i = -1; break;
                     }
                 }
             }
@@ -68,7 +68,7 @@ namespace Zombles.Scripts.Entities
             float thisU = Utility;
             float thatU = other.Utility;
 
-            return thisU > thatU ? 1 : thisU == thatU ? 0 : -1;
+            return thisU > thatU ? -1 : thisU == thatU ? 0 : 1;
         }
     }
 }

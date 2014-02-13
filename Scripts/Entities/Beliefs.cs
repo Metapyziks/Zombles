@@ -164,7 +164,7 @@ namespace Zombles.Scripts.Entities
 
     public sealed class Beliefs
     {
-        public const float VisibleRange = 16f;
+        public const float VisibleRange = 8f;
         public const float VisibleRange2 = VisibleRange * VisibleRange;
 
         private Dictionary<Entity, EntityBeliefs> _entityKB;
