@@ -11,7 +11,7 @@ namespace Zombles.Scripts.Entities.Desires
         public static IEnumerable<Avoidance> Discover(Beliefs beliefs)
         {
             foreach (var zom in beliefs.Entities.Where(x => x.Type == EntityType.Zombie)) {
-                var diff = beliefs.Agent.World.Difference(beliefs.Agent.Position2D, zom.LastPos);
+                var diff = beliefs.Entity.World.Difference(beliefs.Entity.Position2D, zom.LastPos);
 
                 if (diff.LengthSquared < 0.25f) continue;
 
@@ -53,6 +53,11 @@ namespace Zombles.Scripts.Entities.Desires
         public Avoidance ResolveConflict(Avoidance other)
         {
             return new Avoidance(Vector + other.Vector);
+        }
+
+        public override Intention GetIntention(Beliefs beliefs)
+        {
+            return new Intentions.Move(beliefs, Vector.Normalized());
         }
     }
 }

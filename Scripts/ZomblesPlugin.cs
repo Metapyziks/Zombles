@@ -40,6 +40,7 @@ namespace Zombles.Scripts
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 ent.AddComponent<RouteNavigation>();
+#if SUBSUMPTION
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()
                     .Push<Entities.Behaviours.SeekRefuge>()
@@ -52,6 +53,9 @@ namespace Zombles.Scripts
                     .Push<Entities.Behaviours.Mob>()
                     .Push<Entities.Behaviours.SelfDefence>()
                     .Push<Entities.Behaviours.DropWood>();
+#else
+                ent.AddComponent<DeliberativeAI>();
+#endif
             });
 
             Entity.Register("zombie", "human", ent => {

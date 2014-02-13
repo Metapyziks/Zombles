@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
+﻿using OpenTK;
 
 namespace Zombles.Scripts.Entities.Intentions
 {
@@ -11,14 +6,20 @@ namespace Zombles.Scripts.Entities.Intentions
     {
         private Vector2 _direction;
 
-        public Move(Beliefs beliefs, Vector2 direction) : base(beliefs)
+        public Move(Beliefs beliefs, Vector2 direction)
+            : base(beliefs)
         {
             _direction = direction;
         }
 
-        public override bool Act()
+        public override bool ShouldAbandon()
         {
+            return false;
+        }
 
+        public override void Act()
+        {
+            Human.StartMoving(_direction);
         }
     }
 }

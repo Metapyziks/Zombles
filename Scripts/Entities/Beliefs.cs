@@ -31,9 +31,11 @@ namespace Zombles.Scripts.Entities
 
         public Vector2 LastPos { get; private set; }
 
-        public EntityBeliefs(Entity ent)
+        public EntityBeliefs(Beliefs beliefs, Entity ent)
         {
+            Beliefs = beliefs;
             Entity = ent;
+
             Type = ent.HasComponent<Survivor>() ? EntityType.Survivor
                 : ent.HasComponent<Zombie>() ? EntityType.Zombie
                 : ent.HasComponent<WoodPile>() ? EntityType.PlankPile
@@ -113,10 +115,13 @@ namespace Zombles.Scripts.Entities
             }
         }
 
-        public BlockBeliefs(Block block)
+        public BlockBeliefs(Beliefs beliefs, Block block)
         {
+            Beliefs = beliefs;
             Block = block;
+
             _utilityChanged = true;
+            _remembered = new HashSet<EntityBeliefs>();
 
             Update();
         }
@@ -125,8 +130,8 @@ namespace Zombles.Scripts.Entities
         {
             LastSeen = MainWindow.Time;
 
-            var trace = new TraceLine(Beliefs.Agent.World) {
-                Origin = Beliefs.Agent.Position2D,
+            var trace = new TraceLine(Beliefs.Entity.World) {
+                Origin = Beliefs.Entity.Position2D,
                 HitGeometry = true,
                 HitEntities = false
             };
@@ -134,7 +139,7 @@ namespace Zombles.Scripts.Entities
             var toRemove = new List<EntityBeliefs>();
 
             foreach (var beliefs in _remembered) {
-                if (beliefs.Entity.World.Difference(beliefs.LastPos, Beliefs.Agent.Position2D).LengthSquared > Beliefs.VisibleRange2)
+                if (beliefs.Entity.World.Difference(beliefs.LastPos, Beliefs.Entity.Position2D).LengthSquared > Beliefs.VisibleRange2)
                     continue;
 
                 trace.Target = beliefs.LastPos;
@@ -157,7 +162,7 @@ namespace Zombles.Scripts.Entities
         }
     }
 
-    internal sealed class Beliefs
+    public sealed class Beliefs
     {
         public const float VisibleRange = 16f;
         public const float VisibleRange2 = VisibleRange * VisibleRange;
@@ -165,19 +170,22 @@ namespace Zombles.Scripts.Entities
         private Dictionary<Entity, EntityBeliefs> _entityKB;
         private Dictionary<Block, BlockBeliefs> _blockKB;
 
-        public Entity Agent { get; private set; }
+        public Entity Entity { get; private set; }
+
+        public Human Human { get; private set; }
 
         public IEnumerable<EntityBeliefs> Entities { get { return _entityKB.Values; } }
 
-        public Beliefs(Entity agent)
+        public Beliefs(Human human)
         {
-            Agent = agent;
+            Human = human;
+            Entity = human.Entity;
 
             _entityKB = new Dictionary<Entity, EntityBeliefs>();
             _blockKB = new Dictionary<Block, BlockBeliefs>();
 
-            foreach (var block in Agent.World) {
-                _blockKB.Add(block, new BlockBeliefs(block));
+            foreach (var block in Entity.World) {
+                _blockKB.Add(block, new BlockBeliefs(this, block));
             }
         }
 
@@ -186,20 +194,20 @@ namespace Zombles.Scripts.Entities
             if (_entityKB.ContainsKey(ent)) {
                 _entityKB[ent].Update();
             } else {
-                _entityKB.Add(ent, new EntityBeliefs(ent));
+                _entityKB.Add(ent, new EntityBeliefs(this, ent));
             }
         }
 
         public void Update()
         {
-            var trace = new TraceLine(Agent.World) {
-                Origin = Agent.Position2D,
+            var trace = new TraceLine(Entity.World) {
+                Origin = Entity.Position2D,
                 HitGeometry = true,
                 HitEntities = false
             };
 
             var nearBlocks = _blockKB.Keys.Where(x => x.Intersections.Any(y =>
-                Agent.World.Difference(y.Position, Agent.Position2D).LengthSquared <= VisibleRange2));
+                Entity.World.Difference(y.Position, Entity.Position2D).LengthSquared <= VisibleRange2));
 
             foreach (var block in nearBlocks) {
                 _blockKB[block].Update();
