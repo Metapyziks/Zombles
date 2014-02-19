@@ -42,8 +42,15 @@ namespace Zombles.Scripts.Entities
             }
 
             if (deliberate) {
-                var desires = Desire.DiscoverAll(_beliefs);
-                _intentions = desires.Select(x => x.GetIntention(_beliefs)).ToArray();
+                var desires = Desire.DiscoverAll(_beliefs)
+                    .Union(_intentions.Select(x => x.Desire));
+
+                desires = Desire.ResolveConflicts(desires);
+
+                var kept = _intentions.Where(x => desires.Contains(x.Desire)).ToArray();
+                desires = desires.Where(x => !kept.Any(y => y.Desire == x));
+
+                _intentions = kept.Union(desires.Select(x => x.GetIntention(_beliefs))).ToArray();
                 _nextDeliberate = MainWindow.Time + DeliberationPeriod;
 
                 if (_intentions.Length == 0) {

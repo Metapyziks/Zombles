@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Zombles.Scripts.Entities
 {
-    abstract class Desire : IComparable<Desire>
+    public abstract class Desire : IComparable<Desire>
     {
         private static List<MethodInfo> _discoveryMethods;
 
@@ -34,25 +34,32 @@ namespace Zombles.Scripts.Entities
                 .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { beliefs }))
                 .ToList();
 
-            desires.Sort();
+            return desires;
+        }
+
+        public static IEnumerable<Desire> ResolveConflicts(IEnumerable<Desire> desires)
+        {
+            var list = desires.ToList();
+
+            list.Sort();
 
             var filtred = new List<Desire>();
 
-            for (int i = 0; i < desires.Count; ++i) {
-                var a = desires[i];
-                for (int j = desires.Count - 1; j > i; --j) {
-                    var b = desires[j];
+            for (int i = 0; i < list.Count; ++i) {
+                var a = list[i];
+                for (int j = list.Count - 1; j > i; --j) {
+                    var b = list[j];
 
                     if (a.ConflictsWith(b) || b.ConflictsWith(a)) {
-                        desires.RemoveAt(j);
-                        desires[i] = a.ResolveConflict(b);
+                        list.RemoveAt(j);
+                        list[i] = a.ResolveConflict(b);
 
-                        desires.Sort(); i = -1; break;
+                        list.Sort(); i = -1; break;
                     }
                 }
             }
 
-            return desires;
+            return list;
         }
 
         public abstract float Utility { get; }

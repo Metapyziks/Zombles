@@ -6,8 +6,8 @@ namespace Zombles.Scripts.Entities.Intentions
     {
         private Vector2 _direction;
 
-        public Move(Beliefs beliefs, Vector2 direction)
-            : base(beliefs)
+        public Move(Desire desire, Beliefs beliefs, Vector2 direction)
+            : base(desire, beliefs)
         {
             _direction = direction;
         }

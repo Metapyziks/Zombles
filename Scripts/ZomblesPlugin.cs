@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define SUBSUMPTION
+
+using System;
 using System.Linq;
 using System.Diagnostics;
 
