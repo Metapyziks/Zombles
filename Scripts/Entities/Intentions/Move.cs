@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using Zombles.Scripts.Entities.Desires;
 
 namespace Zombles.Scripts.Entities.Intentions
 {
@@ -6,10 +7,10 @@ namespace Zombles.Scripts.Entities.Intentions
     {
         private Vector2 _direction;
 
-        public Move(Desire desire, Beliefs beliefs, Vector2 direction)
+        public Move(Avoidance desire, Beliefs beliefs)
             : base(desire, beliefs)
         {
-            _direction = direction;
+            _direction = desire.Vector.Normalized();
         }
 
         public override bool ShouldAbandon()

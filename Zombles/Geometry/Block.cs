@@ -35,6 +35,14 @@ namespace Zombles.Geometry
         public readonly int Width;
         public readonly int Height;
 
+        public Vector2 Center
+        {
+            get
+            {
+                return new Vector2(X + Width / 2f, Y + Height / 2f);
+            }
+        }
+
         public bool Enclosed { get; private set; }
 
         public bool HasInterior { get; private set; }

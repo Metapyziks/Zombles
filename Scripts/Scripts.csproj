@@ -70,7 +70,9 @@
     <Compile Include="Entities\Behaviours\DropWood.cs" />
     <Compile Include="Entities\Desires.cs" />
     <Compile Include="Entities\Desires\Avoidance.cs" />
+    <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Intention.cs" />
+    <Compile Include="Entities\Intentions\Migrate.cs" />
     <Compile Include="Entities\Intentions\Move.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Plank.cs" />

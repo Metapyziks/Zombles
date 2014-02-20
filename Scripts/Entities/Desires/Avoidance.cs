@@ -57,7 +57,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override Intention GetIntention(Beliefs beliefs)
         {
-            return new Intentions.Move(this, beliefs, Vector.Normalized());
+            return new Intentions.Move(this, beliefs);
         }
     }
 }

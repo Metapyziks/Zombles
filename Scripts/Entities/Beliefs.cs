@@ -174,6 +174,8 @@ namespace Zombles.Scripts.Entities
 
         public Human Human { get; private set; }
 
+        public IEnumerable<BlockBeliefs> Blocks { get { return _blockKB.Values; } }
+
         public IEnumerable<EntityBeliefs> Entities { get { return _entityKB.Values; } }
 
         public Beliefs(Human human)
