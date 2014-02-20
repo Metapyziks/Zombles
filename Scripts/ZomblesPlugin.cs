@@ -56,7 +56,8 @@ namespace Zombles.Scripts
                     .Push<Entities.Behaviours.SelfDefence>()
                     .Push<Entities.Behaviours.DropWood>();
 #else
-                ent.AddComponent<DeliberativeAI>();
+                ent.AddComponent<DeliberativeAI>()
+                    .AddDesire<Entities.Desires.Avoidance>();
 #endif
             });
 

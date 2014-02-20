@@ -17,6 +17,11 @@ namespace Zombles.Scripts.Entities.Intentions
             return false;
         }
 
+        public override bool ShouldKeep()
+        {
+            return false;    
+        }
+
         public override void Act()
         {
             Human.StartMoving(_direction);

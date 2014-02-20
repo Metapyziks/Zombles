@@ -7,36 +7,6 @@ namespace Zombles.Scripts.Entities
 {
     public abstract class Desire : IComparable<Desire>
     {
-        private static List<MethodInfo> _discoveryMethods;
-
-        private static void FindDiscoveryMethods()
-        {
-            _discoveryMethods = new List<MethodInfo>();
-
-            foreach (var type in ScriptManager.GetTypes(typeof(Desire))) {
-                var discover = type.GetMethod("Discover", BindingFlags.Public | BindingFlags.Static);
-
-                if (!typeof(IEnumerable<Desire>).IsAssignableFrom(discover.ReturnType)) continue;
-                if (discover.GetParameters().Length != 1) continue;
-                if (discover.GetParameters().First().ParameterType != typeof(Beliefs)) continue;
-
-                _discoveryMethods.Add(discover);
-            }
-        }
-
-        public static IEnumerable<Desire> DiscoverAll(Beliefs beliefs)
-        {
-            if (_discoveryMethods == null) {
-                FindDiscoveryMethods();
-            }
-
-            var desires = _discoveryMethods
-                .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { beliefs }))
-                .ToList();
-
-            return desires;
-        }
-
         public static IEnumerable<Desire> ResolveConflicts(IEnumerable<Desire> desires)
         {
             var list = desires.ToList();

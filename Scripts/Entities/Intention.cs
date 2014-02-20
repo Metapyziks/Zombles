@@ -20,6 +20,8 @@ namespace Zombles.Scripts.Entities
 
         public abstract bool ShouldAbandon();
 
+        public abstract bool ShouldKeep();
+
         public abstract void Act();
     }
 }

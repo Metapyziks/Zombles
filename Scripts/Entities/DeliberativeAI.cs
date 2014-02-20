@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
@@ -15,6 +16,8 @@ namespace Zombles.Scripts.Entities
         private double _nextBeliefsUpdate;
         private double _nextDeliberate;
 
+        private List<MethodInfo> _desireDiscoveryMethods;
+
         public DeliberativeAI(Entity ent)
             : base(ent)
         {
@@ -22,6 +25,23 @@ namespace Zombles.Scripts.Entities
             _intentions = new Intention[0];
             _nextBeliefsUpdate = MainWindow.Time + Tools.Random.NextDouble() * BeliefsUpdatePeriod;
             _nextDeliberate = MainWindow.Time + Tools.Random.NextDouble() * DeliberationPeriod;
+
+            _desireDiscoveryMethods = new List<MethodInfo>();
+        }
+
+        public DeliberativeAI AddDesire<T>()
+            where T : Desire
+        {
+            var type = typeof(T);
+            var discover = type.GetMethod("Discover", BindingFlags.Public | BindingFlags.Static);
+
+            if (!typeof(IEnumerable<Desire>).IsAssignableFrom(discover.ReturnType)) throw new ArgumentException();
+            if (discover.GetParameters().Length != 1) throw new ArgumentException();
+            if (discover.GetParameters().First().ParameterType != typeof(Beliefs)) throw new ArgumentException();
+
+            _desireDiscoveryMethods.Add(discover);
+
+            return this;
         }
 
         public override void OnSpawn()
@@ -42,8 +62,12 @@ namespace Zombles.Scripts.Entities
             }
 
             if (deliberate) {
-                var desires = Desire.DiscoverAll(_beliefs)
-                    .Union(_intentions.Select(x => x.Desire));
+                var desires = _desireDiscoveryMethods
+                    .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
+                    .ToList()
+                    .Union(_intentions
+                        .Where(x => !x.ShouldKeep())
+                        .Select(x => x.Desire));
 
                 desires = Desire.ResolveConflicts(desires);
 
