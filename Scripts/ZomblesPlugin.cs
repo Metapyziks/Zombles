@@ -58,7 +58,8 @@ namespace Zombles.Scripts
 #else
                 ent.AddComponent<DeliberativeAI>()
                     .AddDesire<Entities.Desires.Avoidance>()
-                    .AddDesire<Entities.Desires.Migration>();
+                    .AddDesire<Entities.Desires.Migration>()
+                    .AddDesire<Entities.Desires.Mobbing>();
 #endif
             });
 
