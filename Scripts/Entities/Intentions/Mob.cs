@@ -30,7 +30,12 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override void Act()
         {
-            Human.StartMoving(Entity.World.Difference(Target.Position2D, Entity.Position2D));
+            var diff = Entity.World.Difference(Target.Position2D, Entity.Position2D);
+            Human.StartMoving(diff);
+
+            if (diff.LengthSquared < 0.75f) {
+                Human.Attack(diff);
+            }
         }
     }
 }

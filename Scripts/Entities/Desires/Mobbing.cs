@@ -58,7 +58,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return 10f; }
+            get { return 100f; }
         }
 
         public Mobbing(Entity target)
