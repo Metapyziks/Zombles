@@ -208,8 +208,9 @@ namespace Zombles.Scripts.Entities
                 HitEntities = false
             };
 
-            var nearBlocks = _blockKB.Keys.Where(x => x.Intersections.Any(y =>
-                Entity.World.Difference(y.Position, Entity.Position2D).LengthSquared <= VisibleRange2));
+            var nearBlocks = _blockKB.Keys.Where(x =>
+                Entity.World.Difference(x.GetNearestPosition(Entity.Position2D),
+                    Entity.Position2D).LengthSquared <= VisibleRange2);
 
             foreach (var block in nearBlocks) {
                 _blockKB[block].Update();

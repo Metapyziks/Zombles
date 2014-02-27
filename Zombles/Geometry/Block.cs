@@ -254,6 +254,25 @@ namespace Zombles.Geometry
             }
         }
 
+        public Vector2 GetNearestPosition(Vector2 pos)
+        {
+            var rel = Center + World.Difference(Center, pos);
+
+            if (rel.X < X) {
+                rel.X = X;
+            } else if (rel.X > X + Width) {
+                rel.X = X + Width;
+            }
+
+            if (rel.Y < Y) {
+                rel.Y = Y;
+            } else if (rel.Y > Y + Height) {
+                rel.Y = Y + Height;
+            }
+
+            return rel;
+        }
+
         public IEnumerator<Entity> GetEnumerator()
         {
             return _ents.GetEnumerator();
