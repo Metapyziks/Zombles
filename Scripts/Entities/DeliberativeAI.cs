@@ -66,7 +66,7 @@ namespace Zombles.Scripts.Entities
                     .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
                     .ToList()
                     .Union(_intentions
-                        .Where(x => !x.ShouldKeep())
+                        .Where(x => x.ShouldKeep())
                         .Select(x => x.Desire));
 
                 desires = Desire.ResolveConflicts(desires);
