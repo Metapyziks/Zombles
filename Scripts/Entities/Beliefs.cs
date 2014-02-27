@@ -108,7 +108,7 @@ namespace Zombles.Scripts.Entities
 
                     int zombies = Zombies;
 
-                    _utility = Survivors / 2.0 + Resources / 6.0 - zombies * zombies;
+                    _utility = Survivors / 2.0 + Resources / 6.0 - zombies * zombies * 4.0;
                 }
 
                 return _utility;
