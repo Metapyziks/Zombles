@@ -72,6 +72,7 @@
     <Compile Include="Entities\Desires\Avoidance.cs" />
     <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Desires\Mobbing.cs" />
+    <Compile Include="Entities\IConflictable.cs" />
     <Compile Include="Entities\Intention.cs" />
     <Compile Include="Entities\Intentions\Migrate.cs" />
     <Compile Include="Entities\Intentions\Mob.cs" />

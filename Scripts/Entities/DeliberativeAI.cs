@@ -82,8 +82,9 @@ namespace Zombles.Scripts.Entities
                 }
             }
 
-            foreach (var intention in _intentions) {
-                intention.Act();
+            var actions = Action.ResolveConflicts(_intentions.SelectMany(x => x.GetActions()));
+            foreach (var action in actions) {
+                action.Perform(Human);
             }
         }
     }

@@ -33,7 +33,7 @@ namespace Zombles.Scripts.Entities.Intentions
             return !ShouldAbandon();
         }
 
-        public override void Act()
+        public override IEnumerable<Action> GetActions()
         {
             var nav = Entity.GetComponent<RouteNavigation>();
             if (!nav.HasRoute || nav.CurrentTarget != _destPos) {
@@ -41,7 +41,8 @@ namespace Zombles.Scripts.Entities.Intentions
             }
 
             if (nav.HasPath && nav.CurrentTarget == _destPos) {
-                Human.StartMoving(Entity.World.Difference(Entity.Position2D, nav.NextWaypoint));
+                var diff = Entity.World.Difference(Entity.Position2D, nav.NextWaypoint);
+                yield return new MovementAction(diff.Normalized() * 8f);
             }
         }
     }

@@ -66,8 +66,6 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         protected override bool OnThink(double dt)
         {
-            System.Diagnostics.Debugger.Break();
-
             if (MainWindow.Time >= _nextMobCheck) {
                 _nextMobCheck = MainWindow.Time + Tools.Random.NextDouble(
                     MinMobCheckPeriod, MaxMobCheckPeriod);

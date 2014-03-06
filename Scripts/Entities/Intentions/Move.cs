@@ -1,16 +1,19 @@
-﻿using OpenTK;
+﻿using System.Collections.Generic;
+
+using OpenTK;
+
 using Zombles.Scripts.Entities.Desires;
 
 namespace Zombles.Scripts.Entities.Intentions
 {
     class Move : Intention
     {
-        private Vector2 _direction;
+        private Vector2 _vector;
 
         public Move(Avoidance desire, Beliefs beliefs)
             : base(desire, beliefs)
         {
-            _direction = desire.Vector.Normalized();
+            _vector = desire.Vector;
         }
 
         public override bool ShouldAbandon()
@@ -23,9 +26,9 @@ namespace Zombles.Scripts.Entities.Intentions
             return false;    
         }
 
-        public override void Act()
+        public override IEnumerable<Action> GetActions()
         {
-            Human.StartMoving(_direction);
+            yield return new MovementAction(_vector);
         }
     }
 }

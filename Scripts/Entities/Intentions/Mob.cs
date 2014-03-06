@@ -28,13 +28,13 @@ namespace Zombles.Scripts.Entities.Intentions
             return false;
         }
 
-        public override void Act()
+        public override IEnumerable<Action> GetActions()
         {
             var diff = Entity.World.Difference(Target.Position2D, Entity.Position2D);
-            Human.StartMoving(diff);
+            yield return new MovementAction(diff);
 
             if (diff.LengthSquared < 0.75f) {
-                Human.Attack(diff);
+                yield return new AttackAction(Target);
             }
         }
     }
