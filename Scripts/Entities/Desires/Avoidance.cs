@@ -18,7 +18,7 @@ namespace Zombles.Scripts.Entities.Desires
                 var timeSince = (float) Math.Max(1.0, MainWindow.Time - zom.LastSeen);
 
                 var dir = diff.Normalized();
-                var mag = 1f / diff.LengthSquared / (timeSince * timeSince);
+                var mag = 64f / diff.LengthSquared / (1f + timeSince * timeSince);
 
                 yield return new Avoidance(dir * mag);
             }

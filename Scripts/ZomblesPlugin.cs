@@ -57,9 +57,9 @@ namespace Zombles.Scripts
                     .Push<Entities.Behaviours.DropWood>();
 #else
                 ent.AddComponent<DeliberativeAI>()
-                    //.AddDesire<Entities.Desires.Avoidance>()
-                    .AddDesire<Entities.Desires.Migration>()
-                    .AddDesire<Entities.Desires.Mobbing>();
+                    .AddDesire<Entities.Desires.Avoidance>()
+                    .AddDesire<Entities.Desires.Migration>();
+                    //.AddDesire<Entities.Desires.Mobbing>();
 #endif
             });
 

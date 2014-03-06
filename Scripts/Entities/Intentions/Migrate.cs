@@ -19,8 +19,20 @@ namespace Zombles.Scripts.Entities.Intentions
             : base(desire, beliefs)
         {
             _destBlock = desire.Destination;
-            _destPos = _destBlock.GetNearestPosition(Entity.Position2D);
-            _destPos += (_destBlock.Center - _destPos).Normalized() * 4f;
+
+            var size = new Vector2(_destBlock.Width, _destBlock.Height);
+
+            int tries = 4;
+            do {
+                _destPos = new Vector2(_destBlock.X, _destBlock.Y) + size * 0.25f + new Vector2(
+                    Tools.Random.NextSingle(0f, size.X * 0.5f),
+                    Tools.Random.NextSingle(0f, size.Y * 0.5f));
+            } while (--tries > 0 && !Beliefs.Entity.World.IsPositionNavigable(_destPos));
+
+            if (tries <= 0) {
+                _destPos = _destBlock.GetNearestPosition(Entity.Position2D);
+                _destPos += (_destBlock.Center - _destPos).Normalized() * 2f;
+            }
         }
 
         public override bool ShouldAbandon()
@@ -42,7 +54,7 @@ namespace Zombles.Scripts.Entities.Intentions
 
             if (nav.HasPath && nav.CurrentTarget == _destPos) {
                 var diff = Entity.World.Difference(Entity.Position2D, nav.NextWaypoint);
-                yield return new MovementAction(diff.Normalized() * 8f);
+                yield return new MovementAction(diff.Normalized() * Desire.Utility);
             }
         }
     }
