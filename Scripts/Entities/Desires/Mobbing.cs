@@ -49,9 +49,6 @@ namespace Zombles.Scripts.Entities.Desires
             foreach (var zom in beliefs.Entities.Where(x => x.Type == EntityType.Zombie)) {
                 if (beliefs.Entity.World.Difference(beliefs.Entity.Position2D, zom.LastPos).LengthSquared > MobRadius * MobRadius) continue;
                 if (ShouldMob(beliefs.Entity, zom)) {
-                    if (beliefs.Human.IsSelected) {
-                        System.Diagnostics.Debugger.Break();
-                    }
                     yield return new Mobbing(zom.Entity);
                 }
             }
