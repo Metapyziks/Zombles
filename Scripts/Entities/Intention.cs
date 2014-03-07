@@ -85,7 +85,7 @@ namespace Zombles.Scripts.Entities
 
         public override void Perform(Human agent)
         {
-            agent.Attack(Target.World.Difference(Target.Position2D, agent.Entity.Position2D));
+            agent.Attack(Target.World.Difference(agent.Entity.Position2D, Target.Position2D));
         }
     }
 

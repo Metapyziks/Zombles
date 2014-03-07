@@ -73,12 +73,14 @@
     <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Desires\Mobbing.cs" />
     <Compile Include="Entities\Desires\WallAvoidance.cs" />
+    <Compile Include="Entities\Desires\Wander.cs" />
     <Compile Include="Entities\IConflictable.cs" />
     <Compile Include="Entities\Intention.cs" />
     <Compile Include="Entities\Intentions\Migration.cs" />
     <Compile Include="Entities\Intentions\Mobbing.cs" />
     <Compile Include="Entities\Intentions\ThreatAvoidance.cs" />
     <Compile Include="Entities\Intentions\WallAvoidance.cs" />
+    <Compile Include="Entities\Intentions\Wander.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Plank.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />

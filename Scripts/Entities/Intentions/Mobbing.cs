@@ -25,10 +25,10 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            var diff = Entity.World.Difference(Target.Position2D, Entity.Position2D);
+            var diff = Entity.World.Difference(Entity.Position2D, Target.Position2D);
             yield return new MovementAction(diff);
 
-            if (diff.LengthSquared < 0.75f) {
+            if (diff.LengthSquared < 1.5f) {
                 yield return new AttackAction(Target);
             }
         }

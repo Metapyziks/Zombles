@@ -32,7 +32,11 @@ namespace Zombles.Scripts.Entities.Intentions
             foreach (var zom in _threats) {
                 var diff = World.Difference(zom.LastPos, Entity.Position2D);
 
-                if (diff.LengthSquared < 0.25f) continue;
+                if (diff.LengthSquared < 1.5f) {
+                    yield return new MovementAction(-diff.Normalized());
+                    yield return new AttackAction(zom.Entity);
+                    continue;
+                }
 
                 if (diff.LengthSquared < 6f) ((Survivor) Human).StartRunning();
 
