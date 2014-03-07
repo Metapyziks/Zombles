@@ -24,7 +24,7 @@ namespace Zombles.Scripts
 {
     public class GameScene : Scene
     {
-        public const int WorldSize = 128;
+        public const int WorldSize = 64;
 
         private UILabel _fpsText;
         private UILabel _posText;

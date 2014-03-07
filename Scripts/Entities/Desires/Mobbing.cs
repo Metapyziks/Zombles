@@ -68,7 +68,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override bool ConflictsWith(Desire other)
         {
-            return other is Mobbing || other is Avoidance;
+            return other is Mobbing || other is ThreatAvoidance;
         }
 
         public override Desire ResolveConflict(Desire other)
@@ -78,7 +78,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override Intention GetIntention(Beliefs beliefs)
         {
-            return new Intentions.Mob(this, beliefs);
+            return new Intentions.Mobbing(this, beliefs);
         }
     }
 }

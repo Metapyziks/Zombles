@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
-using Zombles.Scripts.Entities.Desires;
 
 namespace Zombles.Scripts.Entities.Intentions
 {
-    class Migrate : Intention
+    class Migration : Intention
     {
         private Block _destBlock;
         private Vector2 _destPos;
 
-        public Migrate(Migration desire, Beliefs beliefs)
+        public Migration(Desires.Migration desire, Beliefs beliefs)
             : base(desire, beliefs)
         {
             _destBlock = desire.Destination;

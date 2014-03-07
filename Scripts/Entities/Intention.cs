@@ -3,6 +3,7 @@
 using OpenTK;
 
 using Zombles.Entities;
+using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
@@ -97,6 +98,8 @@ namespace Zombles.Scripts.Entities
         protected Human Human { get { return Beliefs.Human; } }
 
         protected Entity Entity { get { return Beliefs.Entity; } }
+
+        protected World World { get { return Beliefs.Entity.World; } }
 
         public Intention(Desire desire, Beliefs beliefs)
         {

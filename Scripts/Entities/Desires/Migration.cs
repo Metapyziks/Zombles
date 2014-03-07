@@ -51,7 +51,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override Intention GetIntention(Beliefs beliefs)
         {
-            return new Intentions.Migrate(this, beliefs);
+            return new Intentions.Migration(this, beliefs);
         }
     }
 }

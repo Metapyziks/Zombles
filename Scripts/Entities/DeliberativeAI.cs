@@ -9,7 +9,7 @@ namespace Zombles.Scripts.Entities
     public class DeliberativeAI : HumanControl
     {
         public const double BeliefsUpdatePeriod = 0.25;
-        public const double DeliberationPeriod = 1.0;
+        public const double DeliberationPeriod = 0.5;
 
         private Beliefs _beliefs;
         private Intention[] _intentions;
@@ -83,6 +83,11 @@ namespace Zombles.Scripts.Entities
             }
 
             var actions = Action.ResolveConflicts(_intentions.SelectMany(x => x.GetActions()));
+
+            if (actions.OfType<MovementAction>().Count() == 0) {
+                Human.StopMoving();
+            }
+
             foreach (var action in actions) {
                 action.Perform(Human);
             }

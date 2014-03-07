@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Zombles.Entities;
-using Zombles.Scripts.Entities.Desires;
 
 namespace Zombles.Scripts.Entities.Intentions
 {
-    class Mob : Intention
+    class Mobbing : Intention
     {
         public Entity Target { get; private set; }
 
-        public Mob(Mobbing desire, Beliefs beliefs)
+        public Mobbing(Desires.Mobbing desire, Beliefs beliefs)
             : base(desire, beliefs)
         {
             Target = desire.Target;
