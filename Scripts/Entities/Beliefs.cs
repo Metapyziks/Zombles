@@ -45,6 +45,15 @@ namespace Zombles.Scripts.Entities
             Update();
         }
 
+        public EntityBeliefs Clone(Beliefs beliefs)
+        {
+            return new EntityBeliefs(beliefs, Entity) {
+                LastPos = LastPos,
+                LastBlock = LastBlock,
+                LastSeen = LastSeen
+            };
+        }
+
         public void Update()
         {
             LastSeen = MainWindow.Time;
@@ -134,7 +143,7 @@ namespace Zombles.Scripts.Entities
             _utilityChanged = true;
 
             foreach (var ent in other._remembered) {
-                _remembered.Add(ent);
+                _remembered.Add(ent.Clone(Beliefs));
             }
         }
 
