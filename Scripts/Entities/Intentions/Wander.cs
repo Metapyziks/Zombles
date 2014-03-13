@@ -54,7 +54,7 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            yield return new MovementAction(World.Difference(Entity.Position2D, _curDest));
+            yield return new MovementAction(World.Difference(Entity.Position2D, _curDest).Normalized() / 8f);
         }
     }
 }

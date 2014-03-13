@@ -94,7 +94,17 @@ namespace Zombles.Scripts.Entities.Intentions
                     }
                 }
 
-                yield return new MovementAction(World.Difference(Entity.Position2D, _destResource.LastPos));
+                var diff = World.Difference(Entity.Position2D, _destResource.LastPos);
+
+                yield return new MovementAction(diff.Normalized() * 2f);
+
+                if (diff.LengthSquared < 2f) {
+                    if (_destResource.Type == EntityType.PlankSource) {
+                        yield return new AttackAction(_destResource.Entity);
+                    } else if (_destResource.Entity.GetComponent<Item>().CanPickup(Entity)) {
+                        yield return new PickupItemAction(_destResource.Entity, 2f);
+                    }
+                }
             }
         }
     }
