@@ -221,6 +221,11 @@ namespace Zombles.Scripts.Entities
             }
         }
 
+        public BlockBeliefs GetBlock(Block block)
+        {
+            return _blockKB.First(x => x.Key == block).Value;
+        }
+
         public void Update()
         {
             var trace = new TraceLine(Entity.World) {
