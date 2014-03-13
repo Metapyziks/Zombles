@@ -69,6 +69,7 @@
     <Compile Include="Entities\Breakable.cs" />
     <Compile Include="Entities\Behaviours\DropWood.cs" />
     <Compile Include="Entities\Desires.cs" />
+    <Compile Include="Entities\Desires\Barricading.cs" />
     <Compile Include="Entities\Desires\ThreatAvoidance.cs" />
     <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Desires\Mobbing.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Entities\Desires\Wander.cs" />
     <Compile Include="Entities\IConflictable.cs" />
     <Compile Include="Entities\Intention.cs" />
+    <Compile Include="Entities\Intentions\Barricading.cs" />
     <Compile Include="Entities\Intentions\Migration.cs" />
     <Compile Include="Entities\Intentions\Mobbing.cs" />
     <Compile Include="Entities\Intentions\ThreatAvoidance.cs" />

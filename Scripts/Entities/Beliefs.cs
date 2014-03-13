@@ -71,6 +71,8 @@ namespace Zombles.Scripts.Entities
 
         public Block Block { get; private set; }
 
+        public IEnumerable<EntityBeliefs> Entities { get { return _remembered; } }
+
         public Beliefs Beliefs { get; private set; }
 
         public double LastSeen { get; private set; }
@@ -101,6 +103,7 @@ namespace Zombles.Scripts.Entities
 
                 return concat
                     .Where(x => x.Type == EntityType.PlankPile && x.LastBlock == Block)
+                    .Where(x => Beliefs.Entity.World.GetTile(x.LastPos).IsInterior)
                     .Sum(x => x.Entity.GetComponent<WoodPile>().Count) + concat
                     .Where(x => x.Type == EntityType.PlankSource && x.LastBlock == Block)
                     .Select(x => x.Entity.GetComponent<WoodenBreakable>())
@@ -231,7 +234,7 @@ namespace Zombles.Scripts.Entities
             var trace = new TraceLine(Entity.World) {
                 Origin = Entity.Position2D,
                 HitGeometry = true,
-                HitEntities = false
+                HitEntities = true
             };
 
             var nearBlocks = _blockKB.Keys.Where(x =>
@@ -251,6 +254,7 @@ namespace Zombles.Scripts.Entities
                     }
 
                     trace.Target = ent.Position2D;
+                    trace.HitEntityPredicate = x => x == ent;
 
                     var res = trace.GetResult();
                     if (res.HitWorld) continue;

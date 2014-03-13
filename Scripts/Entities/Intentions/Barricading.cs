@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zombles.Entities;
 using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Intentions
@@ -11,7 +12,9 @@ namespace Zombles.Scripts.Entities.Intentions
     {
         private BlockBeliefs _blockBeliefs;
         private List<Tile> _destTiles;
-        private List<Tile> _pendingTiles;
+        private Tile[] _pendingTiles;
+        private EntityBeliefs _destResource;
+        private bool _noResources;
 
         public Barricading(Desires.Barricading desire, Beliefs beliefs, BlockBeliefs blockBeliefs)
             : base(desire, beliefs)
@@ -47,12 +50,12 @@ namespace Zombles.Scripts.Entities.Intentions
                 }
             }
 
-            _pendingTiles = _destTiles.Where(x => x.StaticEntities.Count() == 0).ToList();
+            _pendingTiles = _destTiles.Where(x => x.StaticEntities.Count() == 0).ToArray();
         }
 
         public override bool ShouldAbandon()
         {
-            return _pendingTiles.Count == 0;
+            return _pendingTiles.Length == 0 || _blockBeliefs.Block.Enclosed || _noResources;
         }
 
         public override bool ShouldKeep()
@@ -62,7 +65,37 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            throw new NotImplementedException();
+            _pendingTiles = _destTiles.Where(x => x.StaticEntities.Count() == 0).ToArray();
+
+            if (ShouldAbandon()) {
+                if (Human.IsHoldingItem) {
+                    yield return new DropItemAction(1f);
+                }
+
+                yield break;
+            }
+
+            if (!Human.IsHoldingItem) {
+                if (_destResource != null && _destResource.Entity.Position2D != _destResource.LastPos) {
+                    _destResource = null;
+                }
+
+                if (_destResource == null) {
+                    _destResource = _blockBeliefs.Entities
+                        .Union(Beliefs.Entities)
+                        .Where(x => x.Type == EntityType.PlankSource || x.Type == EntityType.PlankPile)
+                        .Where(x => World.GetTile(x.LastPos).IsInterior)
+                        .OrderBy(x => World.Difference(x.LastPos, Entity.Position2D).LengthSquared)
+                        .FirstOrDefault();
+
+                    if (_destResource == null) {
+                        _noResources = true;
+                        yield break;
+                    }
+                }
+
+                yield return new MovementAction(World.Difference(Entity.Position2D, _destResource.LastPos));
+            }
         }
     }
 }
