@@ -126,6 +126,18 @@ namespace Zombles.Scripts.Entities
             Update();
         }
 
+        public void CopyFrom(BlockBeliefs other)
+        {
+            LastSeen = other.LastSeen;
+
+            _remembered.Clear();
+            _utilityChanged = true;
+
+            foreach (var ent in other._remembered) {
+                _remembered.Add(ent);
+            }
+        }
+
         public void Update()
         {
             LastSeen = MainWindow.Time;

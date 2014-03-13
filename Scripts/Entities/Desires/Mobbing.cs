@@ -11,7 +11,7 @@ namespace Zombles.Scripts.Entities.Desires
     class Mobbing : Desire
     {
         public const float MobRadius = 8f;
-        public const float MaxMobRatio = 0.33f;
+        public const float MaxMobRatio = 0.25f;
 
         private static bool ShouldMob(Entity self, EntityBeliefs ent)
         {
