@@ -43,7 +43,7 @@ namespace Zombles.Scripts.Entities.Intentions
                 var timeSince = (float) Math.Max(1.0, MainWindow.Time - zom.LastSeen);
 
                 var dir = diff.Normalized();
-                var mag = 16f / diff.LengthSquared / (1f + timeSince * timeSince);
+                var mag = 32f / diff.Length / (1f + timeSince * timeSince);
 
                 yield return new MovementAction(dir * mag);
             }
