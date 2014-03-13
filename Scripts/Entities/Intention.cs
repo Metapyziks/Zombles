@@ -89,6 +89,68 @@ namespace Zombles.Scripts.Entities
         }
     }
 
+    public class PickupItemAction : Action
+    {
+        private Entity _item;
+        private float _utility;
+
+        public PickupItemAction(Entity item, float utility)
+        {
+            _item = item;
+            _utility = utility;
+        }
+
+        public override void Perform(Human agent)
+        {
+            agent.PickupItem(_item);
+        }
+
+        public override float Utility
+        {
+            get { return _utility; }
+        }
+
+        public override bool ConflictsWith(Action other)
+        {
+            return other is PickupItemAction || other is DropItemAction;
+        }
+
+        public override Action ResolveConflict(Action other)
+        {
+            return this;
+        }
+    }
+
+    public class DropItemAction : Action
+    {
+        private float _utility;
+
+        public DropItemAction(float utility)
+        {
+            _utility = utility;
+        }
+
+        public override void Perform(Human agent)
+        {
+            agent.DropItem();
+        }
+
+        public override float Utility
+        {
+            get { return _utility; }
+        }
+
+        public override bool ConflictsWith(Action other)
+        {
+            return other is PickupItemAction || other is DropItemAction;
+        }
+
+        public override Action ResolveConflict(Action other)
+        {
+            return this;
+        }
+    }
+
     public abstract class Intention
     {
         public Desire Desire { get; private set; }
