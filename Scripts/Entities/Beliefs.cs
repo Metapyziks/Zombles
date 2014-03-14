@@ -168,7 +168,7 @@ namespace Zombles.Scripts.Entities
 
                 trace.Target = beliefs.LastPos;
 
-                if (!trace.GetResult().HitWorld) {
+                if (!beliefs.Entity.IsValid || !trace.GetResult().HitWorld) {
                     toRemove.Add(beliefs);
                 }
             }
@@ -263,7 +263,7 @@ namespace Zombles.Scripts.Entities
                 }
             }
 
-            var old = _entityKB.Values.Where(x => MainWindow.Time - x.LastSeen > 10.0).ToArray();
+            var old = _entityKB.Values.Where(x => MainWindow.Time - x.LastSeen > 10.0 || !x.Entity.IsValid).ToArray();
 
             foreach (var beliefs in old) {
                 _entityKB.Remove(beliefs.Entity);

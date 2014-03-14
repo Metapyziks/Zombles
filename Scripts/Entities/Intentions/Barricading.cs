@@ -76,7 +76,7 @@ namespace Zombles.Scripts.Entities.Intentions
             }
 
             if (!Human.IsHoldingItem) {
-                if (_destResource != null && _destResource.Entity.Position2D != _destResource.LastPos) {
+                if (_destResource != null && (_destResource.Entity.Position2D != _destResource.LastPos || !_destResource.Entity.IsValid)) {
                     _destResource = null;
                 }
 
