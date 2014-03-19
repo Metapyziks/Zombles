@@ -24,6 +24,8 @@ namespace Zombles.Geometry
 
         public readonly ushort[,] WallTileIndices;
 
+        public Vector2 Position { get { return new Vector2(X, Y); } }
+
         public bool IsSolid
         {
             get { return FloorHeight > 0 || _staticEnts.Count > 0; }

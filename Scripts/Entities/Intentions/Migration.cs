@@ -48,6 +48,8 @@ namespace Zombles.Scripts.Entities.Intentions
             }
 
             if (nav.HasPath && nav.CurrentTarget == _destPos) {
+                yield return new DropItemAction(1f);
+
                 var diff = Entity.World.Difference(Entity.Position2D, nav.NextWaypoint);
                 yield return new MovementAction(diff.Normalized() * Desire.Utility);
             }

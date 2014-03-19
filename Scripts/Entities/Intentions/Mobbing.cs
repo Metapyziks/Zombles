@@ -25,6 +25,8 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
+            yield return new DropItemAction(3f);
+
             var diff = Entity.World.Difference(Entity.Position2D, Target.Position2D);
             yield return new MovementAction(diff.Normalized() * 64f);
 

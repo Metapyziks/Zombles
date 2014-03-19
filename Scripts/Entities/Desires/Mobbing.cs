@@ -58,7 +58,14 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return 10000f; }
+            get
+            {
+                var health = Target.GetComponent<Health>();
+
+                if (!health.IsAlive) return 0f;
+
+                return 1024f / health.Value;
+            }
         }
 
         public Mobbing(Entity target)

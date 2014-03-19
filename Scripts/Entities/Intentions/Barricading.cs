@@ -14,6 +14,7 @@ namespace Zombles.Scripts.Entities.Intentions
         private List<Tile> _destTiles;
         private Tile[] _pendingTiles;
         private EntityBeliefs _destResource;
+        private Tile _destTile;
         private bool _noResources;
 
         public Barricading(Desires.Barricading desire, Beliefs beliefs, BlockBeliefs blockBeliefs)
@@ -30,7 +31,7 @@ namespace Zombles.Scripts.Entities.Intentions
                 Face.East,
                 Face.South,
                 Face.West
-            }.Select(x => x.GetNormal());
+            };
 
             for (int x = 1; x < block.Width - 1; ++x) {
                 for (int y = 1; y < block.Height - 1; ++y) {
@@ -39,7 +40,11 @@ namespace Zombles.Scripts.Entities.Intentions
                     if (tile.IsInterior) break;
 
                     foreach (var dir in dirs) {
-                        int xn = x + (int) dir.X, yn = y + (int) dir.Y;
+                        if (tile.IsWallSolid(dir)) continue;
+
+                        var n = dir.GetNormal();
+
+                        int xn = x + (int) n.X, yn = y + (int) n.Y;
                         var neighbour = block[block.X + xn, block.Y + yn];
 
                         if (neighbour.IsInterior) {
@@ -75,6 +80,8 @@ namespace Zombles.Scripts.Entities.Intentions
                 yield break;
             }
 
+            var nav = Entity.GetComponent<RouteNavigation>();
+
             if (!Human.IsHoldingItem) {
                 if (_destResource != null && (_destResource.Entity.Position2D != _destResource.LastPos || !_destResource.Entity.IsValid)) {
                     _destResource = null;
@@ -103,6 +110,26 @@ namespace Zombles.Scripts.Entities.Intentions
                         yield return new AttackAction(_destResource.Entity);
                     } else if (_destResource.Entity.GetComponent<Item>().CanPickup(Entity)) {
                         yield return new PickupItemAction(_destResource.Entity, 2f);
+                    }
+                }
+            } else {
+                if (_destTile != null && !_pendingTiles.Contains(_destTile)) {
+                    _destTile = null;
+                }
+
+                if (_destTile == null) {
+                    _destTile = _pendingTiles
+                        .OrderBy(x => World.Difference(Entity.Position2D, x.Position).LengthSquared)
+                        .FirstOrDefault();
+                }
+
+                if (_destTile != null) {                    
+                    var diff = World.Difference(Entity.Position2D, _destTile.Position);
+
+                    yield return new MovementAction(diff.Normalized() * 2f);
+
+                    if (diff.LengthSquared < 0.25f) {
+                        yield return new DropItemAction(2f);
                     }
                 }
             }
