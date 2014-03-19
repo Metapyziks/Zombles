@@ -80,7 +80,7 @@ namespace Zombles.Graphics
             VertexSource = vert.Generate();
             FragmentSource = frag.Generate();
 
-            BeginMode = BeginMode.Quads;
+            PrimitiveType = PrimitiveType.Quads;
 
             Create();
         }

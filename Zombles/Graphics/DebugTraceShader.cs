@@ -30,7 +30,7 @@ namespace Zombles.Graphics
                     GL.End();
                 GL.Uniform4(_colourLoc, _colour);
                 if (Started)
-                    GL.Begin(BeginMode);
+                    GL.Begin(PrimitiveType);
             }
         }
 
@@ -67,7 +67,7 @@ namespace Zombles.Graphics
             VertexSource = vert.Generate();
             FragmentSource = frag.Generate();
 
-            BeginMode = BeginMode.Lines;
+            PrimitiveType = PrimitiveType.Lines;
 
             Create();
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTKTK.Shaders;
+using OpenTKTK.Utils;
 
 namespace Zombles.Graphics
 {
@@ -17,6 +18,14 @@ namespace Zombles.Graphics
         public bool IsTopDown
         {
             get { return Camera.Pitch >= Math.PI * 0.49; }
+        }
+
+        protected override void ConstructVertexShader(OpenTKTK.Utils.ShaderBuilder vert)
+        {
+            base.ConstructVertexShader(vert);
+
+            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
+            vert.AddUniform(ShaderVarType.Vec2, "world_size");
         }
 
         protected override void OnCreate()

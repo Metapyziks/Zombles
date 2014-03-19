@@ -9,12 +9,11 @@ namespace Zombles.Graphics
     {
         private int _transformLoc;
 
-        public ModelEntityShader()
+        protected override void ConstructVertexShader(ShaderBuilder vert)
         {
-            var vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
+            base.ConstructVertexShader(vert);
+
             vert.AddUniform(ShaderVarType.Mat4, "mdl_matrix");
-            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddAttribute(ShaderVarType.Vec3, "in_position");
             vert.AddAttribute(ShaderVarType.Vec3, "in_texture");
             vert.AddAttribute(ShaderVarType.Vec3, "in_normal");
@@ -31,7 +30,7 @@ namespace Zombles.Graphics
 
                     vec3 world_pos = (mdl_matrix * vec4(in_position, 1.0)).xyz;
 
-                    gl_Position = vp_matrix * vec4(
+                    gl_Position = proj * view * vec4(
                         world_pos.x + world_offset.x,
                         world_pos.y,
                         world_pos.z + world_offset.y,
@@ -39,8 +38,12 @@ namespace Zombles.Graphics
                     );
                 }
             ";
+        }
 
-            var frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
+        protected override void ConstructFragmentShader(ShaderBuilder frag)
+        {
+            base.ConstructFragmentShader(frag);
+
             frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
             frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
@@ -51,13 +54,11 @@ namespace Zombles.Graphics
                     out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
             ";
+        }
 
-            VertexSource = vert.Generate();
-            FragmentSource = frag.Generate();
-
-            BeginMode = BeginMode.Quads;
-
-            Create();
+        public ModelEntityShader()
+        {
+            PrimitiveType = PrimitiveType.Quads;
         }
 
         protected override void OnCreate()
@@ -67,8 +68,6 @@ namespace Zombles.Graphics
             AddAttribute("in_position", 3);
             AddAttribute("in_texture", 3);
             AddAttribute("in_normal", 3);
-
-            AddTexture("ents");
 
             _transformLoc = GL.GetUniformLocation(Program, "mdl_matrix");
         }
