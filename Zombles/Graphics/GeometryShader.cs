@@ -11,12 +11,10 @@ namespace Zombles.Graphics
 {
     public class GeometryShader : WorldShader
     {
-        public GeometryShader()
+        protected override void ConstructVertexShader(ShaderBuilder vert)
         {
-            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
-            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
-            vert.AddUniform(ShaderVarType.Vec2, "world_size");
+            base.ConstructVertexShader(vert);
+
             vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
             vert.AddVarying(ShaderVarType.Vec3, "var_tex");
             vert.AddVarying(ShaderVarType.Float, "var_shade");
@@ -66,7 +64,7 @@ namespace Zombles.Graphics
                         x + bloodadd.x
                     ) * 8.0;
 
-                    gl_Position = vp_matrix * vec4(
+                    gl_Position = proj * view * vec4(
                         x + world_offset.x,
                         y * yscale,
                         z + world_offset.y,
@@ -74,12 +72,14 @@ namespace Zombles.Graphics
                     );
                 }
             ";
+        }
 
-            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
+        protected override void ConstructFragmentShader(ShaderBuilder frag)
+        {
+            base.ConstructFragmentShader(frag);
+
             frag.AddUniform(ShaderVarType.Sampler2DArray, "tiles");
             frag.AddUniform(ShaderVarType.Sampler2D, "bloodmap");
-            frag.AddUniform(ShaderVarType.Vec2, "world_size");
-            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
@@ -99,16 +99,14 @@ namespace Zombles.Graphics
                         clr = clr * (2.0 - blood) * 0.5 + vec4(0.2, 0.0, 0.0, 0.0) * blood;
                     }
    
-                    out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
+                    out_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
             ";
+        }
 
-            VertexSource = vert.Generate();
-            FragmentSource = frag.Generate();
-
+        public GeometryShader()
+        {
             PrimitiveType = PrimitiveType.Quads;
-
-            Create();
         }
 
         protected override void OnCreate()
@@ -116,9 +114,6 @@ namespace Zombles.Graphics
             base.OnCreate();
 
             AddAttribute("in_vertex", 3);
-
-            AddTexture("tiles");
-            AddTexture("bloodmap");
         }
 
         protected override void OnBegin()

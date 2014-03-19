@@ -18,22 +18,10 @@ namespace Zombles.Graphics
         private int _sizeLoc;
         private int _textureLoc;
 
-        public FlatEntityShader()
+        protected override void ConstructVertexShader(ShaderBuilder vert)
         {
-            if (_sVB == null) {
-                _sVB = new VertexBuffer(3);
-                _sVB.SetData(new float[]
-                {
-                    -0.5f, 1.0f, 0f,
-                    0.5f, 1.0f, 1f,
-                    0.5f, 0.0f, 3f,
-                    -0.5f, 0.0f, 2f
-                });
-            }
+            base.ConstructVertexShader(vert);
 
-            var vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
-            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
             vert.AddUniform(ShaderVarType.Vec2, "scale");
             vert.AddUniform(ShaderVarType.Vec3, "position");
             vert.AddUniform(ShaderVarType.Vec2, "size");
@@ -57,7 +45,7 @@ namespace Zombles.Graphics
 
                     const float yscale = 2.0 / sqrt(3.0);
 
-                    gl_Position = vp_matrix * vec4(
+                    gl_Position = proj * view * vec4(
                         position.x + world_offset.x,
                         (position.y + in_vertex.y * size.y) * yscale,
                         position.z + world_offset.y,
@@ -65,24 +53,36 @@ namespace Zombles.Graphics
                     ) + vec4(in_vertex.x * scale.x * size.x, 0.0, 0.0, 0.0);
                 }
             ";
+        }
 
-            var frag = new ShaderBuilder(ShaderType.FragmentShader, false, vert);
+        protected override void ConstructFragmentShader(ShaderBuilder frag)
+        {
+            base.ConstructFragmentShader(frag);
+
             frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
-            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
-                    out_frag_colour = texture2DArray(ents, var_texture);
-                    if(out_frag_colour.a < 0.5) discard;
+                    out_colour = texture2DArray(ents, var_texture);
+                    if(out_colour.a < 0.5) discard;
                 }
             ";
+        }
 
-            VertexSource = vert.Generate();
-            FragmentSource = frag.Generate();
+        public FlatEntityShader()
+        {
+            if (_sVB == null) {
+                _sVB = new VertexBuffer(3);
+                _sVB.SetData(new float[]
+                {
+                    -0.5f, 1.0f, 0f,
+                    0.5f, 1.0f, 1f,
+                    0.5f, 0.0f, 3f,
+                    -0.5f, 0.0f, 2f
+                });
+            }
 
             PrimitiveType = PrimitiveType.Quads;
-
-            Create();
         }
 
         protected override void OnCreate()
@@ -90,8 +90,6 @@ namespace Zombles.Graphics
             base.OnCreate();
 
             AddAttribute("in_vertex", 3);
-
-            AddTexture("ents");
 
             _scaleLoc = GL.GetUniformLocation(Program, "scale");
             _positionLoc = GL.GetUniformLocation(Program, "position");

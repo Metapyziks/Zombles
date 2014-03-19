@@ -28,6 +28,13 @@ namespace Zombles.Graphics
             vert.AddUniform(ShaderVarType.Vec2, "world_size");
         }
 
+        protected override void ConstructFragmentShader(ShaderBuilder frag)
+        {
+            base.ConstructFragmentShader(frag);
+
+            frag.AddUniform(ShaderVarType.Vec2, "world_size");
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();

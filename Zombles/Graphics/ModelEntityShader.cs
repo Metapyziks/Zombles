@@ -45,13 +45,12 @@ namespace Zombles.Graphics
             base.ConstructFragmentShader(frag);
 
             frag.AddUniform(ShaderVarType.Sampler2DArray, "ents");
-            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
                     vec4 clr = texture2DArray(ents, var_texture);
                     if(clr.a < 0.5) discard;
-                    out_frag_colour = vec4(clr.rgb * var_shade, 1.0);
+                    out_colour = vec4(clr.rgb * var_shade, 1.0);
                 }
             ";
         }

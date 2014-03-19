@@ -34,18 +34,17 @@ namespace Zombles.Graphics
             }
         }
 
-        public DebugTraceShader()
+        protected override void ConstructVertexShader(ShaderBuilder vert)
         {
-            ShaderBuilder vert = new ShaderBuilder(ShaderType.VertexShader, false);
-            vert.AddUniform(ShaderVarType.Mat4, "vp_matrix");
-            vert.AddUniform(ShaderVarType.Vec2, "world_offset");
+            base.ConstructVertexShader(vert);
+
             vert.AddAttribute(ShaderVarType.Vec3, "in_vertex");
             vert.Logic = @"
                 void main(void)
                 {
                     const float yscale = 2.0 / sqrt(3.0);
 
-                    gl_Position = vp_matrix * vec4(
+                    gl_Position = proj * view * vec4(
                         in_vertex.x + world_offset.x,
                         in_vertex.y * yscale,
                         in_vertex.z + world_offset.y,
@@ -53,23 +52,24 @@ namespace Zombles.Graphics
                     );
                 }
             ";
+        }
 
-            ShaderBuilder frag = new ShaderBuilder(ShaderType.FragmentShader, false);
+        protected override void ConstructFragmentShader(ShaderBuilder frag)
+        {
+            base.ConstructFragmentShader(frag);
+
             frag.AddUniform(ShaderVarType.Vec4, "colour");
-            frag.FragOutIdentifier = "out_frag_colour";
             frag.Logic = @"
                 void main(void)
                 {
-                    out_frag_colour = colour;
+                    out_colour = colour;
                 }
             ";
+        }
 
-            VertexSource = vert.Generate();
-            FragmentSource = frag.Generate();
-
+        public DebugTraceShader()
+        {
             PrimitiveType = PrimitiveType.Lines;
-
-            Create();
         }
 
         protected override void OnCreate()
