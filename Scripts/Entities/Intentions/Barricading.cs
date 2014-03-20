@@ -66,11 +66,13 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override bool ShouldKeep()
         {
-            return true;
+            return !ShouldAbandon();
         }
 
         public override IEnumerable<Action> GetActions()
         {
+            if (Human.IsSelected) System.Diagnostics.Debugger.Break();
+
             _pendingTiles = _destTiles.Where(x => x.StaticEntities.Count() == 0).ToArray();
 
             if (ShouldAbandon()) {
@@ -120,12 +122,20 @@ namespace Zombles.Scripts.Entities.Intentions
                     _destTile = _pendingTiles
                         .OrderBy(x => World.Difference(Entity.Position2D, x.Position).LengthSquared)
                         .FirstOrDefault();
+
+                    if (_nav != null) {
+                        _nav.Dispose();
+                    }
+
+                    _nav = new RouteNavigator(Entity, _destTile.Position);
                 }
 
-                if (_destTile != null) {                    
+                if (_destTile != null) {
                     var diff = World.Difference(Entity.Position2D, _destTile.Position);
 
-                    yield return new MovementAction(diff.Normalized() * 2f);
+                    if (_nav.HasDirection) {
+                        yield return new MovementAction(_nav.GetDirection() * 2f);
+                    }
 
                     if (diff.LengthSquared < 0.25f) {
                         yield return new DropItemAction(2f);

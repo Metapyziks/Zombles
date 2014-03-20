@@ -76,7 +76,7 @@ namespace Zombles.Scripts
                 ent.AddComponent<WoodenBreakable>();
                 ent.AddComponent<Collision>()
                     .SetDimentions(1.125f, 1.125f)
-                    .SetModel(CollisionModel.Box);
+                    .SetModel(CollisionModel.Entity);
                 ent.AddComponent<Render3D>()
                     .SetRotation(Tools.Random.NextSingle(-MathHelper.Pi / 16f, MathHelper.Pi / 16f))
                     .SetScale(
@@ -121,6 +121,10 @@ namespace Zombles.Scripts
             });
 
             Entity.Register("wood pile", ent => {
+                ent.AddComponent<Collision>()
+                    .SetDimentions(1.125f, 1.125f)
+                    .SetModel(CollisionModel.Entity);
+
                 var pile = ent.AddComponent<WoodPile>();
 
                 int count = Tools.Random.Next(8) + 1;
@@ -139,7 +143,7 @@ namespace Zombles.Scripts
             Random rand = Tools.Random;
 
             int count = (world.Width * world.Height) / 64;
-            int zoms = Math.Max(count / 4, 8);
+            int zoms = 0; // Math.Max(count / 4, 8);
 
             Func<Vector2> randPos = () => {
                 Vector2 pos;

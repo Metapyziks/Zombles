@@ -24,7 +24,7 @@ namespace Zombles.Geometry
 
         public readonly ushort[,] WallTileIndices;
 
-        public Vector2 Position { get { return new Vector2(X, Y); } }
+        public Vector2 Position { get { return new Vector2(X + 0.5f, Y + 0.5f); } }
 
         public bool IsSolid
         {

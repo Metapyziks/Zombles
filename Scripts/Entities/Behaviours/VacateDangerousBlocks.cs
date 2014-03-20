@@ -13,15 +13,11 @@ namespace Zombles.Scripts.Entities.Behaviours
         {
             var block = World.GetBlock(Position2D);
 
-            if (!World.GetTile(Position2D).IsInterior || block.Enclosed) {
-                _nav.Dispose();
-                _nav = null;
-                return false;
-            }
-
-            if (((Survivor) Human).Exposure <= 0f) {
-                _nav.Dispose();
-                _nav = null;
+            if (!World.GetTile(Position2D).IsInterior || block.Enclosed || ((Survivor) Human).Exposure <= 0f) {
+                if (_nav != null) {
+                    _nav.Dispose();
+                    _nav = null;
+                }
                 return false;
             }
 

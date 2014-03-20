@@ -49,7 +49,7 @@ namespace Zombles.Entities
 
         public bool HasDirection
         {
-            get { return _curPath != null && !_ended && !_disposed; }
+            get { return _curPath != null && !_disposed; }
         }
 
         public Route Route
@@ -127,7 +127,11 @@ namespace Zombles.Entities
                 }
             }
 
-            return _entity.World.Difference(_entity.Position2D, NextWaypoint).Normalized();
+            var diff = _entity.World.Difference(_entity.Position2D, NextWaypoint);
+
+            if (diff.LengthSquared == 0) return diff;
+
+            return diff.Normalized();
         }
 
         private void MoveNext()

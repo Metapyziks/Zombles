@@ -17,7 +17,7 @@ namespace Zombles.Scripts.Entities
 
         public virtual bool CanPickup(Entity holder)
         {
-            return World.Difference(Entity.Position2D, holder.Position2D).LengthSquared < 1f;
+            return !IsHeld && World.Difference(Entity.Position2D, holder.Position2D).LengthSquared < 1f;
         }
 
         public virtual bool OnPickup(Entity holder)

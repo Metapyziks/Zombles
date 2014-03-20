@@ -103,7 +103,10 @@ namespace Zombles.Scripts.Entities
             if (!IsHoldingItem) return null;
             var item = HeldItem;
             Entity.RemoveChild(item);
-            item.GetComponent<Item>().OnDrop(Entity);
+
+            if (item.IsValid) {
+                item.GetComponent<Item>().OnDrop(Entity);
+            }
 
             return item;
         }
@@ -238,6 +241,10 @@ namespace Zombles.Scripts.Entities
             base.OnThink(dt);
 
             if (Movement == null) return;
+
+            if (IsHoldingItem && !HeldItem.IsValid) {
+                DropItem();
+            }
 
             Movement.Velocity += (_moveDir * MoveSpeed - Movement.Velocity) * (float) Math.Min(1.0, 4.0 * dt);
             FaceDirection(Movement.Velocity);
