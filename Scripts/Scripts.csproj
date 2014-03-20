@@ -69,6 +69,7 @@
     <Compile Include="Entities\Behaviours\DropWood.cs" />
     <Compile Include="Entities\Desires.cs" />
     <Compile Include="Entities\Desires\Barricading.cs" />
+    <Compile Include="Entities\Desires\PlanBarricade.cs" />
     <Compile Include="Entities\Desires\ThreatAvoidance.cs" />
     <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Desires\Mobbing.cs" />
@@ -79,11 +80,13 @@
     <Compile Include="Entities\Intentions\Barricading.cs" />
     <Compile Include="Entities\Intentions\Migration.cs" />
     <Compile Include="Entities\Intentions\Mobbing.cs" />
+    <Compile Include="Entities\Intentions\PlanBarricade.cs" />
     <Compile Include="Entities\Intentions\ThreatAvoidance.cs" />
     <Compile Include="Entities\Intentions\WallAvoidance.cs" />
     <Compile Include="Entities\Intentions\Wander.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Plank.cs" />
+    <Compile Include="Entities\Plans\Barricade.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />
     <Compile Include="Entities\WoodenBreakable.cs" />
     <Compile Include="Entities\WoodPile.cs" />
