@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
 using Zombles.Geometry;
 
 namespace Zombles.Entities
 {
-    public class RouteNavigation : Component
+    public class RouteNavigator : IDisposable
     {
         private static double MaxRouteFindingTime = 1.0 / 120.0;
 
-        private static Queue<RouteNavigation> _sQueue = new Queue<RouteNavigation>();
+        private static Queue<RouteNavigator> _sQueue = new Queue<RouteNavigator>();
 
         public static void Think(double dt)
         {
@@ -28,38 +25,33 @@ namespace Zombles.Entities
             }
         }
 
-        private Route _curRoute;
+        private Entity _entity;
+        private Route _route;
+
         private List<Vector2> _history;
         private IEnumerator<Vector2> _curPath;
         private Vector2 _curWaypoint;
+
         private bool _ended;
+        private bool _disposed;
 
         private double _lastScan;
-
-        public bool HasRoute
-        {
-            get { return _curRoute != null; }
-        }
 
         public bool HasPath
         {
             get { return _curPath != null; }
         }
 
-        public Route CurrentRoute
+        public bool HasEnded
+        {
+            get { return _ended; }
+        }
+
+        public Route Route
         {
             get
             {
-                return _curRoute;
-            }
-            set
-            {
-                _curRoute = value;
-                _curPath = null;
-
-                if (_curRoute != null && !_sQueue.Contains(this)) {
-                    _sQueue.Enqueue(this);
-                }
+                return _route;
             }
         }
 
@@ -68,9 +60,9 @@ namespace Zombles.Entities
             get
             {
                 if (!HasPath)
-                    return Entity.Position2D;
+                    return _entity.Position2D;
 
-                return CurrentRoute.Target;
+                return Route.Target;
             }
         }
 
@@ -79,30 +71,38 @@ namespace Zombles.Entities
             get
             {
                 if (!HasPath)
-                    return Entity.Position2D;
+                    return _entity.Position2D;
 
                 if (!_ended)
                     return _curWaypoint;
 
-                return CurrentRoute.Target;
+                return Route.Target;
             }
         }
 
-        public RouteNavigation(Entity ent)
-            : base(ent) { }
-
-        public void NavigateTo(Vector2 target)
+        public RouteNavigator(Entity ent, Vector2 dest)
         {
-            CurrentRoute = Route.Find(World, Entity.Position2D, target);
+            _entity = ent;
+            NavigateTo(dest);
+        }
+
+        private void NavigateTo(Vector2 target)
+        {
+            _route = Route.Find(_entity.World, _entity.Position2D, target);
+            _curPath = null;
+
+            if (_route != null && !_sQueue.Contains(this)) {
+                _sQueue.Enqueue(this);
+            }
         }
 
         private void CalculatePath()
         {
-            if (HasRoute && !HasPath) {
+            if (!_disposed && !HasPath) {
                 _history = new List<Vector2>();
 
-                _curPath = _curRoute.GetEnumerator();
-                _curWaypoint = _curRoute.Origin;
+                _curPath = _route.GetEnumerator();
+                _curWaypoint = _route.Origin;
                 _ended = !_curPath.MoveNext();
 
                 if (!_ended) {
@@ -113,8 +113,8 @@ namespace Zombles.Entities
 
         public override void OnThink(double dt)
         {
-            if (HasPath) {
-                if ((NextWaypoint - Position2D).LengthSquared <= 0.25f) {
+            if (!_disposed && !_ended && HasPath) {
+                if ((NextWaypoint - _entity.Position2D).LengthSquared <= 0.25f) {
                     MoveNext();
                 } else if ((MainWindow.Time - _lastScan) >= 1.0) {
                     ScanAhead();
@@ -124,8 +124,7 @@ namespace Zombles.Entities
 
         private void MoveNext()
         {
-            if (_ended) {
-                CurrentRoute = null;
+            if (_ended || _disposed) {
                 return;
             }
 
@@ -141,17 +140,17 @@ namespace Zombles.Entities
 
         private void ScanAhead()
         {
-            if (_ended) return;
-            if (!Entity.HasComponent<Collision>()) return;
+            if (_ended || _disposed) return;
+            if (!_entity.HasComponent<Collision>()) return;
 
             _lastScan = MainWindow.Time;
 
-            TraceLine trace = new TraceLine(World) {
-                Origin = Position2D,
+            TraceLine trace = new TraceLine(_entity.World) {
+                Origin = _entity.Position2D,
                 Target = _curPath.Current,
                 HitEntities = false,
                 HitGeometry = true,
-                HullSize = Entity.GetComponent<Collision>().Size * 0.95f
+                HullSize = _entity.GetComponent<Collision>().Size * 0.95f
             };
 
             if (!trace.GetResult().Hit) {
@@ -159,13 +158,18 @@ namespace Zombles.Entities
             } else {
                 trace.Target = _curWaypoint;
                 if (trace.GetResult().Hit) {
-                    if (World.IsPositionNavigable(CurrentTarget)) {
+                    if (_entity.World.IsPositionNavigable(CurrentTarget)) {
                         NavigateTo(CurrentTarget);
                     } else {
-                        CurrentRoute = null;
+                        _ended = true;
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _disposed = true;
         }
     }
 }

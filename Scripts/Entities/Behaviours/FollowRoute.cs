@@ -4,11 +4,11 @@ namespace Zombles.Scripts.Entities.Behaviours
 {
     public class FollowRoute : SubsumptionStack.Layer
     {
-        protected RouteNavigation RouteNavigation { get; private set; }
+        protected RouteNavigator RouteNavigation { get; private set; }
 
         protected override void OnSpawn()
         {
-            RouteNavigation = Entity.GetComponentOrNull<RouteNavigation>();
+            RouteNavigation = Entity.GetComponentOrNull<RouteNavigator>();
         }
 
         protected override bool OnThink(double dt)

@@ -80,7 +80,7 @@ namespace Zombles.Scripts.Entities.Intentions
                 yield break;
             }
 
-            var nav = Entity.GetComponent<RouteNavigation>();
+            var nav = Entity.GetComponent<RouteNavigator>();
 
             if (!Human.IsHoldingItem) {
                 if (_destResource != null && (_destResource.Entity.Position2D != _destResource.LastPos || !_destResource.Entity.IsValid)) {

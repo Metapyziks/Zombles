@@ -8,7 +8,7 @@ namespace Zombles.Scripts.Entities.Behaviours
     {
         protected override bool OnThink(double dt)
         {
-            var routeNav = Entity.GetComponentOrNull<RouteNavigation>();
+            var routeNav = Entity.GetComponentOrNull<RouteNavigator>();
 
             if (routeNav == null || routeNav.HasRoute) return false;
 

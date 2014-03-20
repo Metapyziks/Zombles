@@ -42,7 +42,7 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            var nav = Entity.GetComponent<RouteNavigation>();
+            var nav = Entity.GetComponent<RouteNavigator>();
             if (!nav.HasRoute || nav.CurrentTarget != _destPos) {
                 nav.NavigateTo(_destPos);
             }

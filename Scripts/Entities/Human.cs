@@ -132,8 +132,8 @@ namespace Zombles.Scripts.Entities
 
             if (IsHoldingItem) DropItem();
 
-            if (Entity.HasComponent<RouteNavigation>()) {
-                Entity.RemoveComponent<RouteNavigation>();
+            if (Entity.HasComponent<RouteNavigator>()) {
+                Entity.RemoveComponent<RouteNavigator>();
             }
             
             Entity.RemoveComponent<HumanControl>();

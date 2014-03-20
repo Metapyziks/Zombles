@@ -7,13 +7,13 @@ namespace Zombles.Scripts.Entities.Behaviours
 {
     public class VacateDangerousBlocks : SubsumptionStack.Layer
     {
-        protected RouteNavigation RouteNavigation { get; private set; }
+        protected RouteNavigator RouteNavigation { get; private set; }
 
         private Intersection _curDest;
 
         protected override void OnSpawn()
         {
-            RouteNavigation = Entity.GetComponentOrNull<RouteNavigation>();
+            RouteNavigation = Entity.GetComponentOrNull<RouteNavigator>();
             _curDest = null;
         }
 
@@ -29,12 +29,12 @@ namespace Zombles.Scripts.Entities.Behaviours
             var block = World.GetBlock(Position2D);
 
             if (!World.GetTile(Position2D).IsInterior || block.Enclosed) {
-                if (vacating) RouteNavigation.CurrentRoute = null;
+                if (vacating) RouteNavigation.Route = null;
                 return false;
             }
 
             if (((Survivor) Human).Exposure <= 0f) {
-                if (vacating) RouteNavigation.CurrentRoute = null;
+                if (vacating) RouteNavigation.Route = null;
                 return false;
             }
 
