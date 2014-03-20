@@ -41,7 +41,6 @@ namespace Zombles.Scripts
 
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
-                ent.AddComponent<RouteNavigator>();
 #if SUBSUMPTION
                 ent.AddComponent<SubsumptionStack>()
                     .Push<Entities.Behaviours.Wander>()

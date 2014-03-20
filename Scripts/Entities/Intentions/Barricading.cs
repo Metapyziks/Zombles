@@ -16,6 +16,7 @@ namespace Zombles.Scripts.Entities.Intentions
         private EntityBeliefs _destResource;
         private Tile _destTile;
         private bool _noResources;
+        private RouteNavigator _nav;
 
         public Barricading(Desires.Barricading desire, Beliefs beliefs, BlockBeliefs blockBeliefs)
             : base(desire, beliefs)
@@ -79,8 +80,6 @@ namespace Zombles.Scripts.Entities.Intentions
 
                 yield break;
             }
-
-            var nav = Entity.GetComponent<RouteNavigator>();
 
             if (!Human.IsHoldingItem) {
                 if (_destResource != null && (_destResource.Entity.Position2D != _destResource.LastPos || !_destResource.Entity.IsValid)) {

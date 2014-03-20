@@ -131,10 +131,6 @@ namespace Zombles.Scripts.Entities
             Anim.Start(DeadAnim);
 
             if (IsHoldingItem) DropItem();
-
-            if (Entity.HasComponent<RouteNavigator>()) {
-                Entity.RemoveComponent<RouteNavigator>();
-            }
             
             Entity.RemoveComponent<HumanControl>();
             Entity.RemoveComponent<Collision>();

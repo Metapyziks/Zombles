@@ -360,13 +360,7 @@ namespace Zombles.Scripts
                 _isSelecting = true;
                 _selectionStart = pos;
             } else if (e.Button == MouseButton.Right) {
-                foreach (var ent in World.Entities) {
-                    var routeNav = ent.GetComponentOrNull<RouteNavigator>();
-                    if (routeNav == null) continue;
-                    var human = ent.GetComponentOrNull<Human>();
-                    if (human == null || !human.IsSelected) continue;
-                    routeNav.NavigateTo(pos);
-                }
+                /// TODO: Re-implement RTS control
             }
         }
 
@@ -388,7 +382,7 @@ namespace Zombles.Scripts
                     }
 
                     var best = new NearbyEntityEnumerator(World, pos, 2f)
-                        .Where(x => x.HasComponent<RouteNavigator>() && x.HasComponent<Survivor>())
+                        .Where(x => x.HasComponent<Survivor>())
                         .OrderBy(x => World.Difference(pos, x.Position2D).LengthSquared)
                         .FirstOrDefault();
 

@@ -180,6 +180,6 @@ namespace Zombles.Scripts.Entities
 
         public abstract IEnumerable<Action> GetActions();
 
-        protected virtual void OnAbandon();
+        protected virtual void OnAbandon() { }
     }
 }

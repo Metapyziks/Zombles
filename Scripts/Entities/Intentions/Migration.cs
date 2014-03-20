@@ -43,6 +43,11 @@ namespace Zombles.Scripts.Entities.Intentions
             return !ShouldAbandon();
         }
 
+        protected override void OnAbandon()
+        {
+            _nav.Dispose();
+        }
+
         public override IEnumerable<Action> GetActions()
         {
             if (_nav.HasDirection) {
