@@ -88,6 +88,7 @@ namespace Zombles.Entities
         public RouteNavigator(Entity ent, Vector2 dest)
         {
             _entity = ent;
+
             NavigateTo(dest);
         }
 
@@ -96,7 +97,7 @@ namespace Zombles.Entities
             _route = Route.Find(_entity.World, _entity.Position2D, target);
             _curPath = null;
 
-            if (_route != null && !_sQueue.Contains(this)) {
+            if (!_sQueue.Contains(this)) {
                 _sQueue.Enqueue(this);
             }
         }

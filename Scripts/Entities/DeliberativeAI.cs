@@ -101,7 +101,7 @@ namespace Zombles.Scripts.Entities
                 var kept = _intentions.Where(x => desires.Contains(x.Desire)).ToArray();
                 var abandoned = _intentions.Where(x => !desires.Contains(x.Desire)).ToArray();
 
-                desires = desires.Where(x => abandoned.Any(y => y.Desire == x));
+                desires = desires.Where(x => !kept.Any(y => y.Desire == x));
 
                 foreach (var intention in abandoned) {
                     intention.Abandon();

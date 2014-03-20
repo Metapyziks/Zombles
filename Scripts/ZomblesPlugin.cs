@@ -166,8 +166,6 @@ namespace Zombles.Scripts
         protected override void OnThink(double dt)
         {
             base.OnThink(dt);
-
-            RouteNavigator.Think(dt);
         }
     }
 }

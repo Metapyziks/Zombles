@@ -18,7 +18,7 @@ namespace Zombles.Scripts.Entities.Desires
                 .Where(x => x.Utility > curUtil)
                 .OrderByDescending(x => x.Utility)
                 .FirstOrDefault();
-
+            
             if (best != null && best.Block != agent.Block) {
                 yield return new Migration(best);
             }
