@@ -47,6 +47,11 @@ namespace Zombles.Entities
             get { return _ended; }
         }
 
+        public bool HasDirection
+        {
+            get { return _curPath != null && !_ended && !_disposed; }
+        }
+
         public Route Route
         {
             get
@@ -66,11 +71,11 @@ namespace Zombles.Entities
             }
         }
 
-        public Vector2 NextWaypoint
+        private Vector2 NextWaypoint
         {
             get
             {
-                if (!HasPath)
+                if (!HasPath || _disposed)
                     return _entity.Position2D;
 
                 if (!_ended)
@@ -111,7 +116,7 @@ namespace Zombles.Entities
             }
         }
 
-        public override void OnThink(double dt)
+        public Vector2 GetMovement()
         {
             if (!_disposed && !_ended && HasPath) {
                 if ((NextWaypoint - _entity.Position2D).LengthSquared <= 0.25f) {
@@ -120,6 +125,8 @@ namespace Zombles.Entities
                     ScanAhead();
                 }
             }
+
+            return _entity.World.Difference(_entity.Position2D, NextWaypoint);
         }
 
         private void MoveNext()

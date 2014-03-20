@@ -6,11 +6,22 @@ namespace Zombles.Scripts.Entities.Behaviours
 {
     public class SeekRefuge : SubsumptionStack.Layer
     {
+        private RouteNavigator _nav;
+
         protected override bool OnThink(double dt)
         {
-            var routeNav = Entity.GetComponentOrNull<RouteNavigator>();
+            if (_nav != null && _nav.HasEnded) {
+                _nav.Dispose();
+                _nav = null;
+            }
 
-            if (routeNav == null || routeNav.HasRoute) return false;
+            if (_nav != null) {
+                if (_nav.HasDirection) {
+                    Human.StartMoving(_nav.GetMovement());
+                    return true;
+                }
+                return false;
+            }
 
             var block = World.GetBlock(Position2D);
 
@@ -22,7 +33,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
             if (dest == null) return false;
 
-            routeNav.NavigateTo(dest.Position2D);
+            _nav = new RouteNavigator(Entity, dest.Position2D);
             return true;
         }
     }

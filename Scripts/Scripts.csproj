@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="Entities\Behaviours\BalanceWoodPiles.cs" />
     <Compile Include="Entities\Behaviours\Flee.cs" />
-    <Compile Include="Entities\Behaviours\FollowRoute.cs" />
     <Compile Include="Entities\Behaviours\Mob.cs" />
     <Compile Include="Entities\Behaviours\MoveTowardsWood.cs" />
     <Compile Include="Entities\Behaviours\PickupWood.cs" />

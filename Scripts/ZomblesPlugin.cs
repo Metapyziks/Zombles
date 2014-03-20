@@ -163,5 +163,12 @@ namespace Zombles.Scripts
                 zomb.Spawn();
             }
         }
+
+        protected override void OnThink(double dt)
+        {
+            base.OnThink(dt);
+
+            RouteNavigator.Think(dt);
+        }
     }
 }

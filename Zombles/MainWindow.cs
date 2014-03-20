@@ -146,7 +146,6 @@ namespace Zombles
             if (CurrentScene != null)
                 CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
 
-            RouteNavigator.Think(ThinkPeriod);
             Plugin.Think(ThinkPeriod);
         }
 
