@@ -99,7 +99,13 @@ namespace Zombles.Scripts.Entities
                 desires = Desire.ResolveConflicts(desires);
 
                 var kept = _intentions.Where(x => desires.Contains(x.Desire)).ToArray();
-                desires = desires.Where(x => !kept.Any(y => y.Desire == x));
+                var abandoned = _intentions.Where(x => !desires.Contains(x.Desire)).ToArray();
+
+                desires = desires.Where(x => abandoned.Any(y => y.Desire == x));
+
+                foreach (var intention in abandoned) {
+                    intention.Abandon();
+                }
 
                 _intentions = kept.Union(desires.Select(x => x.GetIntention(_beliefs))).ToArray();
                 _nextDeliberate = MainWindow.Time + DeliberationPeriod * (0.5 + Tools.Random.NextDouble());

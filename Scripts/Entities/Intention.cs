@@ -169,10 +169,17 @@ namespace Zombles.Scripts.Entities
             Beliefs = beliefs;
         }
 
+        internal void Abandon()
+        {
+            OnAbandon();
+        }
+
         public abstract bool ShouldAbandon();
 
         public abstract bool ShouldKeep();
 
         public abstract IEnumerable<Action> GetActions();
+
+        protected virtual void OnAbandon();
     }
 }

@@ -9,6 +9,7 @@ namespace Zombles.Scripts.Entities.Intentions
     {
         private Block _destBlock;
         private Vector2 _destPos;
+        private RouteNavigator _nav;
 
         public Migration(Desires.Migration desire, Beliefs beliefs)
             : base(desire, beliefs)
@@ -28,6 +29,8 @@ namespace Zombles.Scripts.Entities.Intentions
                 _destPos = _destBlock.GetNearestPosition(Entity.Position2D);
                 _destPos += (_destBlock.Center - _destPos).Normalized() * 2f;
             }
+
+            _nav = new RouteNavigator(Entity, _destPos);
         }
 
         public override bool ShouldAbandon()
@@ -42,16 +45,12 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            var nav = Entity.GetComponent<RouteNavigator>();
-            if (!nav.HasRoute || nav.CurrentTarget != _destPos) {
-                nav.NavigateTo(_destPos);
-            }
+            if (_nav.HasDirection) {
+                if (Human.IsHoldingItem) {
+                    yield return new DropItemAction(1f);
+                }
 
-            if (nav.HasPath && nav.CurrentTarget == _destPos) {
-                yield return new DropItemAction(1f);
-
-                var diff = Entity.World.Difference(Entity.Position2D, nav.NextWaypoint);
-                yield return new MovementAction(diff.Normalized() * Desire.Utility);
+                yield return new MovementAction(_nav.GetDirection() * Desire.Utility);
             }
         }
     }

@@ -116,7 +116,7 @@ namespace Zombles.Entities
             }
         }
 
-        public Vector2 GetMovement()
+        public Vector2 GetDirection()
         {
             if (!_disposed && !_ended && HasPath) {
                 if ((NextWaypoint - _entity.Position2D).LengthSquared <= 0.25f) {
@@ -126,7 +126,7 @@ namespace Zombles.Entities
                 }
             }
 
-            return _entity.World.Difference(_entity.Position2D, NextWaypoint);
+            return _entity.World.Difference(_entity.Position2D, NextWaypoint).Normalized();
         }
 
         private void MoveNext()

@@ -27,7 +27,7 @@ namespace Zombles.Scripts.Entities.Behaviours
 
             if (_nav != null) {
                 if (_nav.HasDirection) {
-                    Human.StartMoving(_nav.GetMovement());
+                    Human.StartMoving(_nav.GetDirection());
                 }
                 return true;
             } else {
