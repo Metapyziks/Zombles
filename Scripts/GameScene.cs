@@ -24,8 +24,6 @@ namespace Zombles.Scripts
 {
     public class GameScene : Scene
     {
-        public const int WorldSize = 64;
-
         private UILabel _fpsText;
         private UILabel _posText;
         private UIInfectionDisplay _infDisplay;
@@ -102,7 +100,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                World = Generator.Generate(WorldSize, WorldSize);
+                World = Generator.Generate(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize, ZomblesPlugin.Seed);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -122,8 +120,8 @@ namespace Zombles.Scripts
                 _frameBufferSprite.FlipVertical = true;
 
                 Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 4.0f / _upScale);
-                Camera.SetWrapSize(WorldSize, WorldSize);
-                Camera.Position2D = new Vector2(WorldSize, WorldSize) / 2.0f;
+                Camera.SetWrapSize(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize);
+                Camera.Position2D = new Vector2(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
                 Camera.Yaw = TargetCameraYaw;
 
@@ -265,9 +263,9 @@ namespace Zombles.Scripts
         public override void OnRenderFrame(FrameEventArgs e)
         {
             float x0 = 0.0f;
-            float x1 = (Camera.X < WorldSize / 2) ? -WorldSize : WorldSize;
+            float x1 = (Camera.X < ZomblesPlugin.WorldSize / 2) ? -ZomblesPlugin.WorldSize : ZomblesPlugin.WorldSize;
             float y0 = 0.0f;
-            float y1 = (Camera.Z < WorldSize / 2) ? -WorldSize : WorldSize;
+            float y1 = (Camera.Z < ZomblesPlugin.WorldSize / 2) ? -ZomblesPlugin.WorldSize : ZomblesPlugin.WorldSize;
 
             float hullSize = .5f;
 
@@ -448,7 +446,7 @@ namespace Zombles.Scripts
                         GameWindow.WindowState = WindowState.Fullscreen;
                     break;
                 case 'g':
-                    World = Generator.Generate(WorldSize, WorldSize);
+                    World = Generator.Generate(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize);
                     Plugin.CityGenerated();
                     break;
             }

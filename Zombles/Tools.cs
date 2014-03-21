@@ -16,7 +16,7 @@ namespace Zombles
     {
         public static readonly Vector3 Up = new Vector3(0f, 1f, 0f);
 
-        public static readonly Random Random = new Random();
+        public static readonly Random Random = new Random(0xb6ba069);
 
         [ResourceTypeRegistration]
         public static void RegisterResourceTypes()

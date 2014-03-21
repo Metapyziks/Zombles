@@ -39,7 +39,9 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         protected override void OnRemove()
         {
-            _nav.Dispose();
+            if (_nav != null) {
+                _nav.Dispose();
+            }
         }
     }
 }

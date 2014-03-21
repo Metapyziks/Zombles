@@ -59,6 +59,8 @@ namespace Zombles
         public MainWindow()
             : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16, 0), "Zombles")
         {
+            VSync = VSyncMode.Off;
+
             Trace.Listeners.Add(new DebugListener());
 
             CurrentScene = null;
