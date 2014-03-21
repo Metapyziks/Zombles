@@ -20,9 +20,9 @@ namespace Zombles.Scripts.Entities.Intentions
 
             int tries = 16;
             do {
-                _destPos = new Vector2(_destBlock.X, _destBlock.Y) + size * 0.25f + new Vector2(
-                    Tools.Random.NextSingle(0f, size.X * 0.5f),
-                    Tools.Random.NextSingle(0f, size.Y * 0.5f));
+                _destPos = new Vector2(_destBlock.X, _destBlock.Y) + size * 0.33f + new Vector2(
+                    Tools.Random.NextSingle(0f, size.X * 0.33f),
+                    Tools.Random.NextSingle(0f, size.Y * 0.33f));
             } while (--tries > 0 && !Beliefs.Entity.World.IsPositionNavigable(_destPos));
 
             if (tries <= 0) {

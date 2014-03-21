@@ -30,7 +30,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return (float) _destBeliefs.Utility; }
+            get { return (float) _destBeliefs.Utility * 8f; }
         }
 
         public Migration(BlockBeliefs dest)

@@ -18,7 +18,7 @@ namespace Zombles.Scripts.Entities.Desires
                 .Where(x => x.LastBlock == blockBeliefs.Block)
                 .Sum(x => x.Type == EntityType.PlankPile
                     ? x.Entity.GetComponent<WoodPile>().Count
-                    : x.Entity.GetComponent<WoodenBreakable>().MinPlanks);
+                    : x.Entity.GetComponent<WoodenBreakable>().AveragePlanks);
 
             if (!blockBeliefs.Block.Enclosed && blockBeliefs.Resources + resources > 10) {
                 yield return new Barricading(blockBeliefs);

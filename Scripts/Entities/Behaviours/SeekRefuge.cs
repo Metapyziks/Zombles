@@ -13,6 +13,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             if (_nav != null && _nav.HasEnded) {
                 _nav.Dispose();
                 _nav = null;
+                return false;
             }
 
             if (_nav != null) {

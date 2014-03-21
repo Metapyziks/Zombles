@@ -9,6 +9,14 @@ namespace Zombles.Scripts.Entities
         public int MinPlanks { get; set; }
         public int MaxPlanks { get; set; }
 
+        public int AveragePlanks
+        {
+            get
+            {
+                return (MinPlanks + MaxPlanks) / 2;
+            }
+        }
+
         public WoodenBreakable(Entity ent)
             : base(ent)
         {
