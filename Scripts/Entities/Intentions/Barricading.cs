@@ -84,6 +84,8 @@ namespace Zombles.Scripts.Entities.Intentions
             }
 
             if (!Human.IsHoldingItem) {
+                _destTile = null;
+
                 if (_destResource != null && (_destResource.Entity.Position2D != _destResource.LastPos || !_destResource.Entity.IsValid)) {
                     _destResource = null;
                 }
@@ -99,12 +101,23 @@ namespace Zombles.Scripts.Entities.Intentions
                     if (_destResource == null) {
                         _noResources = true;
                         yield break;
+                    } else {
+                        if (_nav != null) {
+                            _nav.Dispose();
+                        }
+
+                        _nav = new RouteNavigator(Entity, _destResource.LastPos +
+                            World.Difference(_destResource.LastPos, Entity.Position2D).Normalized() * 1.4f);
                     }
                 }
 
                 var diff = World.Difference(Entity.Position2D, _destResource.LastPos);
 
-                yield return new MovementAction(diff.Normalized() * 2f);
+                if (_nav.HasEnded) {
+                    yield return new MovementAction(diff.Normalized() * 2f);
+                } else if (_nav.HasDirection) {
+                    yield return new MovementAction(_nav.GetDirection() * 2f);
+                }
 
                 if (diff.LengthSquared < 2f) {
                     if (_destResource.Type == EntityType.PlankSource) {
@@ -114,6 +127,8 @@ namespace Zombles.Scripts.Entities.Intentions
                     }
                 }
             } else {
+                _destResource = null;
+
                 if (_destTile != null && !_pendingTiles.Contains(_destTile)) {
                     _destTile = null;
                 }
