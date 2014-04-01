@@ -312,6 +312,12 @@ namespace Zombles.Geometry
                         float tp = diff.Y + col.Offset.Y;
                         float bt = tp + col.Size.Y;
 
+                        if (lt < 0f && rt > 0f && tp < 0f && bt > 0f) {
+                            hitEnt = ent;
+                            ratio = 0f;
+                            break;
+                        }
+
                         if (vec.X != 0.0f) {
                             float dx = 0.0f;
                             bool hit = false;
