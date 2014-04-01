@@ -45,6 +45,7 @@ namespace Zombles
 
         private static Stopwatch _timer;
         private static Stopwatch _thinkTimer;
+        private static double _normalizedTime;
 
         private static double _spareTime;
 
@@ -53,7 +54,7 @@ namespace Zombles
 
         public static double Time
         {
-            get { return _timer.Elapsed.TotalSeconds; }
+            get { return _normalizedTime; }
         }
 
         public MainWindow()
@@ -97,9 +98,6 @@ namespace Zombles
             Mouse.ButtonDown += OnMouseButtonDown;
             Mouse.WheelChanged += OnMouseWheelChanged;
 
-            _timer = new Stopwatch();
-            _timer.Start();
-
             _thinkTimer = new Stopwatch();
             _thinkTimer.Start();
 
@@ -140,6 +138,7 @@ namespace Zombles
                 return;
 
             _spareTime += _thinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
+            _normalizedTime += ThinkPeriod;
 
             _thinkTimer.Restart();
 
