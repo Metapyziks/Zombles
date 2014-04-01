@@ -15,13 +15,13 @@ namespace Zombles.Scripts
 {
     public class ZomblesPlugin : Plugin
     {
-        public const int WorldSize = 128;
+        public const int WorldSize = 64;
         public const int AgentCount = (WorldSize * WorldSize) / 64;
         public const int ZombieCount = AgentCount / 4 < 8 ? 8 : AgentCount / 4;
         public const int SurvivorCount = AgentCount - ZombieCount;
         public const int Seed = 0xb6ba069;
 
-        public const bool Subsumption = true;
+        public const bool Subsumption = false;
         public const bool Deliberative = !Subsumption;
 
         private double _lastAliveCheck;
