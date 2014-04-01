@@ -56,6 +56,8 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink(dt);
 
+            if (Human.IsSelected) System.Diagnostics.Debugger.Break();
+
             bool deliberate = MainWindow.Time >= _nextDeliberate;
             if (MainWindow.Time >= _nextBeliefsUpdate) {
                 _beliefs.Update();

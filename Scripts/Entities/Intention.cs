@@ -181,5 +181,10 @@ namespace Zombles.Scripts.Entities
         public abstract IEnumerable<Action> GetActions();
 
         protected virtual void OnAbandon() { }
+
+        public override string ToString()
+        {
+            return GetType().Name;
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Zombles.Scripts
 {
     public class ZomblesPlugin : Plugin
     {
-        public const int WorldSize = 128;
+        public const int WorldSize = 64;
         public const int AgentCount = (WorldSize * WorldSize) / 128;
         public const int ZombieCount = AgentCount / 4 < 8 ? 8 : AgentCount / 4;
         public const int SurvivorCount = AgentCount - ZombieCount;

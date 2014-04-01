@@ -71,8 +71,6 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override IEnumerable<Action> GetActions()
         {
-            if (Human.IsSelected) System.Diagnostics.Debugger.Break();
-
             _pendingTiles = _destTiles.Where(x => x.StaticEntities.Count() == 0).ToArray();
 
             if (ShouldAbandon()) {
