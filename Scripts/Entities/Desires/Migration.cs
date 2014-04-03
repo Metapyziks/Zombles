@@ -13,6 +13,11 @@ namespace Zombles.Scripts.Entities.Desires
         public static IEnumerable<Migration> Discover(Beliefs beliefs)
         {
             var agent = beliefs.Entity;
+
+            if (agent.GetComponent<Human>().IsSelected) {
+                System.Diagnostics.Debugger.Break();
+            }
+            
             var curUtil = beliefs.Blocks.First(x => x.Block == agent.Block).Utility;
             var best = beliefs.Blocks
                 .Where(x => x.Utility > curUtil)

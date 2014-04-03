@@ -120,7 +120,7 @@ namespace Zombles.Scripts.Entities
 
                     int zombies = Zombies;
 
-                    _utility = Survivors / 2.0 + Resources / 6.0 - zombies * zombies * 4.0;
+                    _utility = Survivors / 2.0 + Resources / 3.0 - zombies * zombies * 4.0;
                 }
 
                 return _utility;
@@ -245,6 +245,10 @@ namespace Zombles.Scripts.Entities
                 _blockKB[block].Update();
 
                 foreach (var ent in block) {
+                    if (Entity.World.Difference(ent.Position2D, Entity.Position2D).LengthSquared > VisibleRange2) {
+                        continue;
+                    }
+
                     var hp = ent.GetComponentOrNull<Health>();
                     if (hp != null && !hp.IsAlive) {
                         if (_entityKB.ContainsKey(ent)) {

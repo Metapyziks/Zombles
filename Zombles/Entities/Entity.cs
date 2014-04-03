@@ -409,5 +409,10 @@ namespace Zombles.Entities
         {
             return GetEnumerator();
         }
+
+        public override string ToString()
+        {
+            return ClassName ?? "entity";
+        }
     }
 }
