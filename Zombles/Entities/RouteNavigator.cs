@@ -143,9 +143,9 @@ namespace Zombles.Entities
             _history.Add(_curWaypoint);
 
             _curWaypoint = _curPath.Current;
-            _ended = !_curPath.MoveNext();
+            _ended = _entity.World.Difference(_entity.Position2D, CurrentTarget).LengthSquared <= 0.25f;
 
-            if (!_ended) {
+            if (!_ended && _curPath.MoveNext()) {
                 ScanAhead();
             }
         }

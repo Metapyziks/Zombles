@@ -60,8 +60,8 @@ namespace Zombles.Graphics
                     var_blood = max(1.0 - y / 2.0, 0.0);
 
                     var_blood_tex = vec2(
-                        z + bloodadd.y,
-                        x + bloodadd.x
+                        x + bloodadd.x,
+                        z + bloodadd.y
                     ) * 8.0;
 
                     gl_Position = proj * view * vec4(
@@ -88,8 +88,8 @@ namespace Zombles.Graphics
                         discard;
 
                     vec2 blood_tex = vec2(
-                        floor(var_blood_tex.x) / world_size.y,
-                        floor(var_blood_tex.y) / world_size.x
+                        floor(var_blood_tex.x) / world_size.x,
+                        floor(var_blood_tex.y) / world_size.y
                     ) / 8.0;
 
                     float blood = floor(var_blood * 8.0) / 8.0;

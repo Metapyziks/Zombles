@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
@@ -20,9 +21,9 @@ namespace Zombles.Scripts.Entities.Intentions
 
             int tries = 16;
             do {
-                _destPos = new Vector2(_destBlock.X, _destBlock.Y) + size * 0.33f + new Vector2(
-                    Tools.Random.NextSingle(0f, size.X * 0.33f),
-                    Tools.Random.NextSingle(0f, size.Y * 0.33f));
+                _destPos = new Vector2(_destBlock.X, _destBlock.Y) + Vector2.Multiply(size, new Vector2(
+                    Tools.Random.NextSingle(0.4f, 0.6f),
+                    Tools.Random.NextSingle(0.4f, 0.6f)));
             } while (--tries > 0 && !Beliefs.Entity.World.IsPositionNavigable(_destPos));
 
             if (tries <= 0) {
@@ -35,7 +36,8 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override bool ShouldAbandon()
         {
-            return _destBlock == Entity.Block;
+            return _nav.HasEnded || Beliefs.Blocks.First(x => x.Block == _destBlock).Utility
+                < Beliefs.Blocks.First(x => x.Block == Entity.Block).Utility;
         }
 
         public override bool ShouldKeep()

@@ -15,7 +15,7 @@ namespace Zombles.Geometry
 {
     public class World : IEnumerable<Block>, IDisposable
     {
-        private const int BloodResolution = 2;
+        private const int BloodResolution = 4;
 
         private VertexBuffer _geomVertexBuffer;
         private AlphaTexture2D _bloodMap;
@@ -69,17 +69,17 @@ namespace Zombles.Geometry
             if (force <= 0.0f)
                 return;
 
-            int count = (int) (force * 4.0f);
+            int count = (int) (force * BloodResolution * BloodResolution);
 
             for (int i = 0; i < count; ++i) {
-                float dist = (i + 1) * 0.125f;
+                float dist = (i + 1f) / count * force * 0.5f;
 
                 float x = pos.X + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
                 float y = pos.Y + (Tools.Random.NextSingle() * 2.0f - 1.0f) * dist;
 
-                TraceResult res = TraceLine.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.25f, 0.25f));
-                
-                int ix = (int) (res.End.X * BloodResolution);
+                TraceResult res = TraceLine.Quick(this, pos, new Vector2(x, y), false, true, new Vector2(0.5f, 0.5f));
+
+                int ix = ((int) (res.End.X * BloodResolution) + (_bloodMap.Width - 4)) % _bloodMap.Width;
                 int iy = (int) (res.End.Y * BloodResolution);
 
                 _bloodMap[ix, iy] = Math.Min(1f, _bloodMap[ix, iy]

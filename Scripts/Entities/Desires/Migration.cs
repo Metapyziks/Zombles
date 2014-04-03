@@ -13,10 +13,6 @@ namespace Zombles.Scripts.Entities.Desires
         public static IEnumerable<Migration> Discover(Beliefs beliefs)
         {
             var agent = beliefs.Entity;
-
-            if (agent.GetComponent<Human>().IsSelected) {
-                System.Diagnostics.Debugger.Break();
-            }
             
             var curUtil = beliefs.Blocks.First(x => x.Block == agent.Block).Utility;
             var best = beliefs.Blocks
@@ -29,6 +25,8 @@ namespace Zombles.Scripts.Entities.Desires
             }
         }
 
+        private double _creationTime;
+
         private BlockBeliefs _destBeliefs;
 
         public Block Destination { get; private set; }
@@ -40,7 +38,9 @@ namespace Zombles.Scripts.Entities.Desires
 
         public Migration(BlockBeliefs dest)
         {
+            _creationTime = MainWindow.Time;
             _destBeliefs = dest;
+
             Destination = dest.Block;
         }
 
@@ -51,7 +51,20 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override Desire ResolveConflict(Desire other)
         {
-            return this;
+            if (other is Migration) {
+                return ResolveConflict((Migration) other);
+            } else {
+                return this;
+            }
+        }
+
+        public Migration ResolveConflict(Migration other)
+        {
+            if (other.Destination == Destination) {
+                return _creationTime < other._creationTime ? this : other;
+            } else {
+                return this;
+            }
         }
 
         public override Intention GetIntention(Beliefs beliefs)

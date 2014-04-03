@@ -56,8 +56,6 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink(dt);
 
-            // if (Human.IsSelected) System.Diagnostics.Debugger.Break();
-
             bool deliberate = MainWindow.Time >= _nextDeliberate;
             if (MainWindow.Time >= _nextBeliefsUpdate) {
                 _beliefs.Update();
@@ -91,12 +89,17 @@ namespace Zombles.Scripts.Entities
             }
 
             if (deliberate) {
-                var desires = _desireDiscoveryMethods
-                    .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
-                    .ToList()
-                    .Union(_intentions
-                        .Where(x => x.ShouldKeep())
-                        .Select(x => x.Desire));
+                if (Human.IsSelected) {
+                    System.Diagnostics.Debugger.Break();
+                    Human.Deselect();
+                }
+
+                var desires = _intentions
+                    .Where(x => x.ShouldKeep())
+                    .Select(x => x.Desire)
+                    .Union(_desireDiscoveryMethods
+                        .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
+                        .ToArray());
 
                 desires = Desire.ResolveConflicts(desires);
 

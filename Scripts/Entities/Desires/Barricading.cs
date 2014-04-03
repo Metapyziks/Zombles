@@ -51,9 +51,11 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override Desire ResolveConflict(Desire other)
         {
-            if (other is Migration) return other;
-
-            return this;
+            if (other is Migration) {
+                return other;
+            } else {
+                return this;
+            }
         }
     }
 }
