@@ -115,7 +115,10 @@ namespace Zombles.Scripts
 
                 PositionUI();
 
-                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale), 16);
+                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale) {
+                    MinFilter = TextureMinFilter.Nearest,
+                    MagFilter = TextureMagFilter.Nearest
+                }, 16);
                 _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, _upScale);
                 _frameBufferSprite.FlipVertical = true;
 

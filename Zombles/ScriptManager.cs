@@ -47,6 +47,19 @@ namespace Zombles
 
         private static Assembly _sCompiledAssembly;
 
+        private static void ExploreDir(String dir, List<String> fileList)
+        {
+            foreach (var file in Directory.GetFiles(dir)) {
+                if (Path.GetExtension(file) == ".cs" && !file.Contains("TemporaryGeneratedFile")) {
+                    fileList.Add(file);
+                }
+            }
+
+            foreach (var sub in Directory.GetDirectories(dir)) {
+                ExploreDir(sub, fileList);
+            }
+        }
+
         private static void Compile()
         {
             var compParams = new CompilerParameters();
@@ -71,13 +84,20 @@ namespace Zombles
             compParams.TempFiles.KeepFiles = true;
             compParams.IncludeDebugInformation = true;
 
+#if RELEASE
             String[] sources = new String[_sScripts.Count];
 
             for (int i = 0; i < _sScripts.Count; ++i)
                 sources[i] = _sScripts[i].Contents;
 
             CompilerResults results = compiler.CompileAssemblyFromSource(compParams, sources);
+#else
+            var sources = new List<String>();
 
+            ExploreDir(Path.Combine("..", "..", "Scripts"), sources);
+
+            CompilerResults results = compiler.CompileAssemblyFromFile(compParams, sources.ToArray());
+#endif
             if (results.Errors.Count > 0) {
                 Trace.WriteLine(results.Errors.Count + " error" + (results.Errors.Count != 1 ? "s" : "") + " while compiling Scripts!");
                 foreach (CompilerError error in results.Errors) {
