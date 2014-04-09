@@ -73,7 +73,7 @@ namespace Zombles.Graphics
             set
             {
                 _scale = value;
-                InvalidatePerspectiveMatrix();
+                InvalidateProjectionMatrix();
                 InvalidateViewMatrix();
             }
         }
@@ -128,7 +128,7 @@ namespace Zombles.Graphics
             return pos;
         }
 
-        protected override void OnUpdatePerspectiveMatrix(ref Matrix4 matrix)
+        protected override void OnUpdateProjectionMatrix(ref Matrix4 matrix)
         {
             float width = Width / (8.0f * _scale);
             float height = Height / (8.0f * _scale);
@@ -239,7 +239,7 @@ namespace Zombles.Graphics
             }
 
             if (component.HasFlag(PositionComponent.Y)) {
-                InvalidatePerspectiveMatrix();
+                InvalidateProjectionMatrix();
             } else {
                 base.OnPositionChanged(component, ref position);
             }
@@ -248,7 +248,7 @@ namespace Zombles.Graphics
         protected override void OnRotationChanged(RotationComponent component, ref Vector2 rotation)
         {
             if (component.HasFlag(RotationComponent.Pitch)) {
-                InvalidatePerspectiveMatrix();
+                InvalidateProjectionMatrix();
             } else {
                 base.OnRotationChanged(component, ref rotation);
             }
