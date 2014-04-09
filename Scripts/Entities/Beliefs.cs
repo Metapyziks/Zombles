@@ -118,12 +118,16 @@ namespace Zombles.Scripts.Entities
                 if (_utilityChanged) {
                     _utilityChanged = false;
 
-                    int zombies = Zombies;
+                    if (LastSeen == 0.0) {
+                        _utility = 2.0;
+                    } else {
+                        int zombies = Zombies;
 
-                    _utility = (Block.HasInterior ? 4.0 : 1.0) *
-                        ( Survivors / 2.0
-                        + Resources / 3.0
-                        - zombies * zombies * 4.0);
+                        _utility = (Block.HasInterior ? 4.0 : 1.0) *
+                            (Survivors / 2.0
+                            + Resources / 3.0
+                            - zombies * zombies * 4.0);
+                    }
                 }
 
                 return _utility;
@@ -134,6 +138,7 @@ namespace Zombles.Scripts.Entities
         {
             Beliefs = beliefs;
             Block = block;
+            LastSeen = 0.0;
 
             _utilityChanged = true;
             _remembered = new HashSet<EntityBeliefs>();

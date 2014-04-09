@@ -13,11 +13,12 @@ namespace Zombles.Scripts.Entities.Desires
         public static IEnumerable<Migration> Discover(Beliefs beliefs)
         {
             var agent = beliefs.Entity;
+            var pos = agent.Position2D;
             
             var curUtil = beliefs.Blocks.First(x => x.Block == agent.Block).Utility;
             var best = beliefs.Blocks
                 .Where(x => x.Utility > curUtil)
-                .OrderByDescending(x => x.Utility)
+                .OrderByDescending(x => x.Utility / Math.Max(1f, agent.World.Difference(pos, x.Block.GetNearestPosition(pos)).Length))
                 .FirstOrDefault();
             
             if (best != null && best.Block != agent.Block) {

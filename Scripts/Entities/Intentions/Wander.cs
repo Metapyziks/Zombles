@@ -49,7 +49,7 @@ namespace Zombles.Scripts.Entities.Intentions
 
         public override bool ShouldKeep()
         {
-            return true;
+            return false;
         }
 
         public override IEnumerable<Action> GetActions()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 using Zombles.Entities;
@@ -57,7 +58,7 @@ namespace Zombles.Scripts.Entities.Intentions
                     yield return new DropItemAction(1f);
                 }
 
-                yield return new MovementAction(_nav.GetDirection() * Desire.Utility);
+                yield return new MovementAction(_nav.GetDirection() * Math.Max(4f, Desire.Utility));
             }
         }
     }
