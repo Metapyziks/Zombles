@@ -37,8 +37,11 @@ namespace Zombles.Scripts.Entities.Desires
 
                 if (trace.GetResult().Hit) continue;
 
-                if (cur.HasComponent<Survivor>()) survivors += cur.GetComponent<Health>().Value;
-                else zombies += cur.GetComponent<Health>().Value;
+                if (cur.HasComponent<Survivor>()) {
+                    survivors += cur.GetComponent<Health>().Value;
+                } else {
+                    zombies += cur.GetComponent<Health>().Value;
+                }
             }
 
             return zombies <= MaxMobRatio * survivors;
@@ -49,18 +52,18 @@ namespace Zombles.Scripts.Entities.Desires
             foreach (var zom in beliefs.Entities.Where(x => x.Type == EntityType.Zombie)) {
                 if (beliefs.Entity.World.Difference(beliefs.Entity.Position2D, zom.LastPos).LengthSquared > MobRadius * MobRadius) continue;
                 if (ShouldMob(beliefs.Entity, zom)) {
-                    yield return new Mobbing(zom.Entity);
+                    yield return new Mobbing(zom);
                 }
             }
         }
 
-        public Entity Target { get; private set; }
+        public EntityBeliefs Target { get; private set; }
 
         public override float Utility
         {
             get
             {
-                var health = Target.GetComponent<Health>();
+                var health = Target.Entity.GetComponent<Health>();
 
                 if (!health.IsAlive) return 0f;
 
@@ -68,7 +71,7 @@ namespace Zombles.Scripts.Entities.Desires
             }
         }
 
-        public Mobbing(Entity target)
+        public Mobbing(EntityBeliefs target)
         {
             Target = target;
         }
