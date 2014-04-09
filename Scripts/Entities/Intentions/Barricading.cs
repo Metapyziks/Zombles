@@ -38,7 +38,7 @@ namespace Zombles.Scripts.Entities.Intentions
                 for (int y = 1; y < block.Height - 1; ++y) {
                     var tile = block[block.X + x, block.Y + y];
 
-                    if (tile.IsInterior) break;
+                    if (tile.IsInterior) continue;
 
                     foreach (var dir in dirs) {
                         if (tile.IsWallSolid(dir)) continue;

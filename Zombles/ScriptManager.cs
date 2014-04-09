@@ -84,7 +84,7 @@ namespace Zombles
             compParams.TempFiles.KeepFiles = true;
             compParams.IncludeDebugInformation = true;
 
-#if RELEASE
+#if !DEBUG
             String[] sources = new String[_sScripts.Count];
 
             for (int i = 0; i < _sScripts.Count; ++i)
