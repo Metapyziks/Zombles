@@ -34,7 +34,12 @@ namespace Zombles.Graphics
         public float Elevation
         {
             get { return Y; }
-            private set { Y = value; }
+            private set
+            {
+                Y = value;
+                InvalidateProjectionMatrix();
+                InvalidateViewBounds();
+            }
         }
 
         public Vector2 WorldOffset
@@ -74,7 +79,6 @@ namespace Zombles.Graphics
             {
                 _scale = value;
                 InvalidateProjectionMatrix();
-                InvalidateViewMatrix();
             }
         }
 
@@ -105,6 +109,13 @@ namespace Zombles.Graphics
         {
             WrapWidth = width;
             WrapHeight = height;
+        }
+
+        protected override void OnInvalidateProjectionMatrix()
+        {
+            base.OnInvalidateProjectionMatrix();
+
+            InvalidateViewMatrix();
         }
 
         public Vector2 ScreenToWorld(Vector2 pos, float height = 0.0f)
@@ -143,8 +154,6 @@ namespace Zombles.Graphics
                 height,
                 znear, zfar
             );
-
-            InvalidateViewMatrix();
         }
 
         protected override void OnUpdateViewMatrix(ref Matrix4 matrix)
@@ -207,8 +216,6 @@ namespace Zombles.Graphics
             maxy = Math.Min(Z + hhei, maxy);
 
             _localViewBounds = new RectangleF(minx, miny, maxx - minx, maxy - miny);
-
-            InvalidateViewBounds();
         }
 
         public void InvalidateViewBounds()
