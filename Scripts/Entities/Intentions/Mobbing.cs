@@ -38,7 +38,7 @@ namespace Zombles.Scripts.Entities.Intentions
 
             bool closest = true;
 
-            var it = new NearbyEntityEnumerator(World, Target.LastPos, diff.Length + 0.5f);
+            var it = new NearbyEntityEnumerator(World, Target.LastPos, diff.Length);
             while (it.MoveNext()) {
                 var cur = it.Current;
 

@@ -36,12 +36,15 @@ namespace Zombles.Scripts.Entities.Intentions
                     yield return new AttackAction(zom.Entity);
                 }
 
-                if (diff.LengthSquared < 6f) ((Survivor) Human).StartRunning();
-
+                if (diff.LengthSquared < 6f) {
+                    ((Survivor) Human).StartRunning();
+                    yield return new DropItemAction(4f);
+                }
+                
                 var timeSince = (float) Math.Max(1.0, MainWindow.Time - zom.LastSeen);
 
                 var dir = diff.Normalized();
-                var mag = 32f / diff.Length / (1f + timeSince * timeSince);
+                var mag = 64f / diff.Length / (1f + timeSince * timeSince);
 
                 yield return new MovementAction(dir * mag);
             }

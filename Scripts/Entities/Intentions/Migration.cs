@@ -25,6 +25,9 @@ namespace Zombles.Scripts.Entities.Intentions
                 _destPos = new Vector2(_destBlock.X, _destBlock.Y) + Vector2.Multiply(size, new Vector2(
                     Tools.Random.NextSingle(0.4f, 0.6f),
                     Tools.Random.NextSingle(0.4f, 0.6f)));
+
+                _destPos.X = (float) Math.Round(_destPos.X - 0.5f) + 0.5f;
+                _destPos.Y = (float) Math.Round(_destPos.Y - 0.5f) + 0.5f;
             } while (--tries > 0 && !Beliefs.Entity.World.IsPositionNavigable(_destPos));
 
             if (tries <= 0) {

@@ -120,7 +120,7 @@ namespace Zombles.Entities
         public Vector2 GetDirection()
         {
             if (!_disposed && !_ended && HasPath) {
-                if ((NextWaypoint - _entity.Position2D).LengthSquared <= 0.25f) {
+                if (_entity.World.Difference(NextWaypoint, _entity.Position2D).LengthSquared <= 0.25f) {
                     MoveNext();
                 } else if ((MainWindow.Time - _lastScan) >= 1.0) {
                     ScanAhead();
