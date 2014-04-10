@@ -94,6 +94,10 @@ namespace Zombles.Entities
 
         private void NavigateTo(Vector2 target)
         {
+            if (float.IsNaN(target.X) || float.IsNaN(target.Y)) {
+                throw new ArgumentException();
+            }
+
             _route = Route.Find(_entity.World, _entity.Position2D, target);
             _curPath = null;
 

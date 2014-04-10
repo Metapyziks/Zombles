@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define TURBO
+
+using System;
 using System.Linq;
 using System.IO;
 using System.Diagnostics;
@@ -134,19 +136,26 @@ namespace Zombles
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+#if !TURBO
             if (_thinkTimer.Elapsed.TotalSeconds + _spareTime < ThinkPeriod)
                 return;
 
             _spareTime += _thinkTimer.Elapsed.TotalSeconds - ThinkPeriod;
-            _normalizedTime += ThinkPeriod;
-
+#endif
             _thinkTimer.Restart();
+#if TURBO
+            do {
+#endif
+                _normalizedTime += ThinkPeriod;
+            
+                if (CurrentScene != null)
+                    CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
 
-            if (CurrentScene != null)
-                CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
-
-            RouteNavigator.Think(ThinkPeriod);
-            Plugin.Think(ThinkPeriod);
+                RouteNavigator.Think(ThinkPeriod);
+                Plugin.Think(ThinkPeriod);
+#if TURBO
+            } while (_thinkTimer.Elapsed.TotalSeconds <= 1.0 / 60.0);
+#endif
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

@@ -21,7 +21,9 @@ namespace Zombles.Scripts
         public const int SurvivorCount = AgentCount - ZombieCount;
         public const int Seed = 0xb6ba069;
 
-        public const bool Subsumption = false;
+        public const double TimeLimit = 500.0;
+
+        public const bool Subsumption = true;
         public const bool Deliberative = !Subsumption;
 
         private double _lastAliveCheck;
@@ -35,6 +37,8 @@ namespace Zombles.Scripts
         protected override void OnInitialize()
         {
             var rand = new Random(Seed);
+
+            File.WriteAllText(_logFileName, String.Format("# New log {0}{1}", DateTime.Now.ToString(), Environment.NewLine));
 
             Entity.Register("selection marker", ent => {
                 ent.AddComponent<Render3D>()
@@ -194,12 +198,16 @@ namespace Zombles.Scripts
                 int zombies = world.Entities.Where(x => x.HasComponent<Zombie>())
                     .Count(x => x.GetComponent<Health>().IsAlive);
 
-                if (survivors != _lastSurvivors || zombies != _lastZombies) {
+                if (survivors != _lastSurvivors || zombies != _lastZombies || _lastAliveCheck > TimeLimit) {
                     _lastSurvivors = survivors;
                     _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2}", _lastAliveCheck, survivors, zombies);
+                    var log = String.Format("{0} {1} {2}", Math.Min(TimeLimit, _lastAliveCheck), survivors, zombies);
                     Debug.WriteLine(log);
                     File.AppendAllText(_logFileName, log + Environment.NewLine);
+                }
+
+                if (_lastAliveCheck > TimeLimit) {
+                    Scene.GameWindow.Close();
                 }
             }
         }
