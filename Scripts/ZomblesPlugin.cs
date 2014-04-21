@@ -30,7 +30,8 @@ namespace Zombles.Scripts
         private int _lastSurvivors;
         private int _lastZombies;
         
-        private static readonly String _logFileFormat = String.Format("{{0}}_{0}_{1}_{2}.log", WorldSize, SurvivorCount, ZombieCount);
+        private static readonly String _logFileFormat = String.Format("{{0}}_{0}_{1}_{2}_{3}.log", WorldSize, SurvivorCount, ZombieCount,
+            DateTime.Now.ToString("d_MMM_yy_HH_mm_ss"));
 
         private static readonly String _logFileName = String.Format(_logFileFormat, Subsumption ? "sub" : "bdi");
 
