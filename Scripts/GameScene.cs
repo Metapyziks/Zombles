@@ -32,6 +32,7 @@ namespace Zombles.Scripts
         private int _framesCompleted;
 
         private Stopwatch _frameTimer;
+        private  Stopwatch _thinkTimer;
 
         private bool _hideTop;
 
@@ -78,6 +79,8 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public World World { get; private set; }
 
+        public double LastThinkTime { get; private set; }
+
         public GameScene(MainWindow gameWindow)
             : base(gameWindow)
         {
@@ -91,6 +94,9 @@ namespace Zombles.Scripts
             _totalFrameTime = 0;
             _framesCompleted = 0;
             _frameTimer = new Stopwatch();
+            _thinkTimer = new Stopwatch();
+
+            LastThinkTime = 0;
         }
 
         public override void OnEnter(bool firstTime)
@@ -188,7 +194,11 @@ namespace Zombles.Scripts
 
             _posText.Text = string.Format("X: {0:F} Y: {1:F}", Camera.X, Camera.Z);
 
+            _thinkTimer.Restart();
             World.Think(e.Time);
+            _thinkTimer.Stop();
+
+            LastThinkTime = _thinkTimer.Elapsed.TotalMilliseconds;
 
             _infDisplay.UpdateBars();
 

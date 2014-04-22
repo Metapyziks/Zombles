@@ -113,3 +113,4 @@ Documents/Design/*.out
 Documents/Design/report.bbl
 Documents/Design/report.blg
 *.avi
+*.etl

@@ -16,7 +16,7 @@ namespace Zombles.Scripts
     public class ZomblesPlugin : Plugin
     {
         public const int WorldSize = 128;
-        public const int AgentCount = (WorldSize * WorldSize) / 128;
+        public const int AgentCount = (WorldSize * WorldSize) / 64;
         public const int ZombieCount = AgentCount / 4 < 8 ? 8 : AgentCount / 4;
         public const int SurvivorCount = AgentCount - ZombieCount;
         public const int Seed = 0xb6ba069;
@@ -29,12 +29,15 @@ namespace Zombles.Scripts
         private double _lastAliveCheck;
         private int _lastSurvivors;
         private int _lastZombies;
-        
+
+        private int _framesSinceLog;
+        private double _thinkTimeSinceLog;
+
         private static readonly String _logFileFormat = String.Format("{{0}}_{0}_{1}_{2}_{3}.log", WorldSize, SurvivorCount, ZombieCount,
             DateTime.Now.ToString("d_MMM_yy_HH_mm_ss"));
 
         private static readonly String _logFileName = String.Format(_logFileFormat, Subsumption ? "sub" : "bdi");
-
+        
         protected override void OnInitialize()
         {
             var rand = new Random(Seed);
@@ -188,6 +191,9 @@ namespace Zombles.Scripts
         {
             base.OnThink(dt);
 
+            ++_framesSinceLog;
+            _thinkTimeSinceLog += (Scene as GameScene).LastThinkTime;
+
             if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
                 World world = (Scene as GameScene).World;
 
@@ -202,9 +208,12 @@ namespace Zombles.Scripts
                 if (survivors != _lastSurvivors || zombies != _lastZombies || _lastAliveCheck > TimeLimit) {
                     _lastSurvivors = survivors;
                     _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2}", Math.Min(TimeLimit, _lastAliveCheck), survivors, zombies);
+                    var log = String.Format("{0} {1} {2} {3}", Math.Min(TimeLimit, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog);
                     Debug.WriteLine(log);
                     File.AppendAllText(_logFileName, log + Environment.NewLine);
+
+                    _framesSinceLog = 0;
+                    _thinkTimeSinceLog = 0;
                 }
 
                 if (_lastAliveCheck > TimeLimit) {
