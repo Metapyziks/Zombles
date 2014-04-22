@@ -185,6 +185,10 @@ namespace Zombles.Scripts.Entities
 
         public void StartMoving(Vector2 dir)
         {
+            if (float.IsNaN(dir.X) || float.IsNaN(dir.Y)) {
+                return;
+            }
+
             if (Movement == null || !Health.IsAlive)
                 return;
 

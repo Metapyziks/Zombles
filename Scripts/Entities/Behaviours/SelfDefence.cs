@@ -53,7 +53,7 @@ namespace Zombles.Scripts.Entities.Behaviours
                 if (Human.CanAttack) {
                     if (diff.LengthSquared < 0.75f) {
                         Human.Attack(diff);
-                        Human.StopMoving();
+                        //Human.StopMoving();
                     } else {
                         Human.StartMoving(diff);
                     }

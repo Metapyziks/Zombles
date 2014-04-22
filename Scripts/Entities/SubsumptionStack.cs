@@ -112,6 +112,10 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink(dt);
 
+            if (Human.IsSelected) {
+                System.Diagnostics.Debugger.Break();
+            }
+
             if (_top != null && Human.Health.IsAlive) _top.Think(dt);
         }
     }

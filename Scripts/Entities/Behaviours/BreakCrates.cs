@@ -1,4 +1,6 @@
-﻿using Zombles.Entities;
+﻿using System.Linq;
+
+using Zombles.Entities;
 using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities.Behaviours
@@ -7,6 +9,7 @@ namespace Zombles.Scripts.Entities.Behaviours
     {
         private double _nextSearch;
         private Entity _currTarget;
+        private RouteNavigator _nav;
 
         protected override bool OnThink(double dt)
         {
@@ -20,44 +23,37 @@ namespace Zombles.Scripts.Entities.Behaviours
                     var diff = World.Difference(Entity.Position2D, _currTarget.Position2D);
 
                     if (diff.LengthSquared < 0.75) {
-                        Human.StopMoving();
+                        //Human.StopMoving();
                         if (Human.CanAttack) {
                             Human.Attack(diff);
                         }
-                    } else {
-                        Human.StartMoving(diff);
+                        return true;
+                    } else if (_nav != null && _nav.HasDirection) {
+                        Human.StartMoving(_nav.GetDirection());
+                        return true;
                     }
 
-                    return true;
+                    return false;
                 }
             }
 
             if (MainWindow.Time < _nextSearch) return false;
             _nextSearch = MainWindow.Time + Tools.Random.NextDouble(0.4, 0.6);
 
-            var closest = float.MaxValue;
+            _currTarget = Entity.Block
+                .Where(x => x.HasComponent<WoodenBreakable>())
+                .OrderBy(x => World.Difference(Position2D, x.Position2D).LengthSquared)
+                .FirstOrDefault();
 
-            var trace = new TraceLine(World);
-            trace.Origin = Entity.Position2D;
-            trace.HitGeometry = true;
-            trace.HitEntities = true;
+            if (_currTarget == null) {
+                if (_nav != null) {
+                    _nav.Dispose();
+                    _nav = null;
+                }
+            } else if (_nav == null || _nav.HasEnded || _nav.CurrentTarget != _currTarget.Position2D) {
+                if (_nav != null) _nav.Dispose();
 
-            var iter = new NearbyEntityEnumerator(World, Entity.Position2D, 8f);
-            while (iter.MoveNext()) {
-                var ent = iter.Current;
-
-                if (!ent.HasComponent<WoodenBreakable>()) continue;
-                
-                var diff = World.Difference(Entity.Position2D, ent.Position2D);
-                if (diff.LengthSquared >= closest) continue;
-
-                trace.Target = ent.Position2D;
-
-                var result = trace.GetResult();
-                if (result.Hit && !(result.HitEntity && result.Entity == ent)) continue;
-
-                closest = diff.LengthSquared;
-                _currTarget = ent;
+                _nav = new RouteNavigator(Entity, _currTarget.Position2D);
             }
 
             return false;

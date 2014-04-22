@@ -28,7 +28,6 @@ namespace Zombles.Scripts.Entities.Behaviours
                 return true;
             } else {
                 var dest = World.GetIntersections(block)
-                    .Where(x => x.Position.LengthSquared > 0f)
                     .OrderBy(x => World.Difference(Entity.Position2D, x.Position).LengthSquared)
                     .First();
 

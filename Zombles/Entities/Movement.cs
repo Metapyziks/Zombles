@@ -17,6 +17,10 @@ namespace Zombles.Entities
             get { return _velocity; }
             set
             {
+                if (float.IsNaN(value.X) || float.IsNaN(value.Y)) {
+                    return;
+                }
+
                 _velocity = value;
                 IsMoving = _velocity.X != 0.0f || _velocity.Y != 0.0f;
             }
