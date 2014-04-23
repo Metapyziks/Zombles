@@ -17,7 +17,7 @@ namespace Zombles.Scripts.Entities
 
         public static double GetLastThinkTime()
         {
-            var time = _timer.Elapsed.TotalSeconds;
+            var time = _timer.Elapsed.TotalMilliseconds;
             _timer.Reset();
 
             return time;

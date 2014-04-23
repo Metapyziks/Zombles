@@ -94,7 +94,7 @@ namespace Evaluation
                         }
 
                         var info = new ProcessStartInfo("Zombles.exe", String.Format("-t {0} -s {1} -w {2} -h {3} -z {4} -d {5} -o {6}",
-                            type, seed, size, humans, zombies, 600, logName));
+                            type, seed, size, humans, zombies, duration, logName));
 
                         var proc = Process.Start(info);
 
