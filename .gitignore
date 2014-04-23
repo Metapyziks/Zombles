@@ -32,7 +32,6 @@ x64/
 *.tli
 *.tlh
 *.tmp
-*.log
 *.vspscc
 *.vssscc
 .builds
@@ -114,3 +113,4 @@ Documents/Design/report.bbl
 Documents/Design/report.blg
 *.avi
 *.etl
+Documents/*.log
