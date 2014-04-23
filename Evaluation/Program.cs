@@ -37,14 +37,15 @@ namespace Evaluation
 
             var types = new[] {
                 "sub",
-                "bdi"
+                "bdi",
+                "bdi2"
             };
 
             var configs = new[] {
-                new Config { Size = 64, Humans = 96, Zombies = 32, Duration = 600 },
-                new Config { Size = 128, Humans = 96, Zombies = 32, Duration = 600 },
-                new Config { Size = 128, Humans = 128, Zombies = 128, Duration = 600 },
-                new Config { Size = 128, Humans = 192, Zombies = 64, Duration = 600 }
+                new Config { Size = 64, Humans = 96, Zombies = 32, Duration = 60 },
+                new Config { Size = 128, Humans = 96, Zombies = 32, Duration = 60 },
+                new Config { Size = 128, Humans = 128, Zombies = 128, Duration = 60 },
+                new Config { Size = 128, Humans = 192, Zombies = 64, Duration = 60 }
             };
 
             foreach (var config in configs) {
@@ -55,6 +56,7 @@ namespace Evaluation
 
                 var subs = new List<String>();
                 var bdis = new List<String>();
+                var bdi2s = new List<String>();
 
                 var evalDir = String.Format("..\\..\\Results\\{0}_{1}_{2}\\", size, humans, zombies);
 
@@ -72,10 +74,16 @@ namespace Evaluation
 
                         var logName = evalDir + type + "_" + ident + ".log";
 
-                        if (type == "sub") {
-                            subs.Add(logName);
-                        } else {
-                            bdis.Add(logName);
+                        switch (type) {
+                            case "sub":
+                                subs.Add(logName);
+                                break;
+                            case "bdi":
+                                bdis.Add(logName);
+                                break;
+                            case "bdi2":
+                                bdi2s.Add(logName);
+                                break;
                         }
 
                         if (File.Exists(logName)) {
@@ -99,12 +107,14 @@ namespace Evaluation
                 }
 
                 {
-                    var info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7} {8}",
+                    var info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7} {8} {9} {10}",
                         1280, 640, "\"Population,0-max," + (humans / 8) + "," + (humans / 32) + "\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "population.png",
-                        "\"" + String.Join(";", subs) + ",a,b,Survivors [SUB],ffff9900,2\"",
-                        "\"" + String.Join(";", subs) + ",a,c,Zombies [SUB],ff99ff00,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,b,Survivors [BDI],ffff0099,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,c,Zombies [BDI],ff00ff99,2\""));
+                        "\"" + String.Join(";", subs) + ",a,b,Survivors [Subsumption],ffff9900,2\"",
+                        "\"" + String.Join(";", subs) + ",a,c,Zombies [Subsumption],ff99ff00,2\"",
+                        "\"" + String.Join(";", bdis) + ",a,b,Survivors [Slow BDI],ffff0099,2\"",
+                        "\"" + String.Join(";", bdis) + ",a,c,Zombies [Slow BDI],ff00ff99,2\"",
+                        "\"" + String.Join(";", bdi2s) + ",a,b,Survivors [Fast BDI],ffff66cc,2\"",
+                        "\"" + String.Join(";", bdi2s) + ",a,c,Zombies [Fast BDI],ff66ffcc,2\""));
 
                     var proc = Process.Start(info);
 
@@ -114,10 +124,11 @@ namespace Evaluation
 
                     proc.Dispose();
 
-                    info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6}",
+                    info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7}",
                         1280, 640, "\"Frame Time per Agent ([mu]s),0-max,25,5\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "performance.png",
                         "\"" + String.Join(";", subs) + ",a,d*1000/b,Subsumption,ff9900ff,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,d*1000/b,BDI,ff0099ff,2\""));
+                        "\"" + String.Join(";", bdis) + ",a,d*1000/b,Slow BDI,ff0099ff,2\"",
+                        "\"" + String.Join(";", bdi2s) + ",a,d*1000/b,Fast BDI,ff66ccff,2\""));
 
                     proc = Process.Start(info);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using OpenTK;
 using Zombles.Entities;
 using Zombles.Geometry;
@@ -81,6 +82,16 @@ namespace Zombles.Scripts.Entities
             }
         }
 
+        private static Stopwatch _timer = new Stopwatch();
+
+        public static double GetLastThinkTime()
+        {
+            var time = _timer.Elapsed.TotalSeconds;
+            _timer.Reset();
+
+            return time;
+        }
+
         private Layer _top;
 
         public SubsumptionStack(Entity ent)
@@ -112,11 +123,11 @@ namespace Zombles.Scripts.Entities
         {
             base.OnThink(dt);
 
-            if (Human.IsSelected) {
-                System.Diagnostics.Debugger.Break();
-            }
+            _timer.Start();
 
             if (_top != null && Human.Health.IsAlive) _top.Think(dt);
+
+            _timer.Stop();
         }
     }
 }

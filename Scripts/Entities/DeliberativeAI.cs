@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Zombles.Entities;
@@ -8,9 +9,28 @@ namespace Zombles.Scripts.Entities
 {
     public class DeliberativeAI : HumanControl
     {
-        public const double BeliefsUpdatePeriod = 0.5;
-        public const double DeliberationPeriod = 1.0;
-        public const double SharePeriod = 1.0;
+        public static readonly double BeliefsUpdatePeriod = 0.25;
+        public static readonly double DeliberationPeriod = 0.5;
+        public static readonly double SharePeriod = 1.0;
+
+        private static Stopwatch _timer = new Stopwatch();
+
+        public static double GetLastThinkTime()
+        {
+            var time = _timer.Elapsed.TotalSeconds;
+            _timer.Reset();
+
+            return time;
+        }
+
+        static DeliberativeAI()
+        {
+            if (Program.FastDeliberative) {
+                BeliefsUpdatePeriod *= 4;
+                DeliberationPeriod *= 4;
+                SharePeriod *= 4;
+            }
+        }
 
         private Beliefs _beliefs;
         private Intention[] _intentions;
@@ -55,6 +75,8 @@ namespace Zombles.Scripts.Entities
         public override void OnThink(double dt)
         {
             base.OnThink(dt);
+
+            _timer.Start();
 
             bool deliberate = MainWindow.Time >= _nextDeliberate;
             if (MainWindow.Time >= _nextBeliefsUpdate) {
@@ -129,6 +151,8 @@ namespace Zombles.Scripts.Entities
             foreach (var action in actions) {
                 action.Perform(Human);
             }
+
+            _timer.Stop();
         }
     }
 }

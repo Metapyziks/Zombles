@@ -24,6 +24,8 @@ namespace Zombles
 
         public static bool Deliberative { get; private set; }
 
+        public static bool FastDeliberative { get; private set; }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -71,6 +73,7 @@ namespace Zombles
                     case "-t":
                     case "--type":
                         Subsumption = args[++i] == "sub";
+                        FastDeliberative = args[i] == "bdi2";
                         break;
                 }
             }

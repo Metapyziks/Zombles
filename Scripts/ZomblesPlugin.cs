@@ -176,7 +176,12 @@ namespace Zombles.Scripts
             base.OnThink(dt);
 
             ++_framesSinceLog;
-            _thinkTimeSinceLog += (Scene as GameScene).LastThinkTime;
+
+            if (Program.Subsumption) {
+                _thinkTimeSinceLog += SubsumptionStack.GetLastThinkTime();
+            } else {
+                _thinkTimeSinceLog += DeliberativeAI.GetLastThinkTime();
+            }
 
             if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
                 World world = (Scene as GameScene).World;
