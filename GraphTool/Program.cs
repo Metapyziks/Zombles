@@ -122,7 +122,7 @@ namespace GraphTool
             var split = str.Split(',');
             var dataSet = new DataSet();
 
-            dataSet.FilePath = split[0];
+            dataSet.FilePaths = split[0].Split(';');
 
             if (split.Length > 1) {
                 dataSet.XColumn = ParseColumnExpression(split[1]);
@@ -147,7 +147,7 @@ namespace GraphTool
             return dataSet;
         }
 
-        public String FilePath { get; set; }
+        public String[] FilePaths { get; set; }
         public String Label { get; set; }
 
         public Func<float[], float> XColumn { get; set; }
@@ -155,15 +155,52 @@ namespace GraphTool
 
         public Pen Pen { get; set; }
 
+        private PointF[] _points;
+
         public PointF[] GetPoints()
         {
-            return File.ReadAllLines(FilePath)
-                .Select(x => x.Trim())
-                .Where(x => x.Length > 0 && !x.StartsWith("#"))
-                .Select(x => x.Split(' '))
-                .Select(x => x.Select(y => float.Parse(y)).ToArray())
-                .Select(x => new PointF(XColumn(x), YColumn(x)))
-                .ToArray();
+            if (_points == null) {
+                var sets = FilePaths
+                    .Select(path => File.ReadAllLines(path)
+                        .Select(x => x.Trim())
+                        .Where(x => x.Length > 0 && !x.StartsWith("#"))
+                        .Select(x => x.Split(' '))
+                        .Select(x => x.Select(y => float.Parse(y)).ToArray())
+                        .Select(x => new PointF(XColumn(x), YColumn(x)))
+                        .ToArray())
+                    .ToArray();
+
+                Func<PointF[], float, float> lerp = (a, x) => {
+                    for (int i = 0; i < a.Length; ++i) {
+                        if (a[i].X >= x) {
+                            PointF prev = a[Math.Max(0, i)];
+                            PointF next = a[i];
+
+                            if (prev.X == next.X) return (prev.Y + next.Y) / 2f;
+
+                            float t = (x - prev.X) / (next.X - prev.X);
+
+                            return prev.Y * t + next.Y * (1f - t);
+                        }
+                    }
+
+                    return a.Last().Y;
+                };
+
+                float last = sets.Min(x => x.Min(y => y.X)) - 1f;
+                var points = new List<PointF>();
+
+                PointF[] nextSet = null;
+                while ((nextSet = sets.FirstOrDefault(x => x.Any(y => y.X > last))) != null) {
+                    last = nextSet.First(x => x.X > last).X;
+
+                    points.Add(new PointF(last, sets.Average(x => lerp(x, last))));
+                }
+
+                _points = points.ToArray();
+            }
+
+            return _points;
         }
     }
 

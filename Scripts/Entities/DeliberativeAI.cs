@@ -8,8 +8,8 @@ namespace Zombles.Scripts.Entities
 {
     public class DeliberativeAI : HumanControl
     {
-        public const double BeliefsUpdatePeriod = 0.25;
-        public const double DeliberationPeriod = 0.5;
+        public const double BeliefsUpdatePeriod = 0.5;
+        public const double DeliberationPeriod = 1.0;
         public const double SharePeriod = 1.0;
 
         private Beliefs _beliefs;
