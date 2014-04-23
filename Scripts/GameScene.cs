@@ -106,7 +106,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                World = Generator.Generate(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize, ZomblesPlugin.Seed);
+                World = Generator.Generate(Program.WorldSize, Program.WorldSize, Program.Seed);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -129,8 +129,8 @@ namespace Zombles.Scripts
                 _frameBufferSprite.FlipVertical = true;
 
                 Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 4.0f / _upScale);
-                Camera.SetWrapSize(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize);
-                Camera.Position2D = new Vector2(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize) / 2.0f;
+                Camera.SetWrapSize(Program.WorldSize, Program.WorldSize);
+                Camera.Position2D = new Vector2(Program.WorldSize, Program.WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
                 Camera.Yaw = TargetCameraYaw;
 
@@ -276,9 +276,9 @@ namespace Zombles.Scripts
         public override void OnRenderFrame(FrameEventArgs e)
         {
             float x0 = 0.0f;
-            float x1 = (Camera.X < ZomblesPlugin.WorldSize / 2) ? -ZomblesPlugin.WorldSize : ZomblesPlugin.WorldSize;
+            float x1 = (Camera.X < Program.WorldSize / 2) ? -Program.WorldSize : Program.WorldSize;
             float y0 = 0.0f;
-            float y1 = (Camera.Z < ZomblesPlugin.WorldSize / 2) ? -ZomblesPlugin.WorldSize : ZomblesPlugin.WorldSize;
+            float y1 = (Camera.Z < Program.WorldSize / 2) ? -Program.WorldSize : Program.WorldSize;
 
             float hullSize = .5f;
 
@@ -459,7 +459,7 @@ namespace Zombles.Scripts
                         GameWindow.WindowState = WindowState.Fullscreen;
                     break;
                 case 'g':
-                    World = Generator.Generate(ZomblesPlugin.WorldSize, ZomblesPlugin.WorldSize);
+                    World = Generator.Generate(Program.WorldSize, Program.WorldSize);
                     Plugin.CityGenerated();
                     break;
             }
