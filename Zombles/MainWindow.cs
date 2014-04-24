@@ -151,7 +151,6 @@ namespace Zombles
                 if (CurrentScene != null)
                     CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));
 
-                RouteNavigator.Think(ThinkPeriod);
                 Plugin.Think(ThinkPeriod);
 #if TURBO
             } while (_thinkTimer.Elapsed.TotalSeconds <= 1.0 / 60.0);

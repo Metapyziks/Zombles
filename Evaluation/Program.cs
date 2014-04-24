@@ -41,11 +41,13 @@ namespace Evaluation
                 "bdi2"
             };
 
+            int dur = 600;
+
             var configs = new[] {
-                new Config { Size = 64, Humans = 96, Zombies = 32, Duration = 60 },
-                new Config { Size = 128, Humans = 96, Zombies = 32, Duration = 60 },
-                new Config { Size = 128, Humans = 128, Zombies = 128, Duration = 60 },
-                new Config { Size = 128, Humans = 192, Zombies = 64, Duration = 60 }
+                new Config { Size = 64, Humans = 96, Zombies = 32, Duration = dur },
+                new Config { Size = 128, Humans = 96, Zombies = 32, Duration = dur },
+                new Config { Size = 128, Humans = 128, Zombies = 128, Duration = dur },
+                new Config { Size = 128, Humans = 192, Zombies = 64, Duration = dur }
             };
 
             foreach (var config in configs) {

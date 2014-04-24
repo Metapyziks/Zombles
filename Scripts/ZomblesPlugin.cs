@@ -22,6 +22,8 @@ namespace Zombles.Scripts
         private int _framesSinceLog;
         private double _thinkTimeSinceLog;
 
+        private Stopwatch _navTimer;
+
         protected override void OnInitialize()
         {
             var rand = new Random(Program.Seed);
@@ -141,6 +143,8 @@ namespace Zombles.Scripts
                 }
             });
 
+            _navTimer = new Stopwatch();
+
             MainWindow.SetScene(new GameScene(Game));
         }
 
@@ -183,6 +187,10 @@ namespace Zombles.Scripts
                 _thinkTimeSinceLog += DeliberativeAI.GetLastThinkTime();
             }
 
+            _navTimer.Start();
+            RouteNavigator.Think(dt);
+            _navTimer.Stop();
+
             if (MainWindow.Time - _lastAliveCheck >= 1.0 && Scene is GameScene) {
                 World world = (Scene as GameScene).World;
 
@@ -195,6 +203,9 @@ namespace Zombles.Scripts
                     .Count(x => x.GetComponent<Health>().IsAlive);
 
                 if (survivors != _lastSurvivors || zombies != _lastZombies || _lastAliveCheck > Program.Duration) {
+                    _thinkTimeSinceLog += _navTimer.Elapsed.Milliseconds;
+                    _navTimer.Reset();
+
                     _lastSurvivors = survivors;
                     _lastZombies = zombies;
                     var log = String.Format("{0} {1} {2} {3}", Math.Min(Program.Duration, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog);
