@@ -41,7 +41,7 @@ namespace Evaluation
                 "bdi2"
             };
 
-            int dur = 60;
+            int dur = 600;
 
             var configs = new[] {
                 new Config { Size = 64, Humans = 96, Zombies = 32, Duration = dur },
@@ -111,10 +111,10 @@ namespace Evaluation
                 {
                     var info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7} {8} {9} {10}",
                         1280, 640, "\"Population,0-max," + (humans / 8) + "," + (humans / 32) + "\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "population.png",
-                        "\"" + String.Join(";", subs) + ",a,b,Survivors [Subsumption],ffff9900,2\"",
-                        "\"" + String.Join(";", subs) + ",a,c,Zombies [Subsumption],ff99ff00,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,b,Survivors [Slow BDI],ffff0099,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,c,Zombies [Slow BDI],ff00ff99,2\"",
+                        "\"" + String.Join(";", subs) + ",a,b,Survivors [Subsumption],ffff6600,2\"",
+                        "\"" + String.Join(";", subs) + ",a,c,Zombies [Subsumption],ff66ff00,2\"",
+                        "\"" + String.Join(";", bdis) + ",a,b,Survivors [Slow BDI],ffff6666,2\"",
+                        "\"" + String.Join(";", bdis) + ",a,c,Zombies [Slow BDI],ff66ff66,2\"",
                         "\"" + String.Join(";", bdi2s) + ",a,b,Survivors [Fast BDI],ffff66cc,2\"",
                         "\"" + String.Join(";", bdi2s) + ",a,c,Zombies [Fast BDI],ff66ffcc,2\""));
 
@@ -127,9 +127,9 @@ namespace Evaluation
                     proc.Dispose();
 
                     info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7}",
-                        1280, 640, "\"Frame Time per Agent ([mu]s),0-max,25,5\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "performance.png",
-                        "\"" + String.Join(";", subs) + ",a,d*1000/b,Subsumption,ff9900ff,2\"",
-                        "\"" + String.Join(";", bdis) + ",a,d*1000/b,Slow BDI,ff0099ff,2\"",
+                        1280, 640, "\"Frame Time per Agent ([mu]s),0-max,10,2\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "performance.png",
+                        "\"" + String.Join(";", subs) + ",a,d*1000/b,Subsumption,ff6600ff,2\"",
+                        "\"" + String.Join(";", bdis) + ",a,d*1000/b,Slow BDI,ff0066ff,2\"",
                         "\"" + String.Join(";", bdi2s) + ",a,d*1000/b,Fast BDI,ff66ccff,2\""));
 
                     proc = Process.Start(info);

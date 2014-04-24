@@ -142,7 +142,15 @@ namespace Zombles.Scripts.Entities
                 }
             }
 
-            var actions = Action.ResolveConflicts(_intentions.SelectMany(x => x.GetActions()));
+            var actions = new List<Action>();
+
+            foreach (var intention in _intentions) {
+                foreach (var action in intention.GetActions()) {
+                    actions.Add(action);
+                }
+            }
+
+            actions = Action.ResolveConflicts(actions);
 
             if (actions.OfType<MovementAction>().Count() == 0) {
                 Human.StopMoving();

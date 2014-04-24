@@ -35,8 +35,9 @@ namespace Zombles
             SurvivorCount = 192;
             ZombieCount = 64;
             Duration = 600;
-            Subsumption = true;
-            Deliberative = false;
+            Subsumption = false;
+            Deliberative = !Subsumption;
+            FastDeliberative = true;
 
             var logFileFormat = String.Format("{{0}}_{0}_{1}_{2}_{3}.log",
                 Program.WorldSize, Program.SurvivorCount, Program.ZombieCount,

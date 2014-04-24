@@ -9,7 +9,7 @@ namespace Zombles.Scripts.Entities
     public abstract class Conflictable<T> : IComparable<T>
         where T : Conflictable<T>
     {
-        public static IEnumerable<T> ResolveConflicts(IEnumerable<T> elements)
+        public static List<T> ResolveConflicts(IEnumerable<T> elements)
         {
             var list = elements.ToList();
 
