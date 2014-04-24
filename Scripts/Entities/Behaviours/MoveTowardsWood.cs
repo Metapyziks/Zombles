@@ -14,7 +14,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             if (Human.IsHoldingItem && Human.HeldItem.HasComponent<Plank>()) return false;
 
             if (_nextTargetTime <= MainWindow.Time) {
-                _nextTargetTime = MainWindow.Time + 0.5;
+                _nextTargetTime = MainWindow.Time;
 
                 _currTarget = Entity.Block
                     .Where(x => x.HasComponent<WoodPile>()

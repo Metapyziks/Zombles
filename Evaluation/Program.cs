@@ -41,7 +41,7 @@ namespace Evaluation
                 "bdi2"
             };
 
-            int dur = 600;
+            int dur = 10;
 
             var configs = new[] {
                 new Config { Size = 64, Humans = 96, Zombies = 32, Duration = dur },
@@ -69,7 +69,7 @@ namespace Evaluation
                 foreach (var seed in seeds) {
                     var ident = String.Format("{0}_{1}_{2}_{3}", seed, size, humans, zombies);
 
-                    Console.WriteLine(ident);
+                    Console.WriteLine("{0}: {1}", Array.IndexOf(seeds, seed), ident);
 
                     foreach (var type in types) {
                         Console.WriteLine(type);
@@ -128,9 +128,9 @@ namespace Evaluation
 
                     info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7}",
                         1280, 640, "\"Frame Time per Agent ([mu]s),0-max,10,2\"", "\"Simulation Time (s),0-max,60,15\"", evalDir + "performance.png",
-                        "\"" + String.Join(";", bdis) + ",a,(d+e)*1000/b,Slow BDI,ff00ccff,2\"",
-                        "\"" + String.Join(";", bdi2s) + ",a,(d+e)*1000/b,Fast BDI,ff6666ff,2\"",
-                        "\"" + String.Join(";", subs) + ",a,(d+e)*1000/b,Subsump,ffcc00ff,2\""));
+                        "\"" + String.Join(";", bdis) + ",a,(d)*1000/b,Slow BDI,ff00ccff,2\"",
+                        "\"" + String.Join(";", bdi2s) + ",a,(d)*1000/b,Fast BDI,ff6666ff,2\"",
+                        "\"" + String.Join(";", subs) + ",a,(d)*1000/b,Subsump,ffcc00ff,2\""));
 
                     proc = Process.Start(info);
 

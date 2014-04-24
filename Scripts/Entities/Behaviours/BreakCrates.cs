@@ -38,7 +38,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             }
 
             if (MainWindow.Time < _nextSearch) return false;
-            _nextSearch = MainWindow.Time + Tools.Random.NextDouble(0.4, 0.6);
+            _nextSearch = MainWindow.Time;
 
             _currTarget = Entity.Block
                 .Where(x => x.HasComponent<WoodenBreakable>())

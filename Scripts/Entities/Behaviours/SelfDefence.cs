@@ -19,8 +19,8 @@ namespace Zombles.Scripts.Entities.Behaviours
             _nextDefendCheck = MainWindow.Time;
             _attackTarget = null;
 
-            MinAttackCheckPeriod = 0.25;
-            MaxAttackCheckPeriod = 0.5;
+            MinAttackCheckPeriod = 0.0;
+            MaxAttackCheckPeriod = 0.0;
 
             AttackRadius = 0.75f + Tools.Random.NextSingle() * 1.25f;
         }

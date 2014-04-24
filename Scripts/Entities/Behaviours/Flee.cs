@@ -21,8 +21,8 @@ namespace Zombles.Scripts.Entities.Behaviours
             _nextFleeCheck = MainWindow.Time;
             _fleeDir = new Vector2();
 
-            MinFleeCheckPeriod = 0.25;
-            MaxFleeCheckPeriod = 0.5;
+            MinFleeCheckPeriod = 0.0;
+            MaxFleeCheckPeriod = 0.0;
 
             FleeRadius = 4.0f + Tools.Random.NextSingle() * 6.0f;
             RunRadius = 2.0f + Tools.Random.NextSingle() * 4.0f;

@@ -96,7 +96,7 @@ namespace GraphTool
                     }
                 }
 
-                head = ParseColumnExpression(str.Substring(1, i - 2));
+                head = ParseColumnExpression(str.Substring(1, i - 1));
                 str = str.Substring(i + 1);
             } else if (char.IsDigit(str[0])) {
                 String number = "";
