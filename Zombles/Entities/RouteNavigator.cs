@@ -108,6 +108,10 @@ namespace Zombles.Entities
 
         private void CalculatePath()
         {
+            if (!_entity.IsValid) {
+                return;
+            }
+
             if (!_disposed && !HasPath) {
                 _history = new List<Vector2>();
 

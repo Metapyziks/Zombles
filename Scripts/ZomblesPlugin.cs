@@ -203,15 +203,13 @@ namespace Zombles.Scripts
                     .Count(x => x.GetComponent<Health>().IsAlive);
 
                 if (survivors != _lastSurvivors || zombies != _lastZombies || _lastAliveCheck > Program.Duration) {
-                    _thinkTimeSinceLog += _navTimer.Elapsed.Milliseconds;
-                    _navTimer.Reset();
-
                     _lastSurvivors = survivors;
                     _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2} {3}", Math.Min(Program.Duration, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog);
+                    var log = String.Format("{0} {1} {2} {3} {4}", Math.Min(Program.Duration, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog, _navTimer.Elapsed.Milliseconds / _framesSinceLog);
                     Debug.WriteLine(log);
                     File.AppendAllText(Program.LogName, log + Environment.NewLine);
 
+                    _navTimer.Reset();
                     _framesSinceLog = 0;
                     _thinkTimeSinceLog = 0;
                 }

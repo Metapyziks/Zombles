@@ -41,7 +41,7 @@ namespace Evaluation
                 "bdi2"
             };
 
-            int dur = 600;
+            int dur = 60;
 
             var configs = new[] {
                 new Config { Size = 64, Humans = 96, Zombies = 32, Duration = dur },
