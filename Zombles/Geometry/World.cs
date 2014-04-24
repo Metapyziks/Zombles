@@ -178,7 +178,11 @@ namespace Zombles.Geometry
 
         public bool IsPositionNavigable(Vector2 pos)
         {
-            if (GetTile(pos).IsSolid) return false;
+            var tile = GetTile(pos);
+
+            if (tile.IsSolid) return false;
+
+            if (tile.IsInterior && GetBlock(pos).Enclosed) return false;
 
             var inter = GetIntersections(GetBlock(pos))
                 .OrderBy(x => (pos - x.Position).LengthSquared).First();

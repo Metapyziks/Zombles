@@ -83,7 +83,22 @@ namespace GraphTool
 
             if (str.Length == 0) return head;
 
-            if (char.IsDigit(str[0])) {
+            if (str[0] == '(') {
+                int c = 0, i;
+                for (i = 0; i < str.Length; ++i) {
+                    if (str[i] == '(') ++c;
+                    if (str[i] == ')') {
+                        --c;
+
+                        if (c == 0) {
+                            break;
+                        }
+                    }
+                }
+
+                head = ParseColumnExpression(str.Substring(1, i - 2));
+                str = str.Substring(i + 1);
+            } else if (char.IsDigit(str[0])) {
                 String number = "";
 
                 while (str.Length > 0 && char.IsDigit(str[0])) {
