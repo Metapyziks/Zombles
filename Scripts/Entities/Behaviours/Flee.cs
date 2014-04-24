@@ -22,7 +22,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             _fleeDir = new Vector2();
 
             MinFleeCheckPeriod = 0.0;
-            MaxFleeCheckPeriod = 0.0;
+            MaxFleeCheckPeriod = 1.0 / 16.0;
 
             FleeRadius = 4.0f + Tools.Random.NextSingle() * 6.0f;
             RunRadius = 2.0f + Tools.Random.NextSingle() * 4.0f;
