@@ -66,7 +66,7 @@ namespace Zombles.Geometry
 
         public void SplashBlood(Vector2 pos, float force)
         {
-            if (force <= 0.0f)
+            //if (force <= 0.0f)
                 return;
 
             int count = (int) (force * BloodResolution * BloodResolution);

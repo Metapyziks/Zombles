@@ -205,7 +205,7 @@ namespace Zombles.Scripts
                 if (survivors != _lastSurvivors || zombies != _lastZombies || _lastAliveCheck > Program.Duration) {
                     _lastSurvivors = survivors;
                     _lastZombies = zombies;
-                    var log = String.Format("{0} {1} {2} {3} {4}", Math.Min(Program.Duration, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog, _navTimer.Elapsed.Milliseconds / _framesSinceLog);
+                    var log = String.Format("{0} {1} {2} {3} {4}", Math.Min(Program.Duration, _lastAliveCheck), survivors, zombies, _thinkTimeSinceLog / _framesSinceLog, _navTimer.Elapsed.TotalMilliseconds / _framesSinceLog);
                     Debug.WriteLine(log);
                     File.AppendAllText(Program.LogName, log + Environment.NewLine);
 

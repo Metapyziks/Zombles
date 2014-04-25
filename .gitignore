@@ -116,3 +116,5 @@ Documents/Design/report.blg
 Documents/*.log
 Documents/Report/projectpaper.blg
 Documents/Report/projectpaper.log
+Documents/Design/report.log
+Documents/Report/texput.log
