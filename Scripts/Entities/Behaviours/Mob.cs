@@ -25,7 +25,7 @@ namespace Zombles.Scripts.Entities.Behaviours
             _nextMobCheck = MainWindow.Time;
             _mobTarget = null;
 
-            MinMobCheckPeriod = 0.0;
+            MinMobCheckPeriod = 0.125;
             MaxMobCheckPeriod = 0.25;
 
             MaxMobRatio = 0.33f;

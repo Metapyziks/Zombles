@@ -22,18 +22,13 @@ namespace Evaluation
 
         static void Main(string[] args)
         {
-            var seeds = new int[] {
-                0xb6ba069,
-                0x85f1d06,
-                0x7e2b2d9,
-                0x3314573,
-                0x545c87d,
-                0x2ae88ea,
-                0x3690649,
-                0xb501192,
-                0xb46c596,
-                0xa3c2e9e
-            };
+            var rand = new Random(0x3314573);
+
+            for (int i = 0; i < 12; ++i) rand.Next();
+
+            var seeds = Enumerable.Range(0, 20)
+                .Select(x => rand.Next())
+                .ToArray();
 
             var types = new[] {
                 "sub",
@@ -71,14 +66,19 @@ namespace Evaluation
                 }
 
                 foreach (var seed in seeds) {
-                    var ident = String.Format("{0}_{1}_{2}_{3}", seed, size, humans, zombies);
+                    var ident = seed.ToString();
 
                     Console.WriteLine("{0}: {1}", Array.IndexOf(seeds, seed), ident);
 
                     foreach (var type in types) {
                         Console.WriteLine(type);
 
-                        var logName = evalDir + type + "_" + ident + ".log";
+                        var logName = evalDir + ident + "_" + type + ".log";
+                        var oldLogName = evalDir + type + "_" + ident + ".log";
+
+                        if (File.Exists(oldLogName) && !File.Exists(logName)) {
+                            File.Move(oldLogName, logName);
+                        }
 
                         switch (type) {
                             case "sub":

@@ -126,7 +126,10 @@ namespace GraphTool
                 case '*':
                     return x => head(x) * ParseColumnExpression(str.Substring(1))(x);
                 case '/':
-                    return x => head(x) / ParseColumnExpression(str.Substring(1))(x);
+                    return x => {
+                        float denom = ParseColumnExpression(str.Substring(1))(x);
+                        return denom != 0 ? head(x) / denom : 0;
+                    };
             }
 
             return head;
