@@ -200,15 +200,37 @@ A comprehensive and fair analytical method is required for comparing the two age
 
 \textbf{Survival Rate} will be tested by first selecting a set of initial simulation states (at least 10) and running the simulation using each once per agent architecture. Each simulation will be left to run for 5 minutes and the number of survivors and zombies at each moment in time will be logged. The data produced will be used to produce graphs of the agent counts over time which can be analysed in terms of population decline rates, time until a stable population is established and whichever other statistical features that may appear. This test will involve no player interaction, only the purely autonomous aspects of the agent designs.
 
-\textbf{Task Completion} will analyse the efficiency at which each agent design can complete tasks assigned by a player. Similarly to the survival rate test, a set of initial states will be produced over which both architectures will run, the difference being that each initial state will include an instruction to build a collection of barricades at specific locations. The simulation will execute until each barricade is completed, the progress towards completion being recorded over time. This data will be graphed an compared, as with the survival rate data.
+\textbf{Task Completion} will analyse the efficiency at which each agent design can complete tasks assigned by a player. Similarly to the survival rate test, a set of initial states will be produced over which both architectures will run, the difference being that each initial state will include an instruction to build a collection of barricades at specific locations. The simulation will execute until each barricade is completed, the progress towards completion being recorded over time. This data will be graphed and compared, as with the survival rate data.
 
 \textbf{Performance} of the two architectures is of obvious importance; a solution with optimal survival rate and task completion efficiency has little use if it can only support a handful of agents at a time without reducing the simulation to an agonisingly slow crawl. The main method for the survival rate test can be used here, but with frame-time (the time taken to calculate each simulation step) being recorded rather than survival rate. The main requirement for the architectures is to keep average frame-time below 16.67ms, with minimal dips above that threshold. This test is platform dependant and so will be carried out on at least two different machines. Additional more superficial tests will also be performed with world sizes spanning from 64x64 tiles to 256x256 tiles and a range of agent counts from 50 to 1000 with each world size, to analyse performance relating to dense vs sparse populations.
 
 \section{Results}
+\subsection{Quantitative Result Set Acquisition}
+Quantitative results were produced by running the subsumptive architecture and two versions of the BDI implementation (one with frequent belief and deliberation updates, and the other with one quarter of the frequency) on a total of 160 different initial world states. These were divided into 8 different categories of world size and initial agent populations, designed to test different population densities, total agent counts, and ratios of survivor agents to antagonistic ones. For each of these categories 20 seeds were used to control the specific geometry generated and placement of agents, giving the total of 160 distinct environments. Figure \ref{fig:environs} lists each of the categories used to produce the final set of results.
 
-this section presents the results of the solutions.  It should include information on experimental settings.  The results should demonstrate the claimed benefits/disadvantages of the proposed solutions.
+\begin{figure}[ht]
+\centering
+\begin{tabular}{|c|rcl|c|c|} \hline
+{\bf Size} & {\bf Survivors} & : & {\bf Zombies} & Agent Ratio & Agent Density \\ \hline
+64 & 48 & : & 16 & 3 : 1 & 1.172 \\
+64 & 96 & : & 32 & 3 : 1 & 2.344 \\
+64 & 120 & : & 8 & 15 : 1 & 2.930 \\ \hline
+128 & 96 & : & 32 & 3 : 1 & 0.586 \\
+128 & 120 & : & 8 & 15 : 1 & 0.732 \\
+128 & 128 & : & 128 & 1 : 1 & 0.781 \\
+128 & 192 & : & 64 & 3 : 1 & 1.172 \\
+128 & 224 & : & 32 & 7 : 1 & 1.367 \\ \hline
+\end{tabular}
+\caption{The 8 different initial environment categories, for each of which 20 distinct instances were used for testing. Agent density measures the mean number of survivor agents per 100 tiles.}
+\label{fig:environs}
+\end{figure}
 
-This section should be between 2 to 3 pages in length.
+Each of the 480 individual tests ran for 36,000 individual simulation ticks, which is equivalent to 10 minutes of simulation time at 60 ticks per second. Every time the agent population changed a datapoint would be logged; recording the current time, the number of agents of both types, and the average time spent per tick to simulate the agent AI. The data for each of the 20 instances in a category was then aggregated into a single graph of averaged data, with plots for each AI implementation for comparison.
+
+\subsection{Quantitative Results}
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{../../Results/64_48_16/population}
+\end{figure}
 
 \section{Evaluation}
 
