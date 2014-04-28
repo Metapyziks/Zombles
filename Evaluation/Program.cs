@@ -11,6 +11,28 @@ namespace Evaluation
 {
     class Program
     {
+        struct ParsedLog
+        {
+            public double Time;
+            public int Humans;
+            public int Zombies;
+            public double SimTime;
+            public double NavTime;
+
+            public double FrameTime { get { return SimTime + NavTime; } }
+
+            public ParsedLog(String line)
+            {
+                var split = line.Split(' ');
+                
+                Time = double.Parse(split[0]);
+                Humans = int.Parse(split[1]);
+                Zombies = int.Parse(split[2]);
+                SimTime = double.Parse(split[3]);
+                NavTime = double.Parse(split[4]);
+            }
+        }
+
         struct Config
         {
             public int Size;
@@ -18,6 +40,14 @@ namespace Evaluation
             public int Zombies;
 
             public int Duration;
+        }
+
+        static ParsedLog[] ParseLog(String[] lines)
+        {
+            return lines
+                .Where(x => x.Trim().Length > 0 && !x.StartsWith("#"))
+                .Select(x => new ParsedLog(x))
+                .ToArray();
         }
 
         static void Main(string[] args)
@@ -49,6 +79,8 @@ namespace Evaluation
                 new Config { Size = 128, Humans = 224, Zombies = 32, Duration = dur }
             };
 
+            var latexOut = File.CreateText("table.tex");
+
             foreach (var config in configs) {
                 int size = config.Size;
                 int humans = config.Humans;
@@ -65,6 +97,16 @@ namespace Evaluation
                     Directory.CreateDirectory(evalDir);
                 }
 
+                Dictionary<String, double> avgHumans = new Dictionary<string,double>();
+                Dictionary<String, double> avgZombies = new Dictionary<string,double>();
+                Dictionary<String, double> avgFrameTime = new Dictionary<string,double>();
+
+                foreach (var type in types) {
+                    avgHumans.Add(type, 0.0);
+                    avgZombies.Add(type, 0.0);
+                    avgFrameTime.Add(type, 0.0);
+                }
+                
                 foreach (var seed in seeds) {
                     var ident = seed.ToString();
 
@@ -92,25 +134,61 @@ namespace Evaluation
                                 break;
                         }
 
+                        bool skip = false;
+                        ParsedLog[] data = null;
+
                         if (File.Exists(logName)) {
-                            var data = File.ReadAllLines(logName);
-                            if (data.Where(x => x.Trim().Length > 0).Any(x => x.StartsWith(duration + " "))) {
-                                continue;
+                            data = ParseLog(File.ReadAllLines(logName));
+
+                            skip = data.LastOrDefault().Time == duration;
+                        }
+
+                        if (!skip) {
+                            var info = new ProcessStartInfo("Zombles.exe", String.Format("-t {0} -s {1} -w {2} -h {3} -z {4} -d {5} -o {6}",
+                                type, seed, size, humans, zombies, duration, logName));
+
+                            var proc = Process.Start(info);
+
+                            while (!proc.HasExited) {
+                                Thread.Sleep(100);
                             }
+
+                            proc.Dispose();
+
+                            data = ParseLog(File.ReadAllLines(logName));
                         }
 
-                        var info = new ProcessStartInfo("Zombles.exe", String.Format("-t {0} -s {1} -w {2} -h {3} -z {4} -d {5} -o {6}",
-                            type, seed, size, humans, zombies, duration, logName));
+                        double addHumans = 0.0;
+                        double addZombies = 0.0;
+                        double addTime = 0.0;
 
-                        var proc = Process.Start(info);
+                        double prev = 0.0;
+                        foreach (var log in data) {
+                            double dt = log.Time - prev;
 
-                        while (!proc.HasExited) {
-                            Thread.Sleep(100);
+                            addHumans += log.Humans * dt;
+                            addZombies += log.Zombies * dt;
+                            addTime += log.FrameTime * dt;
+
+                            prev = log.Time;
                         }
 
-                        proc.Dispose();
+                        avgHumans[type] += addHumans;
+                        avgZombies[type] += addZombies;
+                        avgFrameTime[type] += addTime;
                     }
                 }
+
+                double div = seeds.Length * duration;
+
+                latexOut.WriteLine("{0} & {1:F1} & {2:F1} & {3:F1} & {4:F3} & {5:F3} & {6:F3} \\\\ \\hline",
+                    (char) ('A' + Array.IndexOf(configs, config)),
+                    avgHumans["bdi"] / div,
+                    avgHumans["bdi2"] / div,
+                    avgHumans["sub"] / div,
+                    avgFrameTime["bdi"] / div,
+                    avgFrameTime["bdi2"] / div,
+                    avgFrameTime["sub"] / div);
 
                 {
                     var info = new ProcessStartInfo("GraphTool", String.Format("-w {0} -h {1} -y {2} -x {3} -o {4} {5} {6} {7} {8} {9} {10}",
@@ -145,6 +223,8 @@ namespace Evaluation
                     proc.Dispose();
                 }
             }
+
+            latexOut.Close();
         }
     }
 }
