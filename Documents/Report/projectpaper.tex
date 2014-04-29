@@ -28,10 +28,11 @@
 
 \maketitle
 
-\begin{abstract}
-These instructions give you guidelines for preparing the final paper.  DO NOT change any settings, such as margins and font sizes.  Just use this as a template and modify the contents into your final paper.  Do not cite references in the abstract.
-
-The abstract must be a Structured Abstract with the headings {\bf Context/Background}, {\bf Aims}, {\bf Method}, {\bf Results}, and {\bf Conclusions}.  This section should not be longer than half of a page, and having no more than one or two sentences under each heading is advised.
+\begin{abstract} {\bf Context:} Designing the core autonomous behaviour for characters in a video game, where those characters are expected by the player to perform tasks for themselves, poses many interesting challenges. This paper explores the tasks faced when developing a capable and somewhat convincing set of Artificial Intelligence routines within a simulated zombie epidemic as the foundation of a real-time strategy game with player allocated goals.
+{\bf Aims:} The primary goal for this project was to develop a successful method of controlling a large number of agents in a hazardous environment to prioritise survival through cooperation. The algorithms must not be computationally expensive to allow for many agents to act in real-time and also express superficially convincing human-like behaviours.
+{\bf Method:} Two conceptually distinct architectures for character behaviour were implemented, a subsumption stack and Beliefs-Desires-Intentions model. These were then compared in terms of the ability for agents to avoid threats, system resource usage and qualitative aspects of their behaviour. Advanced path finding and vision testing algorithms were also implemented.
+{\bf Results:} A total of 480 individual simulations were performed to generate graphs describing population decline and execution speed for the subsumptive implementation and two versions of the BDI approach, which seemed to favour the BDI model for this scenario in all aspects.
+{\bf Conclusions:} For this problem domain the BDI model appears to be a better fit due to its efficiency and power while also allowing for easy extensibility. A few avenues for additional research in the area of shared task planning are also identified.
 \end{abstract}
 
 \begin{keywords}
@@ -203,6 +204,7 @@ A comprehensive and fair analytical method is required for comparing the two age
 
 \textbf{Performance} of the two architectures is of obvious importance; a solution with optimal survival rate and task completion efficiency has little use if it can only support a handful of agents at a time without reducing the simulation to an agonisingly slow crawl. The main method for the survival rate test can be used here, but with frame-time (the time taken to calculate each simulation step) being recorded rather than survival rate. The main requirement for the architectures is to keep average frame-time below 16.67ms, with minimal dips above that threshold. This test is platform dependant and so will be carried out on at least two different machines. Additional more superficial tests will also be performed with world sizes spanning from 64x64 tiles to 256x256 tiles and a range of agent counts from 50 to 1000 with each world size, to analyse performance relating to dense vs sparse populations.
 
+\newpage
 \section{Results}
 \noindent
 Quantitative results were produced by running the subsumptive architecture and two versions of the BDI implementation (one with frequent belief and deliberation updates, and the other with one quarter of the frequency) on a total of 160 different initial world states. These were divided into 8 different categories of world size and initial agent populations, designed to test different population densities, total agent counts, and ratios of survivor agents to antagonistic ones. For each of these categories 20 seeds were used to control the specific geometry generated and placement of agents, giving the total of 160 distinct environments. Table \ref{tab:environs} lists each of the categories used to produce the final set of results.
