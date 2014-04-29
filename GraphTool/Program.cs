@@ -205,11 +205,19 @@ namespace GraphTool
                     return a.Last().Y;
                 };
 
+                int trim = 2;
+
+                Func<IEnumerable<float>, float> avg = a => {
+                    var arr = a.OrderBy(x => x).ToArray();
+
+                    return arr.Skip(trim).Take(arr.Length - trim * 2).Average();
+                };
+
                 float last = sets.Min(x => x.Min(y => y.X)) - 1f;
                 var points = new List<PointF>();
 
                 for(;;) {
-                    points.Add(new PointF(last, sets.Average(x => lerp(x, last))));
+                    points.Add(new PointF(last, avg(sets.Select(x => lerp(x, last)))));
 
                     var valid = sets.Where(x => x.Any(y => y.X > last)).ToArray();
 
