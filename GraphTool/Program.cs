@@ -208,11 +208,14 @@ namespace GraphTool
                 float last = sets.Min(x => x.Min(y => y.X)) - 1f;
                 var points = new List<PointF>();
 
-                PointF[] nextSet = null;
-                while ((nextSet = sets.FirstOrDefault(x => x.Any(y => y.X > last))) != null) {
-                    last = nextSet.First(x => x.X > last).X;
-
+                for(;;) {
                     points.Add(new PointF(last, sets.Average(x => lerp(x, last))));
+
+                    var valid = sets.Where(x => x.Any(y => y.X > last)).ToArray();
+
+                    if (valid.Length == 0) break;
+
+                    last = valid.Min(x => x.Where(y => y.X > last).Min(y => y.X));
                 }
 
                 _points = points.ToArray();
