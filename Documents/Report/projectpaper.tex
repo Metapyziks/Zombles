@@ -99,7 +99,6 @@ The list of cited references should appear at the end of the report, ordered alp
 You need to give all authors' names in each reference.  Do not use ``et al.'' unless there are more than five authors.  Papers that have not been published should be cited as ``unpublished'' \cite{euther}.  Papers that have been submitted or accepted for publication should be cited as ``submitted for publication'' as in \cite{futher} .  You can also cite using just the year when the author's name appears in the text, as in ``but according to Futher \citeyear{futher}, we \dots''.  Where an authors has more than one publication in a year, add `a', `b' etc. after the year.
 
 \section{Solution}
-
 \subsubsection{Development Environment}\noindent
 The original game that this project is extending is written in \Csh, so that will be the primary programming language used. Microsoft's Visual Studio 2013 will be used as an integrated development environment for its \Csh~compiler, debugging and profiling tools and Sublime Text 2 for any peripheral text editing. Development will mainly be on a Windows desktop PC (Intel Core i5, AMD 7850), using a Windows laptop (Intel Core i7, nVidia GeForce GT 540M) to test performance on a device with an nVidia GPU. The OpenTK library is used to expose OpenGL bindings for .NET and is the only non-standard library used.
 
@@ -205,6 +204,7 @@ A comprehensive and fair analytical method is required for comparing the two age
 \textbf{Performance} of the two architectures is of obvious importance; a solution with optimal survival rate and task completion efficiency has little use if it can only support a handful of agents at a time without reducing the simulation to an agonisingly slow crawl. The main method for the survival rate test can be used here, but with frame-time (the time taken to calculate each simulation step) being recorded rather than survival rate. The main requirement for the architectures is to keep average frame-time below 16.67ms, with minimal dips above that threshold. This test is platform dependant and so will be carried out on at least two different machines. Additional more superficial tests will also be performed with world sizes spanning from 64x64 tiles to 256x256 tiles and a range of agent counts from 50 to 1000 with each world size, to analyse performance relating to dense vs sparse populations.
 
 \section{Results}
+\noindent
 Quantitative results were produced by running the subsumptive architecture and two versions of the BDI implementation (one with frequent belief and deliberation updates, and the other with one quarter of the frequency) on a total of 160 different initial world states. These were divided into 8 different categories of world size and initial agent populations, designed to test different population densities, total agent counts, and ratios of survivor agents to antagonistic ones. For each of these categories 20 seeds were used to control the specific geometry generated and placement of agents, giving the total of 160 distinct environments. Table \ref{tab:environs} lists each of the categories used to produce the final set of results.
 
 \begin{table}[ht]
@@ -282,6 +282,7 @@ H & 195.9 & 176.1 & 182.8 & 4.206 & 2.265 & 6.364 \\ \hline
 \end{figure}
 
 \section{Evaluation}
+\noindent
 The survival rate plots clearly demonstrate that one implementation is the most successful at maintaining the agent population, with the more intensive BDI implementation outperforming the others significantly in all instances. The subsumption and less intensive BDI implementations appear to be very similar in terms of survival rate, with the fast BDI maintaining a slightly higher mean population count overall.
 
 As the two BDI implementations differ only in the frequency that the individual agents update their belief databases and deliberate on new intentions, so the considerable difference in survival rates demonstrates that those higher frequencies are certainly advantageous. This will be because a higher belief and intention update frequency allows the agents to respond to a dynamic environment with a lower mean latency, or in other words they have faster reflexes.
@@ -290,30 +291,27 @@ Each of the behaviours in the subsumption architecture are polling their respect
 
 While the population decline plots show relatively similar behaviour between the different approaches, the frame time data tells a vastly different story. The first thing to note is the large range of frame rates for the subsumption architecture in each graph, suggesting the frame time is wildly unpredictable and so unsuitable for a real-time game environment. The larger peaks near the start of each graph (which the BDI plots also exhibit, albeit in a far more muted form) will be caused by the relatively high density of agents near the start of the simulation, meaning each agent must consider a larger number of nearby objects. The subsumption architecture will suffer more from this as each behavioural layer individually examines its local environment without the processing being shared between them. In comparison, the BDI approach only samples its environment during beliefs updates, the results of which are shared between all desire and intention types that may require them.
 
+Some more trivial observations include the apparent significant benefit in reducing belief and deliberation update frequency for the BDI approach in terms of running time, although admittedly at the cost of agent survival rate. This very simple modification to vary the algorithms efficiency would be very useful in a game setting, where a player may wish to adjust the AI's quality to a level that performs well on their device. The subsumptive architecture cannot be adjusted in such a simple way, and would require each behavioural layer to accommodate a variable quality level independently. Another observation is that running time per agent for the BDI approaches settles down to a near constant value after the initial peak of high population density. Such a steady and predictable processing time would equate to a steady display update rate, meaning a player won't be subjected to intermittent periods of low frame rates that may disrupt their experience.
 
+From a programmer's perspective, the subsumptive architecture itself was relatively trivial to implement, and each individual behavioural layer is extremely simple as they each are only concerned with one sub-problem of an agent's overall agenda. However, the main difficulty lies in deciding which layers to add and in what order, as complex interactions between individual behaviours are relied on for complex compound behaviours to emerge. Additionally, while certain constructive interactions between the layers may be anticipated and utilised, unexpected destructive interactions may arise such as two competing layers leading to an indecisive agent.
+
+Conversely the implementation of the BDI architecture was much more involved; with quite a bit of effort involved in designing the beliefs database, the desire capturing, filtering and ordering process, intention deliberation, and action aggregation. Thankfully the process of designing and implementing each desire and intention type was far simpler after the underlying architecture was in place, with fewer concerns about how the desires could potentially interact and instead relying on an automatic conflict resolution system between desires and actions. This system has the additional benefit of being easily extensible, whereas the process of adding additional behaviours to the subsumption model would require careful consideration about how potential new layers would interact with existing ones.
+
+Overall, this implementation of the BDI architecture seems to fit this particular scenario well, meeting each of the core requirements of increasing survival rate, performing complex tasks like barricade construction, being computationally inexpensive, and navigating the environment rationally while avoiding unnatural looking behaviour. The subsumption architecture was not as successful in all of these aspects, and additionally was more difficult to implement due to the reliance on complex interactions between behavioural layers.
 
 \section{Conclusions}
+\noindent
+Performing this analysis of the comparative merits and shortcomings of the subsumption architecture and BDI model for this particular problem instance has certainly been worthwhile, as the results deviate from what may be expected in several respects.
 
-This section summarises the main points of this paper.  Do not replicate the abstract as the conclusion.  A conclusion might elaborate on the importance of the work or suggest applications and extensions.  This section should be no more than 1 page in length.
+Due to its bulky underlying architecture it may be assumed that the BDI approach would suffer from poorer performance, but it is now evident that this bulk offsets calculations that would otherwise be performed by each individual behavioural layer in a subsumption-based implementation. It is additionally trivial to tweak the performance of the BDI implementation (at the cost of quality), allowing for the possibility of users on less capable machines experiencing an acceptable simulation speed. The BDI implementation also maintained a far more stable execution time for each agent, which translates to a smoother gameplay experience.
 
-The page lengths given for each section are indicative and will vary from project to project but should not exceed the upper limit.  A summary is shown in Table \ref{summary}.
+It may also be assumed that the subsumption approach would be the easiest to implement, but that turns out to only be true for the underlying architecture. The internals of a decently implemented BDI framework offsets a significant portion of the programming that would otherwise be involved in the implementation of each atomic behaviour, leading to both simpler code and a more efficient solution.
 
-\begin{table}[htb]
-\centering
-\caption{SUMMARY OF PAGE LENGTHS FOR SECTIONS}
-\vspace*{6pt}
-\label{summary}
-\begin{tabular}{|ll|c|} \hline
-& \multicolumn{1}{c|}{\bf Section} & {\bf Number of Pages} \\ \hline
-I. & Introduction & 2--3 \\ \hline
-II. & Related Work & 2--3 \\ \hline
-III. & Solution & 4--7 \\ \hline
-IV. & Results & 2--3 \\ \hline
-V. & Evaluation & 1-2 \\ \hline
-VI. & Conclusions & 1 \\ \hline
-\end{tabular}
-\end{table}
+Under subjective analysis the BDI implementation is again more successful for this problem domain, granting the actions of the agents a more natural appearance rather than the occasionally indecisive anomalous behaviour of the agents being controlled by a subsumption stack.
 
+It is therefore fair to conclude that the BDI model implementation for this project is a better fit for the original problem scenario than the subsumption-based approach, and so will be used as the basis for the AI during the continued development of this game project.
+
+There are a few possible avenues for extension of the BDI implementation that may be of value. One is the implementation of shared plans for tasks like barricade construction or the exploration of territory, where one agent coordinates a group of subservient workers. This allows for more coordinated actions while also reducing the time spent deliberating on plans by offsetting the planning of many agents to just one. A further extension would be a more complex barricade design system; currently barricades are only constructed across the entrances of buildings, but this can be improved by having agents decide to block off entire streets of the city to enclose a larger area. This would fit well with the proposed plan sharing system, and would lead to more interesting and possibly more successful agents.
 
 \bibliography{projectpaper}
 

@@ -205,7 +205,7 @@ namespace GraphTool
                     return a.Last().Y;
                 };
 
-                int trim = 2;
+                int trim = 5;
 
                 Func<IEnumerable<float>, float> avg = a => {
                     var arr = a.OrderBy(x => x).ToArray();
