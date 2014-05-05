@@ -100,7 +100,7 @@ This project is built on top of a game written in \Csh, targeting the .NET Frame
 After the environment has been generated a main control loop begins. During each iteration this loop will either perform a simulation step, redraw the screen, or both; depending on how much time has passed since those respective actions were last performed. While screen redrawing will occur as frequently as possible while maintaining a minimum period of 16.67ms, simulation steps attempt to maintain an average period of that same frame-time. This may involve running slightly more simulation steps than the desired average to make up for a prior period of slow updates that fell below the average. Each simulation step cycles through every object in the game environment, including agents, and allows them to perform some individual logic. Following this, any player inputs are interpreted and the path finding queue is processed as described in section \ref{sec:paths}.
 
 \subsubsection{Path Finding \& Navigation}\noindent
-The problem of finding efficient paths through virtual environments is often faced when developing AI for games and so has been explored extensively. Generally the A* algorithm \cite{hart68} is used, although while it guarantees a high quality path it may require a significant amount of time to find it (depending on the complexity of the environment). When observing the structure of the worlds produced by the procedural city generation algorithm (See Figure~\ref{fig:block}) it is easy to spot aspects that can be exploited to produce an A* adaptation which is expected to require less time to execute.
+The problem of finding efficient paths through virtual environments is often faced when developing AI, and is a feature required by both agent prototypes developed in this project. Profiling the performance of the simulation has shown that one of the most significant bottlenecks is path-finding (the other being visibility testing), so the implementation of an efficient algorithm to solve this particular problem improves the system's performance greatly. Generally the A* algorithm \cite{hart68} is used, although while it guarantees a high quality path it may require a significant amount of time to find it (depending on the complexity of the environment). When observing the structure of the worlds produced by the procedural city generation algorithm (See Figure~\ref{fig:block}) it is easy to spot aspects that can be exploited to produce an A* adaptation which is expected to require less time to execute.
 
 \label{sec:paths}
 \begin{figure}[h]
@@ -117,8 +117,9 @@ One of the requirements of the system was for it to maintain a minimal amount of
 This algorithm has been analysed during development of the project to produce results very close in length as to when applying a single instance of refined A* across the entire route, with a far shorter execution time for all but the most trivial instances.
 
 \subsubsection{Vision \& Collision Testing}\noindent
-Visibility testing and collision detection are similar problems and can be largely solved with the same algorithm. For collision detection the program is testing if an object (simplified as its bounding rectangle)
-can be `swept' along a vector representing the movement it wishes to make during the current simulation step. If the swept rectangle intersects with solid world geometry the object's movement is pulled back to the furthest it could go without such an intersection. Similarly, when testing the visibility of an object you are essentially testing whether it can be swept towards the observer without being blocked by any solid geometry, thereby detecting if its image would be blocked by a wall.
+Visibility testing and collision detection are similar problems that can be largely solved with the same algorithm. While collision testing is used frequently by the low-level simulation, visibility testing is a crucial requirement of both agent prototypes that allows them to recognise which nearby entities are observable in a realistic fashion. Like path finding, visibility testing has been demonstrated to be one of the more computationally costly aspects of the simulation through performance profiling, so the system as a whole benefits greatly from the inclusion of an efficient solution.
+
+For collision detection the program is testing if an object (simplified as its bounding rectangle) can be `swept' along a vector representing the movement it wishes to make during the current simulation step. If the swept rectangle intersects with solid world geometry the object's movement is pulled back to the furthest it could go without such an intersection. Similarly, when testing the visibility of an object you are essentially testing whether it can be swept towards the observer without being blocked by any solid geometry, thereby detecting if its image would be blocked by a wall.
 
 This sweeping action is the costly part of the technique, and so an optimal solution will limit the number of intersections tested with this swept area to the absolute smallest number required. As in this scenario only walls can intersect the object, and walls are only present along the edges of tile, the distance along the movement vector that the object is swept can be incremented by amounts that exactly move it to the next tile boundary that would be met. This method is illustrated by Figure~\ref{fig:trace} and is an adaptation of the technique used in early pseudo-3D environment rendering \cite{raycast}.
 
@@ -155,7 +156,7 @@ The survival aspect functions with several emergent sub-strategies. The $SelfDef
 
 Barricade construction relies on a similar interaction between several behaviours. The process usually starts with an agent wandering around outside, carrying no resource object. The $SeekRefuge$ behaviour will lead it to navigate inside a building, within which it may find objects that yield resource items when damaged when obeying the $HarvestResource$ behaviour. When the object breaks into its component resources, the $PickupResource$ behaviour is followed and the agent now holds a resource item. The $VacateBlock$ layer instructs the agent to leave the building if it is holding a resource and as soon as the agent leaves it drops the item as instructed by the $DropResource$ layer. The agent then attempts to $SeekRefuge$ again and the cycle repeats. Resource items are continually dropped onto tiles neighbouring an exit to the building, which pile up to form barricades. When the barricade becomes large enough, the tile it belongs to becomes solid and the agent automatically finds a different path to leave and re-enter the building, thereby dropping items onto a different tile.
 
-Each layer in this solution was quite trivial to implement due to their simplicity in isolation, although the overall organisation of layers involved a significant amount of planning. Some behaviours, such as $Mob$ and $Flee$, provided some scope for experimentation by testing different thresholds for when to perform that action, with values eventually chosen that balance survival rate against computational expense. Additionally, experiments were performed to test whether it was optimal for all agents to possess the $Mob$ layer, or if having a subset of agents that deviated from that strategy would lead to that set lasting markedly longer than the longest surviving agents in the first instance. This did not turn out to be the case, with the larger zombie population caused by having fewer courageous survivors leading to the overall survival rate decreasing.
+Each layer in this solution was quite trivial to implement due to their simplicity in isolation, although the overall organisation of layers involved a significant amount of planning. The main difficulty in implementing the subsumptive prototype was the enforced lack of communication between layers, a requirement for the design to align with the modular system imagined by \citename{brooks86}. In many cases distinct layers would need to derive similar information independently, or would have to estimate the states of other layers in order to avoid conflicts.
 
 \subsubsection{BDI Prototype}\noindent
 For the BDI agent architecture an implementation for each of the three core components (Beliefs model, Desires identification and Intentions filtering) was developed as individual systems \cite{rao95}. After this, a set of desire types and their corresponding intentions was produced.
@@ -167,7 +168,7 @@ Desire identification is the next core component of the architecture, which invo
 \label{sec:bdi}
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{goals}
+\includegraphics[width=0.9\textwidth]{goals}
 \caption{A diagram to show a breakdown of the main goals for a human agent into sub-goals, with possible conflicts signified by dashed lines.}
 \label{fig:goals}
 \end{figure}
@@ -180,22 +181,26 @@ Barricade construction desires are produced if an agent is within a block with a
 
 There are two possible points of contention that may arise during the BDI architecture's main loop; conflicting desires and conflicting actions. A single solution to both issues has been produced by providing an interface used by both desire types and action types, where each pair in the desire or action set is tested for a conflict and the element with the highest utility heuristic decides how the conflict is resolved. For example, movement actions are resolved by combining their respective vectors, weighting each by its attached utility, then normalising the result to ensure the agent doesn't move slowly. The same applies for desires to avoid two different threats; a combined desire is produced to move in a direction that moves away from both threats simultaneously if possible, with a weighting dependant on how close each threat is.
 
-The beliefs update process is staggered to occur every few simulation steps per agent, and the desire deliberation process occurs even less frequently unless an intention declares that it should be removed. This is to improve the average simulation time for each agent, which ensures the simulation can be performed fast enough to maintain an adequate frame update rate. While more frequent beliefs updates mean an agent can respond to changes in its environment faster, it is expected for intentions to be committed to for significant periods of time \cite{bonura09} so the reduced deliberation rate for changing intentions does not affect the rationality of each agent much.
+The beliefs update process is staggered to occur every few simulation steps per agent, and the desire deliberation process occurs even less frequently unless an intention declares that it should be removed. This is to improve the average simulation time for each agent, which ensures the simulation can be performed fast enough to maintain an adequate frame update rate. While more frequent beliefs updates mean an agent can respond to changes in its environment faster, it is expected for intentions to be committed to for significant periods of time \cite{bonura09} so a slightly reduced deliberation rate for changing intentions will not affect the rationality of each agent to any significant degree.
 
-\newpage
-\subsubsection{Analysis Strategy}\noindent
-The performance of each algorithm is expected to be largely influenced by the environment size and population density. Environment size will affect things like the maximum path length an agent might attempt to navigate, and high population densities will lead to each agent processing a large number of local entities. It is for this reason that the two algorithms are compared over a wide range of environment types, with a large set of initial world states being used within each environment type that each implementation is executed on. These tests were left to run in sequence, alternating between the prototypes to mitigate the effects of background processes on the computer hosting the tests on relative performance. Each test instance was left to run for the same amount of time, logging aspects like population counts and time spent simulating the agent behaviour. These could then be used to evaluate the prototypes by the following criteria.
+Including two versions of the BDI prototype with different values for these frequencies would allow for a better understanding of the relationship between optimality and computational performance. The first iteration of the prototype has a very short beliefs update period of $0.25$ seconds, with an intention deliberation period of $0.5$ seconds. This configuration emphasises rapid reaction times and the ability for agents to reconsider their higher level aspirations frequently. The alternative version of the BDI prototype is tuned for speed over quality, with a beliefs update period of $1$ second and a deliberation period of $2$ seconds. This yields an inferior reaction time of up to a second and the possibility of holding onto an unfavourable intention for two seconds too long, drawbacks that are complimented by a much shorter expected computation time per agent.
+
+\subsubsection{Testing \& Verification}
+For the most part testing involved the verification of the emergence of expected behaviours in the AI agents, a difficult process to automate. While testing, an enhancement to the simulation interface was added that allowed for the internal logic of an individual agent to be explored by selecting them with the cursor. This would trigger a breakpoint in the code specific to that agent that could exploit Visual Studio's ability to walk through individual statements of executing code individually, exposing the live internal state of that agent. This allowed for testing to see that the expected behavioural layer was triggered in the subsumptive prototype in each situation, or that the right set of intentions were committed to for a given situation in the BDI prototype.
+
+Code contracts through assertions were often used to flag out unexpected values like null references or inappropriate zero vectors, and were a useful indicator of potentially flawed logic in the systems that spawned such values. Performance profiling was also extensively used to identify inefficient code, directing the focus of optimisation to the elements of the project that needed it most. Differences in graphics driver implementations between nVidia and AMD graphics processing units can cause code to function considerably differently depending on the GPU's manufacturer, so the project was tested on both an AMD 7850 and a nVidia GeForce GT 540M to ensure consistency.
+
+A commitment to validating the routines underlying the simulation allowed for the final result collection process, with a total effective contiguous runtime of 80 hours, to proceed without a single crash.
+
+\section{Results}
+\noindent
+The performance of each algorithm was expected to be largely influenced by the environment size and population density. Environment size will affect things like the maximum path length an agent might attempt to navigate, and high population densities will lead to each agent processing a large number of local entities. It is for this reason that the two algorithms were compared over a wide range of environment types, with a large set of initial world states being used within each environment type that each implementation is executed on. These tests were left to run in sequence, alternating between the prototypes to mitigate the effects of background processes on the host computer on relative performance. Each test instance was left to run for the same amount of time, logging aspects like population counts and time spent simulating the agent behaviour. These could then be used to evaluate the prototypes by the following criteria.
 
 \textbf{Survival Rate} is analysed by producing graphs plotting agent population over time which can be analysed in terms of population decline rates, time until a stable population is established and whichever other statistical features that may appear. On each graph the zombie population is also plotted to give an insight into whether the agents are surviving due to the elimination of enemies or because they are simply avoiding them by barricading themselves.
 
 \textbf{Performance} of the two architectures is of obvious importance; a solution with optimal survival rate has little use if it can only support a handful of agents at a time without reducing the simulation to an agonisingly slow crawl. This will be analysed by plotting the average amount of time required to simulate each agent as the simulation progresses, with the aggregate plots using Winsorised data to eliminate outliers due to background processes occurring on the machine hosting the tests. The graphs, when used in conjunction with the population graphs from the same tests, will demonstrate any relationships between population size and performance.
 
-More subjective aspects of the simulation are also evaluated, as one of the core requirements for the prototypes was for them to exhibit natural behaviour. This would mean avoiding unusual activity like running into walls or eerily robotic behaviour like following shortest paths exactly. This area of evaluation is less critical than the survival rate and performance of the prototypes, but 
-
-\newpage
-\section{Results}
-\noindent
-Quantitative results were produced by running the subsumptive architecture and two versions of the BDI implementation (one with frequent belief and deliberation updates, and the other with one quarter of the frequency) on a total of 160 different initial world states. These were divided into 8 different categories of world size and initial agent populations, designed to test different population densities, total agent counts, and ratios of survivor agents to antagonistic ones. For each of these categories 20 seeds were used to control the specific geometry generated and placement of agents, giving the total of 160 distinct environments. Table \ref{tab:environs} lists each of the categories used to produce the final set of results.
+Quantitative results were produced by running the subsumptive architecture and the two versions of the BDI implementation (one with frequent belief and deliberation updates, and the other with one quarter of the frequency) on a total of 160 different initial world states. These were divided into 8 different categories of world size and initial agent populations, designed to test different population densities, total agent counts, and ratios of survivor agents to antagonistic ones. For each of these categories 20 seeds were used to control the specific geometry generated and placement of agents, giving the total of 160 distinct environments. Table \ref{tab:environs} lists each of the categories used to produce the final set of results.
 
 \begin{table}[ht]
 \centering
@@ -214,7 +219,7 @@ H & 128 & 224 & : & 32 & 7 : 1 & 1.367 \\ \hline
 \label{tab:environs}
 \end{table}
 
-Each of the 480 individual tests ran for 36,000 individual simulation ticks, which is equivalent to 10 minutes of simulation time at 60 ticks per second. Every time the agent population changed a datapoint would be logged; recording the current time, the number of agents of both types, and the average time spent per tick to simulate the agent AI. The data for each of the 20 instances in a category was then aggregated into a single graph of averaged data, with plots for each AI implementation for comparison. This provided a set of 16 graphs in total, six of which are on the following pages to illustrate points identified during their evaluation. Additionally, Table \ref{tab:results} lists the mean final population counts for the three algorithms tested, along with their mean frame time per agent.
+Each of the 480 individual tests ran for 36,000 individual simulation ticks, which is equivalent to 10 minutes of simulation time at 60 ticks per second. Every time the agent population changed a datapoint would be logged; recording the current time, the number of agents of both types, and the average time spent per tick to simulate the agent AI. The data for each of the 20 instances in a category was then aggregated into a single graph of averaged data, with plots for each AI implementation for comparison. This provided a set of 16 graphs in total, six of which are on the following pages to illustrate points identified during evaluation. Additionally, Table \ref{tab:results} lists the mean final population counts for the three algorithms tested, along with their mean frame time per agent.
 
 \begin{table}[ht]
 \centering
@@ -232,50 +237,50 @@ H & 195.9 & 176.1 & 182.8 & 4.206 & 2.265 & 6.364 \\ \hline
 \end{tabular}
 \caption{Final agent counts and frame times for each algorithm on each initial state category (as specified in Table \ref{tab:environs}).}
 \label{tab:results}
-\vspace{-20mm}
 \end{table}
 
 \begin{figure}
 \vspace{-20mm}
 \centering
-\includegraphics[width=0.8\textwidth]{../../Results/64_48_16/population}
-\caption{\small Average population curves for the 60 simulations on a world of size 64x64, with an initial 48 survivors and 16 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/64_48_16/population}
+\caption{\small Average population curves for environment category A.}
 \label{fig:64_48_16_pop}
 
 \vspace{5mm}
-\includegraphics[width=0.8\textwidth]{../../Results/128_96_32/population}
-\caption{\small Average population curves for the 60 simulations on a world of size 128x128, with an initial 96 survivors and 32 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/128_96_32/population}
+\caption{\small Average population curves for environment category D.}
 \label{fig:64_96_32_pop}
 
 \vspace{5mm}
-\includegraphics[width=0.8\textwidth]{../../Results/128_192_64/population}
-\caption{\small Average population curves for the 60 simulations on a world of size 128x128, with an initial 192 survivors and 64 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/128_192_64/population}
+\caption{\small Average population curves for environment category G.}
 \label{fig:128_192_64_pop}
 \end{figure}
 
 \begin{figure}
 \vspace{-20mm}
 \centering
-\includegraphics[width=0.8\textwidth]{../../Results/64_48_16/performance}
-\caption{\small Average AI simulation performance for the 60 simulations on a world of size 64x64, with an initial 48 survivors and 16 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/64_48_16/performance}
+\caption{\small Average AI simulation performance for environment category A.}
 \label{fig:64_48_16_per}
 
 \vspace{5mm}
-\includegraphics[width=0.8\textwidth]{../../Results/128_96_32/performance}
-\caption{\small Average AI simulation performance for the 60 simulations on a world of size 128x128, with an initial 96 survivors and 32 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/128_96_32/performance}
+\caption{\small Average AI simulation performance for environment category D.}
 \label{fig:64_96_32_per}
 
 \vspace{5mm}
-\includegraphics[width=0.8\textwidth]{../../Results/128_192_64/performance}
-\caption{\small Average AI simulation performance for the 60 simulations on a world of size 128x128, with an 192 survivors and 64 zombies.}
+\includegraphics[width=0.85\textwidth]{../../Results/128_192_64/performance}
+\caption{\small Average AI simulation performance for environment category G.}
 \label{fig:128_192_64_per}
 \end{figure}
 
+\newpage
 \section{Evaluation}
 \noindent
-The survival rate plots clearly demonstrate that one implementation is the most successful at maintaining the agent population, with the more intensive BDI implementation outperforming the others significantly in all instances. The subsumption and less intensive BDI implementations appear to be very similar in terms of survival rate, with the fast BDI maintaining a slightly higher mean population count overall.
+The survival rate plots clearly demonstrate that one implementation is the most successful at maintaining the agent population, with the more intensive BDI implementation outperforming the others significantly in all instances. The subsumption and less intensive BDI implementations appear to be very similar in terms of survival rate (strongly demonstrated in Figures \ref{fig:64_48_16_pop} and \ref{fig:128_192_64_pop}), with the fast BDI maintaining a slightly higher mean population count because of instances like the one shown in Figure \ref{fig:64_96_32_pop}.
 
-As the two BDI implementations differ only in the frequency that the individual agents update their belief databases and deliberate on new intentions, so the considerable difference in survival rates demonstrates that those higher frequencies are certainly advantageous. This will be because a higher belief and intention update frequency allows the agents to respond to a dynamic environment with a lower mean latency, or in other words they have faster reflexes.
+As the two BDI implementations differ only in the frequency that the individual agents update their belief databases and deliberate on new intentions, the considerable difference in survival rate demonstrate that those higher frequencies are certainly advantageous. This will be because a higher belief and intention update frequency allows the agents to respond to a dynamic environment with a lower mean latency, or in other words they have faster reflexes.
 
 Each of the behaviours in the subsumption architecture are polling their respective agent's environment with an equivalent or higher frequency compared to the high-frequency BDI implementation, so a difference in response latency is not the source of the disparity in survival rates between the two algorithms. However, when watching the two algorithms execute an obvious issue with the subsumption architecture becomes apparent that will be a large factor in reducing agent survival rates. There are clear instances where two behaviours will ``fight'' each other for control of the agent; for example a behaviour to leave a building will cause an agent to step outside, only for a subsumed behaviour to send the agent back inside during the next simulation step. This will continue until another behaviour breaks up the fight, like the fleeing behaviour causing the agent to run further inside. This will lead to neither behaviour achieving their respective goals, and would require either far more complex and therefore expensive logic in each behaviour or communication between behaviours which would violate one of the core principles of the architecture. The BDI implementations avoid such conflicts of interest by aggregating the actions requested by each current intention, placing precedence on whichever has the highest attached utility heuristic. Movement actions are normalised after aggregation, so an agent won't experience restricted movement if it has two intentions pulling it in opposite directions but will instead move at full speed in whichever direction has the highest utility. This is far more rational behaviour, and subjectively appears more natural than the occasionally indecisive subsumption approach.
 
