@@ -134,6 +134,7 @@ namespace Zombles.Scripts.Entities
             Anim.Start(DeadAnim);
 
             if (IsHoldingItem) DropItem();
+            if (IsSelected) Deselect();
             
             Entity.RemoveComponent<HumanControl>();
             Entity.RemoveComponent<Collision>();

@@ -41,7 +41,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return (float) (_blockBeliefs.Utility + (MainWindow.Time - _createdTime) * 8.0 / MainWindow.Time); }
+            get { return (float) Math.Min(256f, _blockBeliefs.Utility + (MainWindow.Time - _createdTime) * 8.0 / MainWindow.Time); }
         }
 
         public override bool ConflictsWith(Desire other)

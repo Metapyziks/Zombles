@@ -32,12 +32,12 @@ namespace Zombles
             Seed = (int) (DateTime.Now.Ticks % int.MaxValue) + 1;
 
             WorldSize = 128;
-            SurvivorCount = 192;
-            ZombieCount = 64;
-            Duration = 600;
+            SurvivorCount = 96;
+            ZombieCount = 32;
+            Duration = double.PositiveInfinity;
             Subsumption = false;
             Deliberative = !Subsumption;
-            FastDeliberative = true;
+            FastDeliberative = false;
 
             var logFileFormat = String.Format("{{0}}_{0}_{1}_{2}_{3}.log",
                 Program.WorldSize, Program.SurvivorCount, Program.ZombieCount,

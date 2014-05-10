@@ -361,7 +361,11 @@ namespace Zombles.Scripts
                 _isSelecting = true;
                 _selectionStart = pos;
             } else if (e.Button == MouseButton.Right) {
-                /// TODO: Re-implement RTS control
+                foreach (var agent in World.Entities
+                    .Where(x => x.HasComponent<Survivor>())
+                    .Where(x => x.GetComponent<Survivor>().IsSelected)) {
+                    agent.GetComponent<Survivor>().MovementCommand(pos);
+                }
             }
         }
 

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Zombles.Entities;
 using Zombles.Graphics;
 using Zombles.Geometry;
+using OpenTK;
 
 namespace Zombles.Scripts.Entities
 {
@@ -172,6 +173,13 @@ namespace Zombles.Scripts.Entities
             Entity.UpdateComponents();
 
             Health.Revive();
+        }
+
+        public void MovementCommand(Vector2 dest)
+        {
+            if (Entity.HasComponent<HumanControl>()) {
+                Entity.GetComponent<HumanControl>().MovementCommand(dest);
+            }
         }
 
         protected override void OnDamaged(object sender, DamagedEventArgs e)

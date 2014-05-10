@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using OpenTK;
 using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
@@ -72,6 +73,37 @@ namespace Zombles.Scripts.Entities
             base.OnSpawn();
         }
 
+        public override void MovementCommand(Vector2 dest)
+        {
+            Deliberate(new Desires.PlayerMovementCommand(dest));
+        }
+
+        private void Deliberate(params Desire[] newDesires)
+        {
+            var desires = _intentions
+                    .Where(x => x.ShouldKeep())
+                    .Select(x => x.Desire)
+                    .Union(newDesires);
+
+            desires = Desire.ResolveConflicts(desires);
+
+            var kept = _intentions.Where(x => desires.Contains(x.Desire)).ToArray();
+            var abandoned = _intentions.Where(x => !desires.Contains(x.Desire)).ToArray();
+
+            desires = desires.Where(x => !kept.Any(y => y.Desire == x));
+
+            foreach (var intention in abandoned) {
+                intention.Abandon();
+            }
+
+            _intentions = kept.Union(desires.Select(x => x.GetIntention(_beliefs))).ToArray();
+            _nextDeliberate = MainWindow.Time + DeliberationPeriod * (0.5 + Tools.Random.NextDouble());
+
+            if (_intentions.Length == 0) {
+                Human.StopMoving();
+            }
+        }
+
         public override void OnThink(double dt)
         {
             base.OnThink(dt);
@@ -111,35 +143,9 @@ namespace Zombles.Scripts.Entities
             }
 
             if (deliberate) {
-                if (Human.IsSelected) {
-                    System.Diagnostics.Debugger.Break();
-                    Human.Deselect();
-                }
-
-                var desires = _intentions
-                    .Where(x => x.ShouldKeep())
-                    .Select(x => x.Desire)
-                    .Union(_desireDiscoveryMethods
-                        .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
-                        .ToArray());
-
-                desires = Desire.ResolveConflicts(desires);
-
-                var kept = _intentions.Where(x => desires.Contains(x.Desire)).ToArray();
-                var abandoned = _intentions.Where(x => !desires.Contains(x.Desire)).ToArray();
-
-                desires = desires.Where(x => !kept.Any(y => y.Desire == x));
-
-                foreach (var intention in abandoned) {
-                    intention.Abandon();
-                }
-
-                _intentions = kept.Union(desires.Select(x => x.GetIntention(_beliefs))).ToArray();
-                _nextDeliberate = MainWindow.Time + DeliberationPeriod * (0.5 + Tools.Random.NextDouble());
-
-                if (_intentions.Length == 0) {
-                    Human.StopMoving();
-                }
+                Deliberate(_desireDiscoveryMethods
+                    .SelectMany(x => (IEnumerable<Desire>) x.Invoke(null, new[] { _beliefs }))
+                    .ToArray());
             }
 
             var actions = new List<Action>();

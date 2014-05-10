@@ -34,7 +34,7 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return (float) _destBeliefs.Utility * 8f; }
+            get { return (float) Math.Min(256f, _destBeliefs.Utility * 8f); }
         }
 
         public Migration(BlockBeliefs dest)

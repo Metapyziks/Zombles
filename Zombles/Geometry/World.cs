@@ -66,8 +66,7 @@ namespace Zombles.Geometry
 
         public void SplashBlood(Vector2 pos, float force)
         {
-            //if (force <= 0.0f)
-                return;
+            if (force <= 0.0f) return;
 
             int count = (int) (force * BloodResolution * BloodResolution);
 
@@ -82,8 +81,10 @@ namespace Zombles.Geometry
                 int ix = ((int) (res.End.X * BloodResolution) + (_bloodMap.Width - 4)) % _bloodMap.Width;
                 int iy = (int) (res.End.Y * BloodResolution);
 
-                _bloodMap[ix, iy] = Math.Min(1f, _bloodMap[ix, iy]
-                    + 1f / 32f + Tools.Random.NextSingle() * 1f / 6f);
+                try {
+                    _bloodMap[ix, iy] = Math.Min(1f, _bloodMap[ix, iy]
+                        + 1f / 32f + Tools.Random.NextSingle() * 1f / 6f);
+                } catch { }
             }
         }
 
