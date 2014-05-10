@@ -62,6 +62,7 @@ namespace Zombles.Scripts
                         .Push<Entities.Behaviours.Flee>()
                         .Push<Entities.Behaviours.VacateDangerousBlocks>()
                         .Push<Entities.Behaviours.Mob>()
+                        .Push<Entities.Behaviours.PlayerMovementCommand>()
                         .Push<Entities.Behaviours.SelfDefence>()
                         .Push<Entities.Behaviours.DropWood>();
                 } else {

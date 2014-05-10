@@ -7,17 +7,16 @@ using Zombles.Geometry;
 
 namespace Zombles.Scripts.Entities
 {
-    public class SubsumptionStack : HumanControl
+    public class SubsumptionStack : HumanControl, IEnumerable<SubsumptionStack.Layer>
     {
         public abstract class Layer
         {
             private SubsumptionStack _stack;
-            private Layer _next;
 
             internal void SetStack(SubsumptionStack stack)
             {
                 _stack = stack;
-                _next = stack._top;
+                Next = stack._top;
                 stack._top = this;
             }
 
@@ -27,6 +26,8 @@ namespace Zombles.Scripts.Entities
             protected World World { get { return _stack.World; } }
             protected Entity Entity { get { return _stack.Entity; } }
             protected Human Human { get { return _stack.Human; } }
+
+            internal Layer Next { get; private set; }
 
             protected IEnumerable<Entity> SearchNearbyEnts(float radius)
             {
@@ -60,13 +61,13 @@ namespace Zombles.Scripts.Entities
 
             internal void Spawn()
             {
-                if (_next != null) _next.Spawn();
+                if (Next != null) Next.Spawn();
                 OnSpawn();
             }
 
             internal void Remove()
             {
-                if (_next != null) _next.Remove();
+                if (Next != null) Next.Remove();
                 OnRemove();
             }
 
@@ -74,8 +75,8 @@ namespace Zombles.Scripts.Entities
             {
                 if (OnThink(dt)) {
                     return true;
-                } else if (_next != null) {
-                    return _next.Think(dt);
+                } else if (Next != null) {
+                    return Next.Think(dt);
                 } else {
                     return false;
                 }
@@ -128,6 +129,31 @@ namespace Zombles.Scripts.Entities
             if (_top != null && Human.Health.IsAlive) _top.Think(dt);
 
             _timer.Stop();
+        }
+
+        public override void MovementCommand(Vector2 dest)
+        {
+            foreach (var layer in this) {
+                if (layer is Behaviours.PlayerMovementCommand) {
+                    var plyMove = (Behaviours.PlayerMovementCommand) layer;
+                    plyMove.Destination = dest;
+                }
+            }
+        }
+
+        public IEnumerator<SubsumptionStack.Layer> GetEnumerator()
+        {
+            var cur = _top;
+
+            while (cur != null) {
+                yield return cur;
+                cur = cur.Next;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

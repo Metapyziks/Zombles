@@ -27,12 +27,12 @@ namespace Zombles.Scripts.Entities.Desires
 
         public override float Utility
         {
-            get { return 512f + (float) ((64f * _originTime) / MainWindow.Time); }
+            get { return 2048f + (float) ((64f * _originTime) / MainWindow.Time); }
         }
 
         public override bool ConflictsWith(Desire other)
         {
-            return other is Migration || other is Barricading || other is PlayerMovementCommand;
+            return other is Migration || other is Barricading || other is PlayerMovementCommand || other is Mobbing;
         }
 
         public override Desire ResolveConflict(Desire other)

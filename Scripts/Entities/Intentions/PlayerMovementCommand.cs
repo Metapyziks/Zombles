@@ -31,7 +31,7 @@ namespace Zombles.Scripts.Entities.Intentions
         {
             if (_nav.HasDirection) {
                 yield return new DropItemAction(8f);
-                yield return new MovementAction(_nav.GetDirection().Normalized() * 4f);
+                yield return new MovementAction(_nav.GetDirection().Normalized() * 16f);
             }
         }
     }
