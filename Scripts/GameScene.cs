@@ -438,7 +438,7 @@ namespace Zombles.Scripts
                     }
                     OnResize();
                     break;
-                case Key.F:
+                case Key.F11:
                     if (GameWindow.WindowState == WindowState.Fullscreen)
                         GameWindow.WindowState = WindowState.Normal;
                     else

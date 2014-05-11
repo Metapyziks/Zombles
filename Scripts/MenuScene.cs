@@ -31,10 +31,7 @@ namespace Zombles.Scripts
         private UIButton _continueBtn;
 
         public MenuScene(MainWindow game)
-            : base(game)
-        {
-
-        }
+            : base(game) { }
 
         public override void OnResize()
         {
@@ -76,6 +73,19 @@ namespace Zombles.Scripts
             _continueBtn.Position = _generateBtn.Position + new Vector2(0, _generateBtn.Height + 8);
         }
 
+        public override void OnKeyPress(OpenTK.Input.KeyboardKeyEventArgs e)
+        {
+            if (e.Key == OpenTK.Input.Key.F11) {
+                if (GameWindow.WindowState == WindowState.Fullscreen)
+                    GameWindow.WindowState = WindowState.Normal;
+                else
+                    GameWindow.WindowState = WindowState.Fullscreen;
+                return;
+            }
+
+            base.OnKeyPress(e);
+        }
+
         public override void OnEnter(bool firstTime)
         {
             base.OnEnter(firstTime);
@@ -102,10 +112,6 @@ namespace Zombles.Scripts
                     Value = Program.WorldSize
                 };
 
-                _worldSizeTxt.UnFocused += (sender, e) => {
-                    Program.WorldSize = _worldSizeTxt.Value;
-                };
-
                 AddChild(_worldSizeTxt);
 
                 _humanCountLbl = new UILabel(Graphics.PixelFont.Large) {
@@ -121,10 +127,6 @@ namespace Zombles.Scripts
                     Value = Program.SurvivorCount
                 };
 
-                _humanCountTxt.UnFocused += (sender, e) => {
-                    Program.SurvivorCount = _humanCountTxt.Value;
-                };
-
                 AddChild(_humanCountTxt);
 
                 _zombieCountLbl = new UILabel(Graphics.PixelFont.Large) {
@@ -138,10 +140,6 @@ namespace Zombles.Scripts
                     Minimum = 0,
                     Maximum = 512,
                     Value = Program.ZombieCount
-                };
-
-                _zombieCountTxt.UnFocused += (sender, e) => {
-                    Program.ZombieCount = _zombieCountTxt.Value;
                 };
 
                 AddChild(_zombieCountTxt);
@@ -220,6 +218,11 @@ namespace Zombles.Scripts
                     if (_gameScene != null) _gameScene.Dispose();
 
                     Program.Seed = (int) (DateTime.Now.Ticks % int.MaxValue) + 1;
+
+                    Program.WorldSize = _worldSizeTxt.Value;
+                    Program.SurvivorCount = _humanCountTxt.Value;
+                    Program.ZombieCount = _zombieCountTxt.Value;
+                    Program.PlayerControl = _playerControlBtn.Text == "Interactive";
 
                     _gameScene = new GameScene(GameWindow, this);
                     MainWindow.SetScene(_gameScene);

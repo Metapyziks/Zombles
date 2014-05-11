@@ -10,7 +10,7 @@ namespace Zombles.Scripts.Entities.Desires
     {
         public override Intention GetIntention(Beliefs beliefs)
         {
-            throw new NotImplementedException();
+            return new Intentions.PlayerSpecifiedBarricading(this, beliefs);
         }
 
         public override float Utility
