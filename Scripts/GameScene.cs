@@ -19,11 +19,14 @@ using OpenTKTK.Utils;
 using OpenTKTK.Textures;
 using OpenTKTK.Scene;
 using OpenTK.Graphics.OpenGL;
+using System.Collections.Generic;
 
 namespace Zombles.Scripts
 {
     public class GameScene : Scene
     {
+        private MenuScene _menu;
+
         private UILabel _fpsText;
         private UILabel _posText;
         private UIInfectionDisplay _infDisplay;
@@ -50,6 +53,8 @@ namespace Zombles.Scripts
         private FrameBuffer _frameBuffer;
         private Sprite _frameBufferSprite;
         private DebugTraceShader _traceShader;
+
+        private List<Tile> _playerBarricades;
 
         private int _upScale = 1;
 
@@ -78,9 +83,13 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public World World { get; private set; }
 
-        public GameScene(MainWindow gameWindow)
+        public IEnumerable<Tile> PlayerBarricades { get { return _playerBarricades; } }
+
+        public GameScene(MainWindow gameWindow, MenuScene menu)
             : base(gameWindow)
         {
+            _menu = menu;
+
             _hideTop = false;
 
             _camScale = 4f;
@@ -355,6 +364,8 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
+            if (!Program.PlayerControl) return;
+
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y) / _upScale, .5f);
 
             if (e.Button == MouseButton.Left) {
@@ -423,19 +434,22 @@ namespace Zombles.Scripts
             }
         }
 
-        public override void OnKeyPress(KeyPressEventArgs e)
+        public override void OnKeyPress(KeyboardKeyEventArgs e)
         {
-            switch (char.ToLower(e.KeyChar)) {
-                case 'x':
+            switch (e.Key) {
+                case Key.Escape:
+                    MainWindow.SetScene(_menu);
+                    break;
+                case Key.X:
                     _hideTop = !_hideTop;
                     break;
-                case 'p':
+                case Key.P:
                     _drawPathNetwork = !_drawPathNetwork;
                     break;
-                case 't':
+                case Key.T:
                     _drawTestTrace = !_drawTestTrace;
                     break;
-                case 'z':
+                case Key.Z:
                     _upScale = 3 - _upScale;
                     if (_upScale == 2) {
                         _camScale /= 2f;
@@ -446,13 +460,13 @@ namespace Zombles.Scripts
                     }
                     OnResize();
                     break;
-                case 'f':
+                case Key.F:
                     if (GameWindow.WindowState == WindowState.Fullscreen)
                         GameWindow.WindowState = WindowState.Normal;
                     else
                         GameWindow.WindowState = WindowState.Fullscreen;
                     break;
-                case 'g':
+                case Key.G:
                     World = Generator.Generate(Program.WorldSize, Program.WorldSize);
                     Plugin.CityGenerated();
                     break;

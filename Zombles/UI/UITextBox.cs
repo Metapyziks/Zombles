@@ -1,5 +1,6 @@
 using System;
 using OpenTK;
+using OpenTK.Input;
 using OpenTKTK.Scene;
 using OpenTKTK.Shaders;
 using ResourceLibrary;
@@ -72,17 +73,52 @@ namespace Zombles.UI
             _lastFlashTime = DateTime.Now;
         }
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
+        private char KeyToChar(KeyboardKeyEventArgs e)
         {
-            char c = e.KeyChar;
+            var str = e.Key.ToString();
 
-            if (c == 8) {
+            if (str.Length == 1) {
+                return e.Shift ? str[0] : str.ToLower()[0];
+            } else if (str.StartsWith("Number") || str.StartsWith("Keypad") && str.Length == 7) {
+                return str[6];
+            }
+
+            switch (e.Key) {
+                case Key.BackSlash:
+                    return '\\';
+                case Key.BracketLeft:
+                    return '(';
+                case Key.BracketRight:
+                    return ')';
+                case Key.Comma:
+                    return ',';
+                case Key.Space:
+                    return ' ';
+            }
+
+            return '\0';
+        }
+
+        protected virtual bool OnValidateString(ref String str)
+        {
+            return true;
+        }
+
+        protected override void OnKeyPress(KeyboardKeyEventArgs e)
+        {
+            if (e.Key == Key.BackSpace) {
                 if (Text.Length > 0)
                     Text = Text.Substring(0, Text.Length - 1);
-            } else if (c == 13 || c == 27)
+            } else if (e.Key == Key.Escape || e.Key == Key.Enter) {
                 UnFocus();
-            else if (Char.IsLetterOrDigit(c) || Char.IsPunctuation(c) || Char.IsSymbol(c) || c == ' ')
-                Text += c;
+            } else {
+                char c = KeyToChar(e);
+
+                var str = Text + c;
+                if (c != '\0' && OnValidateString(ref str)) {
+                    Text = str;
+                }
+            }
         }
 
         protected override void OnRender(SpriteShader shader, Vector2 renderPosition = new Vector2())

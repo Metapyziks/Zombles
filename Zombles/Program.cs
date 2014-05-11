@@ -8,23 +8,25 @@ namespace Zombles
         // 0: 0xb6ba069
         // 1: 0x85f1d06
 
-        public static int Seed { get; private set; }
+        public static int Seed { get; set; }
 
-        public static int WorldSize { get; private set; }
+        public static int WorldSize { get; set; }
 
-        public static int SurvivorCount { get; private set; }
+        public static int SurvivorCount { get; set; }
 
-        public static int ZombieCount { get; private set; }
+        public static int ZombieCount { get; set; }
 
-        public static double Duration { get; private set; }
+        public static double Duration { get; set; }
 
-        public static String LogName { get; private set; }
+        public static String LogName { get; set; }
 
-        public static bool Subsumption { get; private set; }
+        public static bool Subsumption { get; set; }
 
-        public static bool Deliberative { get; private set; }
+        public static bool Deliberative { get; set; }
 
-        public static bool FastDeliberative { get; private set; }
+        public static bool FastDeliberative { get; set; }
+
+        public static bool PlayerControl { get; set; }
 
         [STAThread]
         public static void Main(string[] args)
@@ -38,6 +40,7 @@ namespace Zombles
             Subsumption = false;
             Deliberative = !Subsumption;
             FastDeliberative = false;
+            PlayerControl = true;
 
             var logFileFormat = String.Format("{{0}}_{0}_{1}_{2}_{3}.log",
                 Program.WorldSize, Program.SurvivorCount, Program.ZombieCount,

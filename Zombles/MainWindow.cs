@@ -69,6 +69,8 @@ namespace Zombles
 
         protected override void OnLoad(EventArgs e)
         {
+            VSync = VSyncMode.On;
+
             String dataPath = "Data" + Path.DirectorySeparatorChar;
             String loadorderpath = dataPath + "loadorder.txt";
 
@@ -92,6 +94,8 @@ namespace Zombles
                     if (line.Length > 0 && Directory.Exists(line))
                         Archive.FromDirectory(line).Mount();
             }
+
+            Keyboard.KeyDown += OnKeyDown;
 
             Mouse.Move += OnMouseMove;
             Mouse.ButtonUp += OnMouseButtonUp;
@@ -189,7 +193,7 @@ namespace Zombles
                 CurrentScene.TriggerMouseButtonDown(e);
         }
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
+        protected void OnKeyDown(object sender, KeyboardKeyEventArgs e)
         {
             if (CurrentScene != null)
                 CurrentScene.OnKeyPress(e);

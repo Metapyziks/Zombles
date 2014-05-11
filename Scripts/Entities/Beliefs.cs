@@ -126,7 +126,7 @@ namespace Zombles.Scripts.Entities
                         _utility = (Block.HasInterior ? 4.0 : 1.0) *
                             (Survivors / 2.0
                             + Resources / 3.0
-                            - zombies * zombies * 4.0);
+                            - zombies * zombies * 8.0);
                     }
                 }
 

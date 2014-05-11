@@ -53,7 +53,7 @@ namespace Zombles.Scripts
             Entity.Register("survivor", "human", ent => {
                 ent.AddComponent<Survivor>();
                 if (Program.Subsumption) {
-                    ent.AddComponent<SubsumptionStack>()
+                    var stack = ent.AddComponent<SubsumptionStack>()
                         .Push<Entities.Behaviours.Wander>()
                         .Push<Entities.Behaviours.SeekRefuge>()
                         .Push<Entities.Behaviours.BreakCrates>()
@@ -61,18 +61,26 @@ namespace Zombles.Scripts
                         .Push<Entities.Behaviours.PickupWood>()
                         .Push<Entities.Behaviours.Flee>()
                         .Push<Entities.Behaviours.VacateDangerousBlocks>()
-                        .Push<Entities.Behaviours.Mob>()
-                        .Push<Entities.Behaviours.PlayerMovementCommand>()
+                        .Push<Entities.Behaviours.Mob>();
+
+                    if (Program.PlayerControl) {
+                        stack.Push<Entities.Behaviours.PlayerMovementCommand>();
+                    }
+
+                    stack
                         .Push<Entities.Behaviours.SelfDefence>()
                         .Push<Entities.Behaviours.DropWood>();
                 } else {
-                    ent.AddComponent<DeliberativeAI>()
+                    var delib = ent.AddComponent<DeliberativeAI>()
                         .AddDesire<Entities.Desires.Wander>()
                         .AddDesire<Entities.Desires.ThreatAvoidance>()
                         .AddDesire<Entities.Desires.WallAvoidance>()
                         .AddDesire<Entities.Desires.Migration>()
-                        .AddDesire<Entities.Desires.Mobbing>()
-                        .AddDesire<Entities.Desires.Barricading>();
+                        .AddDesire<Entities.Desires.Mobbing>();
+
+                    if (!Program.PlayerControl) {
+                        delib.AddDesire<Entities.Desires.Barricading>();
+                    }
                 }
             });
 
@@ -146,7 +154,7 @@ namespace Zombles.Scripts
 
             _navTimer = new Stopwatch();
 
-            MainWindow.SetScene(new GameScene(Game));
+            MainWindow.SetScene(new MenuScene(Game));
         }
 
         protected override void OnCityGenerated()

@@ -23,12 +23,17 @@ namespace Zombles.Scripts.Entities.Behaviours
 
         protected override bool OnThink(double dt)
         {
-            if (_nav != null && _nav.HasDirection) {
-                Human.StartMoving(_nav.GetDirection());
-                return true;
-            } else {
-                return false;
+            if (_nav != null) {
+                if (_nav.HasEnded) {
+                    _nav.Dispose();
+                    _nav = null;
+                } else if (_nav.HasDirection) {
+                    Human.StartMoving(_nav.GetDirection());
+                    return true;
+                }
             }
+            
+            return false;
         }
     }
 }

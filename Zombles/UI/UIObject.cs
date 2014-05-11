@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
+using OpenTK.Input;
 using OpenTKTK.Shaders;
 using OpenTKTK.Textures;
 using ResourceLibrary;
@@ -72,7 +73,7 @@ namespace Zombles.UI
     public delegate void EnabledChangedEventHandler(Object sender, EnabledChangedEventArgs e);
     public delegate void MouseButtonEventHandler(Object sender, OpenTK.Input.MouseButtonEventArgs e);
     public delegate void MouseMoveEventHandler(Object sender, OpenTK.Input.MouseMoveEventArgs e);
-    public delegate void KeyPressEventHandler(Object sender, KeyPressEventArgs e);
+    public delegate void KeyPressEventHandler(Object sender, KeyboardKeyEventArgs e);
 
     public class RenderEventArgs : EventArgs
     {
@@ -492,7 +493,7 @@ namespace Zombles.UI
 
         public event KeyPressEventHandler KeyPress;
 
-        protected virtual void OnKeyPress(KeyPressEventArgs e)
+        protected virtual void OnKeyPress(KeyboardKeyEventArgs e)
         {
 
         }
@@ -776,7 +777,7 @@ namespace Zombles.UI
                 _children[i].SendMouseMoveEvent(newPos - _paddingTopLeft - _children[i].Position, e);
         }
 
-        public void SendKeyPressEvent(KeyPressEventArgs e)
+        public void SendKeyPressEvent(KeyboardKeyEventArgs e)
         {
             if (IsFocused && IsEnabled) {
                 OnKeyPress(e);

@@ -72,6 +72,7 @@
     <Compile Include="Entities\Desires\Barricading.cs" />
     <Compile Include="Entities\Desires\PlanBarricade.cs" />
     <Compile Include="Entities\Desires\PlayerMovementCommand.cs" />
+    <Compile Include="Entities\Desires\PlayerSpecifiedBarricading.cs" />
     <Compile Include="Entities\Desires\ThreatAvoidance.cs" />
     <Compile Include="Entities\Desires\Migration.cs" />
     <Compile Include="Entities\Desires\Mobbing.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Entities\Intentions\Mobbing.cs" />
     <Compile Include="Entities\Intentions\PlanBarricade.cs" />
     <Compile Include="Entities\Intentions\PlayerMovementCommand.cs" />
+    <Compile Include="Entities\Intentions\PlayerSpecifiedBarricading.cs" />
     <Compile Include="Entities\Intentions\ThreatAvoidance.cs" />
     <Compile Include="Entities\Intentions\WallAvoidance.cs" />
     <Compile Include="Entities\Intentions\Wander.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Geometry\Generation\Rooms\Warehouse.cs" />
     <Compile Include="Geometry\Generation\Structures\Doorway.cs" />
     <Compile Include="Geometry\Generation\Structures\GarageDoor.cs" />
+    <Compile Include="MenuScene.cs" />
     <Compile Include="ZomblesPlugin.cs" />
     <Compile Include="Entities\HumanControl.cs" />
     <Compile Include="Entities\Human.cs" />

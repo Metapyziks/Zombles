@@ -152,7 +152,7 @@ namespace Zombles
 
         }
 
-        public virtual void OnKeyPress(KeyPressEventArgs e)
+        public virtual void OnKeyPress(KeyboardKeyEventArgs e)
         {
             _uiRoot.SendKeyPressEvent(e);
         }
