@@ -1,0 +1,319 @@
+Thu Oct 3 20:12:28 2013,Some minor changes that hadn't been committed since 2012
+Sat Oct 5 02:14:43 2013,Started gutting out and refactoring the resource system
+Sat Oct 5 03:15:23 2013,Auto format of all code
+Sat Oct 5 03:28:11 2013,Fixed human animations not loading
+Sat Oct 5 18:24:22 2013,Some more code formatting
+Sat Oct 5 21:12:51 2013,Refactoring and formatting
+Sat Oct 5 23:57:20 2013,Started refactoring graphics system
+Sat Oct 5 23:59:43 2013,Removed .psess file
+Sun Oct 6 00:00:00 2013,Improved .gitignore
+Sun Oct 6 00:00:55 2013,Delete repositories.config
+Sun Oct 6 00:01:29 2013,Removed repositories.config
+Tue Oct 8 12:59:47 2013,Huge graphics refactor (incomplete)
+Tue Oct 8 13:32:32 2013,Removed Content/scripts
+Tue Oct 8 13:33:40 2013,Updated .gitignore
+Tue Oct 8 14:00:36 2013,The starting scene is now set by ZomblesPlugin
+Tue Oct 8 14:40:49 2013,Fixed enough of the graphics system to get something on-screen
+Tue Oct 8 19:17:15 2013,More graphics refactoring
+Tue Oct 8 20:00:33 2013,Additional refactoring
+Tue Oct 8 20:06:30 2013,Fixed major bug in graphics system involving incorrect matrix multiplication order
+Tue Oct 8 20:47:04 2013,Removed redundant scripts
+Tue Oct 8 21:09:53 2013,All resources are now read directly from /Content (in debug mode)
+Tue Oct 8 21:39:53 2013,Fixed .gitignore
+Tue Oct 8 21:47:02 2013,Fixed warnings
+Tue Oct 8 22:32:35 2013,Tweaked warehouse floors
+Wed Oct 9 09:26:38 2013,Fixed UIInfectionDisplay
+Wed Oct 9 09:45:04 2013,Made BloodResoultion into a const
+Wed Oct 9 21:10:35 2013,Some generation refactoring
+Wed Oct 9 23:17:22 2013,Some generation refactoring
+Thu Oct 10 22:21:05 2013,Refactored doorway generation to actually be readable
+Sat Oct 12 18:24:29 2013,Huge refactor to move Sprite and SpriteShader to OpenTKTK
+Mon Oct 14 14:19:37 2013,Fixed the face that doorways appear on
+Tue Oct 15 09:55:16 2013,Fixed blood appearing against walls much further from the source than expected
+Wed Oct 16 18:34:17 2013,Deliverables listed in the project plan
+Wed Oct 16 19:49:56 2013,Added dates to project plan
+Fri Oct 18 18:12:58 2013,Added debug rendering of hull ray trace
+Mon Oct 21 19:47:12 2013,Fixed rectangle ray tracing
+Mon Oct 21 23:37:50 2013,Attempt to resolve hull traces that start inside a wall
+Mon Oct 21 23:41:13 2013,Revert "Attempt to resolve hull traces that start inside a wall"
+Tue Oct 22 00:00:30 2013,Gutted old pathfinding system
+Tue Oct 22 00:58:36 2013,Some work on the new path system
+Tue Oct 22 11:19:53 2013,Block network debug render added
+Tue Oct 22 11:42:04 2013,Improve DebugTraceShader
+Tue Oct 22 13:30:32 2013,Fixed intersections
+Tue Oct 22 22:32:32 2013,Started implementing path finding
+Wed Oct 23 00:34:49 2013,Implemented basic AStar
+Wed Oct 23 01:12:34 2013,Macro path finding is functional
+Wed Oct 23 02:06:01 2013,AStar is kind of broken
+Wed Oct 23 09:34:02 2013,AStar fixed
+Wed Oct 23 09:56:55 2013,Added CombinedRoute
+Wed Oct 23 10:23:49 2013,Added basic RouteNavigation component
+Wed Oct 23 10:37:03 2013,Improved route nav
+Wed Oct 23 20:34:06 2013,Fixed MacroRoute
+Wed Oct 23 21:14:25 2013,Fixed survivors giving up when the end is in sight
+Wed Oct 23 21:57:13 2013,Number of paths found per frame is now limited by time
+Wed Oct 23 22:10:05 2013,Fixed left over remnant of some test code
+Thu Oct 24 15:07:30 2013,Fixed paths sometimes being completely found in micro detail when unnecessary
+Tue Oct 29 22:29:55 2013,MicroRoute can now be limited to only explore a given collection of blocks
+Tue Oct 29 22:53:57 2013,Added auto testing of path finders
+Tue Oct 29 23:59:36 2013,Added PathFinders.xlsx
+Mon Nov 4 18:41:26 2013,Agents should no longer get trapped inside boxes, and quantum tunneling is much less frequent
+Tue Nov 5 21:59:14 2013,Added SubsubmptionStack.cs
+Tue Nov 5 23:42:12 2013,Implemented Wandering and Fleeing behavioral layers
+Tue Nov 5 23:52:46 2013,Flattened out the Flee behavior logic a bit
+Wed Nov 6 11:39:00 2013,Added FollowRoute behaviour
+Wed Nov 6 22:27:44 2013,Added self defense
+Wed Nov 6 23:29:03 2013,Added Entity.GetComponentOrNull
+Wed Nov 6 23:38:13 2013,Renamed City to World
+Wed Nov 6 23:41:01 2013,City purged, replaced with World
+Thu Nov 7 20:52:25 2013,Added Hint and CornerHint classes
+Thu Nov 7 23:33:30 2013,Added basic wall avoidance
+Thu Nov 7 23:57:32 2013,Added mobbing behaviour
+Fri Nov 8 00:49:35 2013,Mob logic is a bit smarter
+Fri Nov 8 13:38:48 2013,Added survival rate charts
+Fri Nov 8 15:00:59 2013,Added check to see if a position is not navigable
+Fri Nov 8 15:01:48 2013,Fixed spelling
+Fri Nov 8 21:35:33 2013,Reordered survivor behaviours
+Mon Nov 11 11:28:33 2013,Started work on adding wall edges to overhead view
+Mon Nov 11 11:28:41 2013,Some formatting to Tile.cs
+Mon Nov 11 11:30:24 2013,Fixed merge
+Wed Nov 13 19:27:59 2013,Prepared Block for wall edges
+Wed Nov 13 20:00:29 2013,GetBaseXXXXVertexCount() methods implemented
+Wed Nov 13 20:20:52 2013,All tile vertex count methods implemented
+Wed Nov 13 20:28:08 2013,Implemented all Tile.GetBaseXXXXVertices methods
+Wed Nov 13 20:44:49 2013,Implemented all tile vertex finding methods
+Wed Nov 13 21:19:59 2013,Original geometry rendering functionality reimplemented
+Wed Nov 13 22:32:18 2013,Walls are now visible from above
+Thu Nov 14 15:38:25 2013,Started work on mesh entities
+Thu Nov 14 17:12:52 2013,More work on 3D entities
+Thu Nov 14 19:10:25 2013,Finished MeshEntityShader
+Thu Nov 14 19:11:00 2013,Renamed MeshEntityShader to ModelEntityShader
+Thu Nov 14 19:15:19 2013,Finished Render3D component (I think)
+Thu Nov 14 20:00:54 2013,Crates are now visible
+Thu Nov 14 20:45:03 2013,Crates are now solid again
+Thu Nov 14 20:49:20 2013,Added large crate model
+Thu Nov 14 21:15:47 2013,Added self defence to original survivor AI
+Thu Nov 14 21:41:57 2013,Updated subsumptive vs original analysis
+Fri Nov 15 01:22:31 2013,Added a few comparisons between different proportions of Mob behaviour possessing agents
+Fri Nov 15 13:12:19 2013,Fixed doorway borders
+Fri Nov 15 13:34:23 2013,Altered crates slightly
+Fri Nov 15 20:25:11 2013,Added basic lighting to 3D entities
+Fri Nov 15 21:18:20 2013,Removed logging stuff
+Fri Nov 15 21:44:26 2013,Added a bunch of helper setters to Render3D
+Fri Nov 15 22:47:58 2013,Fixed resource lib related bugs
+Fri Nov 15 22:48:55 2013,Reverted script compiler target framework version
+Fri Nov 15 23:06:53 2013,Fixed path finding to a location in the same block as the path origin
+Sat Nov 16 13:38:46 2013,Split crates into two classes
+Sat Nov 16 14:08:09 2013,Debug output now stores in a file
+Sat Nov 16 14:12:16 2013,Switched Debug for Trace
+Sat Nov 16 18:45:31 2013,Entities can now have children
+Sat Nov 16 22:26:22 2013,Tweaks to crate solidity and camera scaling
+Sun Nov 17 23:59:03 2013,Update README.md
+Mon Nov 18 22:41:03 2013,Added Breakable.cs
+Mon Nov 18 22:41:27 2013,Added plank images and model
+Mon Nov 18 22:55:47 2013,Crates now can be broken (theoretically)
+Tue Nov 19 00:16:47 2013,Survivors now break crates
+Tue Nov 19 15:03:47 2013,Removed some unused usings
+Wed Nov 20 19:37:39 2013,Started work on block vacation when deemed dangerous
+Thu Nov 21 10:30:10 2013,Fixed block vacation to check for interior tiles only
+Thu Nov 21 15:31:00 2013,Started work on testing holding items
+Fri Nov 22 00:00:17 2013,Survivors now shift planks between piles
+Fri Nov 22 10:47:10 2013,Planks can now be dropped
+Thu Nov 28 23:56:49 2013,Added Survivor.Exposure property
+Fri Nov 29 00:12:56 2013,Fixed magically appearing plank piles
+Fri Nov 29 00:51:16 2013,Added PickupWood and DropWood behaviours
+Fri Nov 29 01:02:10 2013,Survivors now build barricades
+Fri Nov 29 10:28:32 2013,Survivors now use existing plank piles to build barricades
+Mon Dec 2 09:53:42 2013,Plank pickup and rendering tweaks
+Thu Dec 5 22:45:15 2013,Survivors no longer attack each other by accident
+Thu Dec 5 23:26:18 2013,Added inertia to humans
+Fri Dec 6 00:04:23 2013,Improved entity collisions
+Fri Dec 6 00:33:10 2013,Improved entity collision model further
+Fri Dec 6 01:07:04 2013,Some more tweaks to collision
+Fri Dec 6 11:23:31 2013,Added basic enclosedness
+Tue Dec 10 23:09:03 2013,Pathfinding hugely more efficient, no more hangs
+Tue Dec 10 23:36:35 2013,Fixed enclosedness
+Wed Dec 11 00:18:19 2013,Added SeekRefuge subsumption layer
+Wed Dec 11 12:34:45 2013,Added single survivor selection
+Wed Dec 11 14:13:13 2013,Added multiple selection
+Wed Dec 11 17:02:49 2013,Fixed crash when a survivor dies
+Thu Dec 12 14:16:02 2013,Create selection.json
+Thu Dec 12 14:22:40 2013,Added selection.png
+Sun Jan 12 01:00:26 2014,Started design report
+Sun Jan 12 01:45:22 2014,Abstract 1st draft complete
+Sun Jan 12 01:52:12 2014,Keywords draft
+Tue Jan 14 17:31:56 2014,Started on introduction
+Tue Jan 14 21:58:02 2014,More design
+Tue Jan 14 23:18:30 2014,Section renaming
+Wed Jan 15 20:37:09 2014,Nudged stuff around to align to page breaks
+Wed Jan 15 22:15:27 2014,Deliverables draft
+Thu Jan 16 15:57:33 2014,Started work on functional requirements
+Thu Jan 16 17:32:05 2014,Some more requirements
+Thu Jan 16 17:54:37 2014,Added implementation design headings
+Thu Jan 16 19:26:01 2014,Requirements draft pretty much done
+Thu Jan 16 20:16:06 2014,Fixed selection.png and added Figure 1 to design doc
+Thu Jan 16 20:49:19 2014,Added path finding algorithm description
+Thu Jan 16 22:46:21 2014,Half way there
+Fri Jan 17 00:23:22 2014,Finished subsumptive section draft
+Fri Jan 17 00:26:03 2014,Some shuffling about
+Fri Jan 17 21:33:29 2014,Added dev environment section
+Sat Jan 18 23:51:23 2014,Started BDI
+Sun Jan 19 00:07:48 2014,Some more work on the BDI section
+Sun Jan 19 23:17:21 2014,Added goal breakdown diagram
+Sun Jan 19 23:24:51 2014,Referenced figures 2 and 3
+Mon Jan 20 10:09:49 2014,More work on BDI
+Mon Jan 20 10:12:57 2014,Updated pdf
+Mon Jan 20 10:30:53 2014,More BDI
+Mon Jan 20 11:48:20 2014,Update report.tex
+Tue Jan 21 21:19:40 2014,Added a few references
+Tue Jan 21 21:37:46 2014,More references
+Thu Jan 23 21:33:40 2014,Started on analysis strategy
+Sat Jan 25 15:08:06 2014,Finished analysis strategy draft
+Sun Jan 26 15:43:20 2014,Added barricades diagram
+Sun Jan 26 16:03:30 2014,Time to proof read
+Sun Jan 26 19:12:26 2014,Proof read an amended Abstract
+Sun Jan 26 21:23:15 2014,Introduction proof-read
+Sun Jan 26 21:40:58 2014,Requirements proof-read
+Sun Jan 26 21:50:58 2014,Proof-read the path finding section
+Sun Jan 26 22:33:39 2014,Fixed spelling
+Sun Jan 26 23:10:56 2014,Added a reference
+Sun Jan 26 23:20:24 2014,Fixed bibliography mixup
+Mon Jan 27 00:00:31 2014,Some reordering
+Mon Jan 27 01:08:01 2014,More references
+Mon Jan 27 10:45:50 2014,Some amendments
+Mon Jan 27 22:25:27 2014,Proof-read Subsumption section
+Tue Jan 28 14:34:04 2014,Started proof-reading BDI
+Tue Jan 28 15:09:07 2014,Finished proof-reading
+Thu Jan 30 23:24:16 2014,Mid-way through accommodating feedback
+Thu Jan 30 23:41:41 2014,More corrections
+Fri Jan 31 00:05:02 2014,Fixed typo
+Fri Jan 31 08:42:20 2014,More changes to design doc
+Fri Jan 31 08:57:57 2014,Extra paragraph about distributing path finding over several frames
+Fri Jan 31 09:26:01 2014,Extra BDI paragraph
+Fri Jan 31 09:27:20 2014,Altered NFR 1.10
+Fri Jan 31 12:48:59 2014,Ready for final proof-read...
+Fri Jan 31 13:00:35 2014,Design document complete
+Sun Feb 2 16:30:20 2014,Experimenting with upscaling
+Sun Feb 2 16:48:38 2014,Z now toggles upscale mode
+Sun Feb 2 19:00:40 2014,Tweaked blood shader
+Sun Feb 2 19:04:30 2014,Fixed selection of zombies or dead survivors
+Mon Feb 3 01:53:10 2014,Started work on presentation
+Mon Feb 3 10:43:01 2014,Added subsumption slide
+Mon Feb 3 11:39:15 2014,Slides draft is complete, just needs some notes
+Mon Feb 3 14:30:50 2014,Some more annotations
+Mon Feb 3 14:31:36 2014,Slight correction
+Mon Feb 3 20:50:06 2014,More work on presentation
+Mon Feb 3 21:26:42 2014,Added edited video
+Mon Feb 3 21:49:25 2014,More presentation work
+Mon Feb 3 22:40:02 2014,More annotations
+Mon Feb 3 23:20:20 2014,Almost done
+Mon Feb 3 23:32:43 2014,Script draft done
+Tue Feb 4 09:25:14 2014,Trimmed video
+Thu Feb 6 14:51:18 2014,Created component class for BDI AI
+Thu Feb 6 15:39:07 2014,Added outline for block-level beliefs
+Thu Feb 6 23:26:08 2014,More work on beliefs system
+Fri Feb 7 09:21:29 2014,More beliefs work
+Tue Feb 11 21:42:11 2014,More BDI
+Tue Feb 11 21:53:49 2014,Prepare for merge
+Wed Feb 12 15:09:33 2014,Beliefs system mostly done
+Wed Feb 12 16:19:21 2014,Started implementing desires
+Wed Feb 12 23:03:24 2014,Desires infrastructure and Avoidance desire complete
+Wed Feb 12 23:07:32 2014,Fixed a few errors
+Thu Feb 13 01:25:09 2014,Started work on intentions
+Thu Feb 13 01:26:02 2014,Included new files in the project
+Thu Feb 13 09:40:13 2014,Time to start debugging and optimizing
+Thu Feb 13 10:20:48 2014,Fixed performance issues
+Wed Feb 19 16:37:01 2014,Intentions should now persist
+Thu Feb 20 10:02:20 2014,Refactoring
+Thu Feb 20 10:41:13 2014,Added migration desire / intention
+Thu Feb 20 11:20:46 2014,Added mobbing desire / intention
+Thu Feb 20 11:22:51 2014,Mob intention should now attack when at close range
+Thu Feb 27 11:37:54 2014,Fixed mistake which would discard intentions incorrectly
+Thu Feb 27 12:13:42 2014,Fixed survivors not updating their desires if too far from a block intersection
+Thu Feb 27 12:29:25 2014,Migration is far more functional now
+Thu Mar 6 21:26:03 2014,Implemented action yielding system for the BDI architecture
+Thu Mar 6 21:44:28 2014,Some tweaks to utilities
+Fri Mar 7 00:59:21 2014,More tweaks, and added wall avoidance
+Fri Mar 7 10:55:53 2014,Fixed mobbing and added an intelligent wandering desire / intention
+Fri Mar 7 10:56:27 2014,Removed debug line
+Thu Mar 13 19:35:14 2014,Some utility tweaks
+Thu Mar 13 20:17:11 2014,Added block belief sharing
+Thu Mar 13 20:29:06 2014,Fixed beliefs sharing leading to psychic powers
+Thu Mar 13 22:45:04 2014,Started work on barricading desire / intention
+Thu Mar 13 22:53:30 2014,Added PickupItem and DropItem actions
+Thu Mar 13 23:28:40 2014,Fixed a bug that meant solid resource entities were invisible for agents
+Thu Mar 13 23:35:11 2014,Attempting to get the agents to pick up resources
+Fri Mar 14 10:42:34 2014,Fixed agents not picking up wood
+Wed Mar 19 15:27:56 2014,Some barricading fixes and other intention tweaks
+Wed Mar 19 21:42:50 2014,Started updating graphics system to accommodate the latest version of OpenTKTK
+Wed Mar 19 21:51:36 2014,Graphics system fully in-line with the latest version of OpenTKTK
+Thu Mar 20 20:44:01 2014,Started refactoring route navigation system
+Thu Mar 20 21:07:04 2014,Slowly refactoring navigation
+Thu Mar 20 21:19:28 2014,Added Intention.OnAbandon() method
+Thu Mar 20 21:29:40 2014,Navigation refactoring complete
+Thu Mar 20 21:36:02 2014,Fixed a bug causing all desires to be discarded
+Thu Mar 20 22:36:24 2014,Barricading now uses pathfinding
+Thu Mar 20 23:40:44 2014,Started work on shared barricade planning
+Fri Mar 21 09:35:00 2014,Added logging ready for evaluation
+Fri Mar 21 10:32:13 2014,Fixed barricade path finding
+Fri Mar 21 10:50:51 2014,Some tweaks to barricading and migration
+Tue Apr 1 09:19:40 2014,Back to work
+Tue Apr 1 17:13:16 2014,Fixed trace lines ignoring the collision hull of an entity they start within
+Tue Apr 1 20:49:54 2014,The universe is now deterministic
+Thu Apr 3 16:26:21 2014,Fixed vision range related performance issues during entity belief acquisition
+Thu Apr 3 16:46:44 2014,Larger world sizes and population densities can now be sustained
+Thu Apr 3 21:55:40 2014,Mainly debugging migration and barricading
+Wed Apr 9 22:07:57 2014,Some mobbing tweaks to make survivors more reluctant to lead a charge
+Wed Apr 9 22:34:06 2014,Renaming of camera perspective matrix
+Wed Apr 9 22:40:50 2014,Fixed view and proj matrices going out of sync
+Wed Apr 9 23:27:12 2014,Scripts are now compiled directly from source files in Debug mode
+Wed Apr 9 23:42:31 2014,Migration seems to be fixed
+Thu Apr 10 00:08:39 2014,Fixed barricading
+Thu Apr 10 09:52:37 2014,Some final tweaks to migration and mobbing
+Thu Apr 10 22:42:32 2014,Added some tools to aid evaluation
+Mon Apr 21 22:07:45 2014,Added population graph tool and start of final paper
+Tue Apr 22 15:29:27 2014,Fixed subsumption based agents occasionally losing the ability to move
+Tue Apr 22 23:03:51 2014,Finished graph generator
+Wed Apr 23 02:19:46 2014,Added initial results
+Wed Apr 23 22:18:55 2014,Condensed graphs
+Thu Apr 24 00:15:01 2014,Extra performance data
+Thu Apr 24 00:16:24 2014,Added result logs
+Thu Apr 24 00:32:41 2014,Fixed seconds being logged instead of milliseconds
+Thu Apr 24 14:00:33 2014,New results
+Thu Apr 24 14:24:24 2014,Added route navigation processing time to logging
+Thu Apr 24 15:52:42 2014,Some last minute BDI optimization
+Thu Apr 24 18:30:42 2014,Final tweaks for graph generation
+Thu Apr 24 18:59:39 2014,Subsumption performance optimization
+Thu Apr 24 19:27:43 2014,Ready for final result generation run
+Fri Apr 25 17:02:23 2014,New results set
+Fri Apr 25 17:03:41 2014,Added solution section skeleton to final paper
+Sat Apr 26 15:11:24 2014,Fixed division by zero
+Mon Apr 28 11:23:56 2014,Added complete result set
+Mon Apr 28 23:19:16 2014,The results are in
+Tue Apr 29 19:34:50 2014,Fixed a bug with graph generation
+Tue Apr 29 19:35:31 2014,Fixed graphs in report and added more evaluation text
+Tue Apr 29 19:44:45 2014,Graphs now use Winsorised data
+Tue Apr 29 22:37:02 2014,Evaluation is pretty much complete, and the conclusion is almost there
+Tue Apr 29 23:04:01 2014,Finished a draft of the abstract
+Wed Apr 30 16:48:29 2014,Added past work draft
+Wed Apr 30 21:06:15 2014,Introduction proof-read
+Wed Apr 30 22:47:08 2014,Partial proof-reading of the related work section
+Wed Apr 30 23:38:12 2014,Related work section draft complete
+Thu May 1 00:01:22 2014,Started proof-reading the solution section
+Thu May 1 00:07:02 2014,Proof-read visibility testing section
+Thu May 1 00:22:24 2014,Proof-read the subsumption section
+Thu May 1 01:04:28 2014,Part way through proof-reading the BDI section
+Thu May 1 01:35:08 2014,BDI section proof-read
+Thu May 1 02:04:22 2014,Analysis strategy section partially complete
+Sun May 4 22:50:36 2014,Partially completed final corrections
+Mon May 5 14:31:10 2014,Changes to related work section complete
+Mon May 5 23:10:31 2014,Mostly almost finally finished
+Tue May 6 00:14:13 2014,Final proof read
+Tue May 6 01:55:11 2014,Final report finished
+Sat May 10 22:06:14 2014,Re-implemented player-instructed path finding to the deliberative architecture
+Sat May 10 22:20:28 2014,Re-implemented player movement control for subsumption agents
+Sun May 11 19:28:26 2014,Main menu mostly complete
+Sun May 11 19:46:30 2014,Main menu now pauses
+Sun May 11 20:48:58 2014,Added AI type selection
+Sun May 11 21:09:54 2014,Main menu is complete
+Sun May 11 21:42:02 2014,Finished final presentation
