@@ -90,6 +90,7 @@
     <Compile Include="Entities\Intentions\WallAvoidance.cs" />
     <Compile Include="Entities\Intentions\Wander.cs" />
     <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\OriginalAI.cs" />
     <Compile Include="Entities\Plank.cs" />
     <Compile Include="Entities\Plans\Barricade.cs" />
     <Compile Include="Entities\SubsumptionStack.cs" />

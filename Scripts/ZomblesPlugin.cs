@@ -70,7 +70,7 @@ namespace Zombles.Scripts
                     stack
                         .Push<Entities.Behaviours.SelfDefence>()
                         .Push<Entities.Behaviours.DropWood>();
-                } else {
+                } else if (Program.Deliberative) {
                     var delib = ent.AddComponent<DeliberativeAI>()
                         .AddDesire<Entities.Desires.Wander>()
                         .AddDesire<Entities.Desires.ThreatAvoidance>()
@@ -81,6 +81,8 @@ namespace Zombles.Scripts
                     if (!Program.PlayerControl) {
                         delib.AddDesire<Entities.Desires.Barricading>();
                     }
+                } else {
+                    ent.AddComponent<OriginalAI>();
                 }
             });
 
