@@ -52,6 +52,8 @@ namespace Zombles
         public static Scene CurrentScene { get; private set; }
         public static SpriteShader SpriteShader { get; private set; }
 
+        public static bool IsPaused { get; set; }
+
         public static double Time
         {
             get { return _normalizedTime; }
@@ -148,7 +150,9 @@ namespace Zombles
 #if TURBO
             do {
 #endif
-                _normalizedTime += ThinkPeriod;
+                if (!IsPaused) {
+                    _normalizedTime += ThinkPeriod;
+                }
             
                 if (CurrentScene != null)
                     CurrentScene.OnUpdateFrame(new FrameEventArgs(ThinkPeriod));

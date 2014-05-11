@@ -13,6 +13,7 @@ namespace Zombles.Scripts
     {
         private GameScene _gameScene;
 
+        private UIPanel _filter;
         private UIButton _continueBtn;
 
         public MenuScene(MainWindow game)
@@ -21,11 +22,26 @@ namespace Zombles.Scripts
 
         }
 
+        public override void OnResize()
+        {
+            _filter.Size = new Vector2(Width, Height);
+
+            base.OnResize();
+        }
+
         public override void OnEnter(bool firstTime)
         {
             base.OnEnter(firstTime);
 
+            MainWindow.IsPaused = true;
+
             if (firstTime) {
+                _filter = new UIPanel(new Vector2(Width, Height)) {
+                    Colour = new Color4(0, 0, 0, 191)
+                };
+
+                AddChild(_filter);
+
                 var worldSizeLbl = new UILabel(Graphics.PixelFont.Large, new Vector2(36, 36)) {
                     Text = "World Size",
                     Colour = Color4.White
@@ -111,6 +127,22 @@ namespace Zombles.Scripts
             }
             
             _continueBtn.IsEnabled = _gameScene != null;
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            MainWindow.IsPaused = false;
+        }
+
+        public override void OnRenderFrame(FrameEventArgs e)
+        {
+            if (_gameScene != null) {
+                _gameScene.OnRenderFrame(e);
+            }
+
+            base.OnRenderFrame(e);
         }
     }
 }

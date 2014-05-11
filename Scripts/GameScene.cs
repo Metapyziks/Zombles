@@ -50,8 +50,6 @@ namespace Zombles.Scripts
         private bool _drawPathNetwork;
         private bool _drawTestTrace;
 
-        private FrameBuffer _frameBuffer;
-        private Sprite _frameBufferSprite;
         private DebugTraceShader _traceShader;
 
         private List<Tile> _playerBarricades;
@@ -124,14 +122,7 @@ namespace Zombles.Scripts
 
                 PositionUI();
 
-                _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale) {
-                    MinFilter = TextureMinFilter.Nearest,
-                    MagFilter = TextureMagFilter.Nearest
-                }, 16);
-                _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, _upScale);
-                _frameBufferSprite.FlipVertical = true;
-
-                Camera = new OrthoCamera(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height, 4.0f / _upScale);
+                Camera = new OrthoCamera(Width, Height, 4.0f / _upScale);
                 Camera.SetWrapSize(Program.WorldSize, Program.WorldSize);
                 Camera.Position2D = new Vector2(Program.WorldSize, Program.WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
@@ -157,13 +148,7 @@ namespace Zombles.Scripts
 
         public override void OnResize()
         {
-            _frameBuffer.Dispose();
-
-            _frameBuffer = new FrameBuffer(new BitmapTexture2D(Width / _upScale, Height / _upScale), 16);
-            _frameBufferSprite = new Sprite((BitmapTexture2D) _frameBuffer.Texture, _upScale);
-            _frameBufferSprite.FlipVertical = true;
-
-            Camera.SetScreenSize(_frameBuffer.Texture.Width, _frameBuffer.Texture.Height);
+            Camera.SetScreenSize(Width, Height);
 
             PositionUI();
         }
@@ -297,7 +282,6 @@ namespace Zombles.Scripts
 
             var hs = hullSize / 2f;
 
-            _frameBuffer.Begin();
             GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
 
             for (int i = 0; i < 4; ++i) {
@@ -339,13 +323,7 @@ namespace Zombles.Scripts
 
                 _traceShader.End();
             }
-
-            _frameBuffer.End();
-
-            SpriteShader.Begin(true);
-            _frameBufferSprite.Render(SpriteShader);
-            SpriteShader.End();
-
+            
             base.OnRenderFrame(e);
 
             _totalFrameTime += _frameTimer.ElapsedTicks;
