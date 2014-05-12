@@ -17,19 +17,21 @@ namespace Zombles.Scripts.Entities
 
             var filtred = new List<T>();
 
-            for (int i = 0; i < list.Count; ++i) {
-                var a = list[i];
-                for (int j = list.Count - 1; j > i; --j) {
-                    var b = list[j];
+            try {
+                for (int i = 0; i < list.Count; ++i) {
+                    var a = list[i];
+                    for (int j = list.Count - 1; j > i; --j) {
+                        var b = list[j];
 
-                    if (a.ConflictsWith(b) || b.ConflictsWith(a)) {
-                        list.RemoveAt(j);
-                        list[i] = a.ResolveConflict(b);
+                        if (a.ConflictsWith(b) || b.ConflictsWith(a)) {
+                            list.RemoveAt(j);
+                            list[i] = a.ResolveConflict(b);
 
-                        list.Sort(); i = -1; break;
+                            list.Sort(); i = -1; break;
+                        }
                     }
                 }
-            }
+            } catch { list = new List<T>(); }
 
             return list;
         }

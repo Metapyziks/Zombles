@@ -76,11 +76,8 @@ namespace Zombles.Scripts
                         .AddDesire<Entities.Desires.ThreatAvoidance>()
                         .AddDesire<Entities.Desires.WallAvoidance>()
                         .AddDesire<Entities.Desires.Migration>()
-                        .AddDesire<Entities.Desires.Mobbing>();
-
-                    if (!Program.PlayerControl) {
-                        delib.AddDesire<Entities.Desires.Barricading>();
-                    }
+                        .AddDesire<Entities.Desires.Mobbing>()
+                        .AddDesire<Entities.Desires.Barricading>();
                 } else {
                     ent.AddComponent<OriginalAI>();
                 }
