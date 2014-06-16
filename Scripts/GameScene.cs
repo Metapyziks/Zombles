@@ -81,6 +81,12 @@ namespace Zombles.Scripts
         public CityGenerator Generator { get; private set; }
         public World World { get; private set; }
 
+        public int WorldSize { get; private set; }
+
+        public int HumanCount { get; private set; }
+
+        public int ZombieCount { get; private set; }
+
         public IEnumerable<Tile> PlayerBarricades { get { return _playerBarricades; } }
 
         public GameScene(MainWindow gameWindow, MenuScene menu)
@@ -98,6 +104,10 @@ namespace Zombles.Scripts
             _totalFrameTime = 0;
             _framesCompleted = 0;
             _frameTimer = new Stopwatch();
+
+            WorldSize = menu.WorldSize;
+            HumanCount = menu.HumanCount;
+            ZombieCount = menu.ZombieCount;
         }
 
         public override void OnEnter(bool firstTime)
@@ -107,7 +117,7 @@ namespace Zombles.Scripts
             if (firstTime) {
                 Generator = new CityGenerator();
 
-                World = Generator.Generate(Program.WorldSize, Program.WorldSize, Program.Seed);
+                World = Generator.Generate(WorldSize, WorldSize);
 
                 _fpsText = new UILabel(PixelFont.Large);
                 _fpsText.Colour = Color4.White;
@@ -123,8 +133,8 @@ namespace Zombles.Scripts
                 PositionUI();
 
                 Camera = new OrthoCamera(Width, Height, 4.0f / _upScale);
-                Camera.SetWrapSize(Program.WorldSize, Program.WorldSize);
-                Camera.Position2D = new Vector2(Program.WorldSize, Program.WorldSize) / 2.0f;
+                Camera.SetWrapSize(WorldSize, WorldSize);
+                Camera.Position2D = new Vector2(WorldSize, WorldSize) / 2.0f;
                 Camera.Pitch = TargetCameraPitch;
                 Camera.Yaw = TargetCameraYaw;
 
@@ -260,9 +270,9 @@ namespace Zombles.Scripts
         public override void OnRenderFrame(FrameEventArgs e)
         {
             float x0 = 0.0f;
-            float x1 = (Camera.X < Program.WorldSize / 2) ? -Program.WorldSize : Program.WorldSize;
+            float x1 = (Camera.X < WorldSize / 2) ? -WorldSize : WorldSize;
             float y0 = 0.0f;
-            float y1 = (Camera.Z < Program.WorldSize / 2) ? -Program.WorldSize : Program.WorldSize;
+            float y1 = (Camera.Z < WorldSize / 2) ? -WorldSize : WorldSize;
 
             float hullSize = .5f;
 
@@ -342,8 +352,6 @@ namespace Zombles.Scripts
 
         public override void OnMouseButtonDown(MouseButtonEventArgs e)
         {
-            if (!Program.PlayerControl) return;
-
             var pos = Camera.ScreenToWorld(new Vector2(e.X, e.Y) / _upScale, .5f);
 
             if (e.Button == MouseButton.Left) {
@@ -445,7 +453,7 @@ namespace Zombles.Scripts
                         GameWindow.WindowState = WindowState.Fullscreen;
                     break;
                 case Key.G:
-                    World = Generator.Generate(Program.WorldSize, Program.WorldSize);
+                    World = Generator.Generate(WorldSize, WorldSize);
                     Plugin.CityGenerated();
                     break;
             }

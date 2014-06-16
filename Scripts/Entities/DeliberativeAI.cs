@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+
 using OpenTK;
+
 using Zombles.Entities;
 
 namespace Zombles.Scripts.Entities
@@ -22,15 +24,6 @@ namespace Zombles.Scripts.Entities
             _timer.Reset();
 
             return time;
-        }
-
-        static DeliberativeAI()
-        {
-            if (Program.FastDeliberative) {
-                BeliefsUpdatePeriod *= 4;
-                DeliberationPeriod *= 4;
-                SharePeriod *= 4;
-            }
         }
 
         private Beliefs _beliefs;
